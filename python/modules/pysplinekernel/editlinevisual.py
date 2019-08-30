@@ -62,30 +62,9 @@ class EditLineVisual(scene.visuals.Line):
         scene.visuals.Line.draw(self)
         self.markers.draw()
 
-    def on_mouse_press(self, pos_scene):
-        self.selected_point, self.selected_index = self.select_point(pos_scene)
-        if self.selected_point is None:
-            # Update selection
-            self._pos = np.append(self.pos, [pos_scene[:3]], axis=0)
-            self.set_data(pos=self.pos)
-            self.marker_colors = np.ones((len(self.pos), 4), dtype=np.float32)
-            self.selected_point = self.pos[-1]
-            self.selected_index = len(self.pos) - 1
-
         # update markers and highlights
         self.update_markers(self.selected_index)
 
-    def on_mouse_release(self, event):
-        self.selected_point = None
-        self.update_markers()
-
-    def on_mouse_drag(self, pos_scene):
-        if self.selected_point is not None:
-            # update selected point to new position given by mouse
-            self.selected_point[0] = round(pos_scene[0] / self.gridsize) * self.gridsize
-            self.selected_point[1] = round(pos_scene[1] / self.gridsize) * self.gridsize
-            self.set_data(pos=self.pos)
-            self.update_markers(self.selected_index)
 
     def on_mouse_move(self,pos_scene):
         pass
