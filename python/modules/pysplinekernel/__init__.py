@@ -1,18 +1,18 @@
+import glob
 import os
 import shutil
 
 
 # Copy necessary libraries from the parent folder
-binaryFileNames     = ('linalg','splinekernel')
-libraryExtensions   = ('dll','so')
+binaryFileNames     = ('linalg.','splinekernel.')
 curDir              = os.path.dirname(os.path.realpath(__file__))
+parentDir           = os.path.join(curDir,os.pardir);
+
 for fileName in binaryFileNames:
-    for extension in libraryExtensions:
-        name = fileName + '.' + extension
-        try:
-            shutil.copyfile(os.path.join(curDir,os.pardir,name), os.path.join(curDir,name), follow_symlinks=True)
-        except:
-            pass
+    fileList    = glob.glob(parentDir + '/*' + fileName + '*')
+    for filePath in fileList:
+	    print(filePath)
+	    shutil.copyfile(filePath, os.path.join(curDir,os.path.basename(filePath)))
         
 
 from pysplinekernel.surfacekernel import SurfaceKernel

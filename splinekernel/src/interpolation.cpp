@@ -143,14 +143,14 @@ std::array<std::vector<double>, 2> centripetalParameterPositions(const VectorOfM
 	std::vector<double> parameterPositionsR(sizeR, 0.0);
 	std::vector<double> parameterPositionsS(sizeS, 0.0);
 	double dx, dy, dz, d;
-	for (int i = 1; i < sizeR; ++i) {
+	for (size_t i = 1; i < sizeR; ++i) {
 		dx = interpolationPoints[0](i, 0) - interpolationPoints[0](i - 1, 0);
 		dy = interpolationPoints[1](i, 0) - interpolationPoints[1](i - 1, 0);
 		dz = interpolationPoints[2](i, 0) - interpolationPoints[2](i - 1, 0);
 		d = std::sqrt(dx*dx + dy*dy + dz*dz);
 		parameterPositionsR[i] = parameterPositionsR[i - 1] + std::sqrt(d);
 	}
-	for (int i = 1; i < sizeS; ++i) {
+	for (size_t i = 1; i < sizeS; ++i) {
 		dx = interpolationPoints[0](0, i) - interpolationPoints[0](0, i - 1);
 		dy = interpolationPoints[1](0, i) - interpolationPoints[1](0, i - 1);
 		dz = interpolationPoints[2](0, i) - interpolationPoints[2](0, i - 1);

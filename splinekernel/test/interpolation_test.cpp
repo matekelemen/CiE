@@ -265,7 +265,7 @@ namespace cie
 			size_t polynomialDegreeR(3), polynomialDegreeS(2);
 			// Test parameter positions
 			VectorPair parameterPositionsRS = centripetalParameterPositions(grid);
-			for (int i = 0; i < parameterPositionsRS[0].size(); ++i) {
+			for (size_t i = 0; i < parameterPositionsRS[0].size(); ++i) {
 				std::cout << parameterPositionsRS[0][i] << ", " << parameterPositionsRS[0][i] << "\n";
 			}
 			// Get knot vectors

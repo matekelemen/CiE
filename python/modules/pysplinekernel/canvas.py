@@ -7,10 +7,10 @@ class Canvas(scene.SceneCanvas):
     def __init__(self):
         # Initialize canvas
         scene.SceneCanvas.__init__(self, keys='interactive',
-                                   size=(800, 800))
+                                   size=(1024, 768))
         # Create some initial points
         self.unfreeze()
-        self.pos = np.zeros((1, 3), dtype=np.float32)
+        self.pos = np.empty((1,3),dtype=np.float32)
         # create new editable line
         self.visuals = {
             'polygon'   : EditLineVisual(pos=self.pos, color='r', width=0.5, antialias=True, method='gl'),
@@ -42,11 +42,20 @@ class Canvas(scene.SceneCanvas):
         self.visuals['polygon'].on_mouse_press(pos)
         # Register point in splinekernel
         if self.visuals['polygon'].selected_index == len(self.visuals['polygon'].pos)-1:
+            # Wait for mouse release
+            self.on_mouse_move(event)
             self.visuals['spline'].addInterpolationPoint( pos[:2] )
             self.visuals['spline'].draw()
+            
+    '''
+    def on_mouse_release(self,event):
+        tr = self.scene.node_transform(self.visuals['polygon'])
+        pos = tr.map(event.pos)
+        if self.visuals['polygon'].selected_index == len(self.visuals['polygon'].pos)-1:
+            self.visuals['spline'].addInterpolationPoint( pos[:2] )
+            self.visuals['spline'].draw()
+    '''
 
-        print( self.visuals['spline'].splineKernel.interpolationPoints )
-        print( self.visuals['polygon']._pos )
 
     def on_mouse_move(self, event):
         # left mouse button
