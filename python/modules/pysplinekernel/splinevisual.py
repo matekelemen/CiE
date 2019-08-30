@@ -29,6 +29,11 @@ class SplineVisual(scene.visuals.Line):
         self.splineKernel.pop()
         self.splineKernel.push( list(point[0:2]) )
         self.splineKernel.push( [0.0,0.0] )
+        
+    def updatePoint(self,point,index=-1):
+        if index < len(self.splineKernel.interpolationPoints[0]):
+            self.splineKernel.interpolationPoints[0][index] = point[0]
+            self.splineKernel.interpolationPoints[1][index] = point[1]
 
     def draw(self):
         if len(self.splineKernel.interpolationPoints[0]) > self.splineKernel.polynomialOrder:
