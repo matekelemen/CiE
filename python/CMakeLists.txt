@@ -6,11 +6,17 @@ project( python CXX )
 
 # Directories to include header files from
 include_directories( ../splinekernel/inc )
+include_directories( ../meshkernel/inc )
+
+# Collect library files
+file( GLOB PYTHON_MESHKERNEL_CPP_FILES bindings/*meshkernel*.cpp )
 
 # Add shared library of python bindings
 pybind11_add_module( pysplinekernel bindings/splinekernel_python.cpp bindings/denseMatrixConversion.hpp bindings/sparseMatrixConversion.hpp )
+pybind11_add_module( pymeshkernel ${PYTHON_MESHKERNEL_CPP_FILES} )
 
 target_link_libraries( pysplinekernel PRIVATE splinekernel linalg )
+target_link_libraries( pymeshkernel PRIVATE meshkernel )
 
   
 # -------------- Set up copying python scipts ---------------------
@@ -24,13 +30,16 @@ foreach( filename ${PYTHON_SCRIPTS} )
   install(FILES ${filename} DESTINATION ${CMAKE_INSTALL_PREFIX} )
 endforeach()
 
-# Copy modules
+# Copy module - pysplinekernel
 install( DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/pysplinekernel )
 file( GLOB PYSPLINEKERNEL_MODULE_SCRIPTS ${PYSPLINEKERNEL_MODULE_FOLDER}/* )
 install( TARGETS pysplinekernel LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/pysplinekernel )
 foreach( filename ${PYSPLINEKERNEL_MODULE_SCRIPTS} )
   install(FILES ${filename} DESTINATION ${CMAKE_INSTALL_PREFIX}/pysplinekernel )
 endforeach()
+
+# Copy module - pymeshkernel
+install( TARGETS pymeshkernel LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX} )
 
 # Copy data
 install( DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/data )

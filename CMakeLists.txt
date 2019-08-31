@@ -25,9 +25,9 @@ endif( )
 # This will add the install path to the rpath of the installed binaries to make dynamic linking work
 SET( CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}" )
 
-# ---------------- Set up splinekernel project --------------------
-
+# ---------------- Set up subprojects -----------------------------
 add_subdirectory( splinekernel )
+add_subdirectory( meshkernel )
 
 # ----------------- Set up python bindings ------------------------
 set(PYBIND11_CPP_STANDARD -std=c++14)
