@@ -12,7 +12,7 @@ class SplineVisual(scene.visuals.Line):
         self.unfreeze()
         # Splinekernel
         self.splineKernel = SplineKernel()
-        self.splineKernel.push([0.0,0.0])
+        #self.splineKernel.push([0.0,0.0])
         self.freeze()
 
     # MISC FUNCTIONS ------------------------------------------------------------
@@ -25,13 +25,11 @@ class SplineVisual(scene.visuals.Line):
         self.draw()
 
     # SPLINE EDIT ---------------------------------------------------------------
-    def addInterpolationPoint(self,point):
-        self.splineKernel.pop()
+    def addPoint(self,point):
         self.splineKernel.push( list(point[0:2]) )
-        self.splineKernel.push( [0.0,0.0] )
         
-    def updatePoint(self,point,index=-1):
-        if index < len(self.splineKernel.interpolationPoints[0]):
+    def setPoint(self,point,index=-1):
+        if index < len(self.splineKernel.interpolationPoints[0]) and len(self.splineKernel.interpolationPoints[0]) is not 0:
             self.splineKernel.interpolationPoints[0][index] = point[0]
             self.splineKernel.interpolationPoints[1][index] = point[1]
 

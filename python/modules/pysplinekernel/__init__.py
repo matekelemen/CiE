@@ -11,7 +11,6 @@ parentDir           = os.path.join(curDir,os.pardir);
 for fileName in binaryFileNames:
     fileList    = glob.glob(parentDir + '/*' + fileName + '*')
     for filePath in fileList:
-	    print(filePath)
 	    shutil.copyfile(filePath, os.path.join(curDir,os.path.basename(filePath)))
         
 

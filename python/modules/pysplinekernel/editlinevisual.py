@@ -16,7 +16,7 @@ class EditLineVisual(scene.visuals.Line):
                               size=6)
         self.selected_point = None
         self.selected_index = -1
-        # snap grid size
+        # Grid size
         self.gridsize = 5
         self.freeze()
 
@@ -37,26 +37,32 @@ class EditLineVisual(scene.visuals.Line):
     def highlightMarkers(self, pos):
         #  if no button is pressed, just highlight the marker that would be
         # selected on click
-        hl_point, hl_index = self.select_point(pos)
+        hl_point, hl_index = self.selectPoint(pos)
         self.updateMarkers(hl_index, highlight_color=(0.5, 0.5, 1.0, 1.0))
         self.update()
 
     # SET/GET FUNCTIONS ---------------------------------------------------------
     def addPoint(self, pos):
-        self._pos = np.append(self.pos, [pos[:3]], axis=0)
-        self.set_data(pos=self.pos)
-        self.marker_colors = np.ones((len(self.pos), 4), dtype=np.float32)
-        #self.selected_point = self.pos[-1]
-        #self.selected_index = len(self.pos) - 1
+        if len(self.pos)==1 and self.pos[0][0]==0.0 and self.pos[0][1]==0.0:
+            # Set first point
+            self.setPoint(0,pos)
+            print('Setting first point on the polygon')
+        else:
+            self._pos = np.append(self.pos, [pos[:3]], axis=0)
+            self.set_data(pos=self.pos)
+            self.marker_colors = np.ones((len(self.pos), 4), dtype=np.float32)
         
     def setPoint(self,index,pos):
-        self.pos[index] = pos;
+        for k in range(min( (len(pos)),3 )):
+            self.pos[index][k] = pos[k]
         self.set_data(pos=self.pos)
 
     # POINT SELECTION MANAGERS --------------------------------------------------
-    def select_point(self, pos_scene, radius=3):
+    def selectPoint(self, pos, radius=3):
+        # Check if input point is within a specified radius of an already stored point
+        # (temporary implementation, horribly slow)
         for index,p in enumerate(self.pos):
-            if np.linalg.norm(pos_scene[:3] - p) < radius:
+            if np.linalg.norm(pos[:3] - p) < radius:
                 return p, index
         # no point found, return None
         return None, -1

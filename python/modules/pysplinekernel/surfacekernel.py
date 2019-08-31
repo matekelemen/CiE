@@ -17,13 +17,13 @@ class SurfaceKernel:
         
     # GARBAGE COLLECTION AND RESET --------------------------------------------
     def reset(self):
-        self.samples = [5,5]
-        self.polynomialOrders = [3,3]
-        self.interpolationPoints = [[],[],[]]
-        self.controlPoints = [[],[],[]]
-        self.knotVectors = [[],[]]
-        self.samplePoints = [[],[]]
-        self.surfacePoints = [[],[],[]]
+        self.samples                = [5,5]
+        self.polynomialOrders       = [3,3]
+        self.interpolationPoints    = [[],[],[]]
+        self.controlPoints          = [[],[],[]]
+        self.knotVectors            = [[],[]]
+        self.samplePoints           = [[],[]]
+        self.surfacePoints          = [[],[],[]]
         
     # CALCULATION -------------------------------------------------------------
     def updateSurface(self, lastPoint=[]):

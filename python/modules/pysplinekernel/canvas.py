@@ -28,9 +28,9 @@ class Canvas(scene.SceneCanvas):
         # Visual objects
         self.view.add( self.visuals['polygon'] )
         self.view.add( self.visuals['spline'] )
-        # State variables
-        self.selected_point = None
         scene.visuals.GridLines(parent=self.view.scene)
+        # Add first point
+        self.visuals['spline'].addPoint([0.0,0.0])
         # Initialization
         self.show()
         self.freeze()
@@ -43,10 +43,14 @@ class Canvas(scene.SceneCanvas):
         tr  = self.scene.node_transform(self.visuals['polygon'])
         pos = tr.map(event.pos)
         # Handle polygon
-        self.visuals['polygon'].selected_point, self.visuals['polygon'].selected_index = self.visuals['polygon'].select_point(pos)        
-        if self.selected_point is None:
+        self.visuals['polygon'].selected_point, self.visuals['polygon'].selected_index = self.visuals['polygon'].selectPoint(pos)        
+        if self.visuals['polygon'].selected_point is None:
+            # Append polygon
             self.visuals['polygon'].addPoint(pos)
-            self.visuals['spline'].addInterpolationPoint( pos[:2] )
+            # Set spline
+            self.visuals['spline'].setPoint( pos[:2] )
+            # Add new cursor point
+            self.visuals['spline'].addPoint( [pos[0]+1e-4, pos[1]-1e-4] )
             self.visuals['spline'].draw()
             
 
@@ -59,7 +63,7 @@ class Canvas(scene.SceneCanvas):
             self.visuals['polygon'].setPoint(self.visuals['polygon'].selected_index,self.visuals['polygon'].selected_point)
             self.visuals['polygon'].updateMarkers(self.visuals['polygon'].selected_index)
             # Update spline
-            self.visuals['spline'].updatePoint(pos,index=self.visuals['polygon'].selected_index);
+            self.visuals['spline'].setPoint(self.visuals['polygon'].selected_point,index=self.visuals['polygon'].selected_index)
 
     def on_mouse_release(self,event):
         # Handle polygon
@@ -78,4 +82,4 @@ class Canvas(scene.SceneCanvas):
         # Move
         else:
             self.visuals['polygon'].highlightMarkers(pos)
-            self.visuals['spline'].updatePoint(pos)
+            self.visuals['spline'].setPoint(pos)
