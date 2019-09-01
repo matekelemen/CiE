@@ -12,21 +12,21 @@ class SplineVisual(scene.visuals.Line):
         self.unfreeze()
         # Splinekernel
         self.splineKernel = SplineKernel()
-        #self.splineKernel.push([0.0,0.0])
         self.freeze()
 
     # MISC FUNCTIONS ------------------------------------------------------------
     def enable(self):
         self._visible = True
-        self.draw()
 
     def disable(self):
         self._visible = False
-        self.draw()
 
     # SPLINE EDIT ---------------------------------------------------------------
     def addPoint(self,point):
         self.splineKernel.push( list(point[0:2]) )
+
+    def pop(self):
+        self.splineKernel.pop()
         
     def setPoint(self,point,index=-1):
         if index < len(self.splineKernel.interpolationPoints[0]) and len(self.splineKernel.interpolationPoints[0]) is not 0:
@@ -40,8 +40,6 @@ class SplineVisual(scene.visuals.Line):
                 np.append( self.splineKernel.curvePoints, np.zeros( [1,len(self.splineKernel.curvePoints[0])] ), axis=0 ),
                 [1,0]
                 ))
-        scene.visuals.Line.draw(self)
+            scene.visuals.Line.draw(self)
 
     # EVENT HANDLERS ------------------------------------------------------------
-    def on_draw(self,event):
-        scene.visuals.Line.draw(self)

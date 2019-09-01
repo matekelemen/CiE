@@ -1,18 +1,19 @@
 import numpy as np
 from vispy import app, scene
 
-class EditLineVisual(scene.visuals.Line):
+class EditMarkerVisual(scene.visuals.Markers):
     # CONSTRUCTOR AND INITIALZER ----------------------------------------------------------------------
     def __init__(self, *args, **kwargs):
-        scene.visuals.Line.__init__(self, *args, **kwargs)
+        scene.visuals.Markers.__init__(self, *args, **kwargs)
+        self.unfreeze()
+        self.pos    = kwargs['pos']
         self.reset()
         
     def reset(self):
         self.unfreeze()
         # initialize point markers
-        self.markers = scene.visuals.Markers(parent=self)
         self.marker_colors = np.ones((len(self.pos), 4), dtype=np.float32)
-        self.markers.set_data(pos=self.pos, symbol="s", edge_color="red",
+        self.set_data(pos=self.pos, symbol="s", edge_color="red",
                               size=6)
         self.selected_point = None
         self.selected_index = -1
@@ -31,7 +32,7 @@ class EditLineVisual(scene.visuals.Line):
             self.marker_colors[selected_index] = highlight_color
             shape = "s"
             size = 8
-        self.markers.set_data(pos=self.pos, symbol=shape, edge_color='red',
+        self.set_data(pos=self.pos, symbol=shape, edge_color='red',
                               size=size, face_color=self.marker_colors)
     
     def highlightMarkers(self, pos):
@@ -47,9 +48,10 @@ class EditLineVisual(scene.visuals.Line):
             # Set first point
             self.setPoint(0,pos)
         else:
-            self._pos = np.append(self.pos, [pos[:3]], axis=0)
+            self.pos = np.append(self.pos, [pos[:3]], axis=0)
             self.set_data(pos=self.pos)
             self.marker_colors = np.ones((len(self.pos), 4), dtype=np.float32)
+            
         
     def setPoint(self,index,pos):
         for k in range(min( (len(pos)),3 )):
