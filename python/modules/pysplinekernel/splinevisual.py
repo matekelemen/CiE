@@ -23,15 +23,25 @@ class SplineVisual(scene.visuals.Line):
 
     # SPLINE EDIT ---------------------------------------------------------------
     def addPoint(self,point):
-        self.splineKernel.push( list(point[0:2]) )
+        return self.splineKernel.push( list(point[0:2]) )
 
     def pop(self):
-        self.splineKernel.pop()
+        state = self.splineKernel.pop()
+        self.draw()
+        return state
         
     def setPoint(self,point,index=-1):
         if index < len(self.splineKernel.interpolationPoints[0]) and len(self.splineKernel.interpolationPoints[0]) is not 0:
             self.splineKernel.interpolationPoints[0][index] = point[0]
             self.splineKernel.interpolationPoints[1][index] = point[1]
+            self.draw()
+        else:
+            return False
+        return True
+
+    def setPolynomialOrder(self,polynomialOrder):
+        self.splineKernel.polynomialOrder = polynomialOrder
+        self.draw()
 
     def draw(self):
         if len(self.splineKernel.interpolationPoints[0]) > self.splineKernel.polynomialOrder:
@@ -41,5 +51,8 @@ class SplineVisual(scene.visuals.Line):
                 [1,0]
                 ))
             scene.visuals.Line.draw(self)
+        else:
+            return False
+        return True
 
     # EVENT HANDLERS ------------------------------------------------------------

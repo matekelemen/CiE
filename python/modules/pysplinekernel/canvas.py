@@ -8,11 +8,12 @@ class Canvas(scene.SceneCanvas):
         # Initialize canvas
         scene.SceneCanvas.__init__(self, keys='interactive',
                                    size=(800, 600))
-        # Create some initial points
+        # Unfreeze
         self.unfreeze()
+        # Create some initial points
         self.pos = np.empty((1,3),dtype=np.float32)
         # create new editable line
-        self.visuals = {
+        self.objects = {
             'markers'   : EditMarkerVisual(pos=self.pos, face_color='w', scaling=True),
             'spline'    : SplineVisual(pos=self.pos, color='w', width=1, antialias=False, method='gl')
             }
@@ -20,72 +21,138 @@ class Canvas(scene.SceneCanvas):
         self.view = self.central_widget.add_view()
         self.view.camera = scene.PanZoomCamera(rect=(-100, -100, 200, 200),
                                                aspect=1.0)
-        # the left mouse button pan has to be disabled in the camera, as it
-        # interferes with dragging line points
-        # Proposed change in camera: make mouse buttons configurable
+        # Disable mouse press events for the camera
         self.view.camera._viewbox.events.mouse_move.disconnect(
             self.view.camera.viewbox_mouse_event)
         # Visual objects
-        self.view.add( self.visuals['markers'] )
-        self.view.add( self.visuals['spline'] )
+        self.view.add( self.objects['markers'] )
+        self.view.add( self.objects['spline'] )
         scene.visuals.GridLines(parent=self.view.scene)
         # Add first point (cursor)
-        self.cursor = True
-        self.visuals['spline'].addPoint([0.0,0.0])
-        # Initialization
+        self.activeCursor   = True
+        self.lastPoint      = [1.0,1.0]
+        self.objects['spline'].addPoint([0.0,0.0])
+        # Settings
+        self.settings={
+            'mode'              : ['define',    self.setMode],
+            'polynomialOrder'   : [3,           self.objects['spline'].setPolynomialOrder],
+            'snapToGrid'        : [False,       lambda state: state]
+        }
+        # modes
+        self.modes = {
+            'define' : {
+                'on_mouse_press'    : self.on_mouse_press_define,
+                'on_mouse_move'     : self.on_mouse_move_define,
+                'on_mouse_release'  : self.on_mouse_release_define
+                },
+            'edit' : {
+                'on_mouse_press'    : self.on_mouse_press_edit,
+                'on_mouse_move'     : self.on_mouse_move_edit,
+                'on_mouse_release'  : self.on_mouse_release_edit
+            }
+        }
+        # Freeze
         self.freeze()
         
 
-    # MISC FUNCTIONS --------------------------------------------------------------------------------------
+    # SET FUNCTIONS ---------------------------------------------------------------------------------------
+    def updateSettings(self, **kwargs):
+        for key,value in kwargs.items():
+            if self.settings[key][0] is not value:
+                self.settings[key][1](value)
+                self.settings[key][0] = value
+        print(self.settings['snapToGrid'][0])
 
-    # EVENT HANDLERS --------------------------------------------------------------------------------------
-    def on_mouse_press(self, event):
+    def setMode(self,mode):
+        if self.settings['mode'][0] is 'define' and self.activeCursor:
+            self.objects['spline'].pop()
+        elif mode is 'define' and self.activeCursor:
+            self.objects['spline'].addPoint([0.0,0.0])
+
+    # COORDINATE TRANSFORM FUNCTIONS ----------------------------------------------------------------------
+    def snapToGrid(self,pos):
+        if self.settings['snapToGrid'][0]:
+            pos[0] = round(pos[0] / self.objects['markers'].gridsize) * self.objects['markers'].gridsize
+            pos[1] = round(pos[1] / self.objects['markers'].gridsize) * self.objects['markers'].gridsize
+        # Return position
+        return pos
+
+    def getPos(self,event):
+        # Get exact position
+        transform   = self.scene.node_transform(self.objects['markers'])
+        pos         = transform.map(event.pos)
+        # Return position
+        return pos
+
+    # EVENT HANDLERS - DEFINE -----------------------------------------------------------------------------
+    def on_mouse_press_define(self, event):
+        # Get mouse position and snap to grid if specified
+        pos = self.snapToGrid( self.getPos(event) )
+        # Disable cursor and store clicked point
+        if self.activeCursor:
+            self.lastPoint      = pos
+            self.objects['spline'].setPoint(self.lastPoint)
+            self.objects['markers'].addPoint(self.lastPoint)
+            self.activeCursor   = False
+        
+        
+    def on_mouse_release_define(self,event):
+        pass
+
+
+    def on_mouse_move_define(self, event):
         # Get mouse position
-        tr  = self.scene.node_transform(self.visuals['markers'])
-        pos = tr.map(event.pos)
-        # Handle polygon
-        self.visuals['markers'].selected_point, self.visuals['markers'].selected_index = self.visuals['markers'].selectPoint(pos)        
-        if self.visuals['markers'].selected_point is None:
-            # Append polygon
-            self.visuals['markers'].addPoint(pos)
-            # Set spline
-            self.visuals['spline'].setPoint( pos[:2] )
-            # Add new cursor point
-            self.visuals['spline'].addPoint( [pos[0]+1e-4, pos[1]-1e-4] )
+        pos = self.snapToGrid( self.getPos(event) )
+        # Check if cursor is active
+        if not self.activeCursor:
+            if self.objects['spline'].addPoint(pos):
+                self.activeCursor = True
         else:
-            # Delete cursor point
-            self.cursor = False
-            self.visuals['spline'].pop()
+            # Set cursor 
+            self.objects['spline'].setPoint(pos)
+        
+
+    # EVENT HANDLERS - EDIT -----------------------------------------------------------------------------
+    def on_mouse_press_edit(self, event):
+        # Get mouse position
+        pos = self.getPos(event)
+        # Update selection
+        self.objects['markers'].selected_point, self.objects['markers'].selected_index = self.objects['markers'].selectPoint(pos)
             
 
-    def on_mouse_drag(self,pos):
-        if self.visuals['markers'].selected_point is not None:
+    def on_mouse_drag_edit(self,pos):
+        if self.objects['markers'].selected_point is not None:
             # Snap to grid
-            self.visuals['markers'].selected_point[0] = round(pos[0] / self.visuals['markers'].gridsize) * self.visuals['markers'].gridsize
-            self.visuals['markers'].selected_point[1] = round(pos[1] / self.visuals['markers'].gridsize) * self.visuals['markers'].gridsize
+            self.objects['markers'].selected_point = pos
             # Update polygon
-            self.visuals['markers'].setPoint(self.visuals['markers'].selected_index,self.visuals['markers'].selected_point)
-            self.visuals['markers'].updateMarkers(self.visuals['markers'].selected_index)
+            self.objects['markers'].setPoint(self.objects['markers'].selected_index,self.objects['markers'].selected_point)
+            self.objects['markers'].updateMarkers(self.objects['markers'].selected_index)
             # Update spline
-            self.visuals['spline'].setPoint(self.visuals['markers'].selected_point,index=self.visuals['markers'].selected_index)
+            self.objects['spline'].setPoint(self.objects['markers'].selected_point,index=self.objects['markers'].selected_index)
+
+
+    def on_mouse_release_edit(self,event):
+        # Clear selection
+        self.objects['markers'].selected_point = None
+        self.objects['markers'].selected_index = -1
+        self.objects['markers'].updateMarkers()
+
+
+    def on_mouse_move_edit(self, event):
+        # Position
+        pos = self.snapToGrid( self.getPos(event) )
+        # Drag
+        if event.button == 1:   
+            self.on_mouse_drag_edit(pos)
+        
+    # EVENT HANDLER ROUTERS ---------------------------------------------------------------------
+    def on_mouse_press(self,event):
+        self.modes[self.settings['mode'][0]]['on_mouse_press'](event)
+
 
     def on_mouse_release(self,event):
-        # Handle polygon
-        self.visuals['markers'].selected_point = None
-        self.visuals['markers'].selected_index = -1
-        self.visuals['markers'].updateMarkers()
-        # Add cursor point
-        if not self.cursor:
-            self.cursor = True
-            self.visuals['spline'].addPoint([0.0,0.0])
+        self.modes[self.settings['mode'][0]]['on_mouse_release'](event)
 
-    def on_mouse_move(self, event):
-        # Position
-        tr = self.scene.node_transform(self.visuals['markers'])
-        pos = tr.map(event.pos)
-        if event.button == 1:   # Drag
-            self.on_mouse_drag(pos)
-        else:                   # Move
-            self.visuals['markers'].highlightMarkers(pos)
-            self.visuals['spline'].setPoint(pos)
-        
+
+    def on_mouse_move(self,event):
+        self.modes[self.settings['mode'][0]]['on_mouse_move'](event)
