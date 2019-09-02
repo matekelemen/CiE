@@ -18,4 +18,4 @@ from pysplinekernel.surfacekernel import SurfaceKernel
 from pysplinekernel.surfacebuilder import SurfaceGUI
 from pysplinekernel.editlinevisual import EditLineVisual
 from pysplinekernel.editmarkervisual import EditMarkerVisual
-from pysplinekernel.canvas import Canvas
+from pysplinekernel.canvas import CanvasSpline2D, CanvasSurface

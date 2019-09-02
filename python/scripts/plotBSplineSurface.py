@@ -4,8 +4,8 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.cm as colormap
 import matplotlib.pyplot as plt
 
-numberOfSamplesInR = 31;
-numberOfSamplesInS = 31;
+numberOfSamplesInR = 31
+numberOfSamplesInS = 31
 
 plotControlPoints = False
 plotProjectionOfControlPointsOntoXYPlane = False

@@ -77,7 +77,6 @@ class ControlWidget(QWidget):
 
 
 class MainWindow(QMainWindow):
-
     def __init__(self):
         QMainWindow.__init__(self)
 
@@ -86,7 +85,7 @@ class MainWindow(QMainWindow):
 
         splitter = QSplitter(QtCore.Qt.Horizontal)
 
-        self.canvas = pysplinekernel.Canvas()
+        self.canvas = pysplinekernel.CanvasSpline2D()
         self.canvas.create_native()
         self.canvas.native.setParent(self)
 
