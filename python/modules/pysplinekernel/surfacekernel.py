@@ -25,6 +25,7 @@ class SurfaceKernel:
         self.interpolationPoints    = [[],[],[]]
         self.controlPoints          = [[],[],[]]
         self.knotVectors            = [[],[]]
+        self.tolerance              = 1e-15
 
 
     # MISC ------------------------------------------------------------
@@ -46,7 +47,7 @@ class SurfaceKernel:
         if len(self.interpolationPoints[axis]) > 0:
             coordinates = [ self.interpolationPoints[axis][x] for x in self.getIndicesInAxis(axis=axis) ]
             try:
-                return next( (i for i,x in enumerate(coordinates) if abs(x-value)<1e-15) )
+                return next( (i for i,x in enumerate(coordinates) if abs(x-value)<self.tolerance) )
             except: 
                 return None
         else:
@@ -106,42 +107,60 @@ class SurfaceKernel:
         columnIndex = self.findPlaceInAxis(point[0],0)
         rowIndex    = self.findPlaceInAxis(point[1],1)
         # Create indices and coordinates
-        offset  = columnIndex
-
-        indices = [ x+i+offset for i,x in enumerate( iR*self.meshSize[0] for iR in range(rowIndex) ) ]
-        cX      = [ point[0] for x in range(rowIndex) ]
-        cY      = self.interpolationPoints[1][:rowIndex*self.meshSize[0]:self.meshSize[0]]
-        offset  += len(indices)
-
-        indices.extend( list(range( rowIndex*(self.meshSize[0]+1),(rowIndex+1)*(self.meshSize[0]+1) )) )
-        temp    = self.interpolationPoints[0][:self.meshSize[0]]
-        temp[columnIndex:columnIndex] = [point[0]]
-        cX.extend( temp )
-        cY.extend( [point[1] for x in range(self.meshSize[0]+1)] )
-        offset  += self.meshSize[0]+1
-
-        indices.extend(
-            [ x+i+offset for i,x in enumerate( iR*self.meshSize[0] for iR in range(rowIndex,self.meshSize[1]) ) ]
-        )
-        cX.extend( [point[0] for x in range(rowIndex,self.meshSize[1])] )
-        cY.extend( self.interpolationPoints[1][rowIndex*self.meshSize[0]::self.meshSize[0]] )
+        indices, cX, cY = self.insertionIndices(
+            point,
+            xMatch=xMatch, 
+            yMatch=yMatch, 
+            columnIndex=columnIndex, 
+            rowIndex=rowIndex)
+        print(cX)
         # Add points
-        offset          = 0
         for index,x,y in zip(indices,cX,cY):
-            if xMatch and abs(x-xMatch)<1e-15:
-                offset-=1
-                continue
-            elif yMatch and abs(y-yMatch)<1e-15:
-                offset-=1
-                continue
-            self.interpolationPoints[0][index+offset:index+offset] = [x]
-            self.interpolationPoints[1][index+offset:index+offset] = [y]
-            self.interpolationPoints[2][index+offset:index+offset] = [0.0]
+            self.interpolationPoints[0][index:index] = [x]
+            self.interpolationPoints[1][index:index] = [y]
+            self.interpolationPoints[2][index:index] = [0.0]
         # Update mesh size
         if not xMatch:
-            self.meshSize[0] += 1
+            self.meshSize[1] += 1
         if not yMatch:
             self.meshSize[0] += 1
+        return True
+
+
+    def insertionIndices(self, point, xMatch=None, yMatch=None, columnIndex=0, rowIndex=0 ):
+        if not xMatch and not yMatch:
+            offset  = columnIndex
+
+            indices = [ x+i+offset for i,x in enumerate( iR*self.meshSize[0] for iR in range(rowIndex) ) ]
+            cX      = [ point[0] for x in range(rowIndex) ]
+            cY      = self.interpolationPoints[1][:rowIndex*self.meshSize[0]:self.meshSize[0]]
+            offset  += len(indices)
+
+            indices.extend( list(range( rowIndex*(self.meshSize[0]+1),(rowIndex+1)*(self.meshSize[0]+1) )) )
+            temp    = self.interpolationPoints[0][:self.meshSize[0]]
+            temp[columnIndex:columnIndex] = [point[0]]
+            cX.extend( temp )
+            cY.extend( [point[1] for x in range(self.meshSize[0]+1)] )
+            offset  += self.meshSize[0]+1
+
+            indices.extend(
+                [ x+i+offset for i,x in enumerate( iR*self.meshSize[0] for iR in range(rowIndex,self.meshSize[1]) ) ]
+            )
+            cX.extend( [point[0] for x in range(rowIndex,self.meshSize[1])] )
+            cY.extend( self.interpolationPoints[1][rowIndex*self.meshSize[0]::self.meshSize[0]] )
+
+        elif xMatch:
+            indices = [ x for x in range( rowIndex*self.meshSize[0],  (rowIndex+1)*self.meshSize[0]) ]
+            cX      = self.interpolationPoints[0][ :self.meshSize[0] ]
+            cY      = [ point[1] for x in range(self.meshSize[0]) ]
+
+        elif yMatch:
+            indices = [ x for x in range( columnIndex,(self.meshSize[0]+1)*self.meshSize[1],self.meshSize[0]+1 ) ]
+            cX      = [ point[0] for x in range(self.meshSize[1]) ]
+            cY      = self.interpolationPoints[1][ ::self.meshSize[0] ]
+
+        return indices,cX,cY
+
 
     # SURFACE GENERATION ------------------------------------------------------
     def generatePoints(self):
