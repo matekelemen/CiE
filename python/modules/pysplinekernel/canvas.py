@@ -3,6 +3,7 @@ from vispy import scene
 from pysplinekernel.editmarkervisual import EditMarkerVisual
 from pysplinekernel.splinevisual import SplineVisual
 
+
 class CanvasSpline2D(scene.SceneCanvas):
     def __init__(self):
         # Initialize canvas
@@ -38,19 +39,17 @@ class CanvasSpline2D(scene.SceneCanvas):
             'polynomialOrder'   : [3,           self.objects['spline'].setPolynomialOrder],
             'snapToGrid'        : [False,       lambda state: state]
         }
-        # modes
+        # Modes
         self.modes = {
-            'define' : {
-                'on_mouse_press'    : self.on_mouse_press_define,
-                'on_mouse_move'     : self.on_mouse_move_define,
-                'on_mouse_release'  : self.on_mouse_release_define
-                },
-            'edit' : {
-                'on_mouse_press'    : self.on_mouse_press_edit,
-                'on_mouse_move'     : self.on_mouse_move_edit,
-                'on_mouse_release'  : self.on_mouse_release_edit
-            }
+            'define'    : CanvasDefineMode(self),
+            'edit'      : CanvasEditMode(self)
         }
+        # Initialize event handlers
+        self.eventHandlers = {
+                'on_mouse_press'        : self.modes[self.settings['mode'][0]].on_mouse_press,
+                'on_mouse_release'      : self.modes[self.settings['mode'][0]].on_mouse_release,
+                'on_mouse_move'         : self.modes[self.settings['mode'][0]].on_mouse_move
+            }
         # Freeze
         self.freeze()
         
@@ -63,10 +62,22 @@ class CanvasSpline2D(scene.SceneCanvas):
                 self.settings[key][0] = value
 
     def setMode(self,mode):
-        if self.settings['mode'][0] is 'define' and self.activeCursor:
-            self.objects['spline'].pop()
-        elif mode is 'define' and self.activeCursor:
-            self.objects['spline'].addPoint([0.0,0.0])
+        # Check if mode is changed
+        if self.settings['mode'] is not mode:
+            # Switch to define mode
+            if self.settings['mode'][0] is 'define':
+                if self.activeCursor:
+                    self.objects['spline'].pop()
+                    self.objects['markers'].updateMarkers()
+            # Switch to edit mode
+            elif mode is 'define':
+                if self.activeCursor:
+                    self.objects['spline'].addPoint([0.0,0.0])
+            # Refresh event handlers
+            self.eventHandlers['on_mouse_press']    = self.modes[self.settings['mode'][0]].on_mouse_press
+            self.eventHandlers['on_mouse_release']  = self.modes[self.settings['mode'][0]].on_mouse_release
+            self.eventHandlers['on_mouse_move']     = self.modes[self.settings['mode'][0]].on_mouse_move
+
 
     # COORDINATE TRANSFORM FUNCTIONS ----------------------------------------------------------------------
     def snapToGrid(self,pos):
@@ -83,84 +94,100 @@ class CanvasSpline2D(scene.SceneCanvas):
         # Return position
         return pos
 
-    # EVENT HANDLERS - DEFINE -----------------------------------------------------------------------------
-    def on_mouse_press_define(self, event):
-        # Get mouse position and snap to grid if specified
-        pos = self.snapToGrid( self.getPos(event) )
-        # Disable cursor and store clicked point
-        if self.activeCursor:
-            self.lastPoint      = pos
-            self.objects['spline'].setPoint(self.lastPoint)
-            self.objects['markers'].addPoint(self.lastPoint)
-            self.activeCursor   = False
-        
-        
-    def on_mouse_release_define(self,event):
-        pass
-
-
-    def on_mouse_move_define(self, event):
-        # Get mouse position
-        pos = self.snapToGrid( self.getPos(event) )
-        # Check if cursor is active
-        if not self.activeCursor:
-            if self.objects['spline'].addPoint(pos):
-                self.activeCursor = True
-        else:
-            # Set cursor 
-            self.objects['spline'].setPoint(pos)
-        
-
-    # EVENT HANDLERS - EDIT -----------------------------------------------------------------------------
-    def on_mouse_press_edit(self, event):
-        # Get mouse position
-        pos = self.getPos(event)
-        # Update selection
-        self.objects['markers'].selected_point, self.objects['markers'].selected_index = self.objects['markers'].selectPoint(pos)
-            
-
-    def on_mouse_drag_edit(self,pos):
-        if self.objects['markers'].selected_point is not None:
-            # Snap to grid
-            self.objects['markers'].selected_point = pos
-            # Update polygon
-            self.objects['markers'].setPoint(self.objects['markers'].selected_index,self.objects['markers'].selected_point)
-            self.objects['markers'].updateMarkers(self.objects['markers'].selected_index)
-            # Update spline
-            self.objects['spline'].setPoint(self.objects['markers'].selected_point,index=self.objects['markers'].selected_index)
-
-
-    def on_mouse_release_edit(self,event):
-        # Clear selection
-        self.objects['markers'].selected_point = None
-        self.objects['markers'].selected_index = -1
-        self.objects['markers'].updateMarkers()
-
-
-    def on_mouse_move_edit(self, event):
-        # Position
-        pos = self.snapToGrid( self.getPos(event) )
-        # Drag
-        if event.button == 1:   
-            self.on_mouse_drag_edit(pos)
         
     # EVENT HANDLER ROUTERS ---------------------------------------------------------------------
     def on_mouse_press(self,event):
-        self.modes[self.settings['mode'][0]]['on_mouse_press'](event)
+        self.modes[self.settings['mode'][0]].on_mouse_press(event)
 
 
     def on_mouse_release(self,event):
-        self.modes[self.settings['mode'][0]]['on_mouse_release'](event)
+        self.modes[self.settings['mode'][0]].on_mouse_release(event)
 
 
     def on_mouse_move(self,event):
-        self.modes[self.settings['mode'][0]]['on_mouse_move'](event)
+        self.modes[self.settings['mode'][0]].on_mouse_move(event)
 
 
 
 
 
 
+# EVENT HANDLER CLASSES ---------------------------------------------------------------------
+class CanvasDefineMode:
+    def __init__(self,canvas):
+        self.canvas     = canvas
+    
+    def on_mouse_press(self, event):
+        # Get mouse position and snap to grid if specified
+        pos = self.canvas.snapToGrid( self.canvas.getPos(event) )
+        # Disable cursor and store clicked point
+        if self.canvas.activeCursor:
+            self.canvas.lastPoint      = pos
+            self.canvas.objects['spline'].setPoint(self.canvas.lastPoint)
+            self.canvas.objects['markers'].addPoint(self.canvas.lastPoint)
+            self.canvas.activeCursor   = False
+        
+        
+    def on_mouse_release(self,event):
+        self.canvas.objects['markers'].updateMarkers()
+
+
+    def on_mouse_move(self, event):
+        # Get mouse position
+        pos = self.canvas.snapToGrid( self.canvas.getPos(event) )
+        # Check if cursor is active
+        if not self.canvas.activeCursor:
+            if self.canvas.objects['spline'].addPoint(pos):
+                self.canvas.activeCursor = True
+        else:
+            # Set cursor 
+            self.canvas.objects['spline'].setPoint(pos)
+
+
+
+
+
+class CanvasEditMode:
+    def __init__(self,canvas):
+        self.canvas     = canvas
+
+    def on_mouse_press(self, event):
+        # Get mouse position
+        pos = self.canvas.getPos(event)
+        # Update selection
+        self.canvas.objects['markers'].selected_point, self.canvas.objects['markers'].selected_index = self.canvas.objects['markers'].selectPoint(pos)
+            
+
+    def on_mouse_drag(self,pos):
+        if self.canvas.objects['markers'].selected_point is not None:
+            # Snap to grid
+            self.canvas.objects['markers'].selected_point = pos
+            # Update polygon
+            self.canvas.objects['markers'].setPoint(self.canvas.objects['markers'].selected_index,self.canvas.objects['markers'].selected_point)
+            self.canvas.objects['markers'].updateMarkers(self.canvas.objects['markers'].selected_index)
+            # Update spline
+            self.canvas.objects['spline'].setPoint(self.canvas.objects['markers'].selected_point,index=self.canvas.objects['markers'].selected_index)
+
+
+    def on_mouse_release(self,event):
+        # Clear selection
+        self.canvas.objects['markers'].selected_point = None
+        self.canvas.objects['markers'].selected_index = -1
+        self.canvas.objects['markers'].updateMarkers()
+
+
+    def on_mouse_move(self, event):
+        # Position
+        pos = self.canvas.snapToGrid( self.canvas.getPos(event) )
+        # Drag
+        if event.button == 1:   
+            self.on_mouse_drag(pos)
+
+
+
+
+
+'''
 class CanvasSurface(scene.SceneCanvas):
     def __init__(self):
         # Initialize canvas
@@ -313,3 +340,5 @@ class CanvasSurface(scene.SceneCanvas):
 
     def on_mouse_move(self,event):
         self.modes[self.settings['mode'][0]]['on_mouse_move'](event)
+
+'''

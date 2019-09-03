@@ -14,40 +14,36 @@ class ControlWidget(QWidget):
     def __init__(self, parent=None):
         super(ControlWidget, self).__init__(parent)
 
-        # Controls - mode
-        labelDefineMode             = QLabel("Define points")
-        self.controlDefineMode      = QRadioButton(self)
-        self.controlDefineMode.toggle()
-        labelEditMode               = QLabel("Edit points")
-        self.controlEditMode        = QRadioButton(self)
-        self.controlEditMode.toggled.connect( self.updateSettings )
+        self.labels     = {}
+        self.controls   = {}
+
+        # Controls - modes
+        self.labels['defineMode']   = QLabel("Define points")
+        self.controls['defineMode'] = QRadioButton(self)
+        self.controls['defineMode'].toggle()
+        self.labels['editMode']     = QLabel("Edit points")
+        self.controls['editMode']   = QRadioButton(self)
+        self.controls['editMode'].toggled.connect( self.updateSettings )
 
         # Controls - polynomial order
-        labelPolynomialOrder        = QLabel("Polynomial order")
-        self.controlPolynomialOrder = QSpinBox(self)
-        self.controlPolynomialOrder.setMinimum(1)
-        self.controlPolynomialOrder.setMaximum(10)
-        self.controlPolynomialOrder.setValue(3)
-        self.controlPolynomialOrder.valueChanged.connect(self.updateSettings)
+        self.labels['polynomialOrder']      = QLabel("Polynomial order")
+        self.controls['polynomialOrder']    = QSpinBox(self)
+        self.controls['polynomialOrder'].setMinimum(1)
+        self.controls['polynomialOrder'].setMaximum(10)
+        self.controls['polynomialOrder'].setValue(3)
+        self.controls['polynomialOrder'].valueChanged.connect(self.updateSettings)
 
         # Controls - snap to grid
-        labelSnapToGrid            = QLabel("Snap to grid")
-        self.controlSnapToGrid      = QCheckBox(self)
-        self.controlSnapToGrid.toggled.connect( self.updateSettings )
+        self.labels['snapToGrid']   = QLabel("Snap to grid")
+        self.controls['snapToGrid'] = QCheckBox(self)
+        self.controls['snapToGrid'].toggled.connect( self.updateSettings )
 
         # Controls layout
         gbox = QGridLayout()
 
-        gbox.addWidget(labelPolynomialOrder, 0, 0)
-        gbox.addWidget(self.controlPolynomialOrder, 0, 1)
-
-        gbox.addWidget(labelDefineMode,1,0)
-        gbox.addWidget(self.controlDefineMode,1,1)
-        gbox.addWidget(labelEditMode,2,0)
-        gbox.addWidget(self.controlEditMode,2,1)
-
-        gbox.addWidget(labelSnapToGrid)
-        gbox.addWidget(self.controlSnapToGrid)
+        for index,item in enumerate(self.controls.items()):
+            gbox.addWidget( self.labels[item[0]],   index, 0 )
+            gbox.addWidget( item[1],                index, 1 )
 
         vbox = QVBoxLayout()
         vbox.addLayout(gbox)
@@ -64,16 +60,18 @@ class ControlWidget(QWidget):
 
     def updateSettings(self):
         # Read polynomial order
-        self.settings['polynomialOrder'] = self.controlPolynomialOrder.value()
+        self.settings['polynomialOrder'] = self.controls['polynomialOrder'].value()
         # Read radio button group (mode)
-        if self.controlDefineMode.isChecked():
+        if self.controls['defineMode'].isChecked():
             self.settings['mode'] = 'define'
-        elif self.controlEditMode.isChecked():
+        elif self.controls['editMode'].isChecked():
             self.settings['mode'] = 'edit'
         # Read snap to grid
-        self.settings['snapToGrid'] = self.controlSnapToGrid.isChecked()
+        self.settings['snapToGrid'] = self.controls['snapToGrid'].isChecked()
         # Emit object changed signal
         self.signal_object_changed.emit()
+
+
 
 
 class MainWindow(QMainWindow):
