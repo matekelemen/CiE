@@ -74,6 +74,9 @@ class ControlWidget(QWidget):
 
 
 
+
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
