@@ -6,12 +6,12 @@ from pysplinekernel import pysplinekernel
 # -----------------------------------------------------------------------------
 class SurfaceKernel:
     # Constructor -------------------------------------------------------------
-    def __init__(self,interpolationPoints=[[],[],[]], meshSize=[0,0], polynomialOrders=[3,3]):
+    def __init__(self,interpolationPoints=[[],[],[]], polynomialOrders=[3,3]):
         # Reset
         self.reset()
 
         # Set interpolation points
-        self.setInterpolationPoints(interpolationPoints=interpolationPoints,meshSize=meshSize)
+        self.setInterpolationPoints(interpolationPoints=interpolationPoints)
 
         # Set polynomial order
         self.setPolynomialOrder(polynomialOrders=polynomialOrders)
@@ -85,15 +85,11 @@ class SurfaceKernel:
             raise(ValueError('Invalid polynomial order'))
 
 
-    def setInterpolationPoints(self,interpolationPoints=[[],[],[]],meshSize=[0,0]):
-        if meshSize[0]*meshSize[1] is len(interpolationPoints[0]):
-            if len(interpolationPoints)is 3 and len(interpolationPoints[0]) is len(interpolationPoints[1]) is len(interpolationPoints[2]):
-                self.interpolationPoints    = interpolationPoints
-                self.meshSize               = meshSize
-            else:
-                raise(ValueError('Number of components in interpolationPoints must match!'))
+    def setInterpolationPoints(self,interpolationPoints=[[],[],[]]):
+        if len(interpolationPoints)is 3 and len(interpolationPoints[0]) is len(interpolationPoints[1]) is len(interpolationPoints[2]):
+            self.interpolationPoints    = interpolationPoints
         else:
-            raise(ValueError('Invalid mesh size!'))
+            raise(ValueError('Number of components in interpolationPoints must match!'))
 
 
     def addPoint(self,point):
@@ -113,7 +109,6 @@ class SurfaceKernel:
             yMatch=yMatch, 
             columnIndex=columnIndex, 
             rowIndex=rowIndex)
-        print(cX)
         # Add points
         for index,x,y in zip(indices,cX,cY):
             self.interpolationPoints[0][index:index] = [x]

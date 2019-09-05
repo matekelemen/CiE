@@ -50,11 +50,11 @@ grid = np.array([
         ]
         ])
 
-
+print(grid[0])
 surf = pysplinekernel.SurfaceKernel(interpolationPoints=grid)
 surf.polynomialOrders   = [4,4]
 surf.samples            = [15,15]
-surf.generatePoints()
+surfacePoints           = surf.generatePoints()
 
 fig = plt.figure( )
 ax = fig.gca( projection='3d' )
@@ -62,13 +62,14 @@ ax = fig.gca( projection='3d' )
 fig.tight_layout()
 
 ax.plot_surface( 
-        surf.surfacePoints[0], 
-        surf.surfacePoints[1], 
-        surf.surfacePoints[2],
+        surfacePoints[0], 
+        surfacePoints[1], 
+        surfacePoints[2],
         alpha=0.5
         )
 ax.plot_wireframe( grid[0], grid[1], grid[2], color="black", alpha=0.75 )
 ax.scatter( grid[0], grid[1], grid[2], color='red' )
+plt.show()
 
 # Instantiate SplineBuilder
 #builder = BSplineSurface.SurfaceGUI()
