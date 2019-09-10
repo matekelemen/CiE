@@ -158,7 +158,7 @@ void interiorPoints(const Node& root, std::vector<Point64>& points){
         }
     }
     for (auto it=root.children().begin();it!=root.children().end();++it){
-        interiorPoints(*(*it),points);
+        if (*it!=nullptr) interiorPoints(*(*it),points);
     }
 }
 
