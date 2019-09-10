@@ -43,7 +43,7 @@ surf = SurfaceKernel(
     polynomialOrders=polynomialOrders)
 
 # Get points
-surf.samples    = [100,50]
+surf.samples    = [50,50]
 data            = np.reshape(
                     np.transpose( 
                         np.array(  surf.generatePoints(),dtype=np.float32  ), 
@@ -125,9 +125,8 @@ plt = fig[0, 0]
 plt._configure_3d()
 
 
-SKIN_COLOR = 0.94, 0.82, 0.81, 1.
 meshdata = MeshData(vertices=surf['vert'], faces=surf['faces'])
-mesh = SimpleMesh(meshdata, color=SKIN_COLOR)
+mesh = SimpleMesh(meshdata)
 
 plt.view.add(mesh)
 
@@ -135,13 +134,4 @@ plt.view.camera = scene.cameras.ArcballCamera(fov=60)
 plt.view.camera.center          = (0.0,0.0,0.5)
 
 fig.show()
-'''
-canvas = scene.SceneCanvas()
-canvas.unfreeze()
-canvas.view = canvas.central_widget.add_view()
-canvas.view.camera = scene.PanZoomCamera(rect=(-100, -100, 200, 200),
-                                               aspect=1.0)
-canvas.update()
-canvas.show()
-'''
 app.run()

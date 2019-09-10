@@ -28,6 +28,7 @@ SET( CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}" )
 # ---------------- Set up subprojects -----------------------------
 add_subdirectory( splinekernel )
 add_subdirectory( meshkernel )
+add_subdirectory( CSG )
 
 # ----------------- Set up python bindings ------------------------
 set(PYBIND11_CPP_STANDARD -std=c++14)
