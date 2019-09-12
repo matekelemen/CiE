@@ -27,10 +27,7 @@ Box::Box(const Point64& p0, const Point64& p1) :
 bool Box::isInside(const Point64& point) const {
 
     for (uint i=0;i<point.size();++i){
-        if (
-            sgn(point[i]-p0_[i]) && 
-            sgn(point[i]-p1_[i])) 
-        return false;
+        if ( sgn(point[i]-p0_[i]) == sgn(point[i]-p1_[i])) return false;
     }
     return true;
 }

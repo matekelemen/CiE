@@ -2,15 +2,14 @@
 #define OCTREE_HPP
 
 #include "csgobject.hpp"
+#include "octreeutils.hpp"
 #include <iostream>
 #include <vector>
 #include <fstream>
 
 namespace csg{
 
-// -----------------------------------------------------------
-// NODE
-// -----------------------------------------------------------
+
 class Node {
 protected:
     CSGObject*          geometry_;
@@ -30,23 +29,13 @@ public:
     bool                        data(uint index) const;
     const BoundingBox&          box() const;
     double                      box(uint i, uint j) const;
-    const std::array<Node*,8>   children() const;
+    const std::array<Node*,8>&  children() const;
     uint                        level() const;
 
     void setGeometry(CSGObject* geometry);
     void setBoundingBox(const BoundingBox& box);
 };
 
-
-// -----------------------------------------------------------
-// FREE-FLOATING FUNCTIONS
-// -----------------------------------------------------------
-bool isBoundary(const NodeData& data);
-void interiorPoints(const Node& root,std::vector<Point64>& points);
-
-std::array<bool,3>  base2(uint index);
-std::array<uint,3>  base3(uint index);
-uint                uintPow(uint base, uint exponent);
     
 }
 

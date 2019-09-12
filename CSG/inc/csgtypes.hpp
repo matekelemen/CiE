@@ -21,23 +21,24 @@ public:
     Point(dType x)                      : Point(x,0.0,0.0){}
     Point()                             : Point(0.0,0.0,0.0){}
     Point<dType>(const Point<dType>& point) {
-        for (uint i=0; i<this->size(); ++i){
+        for (uint i=0; i<size(); ++i){
             data_[i] = point[i];
         }
     }
 
     dType& operator[](uint index) { 
-        if (index<this->size()) return data_[index];
+        if (index<size()) return data_[index];
         else throw std::runtime_error("Point index out of bounds!");
     }
 
     const dType& operator[](uint index) const { 
-        if (index<this->size()) return data_[index];
+        if (index<size()) return data_[index];
         else throw std::runtime_error("Point index out of bounds!");
     }
 
     Point<dType> operator=(const Point<dType>& point){
-        return Point<dType>(point);
+        Point<dType> newPoint(point);
+        return newPoint;
     }
 
     uint size() const {return data_.size();}
@@ -52,7 +53,7 @@ typedef Point<int>      PointInt;
 // -----------------------------------------------------------
 // TYPEDEFS
 // -----------------------------------------------------------
-typedef std::array<bool,25>     NodeData;
+typedef std::array<bool,27>     NodeData;
 typedef std::array<Point64,2>   BoundingBox;
 
 // -----------------------------------------------------------

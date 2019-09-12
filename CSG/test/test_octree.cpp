@@ -37,15 +37,24 @@ TEST_CASE("Base converters"){
 
 TEST_CASE("Interior points"){
     // Create test boxes
-    Box* bigBox     = new Box(Point64({-1.0,-1.0,-1.0}),Point64({1.0,1.0,1.0}));
-    Box* smallBox   = new Box(Point64({-0.1,-0.1,-0.1}),Point64({0.1,0.1,0.1}));
+    Box* bigBox     = new Box(
+        Point64(-1.0,-1.0,-1.0),
+        Point64(1.0,1.0,1.0)
+        );
+    Box* smallBox   = new Box(
+        Point64(-0.1,-0.1,-0.1),
+        Point64(0.1,0.1,0.1)
+        );
 
     // Create root node
     Node* root = new Node;
 
     // Test for the big box
     root->setGeometry(bigBox);
-    root->setBoundingBox({Point64({-0.5,-0.5,-0.5}), Point64({0.5,0.5,0.5})});
+    root->setBoundingBox({
+        Point64(-0.5,-0.5,-0.5), 
+        Point64(0.5,0.5,0.5)
+        });
     root->evaluateAll();
     for (uint i=0; i<root->data().size(); ++i){
         CHECK( root->data(i) == true );
@@ -55,16 +64,13 @@ TEST_CASE("Interior points"){
     root->setGeometry(smallBox);
     root->evaluateAll();
     for (uint i=0; i<root->data().size(); ++i){
-        if (i!=12) CHECK( root->data(i) == true );
+        if (i!=13) CHECK( root->data(i) == false );
         else CHECK( root->data(i) == true );
     }
 
-    std::cout << root->box(0,0) << " " << root->box(0,1) << "\n";
-    std::cout << root->box(1,0) << " " << root->box(1,1) << "\n";
-    std::cout << root->box(2,0) << " " << root->box(2,1) << "\n";
-
     std::vector<Point64> smallPoints;
     interiorPoints(*root,smallPoints);
+
     REQUIRE( smallPoints.size() == 1 );
     CHECK( smallPoints[0][0] == Approx(0.0) );
     CHECK( smallPoints[0][1] == Approx(0.0) );
@@ -74,19 +80,22 @@ TEST_CASE("Interior points"){
 
 TEST_CASE("Octree"){
     // Create geometry
-    CSGObject* geometry     = new Sphere();
+    //CSGObject* geometry     = new Box(Point64(0,0,0),Point64(0.01,0.01,0.01));
+    CSGObject* geometry     = new Sphere;
 
     // Create root node
     Node* root = new Node();
     root->setGeometry(geometry);
-    root->setBoundingBox({Point64({-1.0,-1.0,-1.0}),{1.0,1.0,1.0}});
+    root->setBoundingBox({
+        Point64(-1.0,-1.0,-1.0),
+        Point64(1.0,1.0,1.0)});
 
     // Evaluate all points
     root->evaluateAll();
 
     // Start division
-    uint minLevel = 1;
-    uint maxLevel = 3;
+    uint minLevel = 0;
+    uint maxLevel = 4;
     root->divide(minLevel,maxLevel);
 
     // Collect interior points
