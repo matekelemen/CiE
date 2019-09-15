@@ -24,7 +24,8 @@ Node::Node() :
     children_({
         nullptr, nullptr, nullptr, nullptr,
         nullptr, nullptr, nullptr, nullptr}),
-    level_(0)
+    level_(0),
+    parent_(nullptr)
 {
 }
 
@@ -44,7 +45,8 @@ Node::Node(const Node& parent, uint index) :
     children_({
         nullptr, nullptr, nullptr, nullptr,
         nullptr, nullptr, nullptr, nullptr}),
-    level_(parent.level_+1)
+    level_(parent.level_+1),
+    parent_(&parent)
 {
     std::array<bool,3> boolIndex = base2(index);
     // Bounding box
@@ -119,6 +121,9 @@ const std::array<Node*,8>& Node::children() const {return children_;}
 
 
 uint Node::level() const {return level_;}
+
+
+const Node* Node::parent() const {return parent_;}
 
 
 void Node::setGeometry(CSGObject* geometry) {geometry_ = geometry;}

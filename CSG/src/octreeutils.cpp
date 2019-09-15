@@ -28,17 +28,10 @@ bool isBoundary(const NodeData& data){
 
 
 void interiorPoints(const Node& root, std::vector<Point64>& points){
-    std::array<uint,3> i3;
-
     if (root.children()[0] == nullptr){
         for (uint i=0; i<root.data().size();++i){
             if (root.data(i)){
-                i3 = base3(i);
-                points.push_back(Point64(
-                    root.box(0,0) + i3[0]/2.0*(root.box(1,0)-root.box(0,0)),
-                    root.box(0,1) + i3[1]/2.0*(root.box(1,1)-root.box(0,1)),
-                    root.box(0,2) + i3[2]/2.0*(root.box(1,2)-root.box(0,2))
-                ));
+                points.push_back(getNodePoint(root,i));
             }
         }
     }
@@ -48,6 +41,48 @@ void interiorPoints(const Node& root, std::vector<Point64>& points){
         }
     }
 }
+
+
+std::pair<const Node&, uint> getNeighbour(const Node& root, uint index, uint axis, bool direction){
+    // direction= true if positive, false if negative
+    std::array<uint,3> index3 = base3(index);
+    // Check if root has children
+    if (root.children()[0]!=nullptr){
+        // Check whether to stay within this Node
+        if ((direction==true && index3[axis]<2) || (direction==false && index3[axis]>0)){
+            // Call getNeighbour on a child
+        }
+        else{
+            // Call getNeighbour on a sibling Node
+        }
+    }
+    // Check if the neighbour is within the same Node
+    if ((direction==true && index3[axis]<2) || (direction==false && index3[axis]>0)){
+        if (direction==true) index3[axis]++;
+        else index3[axis]--;
+        return std::make_pair(
+            root,
+            index3[0]+3*index3[1]+9*index3[2]
+            );
+    }
+    else{
+        // Neighbouring Node is outside the current one
+        //const Node* neighbour;
+        if (root.parent()!=nullptr){
+            // Check if it's a corner node (no ones in base3)
+            std::array<uint,3> index3 = base3(index);
+            if (index3[0]!=1 && index3[1]!=1 && index3[2]!=1){
+                
+            }
+        }
+        else {
+            // No neighbour in this direction -> return an invalid index (27)
+            return std::make_pair(root,27);
+        }
+        return std::make_pair(*(new Node),0);
+    }
+}
+
 
 
 

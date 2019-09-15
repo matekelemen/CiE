@@ -17,6 +17,7 @@ protected:
     BoundingBox         box_;
     std::array<Node*,8> children_;
     uint                level_;
+    const Node*         parent_;
 public:
     Node();
     Node(const Node& parent, uint index);
@@ -31,6 +32,7 @@ public:
     double                      box(uint i, uint j) const;
     const std::array<Node*,8>&  children() const;
     uint                        level() const;
+    const Node*                 parent() const;
 
     void setGeometry(CSGObject* geometry);
     void setBoundingBox(const BoundingBox& box);
