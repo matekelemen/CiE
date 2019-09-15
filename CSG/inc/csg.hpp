@@ -4,6 +4,6 @@
 #include "csgoperator.hpp"
 #include "box.hpp"
 #include "sphere.hpp"
-#include "octree.hpp"
+#include "octree_vertexnode.hpp"
 
 #endif

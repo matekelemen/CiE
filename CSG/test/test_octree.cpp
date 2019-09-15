@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "octree.hpp"
+#include "octree_vertexnode.hpp"
 #include "box.hpp"
 #include "sphere.hpp"
 
@@ -47,7 +47,7 @@ TEST_CASE("Interior points"){
         );
 
     // Create root node
-    Node* root = new Node;
+    VertexNode* root = new VertexNode;
 
     // Test for the big box
     root->setGeometry(bigBox);
@@ -69,7 +69,7 @@ TEST_CASE("Interior points"){
     }
 
     std::vector<Point64> smallPoints;
-    interiorPoints(*root,smallPoints);
+    root->interiorPoints(smallPoints);
 
     REQUIRE( smallPoints.size() == 1 );
     CHECK( smallPoints[0][0] == Approx(0.0) );
@@ -80,11 +80,11 @@ TEST_CASE("Interior points"){
 
 TEST_CASE("Octree"){
     // Create geometry
-    //CSGObject* geometry     = new Box(Point64(0,0,0),Point64(0.01,0.01,0.01));
     CSGObject* geometry     = new Sphere;
 
     // Create root node
-    Node* root = new Node();
+    VertexNode* root = new VertexNode();
+
     root->setGeometry(geometry);
     root->setBoundingBox({
         Point64(-1.0,-1.0,-1.0),
@@ -100,10 +100,11 @@ TEST_CASE("Octree"){
 
     // Collect interior points
     std::vector<Point64> geomPoints;
-    csg::interiorPoints(*root, geomPoints);
+    root->interiorPoints(geomPoints);
 
     // Write interior points to file
     csg::writePointVector("octree_test.csv",geomPoints);
+    
 }
 
 }
