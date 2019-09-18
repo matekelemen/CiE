@@ -8,7 +8,7 @@ namespace csg {
 
 class Node {
 protected:
-    BoundingBox box_;
+    BoundingBox         box_;
     std::array<Node*,8> children_;
     uint                level_;
     const Node*         parent_;
