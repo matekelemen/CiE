@@ -38,7 +38,6 @@ namespace splinekernel
 				for (size_t r = 0; r < sizeR; ++r) {
 
 					column = s * sizeR + r;
-					std::cout << pR << ", " << pS << std::endl;
 					shapeFunctionMatrix(row, column) = evaluateBSplineBasis(parameterPositionsRS[0][pR], r, polynomialDegreeR, knotVectorR) * temp;
 
 				}

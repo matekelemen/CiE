@@ -166,7 +166,7 @@ std::pair<const VertexNode&, uint> getNeighbour(const VertexNode& root, uint ind
         else index3[axis]--;
         return std::make_pair(
             root,
-            index3[0]+3*index3[1]+9*index3[2]
+            base10(index3)
             );
     }
     else{
