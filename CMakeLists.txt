@@ -25,16 +25,17 @@ endif( )
 # This will add the install path to the rpath of the installed binaries to make dynamic linking work
 SET( CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}" )
 
+# ----------------- Set up python bindings ------------------------
+set(PYBIND11_CPP_STANDARD -std=c++14)
+
+# Add 3rd party libs
+add_subdirectory( external/pybind11 )
+
 # ---------------- Set up subprojects -----------------------------
 add_subdirectory( splinekernel )
 add_subdirectory( meshkernel )
 add_subdirectory( CSG )
+add_subdirectory( FEM )
 
-# ----------------- Set up python bindings ------------------------
-set(PYBIND11_CPP_STANDARD -std=c++14)
-
-# Add pybind11 project (this is just the folder available at https://github.com/pybind/pybind11)
-add_subdirectory( external/pybind11 )
-
-# Add our python project (containing wrapping code and python scipts)
+# Add our python projects
 add_subdirectory( python )

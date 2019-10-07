@@ -4,3 +4,6 @@
 [submodule "external/linalg"]
 	path = external/linalg
 	url = https://gitlab.lrz.de/cie/teaching/cie1/linalg
+[submodule "external/eigen"]
+	path = external/eigen
+	url = https://github.com/eigenteam/eigen-git-mirror.git
