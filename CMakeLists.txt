@@ -13,6 +13,10 @@ if( CMAKE_COMPILER_IS_GNUCXX )
     set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Werror -fPIC" )
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
+# Add pybind11 project (this is just the folder available at https://github.com/pybind/pybind11)
+add_subdirectory( external/pybind11 )
+set(PYBIND11_CPP_STANDARD -std=c++14)
+
 # -------------- Set up external linalg project ------------------
 add_subdirectory( external/linalg )
 
@@ -26,15 +30,4 @@ endif( )
 SET( CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}" )
 
 # ---------------- Set up subprojects -----------------------------
-add_subdirectory( splinekernel )
-add_subdirectory( meshkernel )
-add_subdirectory( CSG )
-
-# ----------------- Set up python bindings ------------------------
-set(PYBIND11_CPP_STANDARD -std=c++14)
-
-# Add pybind11 project (this is just the folder available at https://github.com/pybind/pybind11)
-add_subdirectory( external/pybind11 )
-
-# Add our python project (containing wrapping code and python scipts)
-add_subdirectory( python )
+add_subdirectory( libraries )
