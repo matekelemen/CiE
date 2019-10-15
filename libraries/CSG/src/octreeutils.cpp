@@ -7,7 +7,8 @@ namespace csg {
 
 
 std::array<bool,3> base2(uint index){
-    std::array<bool,3> output({false,false,false});
+    std::array<bool,3> output;
+	output = { false,false,false };
     if (index/4 == 1) {
         output[2]   = true;
         index       -= 4;
@@ -22,7 +23,8 @@ std::array<bool,3> base2(uint index){
 }
 
 std::array<uint,3> base3(uint index){
-    std::array<uint,3> output({0,0,0});
+    std::array<uint,3> output;
+	output = { 0,0,0 };
     uint exp;
     for (uint i=0;i<3;++i){
         exp         = uintPow(3,2-i);
