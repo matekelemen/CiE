@@ -37,9 +37,12 @@ class SurfaceKernel:
             for component in self.interpolationPoints[axis][0]:
                 if abs(value-component)<tolerance:
                     return True
-            for component in (self.interpolationPoints[axis].T)[0]:
-                if abs(value-component)<tolerance:
-                    return True
+                    
+            shape   = self.interpolationPoints[axis].shape
+            if shape[1] is not 0:
+                for component in (self.interpolationPoints[axis].T)[0]:
+                    if abs(value-component)<tolerance:
+                        return True
         return False
 
     

@@ -2,6 +2,20 @@ cmake_minimum_required( VERSION 3.4.3 )
 
 project( CiE CXX )
 
+
+# GLOBAL MACRO DEFINITIONS
+MACRO(SUBDIRLIST result curdir)
+  FILE(GLOB children RELATIVE ${curdir} ${curdir}/*)
+  SET(dirlist "")
+  FOREACH(child ${children})
+    IF(IS_DIRECTORY ${curdir}/${child})
+      LIST(APPEND dirlist ${child})
+    ENDIF()
+  ENDFOREACH()
+  SET(${result} ${dirlist})
+ENDMACRO()
+
+
 # Directories to include header files from
 include_directories( external/catch )
 include_directories( external/linalg/inc )
