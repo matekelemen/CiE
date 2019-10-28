@@ -2,6 +2,7 @@ cmake_minimum_required( VERSION 3.4.3 )
 
 project( CiE CXX )
 
+# SETTINGS
 
 # GLOBAL MACRO DEFINITIONS
 MACRO(SUBDIRLIST result curdir)

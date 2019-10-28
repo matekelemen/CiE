@@ -20,13 +20,10 @@ public:
 
     void setData(const DoubleVector& newData);
     const DoubleVector& getData() const;
-    void setDeviation(double newDeviation);
-    double getDeviation() const;
 
 protected:
     DoubleChromosome(const DoubleVector& data, double deviation, double objective);
     DoubleVector _data;
-    double _deviation;
 };
 
 }

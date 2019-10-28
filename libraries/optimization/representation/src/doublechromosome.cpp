@@ -4,34 +4,30 @@ namespace opt {
 
 DoubleChromosome::DoubleChromosome() :
     Chromosome(),
-    _data({}),
-    _deviation(1.0)
+    _data({})
 {
 }
 
 DoubleChromosome::DoubleChromosome(const DoubleVector& data) :
     Chromosome(),
-    _data(data),
-    _deviation(1.0)
+    _data(data)
 {
 }
 
 DoubleChromosome::DoubleChromosome(const DoubleVector& data, double deviation) :
     Chromosome(),
-    _data(data),
-    _deviation(deviation)
+    _data(data)
 {
 }
 
 DoubleChromosome::DoubleChromosome(const DoubleChromosome& toCopy) :
     Chromosome(toCopy._objective),
-    _data(toCopy._data),
-    _deviation(toCopy._deviation)
+    _data(toCopy._data)
 {
 }
 
 DoubleChromosome DoubleChromosome::operator=(const DoubleChromosome& toCopy){
-    return DoubleChromosome(toCopy._data, toCopy._deviation, toCopy._objective);
+    return DoubleChromosome(toCopy._data, toCopy._objective);
 }
 
 double& DoubleChromosome::operator[](uint index) {
@@ -51,12 +47,5 @@ const DoubleVector& DoubleChromosome::getData() const {
     return _data;
 }
 
-void DoubleChromosome::setDeviation(double newDeviation) {
-    _deviation = newDeviation;
-}
-
-double DoubleChromosome::getDeviation() const {
-    return _deviation;
-}
 
 }
