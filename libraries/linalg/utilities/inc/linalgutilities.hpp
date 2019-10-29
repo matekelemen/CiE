@@ -1,7 +1,9 @@
 #ifndef LINALG_UTILITIES_HPP
 #define LINALG_UTILITIES_HPP
 
-#include "matrix.hpp"
+#include "../../types/inc/matrix.hpp"
+#include "../../overloads/inc/vectoroperators.hpp"
+#include "../../overloads/inc/matrixoperators.hpp"
 
 #include <iomanip>
 #include <stdexcept>
@@ -18,6 +20,9 @@ void write( const Matrix& matrix, std::ostream& out = std::cout );
 // Euclidean norms
 double norm( const Vector& vector );
 double norm( const Matrix& matrix );
+
+void normalize( Vector& vector );
+void normalize( Matrix& matrix );
 
 
 

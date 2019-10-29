@@ -8,7 +8,6 @@
  * quence is that when we change something in this file we
  * have to recompile everything that includes linalg.hpp.
  */
-//#include "matrix.hpp" // prevent IDE from complaining
 
 
 namespace linalg
@@ -16,12 +15,18 @@ namespace linalg
 
 inline double& Matrix::operator()( size_t i, size_t j )
 {
-     return data_[i * size2_ + j];
+     if (!_transpose)
+        return data_[i * size2_ + j];
+    else
+        return data_[j*size2_ + i];
 }
 
 inline double Matrix::operator()( size_t i, size_t j ) const
 {
-     return data_[i * size2_ + j];
+    if (!_transpose)
+        return data_[i * size2_ + j];
+    else
+        return data_[j*size2_ + i];
 }
 
 inline size_t Matrix::size1( ) const
@@ -37,6 +42,14 @@ inline size_t Matrix::size2( ) const
 inline std::array<size_t, 2> Matrix::sizes( ) const
 {
     return { size1_, size2_ };
+}
+
+inline void Matrix::transpose()
+{
+    size_t temp = size1_;
+    size1_      = size2_;
+    size2_      = temp;
+    _transpose  = !_transpose;
 }
 
 } // namespace linalg

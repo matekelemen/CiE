@@ -1,9 +1,12 @@
-#include "matrix.hpp"
+#include "../inc/matrix.hpp"
 
 namespace linalg {
 
 Matrix::Matrix( size_t size1, size_t size2, double value ) :
-    size1_( size1 ), size2_( size2 ), data_( size1 * size2, value )
+    size1_( size1 ), 
+    size2_( size2 ), 
+    data_( size1 * size2, value ),
+    _transpose(false)
 {
 }
 
@@ -18,7 +21,10 @@ Matrix::Matrix() :
 }
 
 Matrix::Matrix( const std::vector<double>& rowMajorData, size_t size1 ) :
-    size1_( size1 ), size2_( 0 ), data_( rowMajorData )
+    size1_( size1 ), 
+    size2_( 0 ), 
+    data_( rowMajorData ),
+    _transpose(false)
 {
     if( size1 != 0 )
     {
@@ -35,7 +41,9 @@ Matrix::Matrix( const std::vector<double>& rowMajorData, size_t size1 ) :
 }
 
 Matrix::Matrix( const std::vector<Vector>& vectorOfRows ) :
-    size1_( vectorOfRows.size( ) ), size2_( 0 )
+    size1_( vectorOfRows.size( ) ), 
+    size2_( 0 ),
+    _transpose(false)
 {
     if( size1_ != 0 )
     {

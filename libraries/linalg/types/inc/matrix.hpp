@@ -32,9 +32,12 @@ public:
 
 	const std::vector<double>& data() const { return data_; }
 
+    void transpose();
+
 private:
     size_t size1_, size2_;
     std::vector<double> data_;
+    bool _transpose;
 }; // class Matrix
 
 } // namespace linalg

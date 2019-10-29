@@ -1,7 +1,7 @@
 #ifndef LINALG_UTILITIES_CPP
 #define LINALG_UTILITIES_CPP
 
-#include "linalgutilities.hpp"
+#include "../inc/linalgutilities.hpp"
 
 namespace linalg {
 
@@ -48,6 +48,27 @@ double norm( const Matrix& matrix )
 }
 
 
+void normalize(Vector& vector)
+{
+    double magnitude = norm(vector);
+    if (abs(magnitude)<1e-15)
+        throw std::runtime_error("Cannot normalize zero vector!");
+    for (auto it=vector.begin(); it!=vector.end(); ++it)
+        (*it) /= magnitude;
+}
+
+
+void normalize(Matrix& matrix)
+{
+    double magnitude = norm(matrix);
+    if (abs(magnitude)<1e-15)
+        throw std::runtime_error("Cannot normalize zero matrix!");
+    for (size_t i=0; i<matrix.size1(); ++i){
+        for (size_t j=0; j<matrix.size2(); ++j){
+            matrix(i,j) /= magnitude;
+        }
+    }
+}
 
 
 

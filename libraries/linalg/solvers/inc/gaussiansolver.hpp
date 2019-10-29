@@ -5,8 +5,8 @@
 #include <numeric>
 #include <algorithm>
 
-#include "matrix.hpp"
-#include "linalgutilities.hpp"
+#include "../../types/inc/matrix.hpp"
+#include "../../utilities/inc/linalgutilities.hpp"
 
 namespace linalg {
 

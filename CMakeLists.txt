@@ -19,7 +19,6 @@ ENDMACRO()
 
 # Directories to include header files from
 include_directories( external/catch )
-include_directories( external/linalg/inc )
 
 set( CMAKE_CXX_STANDARD 14 )
 

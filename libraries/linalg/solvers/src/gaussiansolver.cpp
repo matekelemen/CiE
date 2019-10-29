@@ -1,4 +1,4 @@
-#include "gaussiansolver.hpp"
+#include "../inc/gaussiansolver.hpp"
 
 namespace linalg {
 

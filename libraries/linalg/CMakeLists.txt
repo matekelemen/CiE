@@ -4,9 +4,23 @@ cmake_minimum_required( VERSION 3.4.3 )
 project( linalg CXX )
 
 # Gather files and store paths in CMake variables
+file( GLOB_RECURSE LINALG_TEST_SOURCE_FILES test/*.cpp )
+
 file( GLOB LINALG_LIBRARY_SOURCE_FILES src/*.cpp )
-file( GLOB LINALG_TEST_SOURCE_FILES test/*.cpp )
 file( GLOB LINALG_HEADER_FILES inc/*.h* )
+
+SUBDIRLIST( subdirs ${CMAKE_CURRENT_SOURCE_DIR} )
+foreach( subdirectory ${subdirs} )
+    # Include header directories
+    include_directories( ${subdirectory}/inc )
+    # Append library header and source files
+    file( GLOB TEMP_HEADERS ${subdirectory}/inc/*.h* )
+    file( GLOB TEMP_SOURCES ${subdirectory}/src/*.cpp )
+    list( APPEND LINALG_HEADER_FILES ${TEMP_HEADERS} )
+    list( APPEND LINALG_LIBRARY_SOURCE_FILES ${TEMP_SOURCES} )
+    # DEBUG
+    # message( STATUS ${LINALG_HEADER_FILES} )
+endforeach()
 
 # Specify the folders with header files, otherwise our includes are not found
 include_directories( inc )

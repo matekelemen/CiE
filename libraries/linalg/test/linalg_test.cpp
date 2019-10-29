@@ -1,6 +1,5 @@
 #include "catch.hpp"
-#include "matrix.hpp"
-#include "gaussiansolver.hpp"
+#include "../inc/linalg.hpp"
 
 #include <fstream>
 

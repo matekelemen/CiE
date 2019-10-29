@@ -1,6 +1,6 @@
 #ifndef LINALG_HPP
 #define LINALG_HPP
 
-#include "gaussiansolver.hpp"
+#include "../solvers/inc/gaussiansolver.hpp"
 
 #endif
