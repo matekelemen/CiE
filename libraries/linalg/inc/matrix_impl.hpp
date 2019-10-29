@@ -1,3 +1,6 @@
+#ifndef LINALG_MATRIX_IMPL_HPP
+#define LINALG_MATRIX_IMPL_HPP
+
 /*
  * Although we are not using templates we implement trivial
  * functions inline if they are called very often, such that
@@ -5,11 +8,9 @@
  * quence is that when we change something in this file we
  * have to recompile everything that includes linalg.hpp.
  */
-#include <array>
+//#include "matrix.hpp" // prevent IDE from complaining
 
 
-namespace cie
-{
 namespace linalg
 {
 
@@ -39,4 +40,5 @@ inline std::array<size_t, 2> Matrix::sizes( ) const
 }
 
 } // namespace linalg
-} // namespace cie
+
+#endif

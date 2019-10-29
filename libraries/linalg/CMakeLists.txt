@@ -9,7 +9,6 @@ file( GLOB LINALG_TEST_SOURCE_FILES test/*.cpp )
 file( GLOB LINALG_HEADER_FILES inc/*.h* )
 
 # Specify the folders with header files, otherwise our includes are not found
-include_directories( external/catch )
 include_directories( inc )
 
 # Changes the default install path to build/install, assuming build is the project directory

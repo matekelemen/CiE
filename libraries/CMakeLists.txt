@@ -1,3 +1,4 @@
+add_subdirectory( linalg )
 add_subdirectory( CSG )
 add_subdirectory( meshkernel )
 add_subdirectory( splinekernel )

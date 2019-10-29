@@ -32,8 +32,6 @@ endif( CMAKE_COMPILER_IS_GNUCXX )
 add_subdirectory( external/pybind11 )
 set(PYBIND11_CPP_STANDARD -std=c++14)
 
-# -------------- Set up external linalg project ------------------
-add_subdirectory( external/linalg )
 
 # ----------------- Set up install paths -------------------------
 # Changes the default install path to build/install, assuming build is the project directory

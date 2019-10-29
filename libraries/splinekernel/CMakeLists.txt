@@ -4,6 +4,7 @@ project( splinekernel CXX )
 
 # Directories to include header files from
 include_directories( inc )
+include_directories( ../linalg/inc )
 
 # Gather source files into CMake variables
 file( GLOB SPLINEKERNEL_SOURCE_FILES src/*.cpp)

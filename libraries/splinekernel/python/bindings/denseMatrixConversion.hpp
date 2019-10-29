@@ -9,11 +9,11 @@ namespace detail
 // Template specialization for pybind11::detail::type_caster, see
 // https://pybind11.readthedocs.io/en/stable/advanced/cast/custom.html
 template<>
-struct type_caster<cie::linalg::Matrix>
+struct type_caster<linalg::Matrix>
 {
 public:
 
-    PYBIND11_TYPE_CASTER( cie::linalg::Matrix, _( "cie::linalg::Matrix" ) );
+    PYBIND11_TYPE_CASTER( linalg::Matrix, _( "linalg::Matrix" ) );
 
     // Conversion from python numpy array to our C++ linalg::Matrix
     bool load( pybind11::handle src, bool convert )
@@ -29,7 +29,7 @@ public:
                 size_t size2 = numpyArray.shape( )[1];
 
                 // value is a member defined by the PYBIND11_TYPE_CASTER macro
-                value = cie::linalg::Matrix( size1, size2, 0.0 );
+                value = linalg::Matrix( size1, size2, 0.0 );
 
                 // Copy matrix
                 for( size_t i = 0; i < size1; i++ )
@@ -47,13 +47,13 @@ public:
     }
 
     // Conversion from our C++ linalg::Matrix to python numpy array
-    static pybind11::handle cast( const cie::linalg::Matrix& src,
+    static pybind11::handle cast( const linalg::Matrix& src,
                                   pybind11::return_value_policy policy,
                                   pybind11::handle parent )
     {
         // Construct array with shape ( size1, size2 ) from the given linalg::Matrix
         return pybind11::array( std::vector<size_t>{ src.size1( ), src.size2( ) },
-                                &const_cast<cie::linalg::Matrix&>( src )( 0, 0 ) ).release( );
+                                &const_cast<linalg::Matrix&>( src )( 0, 0 ) ).release( );
     }
 };
 

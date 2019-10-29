@@ -1,10 +1,9 @@
 #include "catch.hpp"
-#include "linalg.hpp"
+#include "matrix.hpp"
+#include "gaussiansolver.hpp"
 
 #include <fstream>
 
-namespace cie
-{
 namespace linalg
 {
 
@@ -231,4 +230,3 @@ TEST_CASE( "solve_zero_pivot" )
 }
 
 } // namespace linalg
-} // namespace cie
