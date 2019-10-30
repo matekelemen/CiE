@@ -1,5 +1,6 @@
 #include "catch.hpp"
 #include "quadraticsubstitute.hpp"
+
 #include <iostream>
 
 namespace opt {
@@ -30,7 +31,8 @@ TEST_CASE("QuadraticSubstitute"){
     QuadraticSubstitute func( dataSites, DoubleVector({v1,v2,v3}) );
 
     // Approximate minimum
-    std::pair<DoubleVector, double> minimum = func.minimum();
+    std::pair<DoubleVector, double> minimum;
+    REQUIRE_NOTHROW( minimum = func.minimum() );
 
     // Check minimum position and function value there
     CHECK( minimum.first[0] == Approx(offset[0]) );

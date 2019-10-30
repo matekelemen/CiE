@@ -34,8 +34,17 @@ void QuadraticSubstitute::build(std::vector<const DoubleVector*>& points, const 
     }
 
     // Compute coefficients (internal parameters: [0,ratio,1])
-    double ratio    = ( (*points[1])[0]-(*points[0])[0] ) / ( (*points[2])[0]-(*points[0])[0] );
+    double ratio    = ( (*points[2])[0]-(*points[0])[0] );
+
+    if ( std::abs(ratio)<1e-15 )
+        throw std::runtime_error("Repeated end sample point!");
+
+    ratio           = ( (*points[1])[0]-(*points[0])[0] ) / ratio;
     double ratio2   = ratio*ratio;
+
+    if ( std::abs(ratio)<1e-15 || std::abs(ratio-1.0)<1e-15 )
+        throw std::runtime_error("Repeated middle sample point!");
+
     _coefficients   = {
         values[2],
         ( values[2]-values[1]/ratio2-values[0]*(1-1/ratio2) ) / ( 1-1/ratio ),
@@ -45,6 +54,14 @@ void QuadraticSubstitute::build(std::vector<const DoubleVector*>& points, const 
 
 
 std::pair<DoubleVector,double> QuadraticSubstitute::minimum() const {
+
+    // Check minimum requirements
+    if (std::abs(_coefficients[2])<1e-15)
+        throw std::runtime_error("Substitute function is linear!");
+
+    if (_coefficients[2]<0.0)
+        throw std::runtime_error("Substitute function does not have a minimum!");
+
     // Compute parameter at minimum
     double minParam     = -_coefficients[1]/2/_coefficients[2];
 
