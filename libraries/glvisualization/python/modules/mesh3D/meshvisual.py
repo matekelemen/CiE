@@ -3,8 +3,7 @@ from vispy.geometry import MeshData
 from vispy.gloo import VertexBuffer
 from vispy.visuals import Visual
 
-from pysplinekernel.surfacekernel import SurfaceKernel
-from pysplinekernel.light import SimpleLight, TimedSpotLight
+from lighting import *
 
 from vispy import scene, app
 

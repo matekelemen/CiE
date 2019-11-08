@@ -40,8 +40,8 @@ add_subdirectory( gradientmethods )
 add_subdirectory( populationmethods )
 
 include_directories( ${OPTIMIZATION_INCLUDE_DIRECTORIES} )
-message( STATUS ${OPTIMIZATION_HEADER_FILES} )
-message( STATUS ${OPTIMIZATION_SOURCE_FILES} )
+#message( STATUS ${OPTIMIZATION_HEADER_FILES} )
+#message( STATUS ${OPTIMIZATION_SOURCE_FILES} )
 
 # This enables exporting all symbols to the dll on windows
 set( CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON )

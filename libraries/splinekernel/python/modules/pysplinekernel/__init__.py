@@ -15,12 +15,8 @@ for fileName in binaryFileNames:
         
 
 from pysplinekernel.surfacekernel import SurfaceKernel
-from pysplinekernel.surfacebuilder import SurfaceGUI
 from pysplinekernel.editlinevisual import EditLineVisual
 from pysplinekernel.editmarkervisual import EditMarkerVisual
 from pysplinekernel.canvas import CanvasSpline2D
-from pysplinekernel.meshvisual import TriangleMeshVisual, convertToSurfaceMesh
-
-from pysplinekernel.light import SimpleLight, TimedSpotLight
 
 #from pysplinekernel.canvas import CanvasSpline2D, CanvasSurface

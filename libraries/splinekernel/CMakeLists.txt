@@ -49,4 +49,3 @@ endif( )
 
 # Add python bindings and scripts
 add_subdirectory( python )
-

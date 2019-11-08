@@ -5,6 +5,9 @@ from vispy.plot import Fig
 from vispy.scene.visuals import create_visual_node
 import numpy as np
 
+from lighting import *
+from mesh3D import *
+
 from vispy import scene, app
 # -----------------------------------------------------------
 
