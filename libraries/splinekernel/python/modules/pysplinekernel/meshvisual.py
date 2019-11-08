@@ -1,16 +1,12 @@
 import numpy as np
 from vispy.geometry import MeshData
 from vispy.gloo import VertexBuffer
-from vispy.io.image import write_png
-from vispy.plot import Fig
-from vispy.scene.visuals import create_visual_node
 from vispy.visuals import Visual
 
 from pysplinekernel.surfacekernel import SurfaceKernel
 from pysplinekernel.light import SimpleLight, TimedSpotLight
 
 from vispy import scene, app
-
 
 from timeit import default_timer
 
@@ -39,7 +35,7 @@ void main() {
     vec3 lightPos       = position - vec3($lightPos);
     float intensity     = dot( normal, normalize(lightPos) );
     intensity           = min( max(intensity,0.0), 1.0 );
-    gl_FragColor        = vec4( intensity*vec3($lightColor),1.0 )*color;
+    gl_FragColor        = vec4( intensity*vec3($lightColor) + vec3($ambientLight),1.0 )*color;
 }
 """
 
@@ -62,23 +58,31 @@ class TriangleMeshVisual(Visual):
         self._vertices          = None
         self._colors            = None
         self._normals           = None
-        self._light             = light
-        self._draw_mode = 'triangle_strip'
+        self._draw_mode         = 'triangle_strip'
         self.set_gl_state('opaque',depth_test=True,cull_face=True)
+
+        # Light setup
+        self._light             = light
+        self._ambientLight      = (0.3,0.3,0.3)
 
         self.updateMesh(vertices=vertices,faces=faces,colors=colors)
 
 
     def _prepare_transforms(self, view):
         view.view_program.vert['transform'] = view.get_transform()
+        '''
+        for item in view.canvas.__dir__():
+            print( item )
+        '''
 
 
     def _prepare_draw(self,view):
-        self.shared_program.vert['position']    = self._vertices
-        self.shared_program.vert['normal']      = self._normals
-        self.shared_program.vert['color']       = self._colors
-        self.shared_program.frag['lightPos']    = self._light._lightPos
-        self.shared_program.frag['lightColor']  = self._light._lightColor
+        self.shared_program.vert['position']        = self._vertices
+        self.shared_program.vert['normal']          = self._normals
+        self.shared_program.vert['color']           = self._colors
+        self.shared_program.frag['lightPos']        = self._light._lightPos
+        self.shared_program.frag['lightColor']      = self._light._lightColor
+        self.shared_program.frag['ambientLight']    = self._ambientLight
 
 
     def updateMesh(self,vertices=None,faces=None,colors=None):

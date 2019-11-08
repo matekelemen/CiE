@@ -102,7 +102,7 @@ namespace linalgtesthelper
     {
         std::ofstream outfile( "write.txt" );
 
-        REQUIRE_NOTHROW( linalg::write( container, outfile ) );
+        REQUIRE_NOTHROW( linalghelper::write( container, outfile ) );
 
         outfile.close( );
 

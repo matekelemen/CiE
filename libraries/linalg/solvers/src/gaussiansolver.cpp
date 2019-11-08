@@ -13,11 +13,11 @@ Vector solve( const Matrix& matrix,
         return { };
     }
 
-    linalghelper::runtime_check( matrix.size2( ) == n, "Solve needs a square matrix!" );
-    linalghelper::runtime_check( rhs.size( ) == n, "Matrix and vector sizes don't match!" );
+    runtime_check( matrix.size2( ) == n, "Solve needs a square matrix!" );
+    runtime_check( rhs.size( ) == n, "Matrix and vector sizes don't match!" );
 
     // Instead of swapping rows in our matrix we use a permutation vector
-    linalghelper::PermutationVector permute( n );
+    PermutationVector permute( n );
 
     std::iota( permute.begin( ), permute.end( ), 0 ); // initialize  with 1 ... n
 
@@ -33,7 +33,7 @@ Vector solve( const Matrix& matrix,
     // LU decomposition with partial pivoting
     for( size_t k = 0; k < n - 1; k++ )
     {
-        linalghelper::updatePermutation( tmpM, permute, k, tolerance );
+        updatePermutation( tmpM, permute, k, tolerance );
 
         for( size_t i = k + 1; i < n; i++ )
         {
@@ -47,7 +47,7 @@ Vector solve( const Matrix& matrix,
     }
 
     // Just for the singularity check
-    linalghelper::updatePermutation( tmpM, permute, n - 1, tolerance );
+    updatePermutation( tmpM, permute, n - 1, tolerance );
 
     // forward substitution
     for( size_t i = 1; i < n; i++ )

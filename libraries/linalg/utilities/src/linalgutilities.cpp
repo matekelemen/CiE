@@ -6,24 +6,6 @@
 namespace linalg {
 
 
-void write( const Vector& vector, std::ostream& out )
-{
-    linalghelper::writeRow( [&]( size_t i ){ return vector[i]; }, vector.size( ), out, 12 );
-}
-
-
-void write( const Matrix& matrix, std::ostream& out )
-{
-    size_t size1 = matrix.size1( );
-    size_t size2 = matrix.size2( );
-
-    for( size_t i = 0; i < size1; ++i )
-    {
-        linalghelper::writeRow( [&]( size_t j ){ return matrix( i, j ); }, size2, out, 12 );
-    }
-}
-
-
 double norm( const Vector& vector )
 {
     return std::sqrt( std::inner_product( std::begin( vector ),
@@ -71,12 +53,6 @@ void normalize(Matrix& matrix)
 }
 
 
-
-
-
-namespace linalghelper {
-
-
 void updatePermutation( const Matrix& matrix,
                         PermutationVector& permutation,
                         size_t index,
@@ -91,8 +67,8 @@ void updatePermutation( const Matrix& matrix,
     // Search for max element in column starting at (index, index)
     auto pivot = std::max_element( permutation.begin( ) + index, permutation.end( ), compare );
 
-    runtime_check( std::abs( matrix( *pivot, index ) ) > singularTolerance,
-                                 "Matrix is singular!" );
+    if (std::abs( matrix( *pivot, index ) ) < singularTolerance)
+    throw MatrixError("Matrix is singular!",matrix);
 
     // Swap indices in permutation vector
     std::iter_swap( permutation.begin( ) + index, pivot );
@@ -107,7 +83,6 @@ void runtime_check( bool result, const char message[] )
     }
 }
 
-} // namespace linalghelpers
     
 } // namespace linalg
 

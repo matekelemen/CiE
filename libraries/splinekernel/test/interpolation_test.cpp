@@ -1,4 +1,5 @@
 #include "catch.hpp"
+#include "linalg.hpp"
 #include "interpolation.hpp"
 #include <algorithm>
 
@@ -261,7 +262,7 @@ namespace cie
 				4
 				);
 			VectorOfMatrices grid({ xGrid,yGrid,zGrid });
-			linalg::write(grid[0]);
+			linalg::linalghelper::write(grid[0]);
 			std::cout << "\n";
 			// Polynomial degrees
 			size_t polynomialDegreeR(3), polynomialDegreeS(2);
@@ -277,7 +278,7 @@ namespace cie
 			VectorPair knotVectors({ knotVectorUsingAveraging(parameterPositionsRS[0],polynomialDegreeR),knotVectorUsingAveraging(parameterPositionsRS[1], polynomialDegreeS) });
 			// Interpolate
 			ControlPointsAndKnotVector3D outputPair = interpolateWithBSplineSurface(grid, polynomialDegreeR, polynomialDegreeS);
-			linalg::write(grid[0]);
+			linalg::linalghelper::write(grid[0]);
 			// Check values
 			for (size_t i = 0; i < parameterPositionsRS[0].size(); ++i) {
 				for (size_t j = 0; j < parameterPositionsRS[1].size(); ++j) {
