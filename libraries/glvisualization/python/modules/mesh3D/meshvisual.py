@@ -1,89 +1,82 @@
+# --- Python imports ---
 import numpy as np
+
+# --- Vispy imports ---
 from vispy.geometry import MeshData
 from vispy.gloo import VertexBuffer
 from vispy.visuals import Visual
-
-from lighting import *
-
 from vispy import scene, app
 
-from timeit import default_timer
+# --- Lighting imports ---
+from lighting import SimpleLight
 
-# -----------------------------------------------------
-# DEFAULT SHADERS
-# -----------------------------------------------------
-defaultVertexShader = """
-varying vec3 position;
-varying vec3 normal;
-varying vec4 color;
-
-void main() {
-    normal      = $normal;
-    color       = $color;
-    position    = $position;
-    gl_Position = $transform(vec4(position,1));
-}
-"""
-
-defaultFragmentShader = """
-varying vec3 position;
-varying vec3 normal;
-varying vec4 color;
-
-void main() {
-    vec3 lightPos       = position - vec3($lightPos);
-    float intensity     = dot( normal, normalize(lightPos) );
-    intensity           = min( max(intensity,0.0), 1.0 );
-    gl_FragColor        = vec4( intensity*vec3($lightColor) + vec3($ambientLight),1.0 )*color;
-}
-"""
+# --- Internal imports ---
+from mesh3D import defaultVertexShader, defaultFragmentShader
 
 # -----------------------------------------------------
 # MESH
 # -----------------------------------------------------
 class TriangleMeshVisual(Visual):
-    def __init__(self,vertices,faces,colors=None,light=None,vertexShader=defaultVertexShader,fragmentShader=defaultFragmentShader):
+    def __init__(   self, vertices, faces, 
+                        colors=None,
+                        light=None,
+                        ambientMaterialConstant=0.5,
+                        diffuseMaterialConstant=0.4,
+                        specularMaterialConstant=0.3,
+                        vertexShader=defaultVertexShader,
+                        fragmentShader=defaultFragmentShader,
+                        camera=None ):
         Visual.__init__(self,vertexShader,fragmentShader)
         
         if colors is None:
             colors  = 0.5* np.ones(np.shape(vertices),dtype=np.float32)
 
         if light is None:
-            light = SimpleLight(self)
+            light = SimpleLight(self, color=(0.5,0.5,0.5))
         else:
             light = light(self)
 
-        self._meshData  = MeshData(vertices=vertices,faces=faces, vertex_colors=colors)
-        self._vertices          = None
-        self._colors            = None
-        self._normals           = None
-        self._draw_mode         = 'triangle_strip'
-        self.set_gl_state('opaque',depth_test=True,cull_face=True)
+        # Geometry setup
+        self._meshData                  = MeshData(vertices=vertices,faces=faces, vertex_colors=colors)
+        self._vertices                  = None
+        self._colors                    = None
+        self._normals                   = None
+        self._draw_mode                 = 'triangle_strip'
+        
+        self.set_gl_state(  'opaque',
+                            depth_test=True,
+                            cull_face=True )
 
         # Light setup
-        self._light             = light
-        self._ambientLight      = (0.3,0.3,0.3)
+        self._light                     = light
+        self._ambientLight              = (0.15,0.15,0.15)
+        self._camera                    = camera
 
-        self.updateMesh(vertices=vertices,faces=faces,colors=colors)
+        self._ambientMaterialConstant   = ambientMaterialConstant
+        self._diffuseMaterialConstant   = diffuseMaterialConstant
+        self._specularMaterialConstant  = specularMaterialConstant
+
+        # Initial updates
+        self.updateMesh(    vertices=vertices,
+                            faces=faces,
+                            colors=colors )
+        self.updateLight()
 
 
+    # --- Function override ---
     def _prepare_transforms(self, view):
-        view.view_program.vert['transform'] = view.get_transform()
-        '''
-        for item in view.canvas.__dir__():
-            print( item )
-        '''
+        view.view_program.vert['transform']         = view.get_transform()
 
 
     def _prepare_draw(self,view):
-        self.shared_program.vert['position']        = self._vertices
-        self.shared_program.vert['normal']          = self._normals
-        self.shared_program.vert['color']           = self._colors
-        self.shared_program.frag['lightPos']        = self._light._lightPos
-        self.shared_program.frag['lightColor']      = self._light._lightColor
-        self.shared_program.frag['ambientLight']    = self._ambientLight
+        self.shared_program.frag['lightPos']        = self._light._pos
+        self.shared_program.frag['lightColor']      = self._light._color
+        self.shared_program.frag['cameraDir']       = self._camera._quaternion.rotate_point( [0.0,1.0,0.0] )
+        self.updateMesh()
+        self.updateLight()
+        
 
-
+    # --- State update ---
     def updateMesh(self,vertices=None,faces=None,colors=None):
         # Set
         if vertices is not None:
@@ -101,6 +94,18 @@ class TriangleMeshVisual(Visual):
         if colors is not None:
             self._colors = VertexBuffer(
                 self._meshData.get_vertex_colors(indexed='faces').astype(np.float32))
+        # Update GPU
+        self.shared_program.vert['position']        = self._vertices
+        self.shared_program.vert['normal']          = self._normals
+        self.shared_program.vert['color']           = self._colors
+
+
+    def updateLight(self):
+        self.shared_program.frag['ambientLight']                = self._ambientLight
+        self.shared_program.frag['ambientMaterialConstant']     = self._ambientMaterialConstant
+        self.shared_program.frag['diffuseMaterialConstant']     = self._diffuseMaterialConstant
+        self.shared_program.frag['specularMaterialConstant']    = self._specularMaterialConstant
+        
 
 
 

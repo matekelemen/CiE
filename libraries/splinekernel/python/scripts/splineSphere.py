@@ -1,23 +1,27 @@
 # -----------------------------------------------------------
-from pysplinekernel import *
+# --- Splinekernel imports ---
+from pysplinekernel import SurfaceKernel
 
+# --- GL Visualization imports ---
+from lighting import SimpleLight
+from mesh3D import TriangleMeshVisual, convertToSurfaceMesh
+
+# --- VisPy imports ---
 from vispy.plot import Fig
 from vispy.scene.visuals import create_visual_node
-import numpy as np
-
-from lighting import *
-from mesh3D import *
-
 from vispy import scene, app
+
+# --- Python imports ---
+import numpy as np
 # -----------------------------------------------------------
 
 # Settings - sphere
 radius                  = 1.0
 offset                  = [ 0.0, 0.0, 0.0 ]
 # Settings - spline
-nInterpolationPoints    = [8,8]
+nInterpolationPoints    = [15,15]
 polynomialOrders        = [3,3]
-nSamples                = [50,50]
+nSamples                = [80,80]
 
 # -----------------------------------------------------------
 # Define sphere
@@ -73,30 +77,30 @@ colors  = np.array( colors, dtype=np.float32 )
 TriangleMesh = create_visual_node(TriangleMeshVisual)
 
 # Create a new OpenGL window
-#fig = Fig()
-#plt = fig[0, 0]
-plt = scene.SceneCanvas( keys='interactive', size=(1024, 768) )
-view = plt.central_widget.add_view()
-#plt._configure_3d()
-
-# Update the VisPy node with the mesh data
-mesh = TriangleMesh(geometry['vertices'],geometry['faces'],colors=colors,light=SimpleLight)
-
-# Configure lighting
-mesh._light._lightPos   = np.array( [1.0,1.0,5.0], dtype=np.float32 )
-mesh._light._lightColor = np.array( [1.0,1.0,1.0], dtype=np.float32 )
-
-# Load mesh to the GPU
-view.add(mesh)
+plt = scene.SceneCanvas(        keys='interactive', 
+                                size=(1024, 768) )
+                                
+view = plt.central_widget.add_view(     bgcolor=(0.2,0.2,0.2),
+                                        border_color=(0.0,0.0,0.0),
+                                        border_width=1 )
 
 # Add and configure camera
 view.camera = scene.cameras.ArcballCamera(fov=0)
 view.camera.center  = (0.0,0.0,0.0)
 
-'''
-for key,value in view.transforms.__dict__.items():
-        print( str(key) + ': ' + str(value) )
-'''
+# Update the VisPy node with the mesh data
+mesh = TriangleMesh(    geometry['vertices'],
+                        geometry['faces'],
+                        colors=colors,
+                        light=SimpleLight, 
+                        camera=view.camera )
+
+# Configure lighting
+mesh._light._pos   = np.array( [0.0,0.0,10.0], dtype=np.float32 )
+mesh._light._color = np.array( [1.0,1.0,1.0], dtype=np.float32 )
+
+# Load mesh to the GPU
+view.add(mesh)
 
 # Render
 plt.show()

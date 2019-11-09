@@ -1,17 +1,21 @@
 import numpy as np
-from timeit import default_timer
 
 class SimpleLight:
     # Simple spot light
-    def __init__(self,parent,lightPos=[0.0,0.0,1.0],lightColor=[1.0,1.0,1.0]):
+    def __init__(self, parent, 
+                                pos=[0.0,0.0,1.0], 
+                                color=[1.0,1.0,1.0] ):
         self._parent        = parent
-        self._lightPos      = lightPos
-        self._lightColor    = lightColor
+        self._pos           = pos
+        self._color         = color
         self.update()
 
-    def update(self,lightPos=None,lightColor=None):
-        if lightPos is not None:
-            self._lightPos      = lightPos
-        if lightColor is not None:
-            self._lightColor    = lightColor
+
+    def update(self, 
+                    pos=None, 
+                    color=None ):
+        if pos is not None:
+            self._pos       = pos
+        if color is not None:
+            self._color     = color
         self._parent.update()
