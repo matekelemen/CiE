@@ -5,13 +5,12 @@ import numpy as np
 from vispy.geometry import MeshData
 from vispy.gloo import VertexBuffer
 from vispy.visuals import Visual
-from vispy import scene, app
 
 # --- Lighting imports ---
 from lighting import SimpleLight
 
 # --- Internal imports ---
-from mesh3D import defaultVertexShader, defaultFragmentShader
+from glmesh import defaultVertexShader, defaultFragmentShader
 
 # -----------------------------------------------------
 # MESH
@@ -28,6 +27,7 @@ class TriangleMeshVisual(Visual):
                         camera=None ):
         Visual.__init__(self,vertexShader,fragmentShader)
         
+        # Default arguments
         if colors is None:
             colors  = 0.5* np.ones(np.shape(vertices),dtype=np.float32)
 
@@ -49,7 +49,6 @@ class TriangleMeshVisual(Visual):
 
         # Light setup
         self._light                     = light
-        self._ambientLight              = (0.15,0.15,0.15)
         self._camera                    = camera
 
         self._ambientMaterialConstant   = ambientMaterialConstant
@@ -101,7 +100,7 @@ class TriangleMeshVisual(Visual):
 
 
     def updateLight(self):
-        self.shared_program.frag['ambientLight']                = self._ambientLight
+        self.shared_program.frag['ambientLight']                = self._light._ambient
         self.shared_program.frag['ambientMaterialConstant']     = self._ambientMaterialConstant
         self.shared_program.frag['diffuseMaterialConstant']     = self._diffuseMaterialConstant
         self.shared_program.frag['specularMaterialConstant']    = self._specularMaterialConstant

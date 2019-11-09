@@ -1,6 +1,9 @@
-from pysplinekernel import *
+# --- Splinekernel imports ---
+from pysplinekernel import interpolateWithBSplineCurve, evaluate2DCurveDeBoor
+
+# --- Python imports ---
 import numpy as np
-#import matplotlib              # Uncomment for faster version
+#import matplotlib              # Uncomment for a faster version
 #matplotlib.use('qt5agg')       # (uncomment alternative builder at the end too)
 import matplotlib.pyplot as plt
 
@@ -49,11 +52,11 @@ class SplineBuilder:
         if len(self.interpolationPoints[0]) + len(xCursor)<self.p+1:
             return
         # Get spline
-        controlPoints, knotVector = pysplinekernel.interpolateWithBSplineCurve( [self.interpolationPoints[0] + xCursor, self.interpolationPoints[1] + yCursor], self.p )
+        controlPoints, knotVector = interpolateWithBSplineCurve( [self.interpolationPoints[0] + xCursor, self.interpolationPoints[1] + yCursor], self.p )
         # Get parameters (10 per segments)
         t = np.linspace(0.0, 1.0, (len(self.interpolationPoints[0])-1)*10 )
         # Remove previous spline and draw new one
-        xc, yc = pysplinekernel.evaluate2DCurve( t, controlPoints[0], controlPoints[1], knotVector )
+        xc, yc = evaluate2DCurveDeBoor( t, controlPoints[0], controlPoints[1], knotVector )
         self.spline.remove()
         self.spline, = self.ax.plot( xc, yc, 'b' )
         # Draw control polygon
@@ -168,16 +171,16 @@ class Splinekernel:
     
     def updateSpline(self, lastPoint=[]):
         if lastPoint != []:
-            self.controlPoints, self.knotVector = pysplinekernel.interpolateWithBSplineCurve(
+            self.controlPoints, self.knotVector = interpolateWithBSplineCurve(
                     [self.interpolationPoints[0]+[lastPoint[0]], self.interpolationPoints[1]+[lastPoint[1]]],
                     self.polynomialOrder)
         else:
-            self.controlPoints, self.knotVector = pysplinekernel.interpolateWithBSplineCurve(
+            self.controlPoints, self.knotVector = interpolateWithBSplineCurve(
                     self.interpolationPoints,
                     self.polynomialOrder)
     
     def updatePoints(self):
-        x, y = pysplinekernel.evaluate2DCurveDeBoor(
+        x, y = evaluate2DCurveDeBoor(
                 self.samplePoints,
                 self.controlPoints[0],
                 self.controlPoints[1],

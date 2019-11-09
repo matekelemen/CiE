@@ -1,9 +1,13 @@
-from pysplinekernel import *
+# --- Splinekernel imports ---
+from pysplinekernel import evaluateBSplineBasis
+
+# --- Python imports ---
 import numpy
 import matplotlib.pyplot as plt
 
-n = 101;
-p = 3;
+# -----------------------------------------------------
+n = 101
+p = 3
 U = [0.0, 0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0, 1.0]
 
 x = numpy.linspace( 0.0, 1.0, n )
@@ -16,9 +20,8 @@ for i in range( m - p - 1 ):
 
   # loop over all evaluation points
   for j, xj in enumerate( x ):
-    y[j] = pysplinekernel.evaluateBSplineBasis( xj, i, p, U )
+    y[j] = evaluateBSplineBasis( xj, i, p, U )
     
   plt.plot( x, y )
   
 plt.show( )
-

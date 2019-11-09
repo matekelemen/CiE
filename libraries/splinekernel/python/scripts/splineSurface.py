@@ -4,8 +4,8 @@ import numpy as np
 # --- Splinekernel imports ---
 from pysplinekernel import SurfaceKernel
 
-# --- Mesh3D imports ---
-from mesh3D import TriangleMeshVisual, convertToSurfaceMesh
+# --- GLmesh imports ---
+from glmesh import TriangleMeshVisual, convertToSurfaceMesh
 
 # --- Lighting imports ---
 from lighting import TimedSpotLight

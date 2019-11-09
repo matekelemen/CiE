@@ -4,10 +4,9 @@ from pysplinekernel import SurfaceKernel
 
 # --- GL Visualization imports ---
 from lighting import SimpleLight
-from mesh3D import TriangleMeshVisual, convertToSurfaceMesh
+from glmesh import TriangleMeshVisual, convertToSurfaceMesh
 
 # --- VisPy imports ---
-from vispy.plot import Fig
 from vispy.scene.visuals import create_visual_node
 from vispy import scene, app
 
@@ -21,7 +20,7 @@ offset                  = [ 0.0, 0.0, 0.0 ]
 # Settings - spline
 nInterpolationPoints    = [15,15]
 polynomialOrders        = [3,3]
-nSamples                = [80,80]
+nSamples                = [100,100]
 
 # -----------------------------------------------------------
 # Define sphere
@@ -65,6 +64,7 @@ surf = SurfaceKernel(
 
 # Sample the spline surface and convert it to a triangle mesh
 surf.samples    = nSamples
+
 geometry        = convertToSurfaceMesh(surf.generatePoints())
 
 # Define vertex colors

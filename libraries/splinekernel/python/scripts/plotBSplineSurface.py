@@ -1,9 +1,13 @@
-from pysplinekernel import *
+# --- Splinekernel imports ---
+from pysplinekernel import evaluateSurface
+
+# --- Python imports ---
 import numpy
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.cm as colormap
 import matplotlib.pyplot as plt
 
+# -----------------------------------------------------
 numberOfSamplesInR = 31
 numberOfSamplesInS = 31
 
@@ -26,7 +30,7 @@ controlPointGrid = numpy.transpose( numpy.array( controlPointGrid ), ( 2, 0, 1 )
 numberOfSamples = ( numberOfSamplesInR, numberOfSamplesInS )
 knotVectors = ( knotVectorR, knotVectorS )
 
-xyz = pysplinekernel.evaluateSurface( knotVectors, controlPointGrid, numberOfSamples )
+xyz = evaluateSurface( knotVectors, controlPointGrid, numberOfSamples )
 
 # Plot surface (https://matplotlib.org/mpl_toolkits/mplot3d/tutorial.html)
 fig = plt.figure( )
