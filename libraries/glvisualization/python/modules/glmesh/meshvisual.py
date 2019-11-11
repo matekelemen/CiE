@@ -29,11 +29,14 @@ class TriangleMeshVisual(Visual):
                         camera=None ):
         Visual.__init__(self,vertexShader,fragmentShader)
 
-        wrappers.set_cull_face(mode='back')
+        # Culling mode (for debugging)
+        #wrappers.set_cull_face(mode='back')
         
         # Default arguments
         if colors is None and texture is None:
-            colors  = 0.5* np.ones(np.shape(vertices),dtype=np.float32)
+            colors  = np.array( [ (0.5,0.5,0.5) for index in range( vertices.shape[0] ) ], dtype=np.float32 )
+        elif colors is not None and len(colors) is 3 and (isinstance(colors[0],float) or isinstance(colors[0],int) ):
+            colors  = np.array([ colors for index in range(len(vertices)) ],dtype=np.float32)
 
         if light is None:
             light = SimpleLight(self, color=(1.0,1.0,1.0))
