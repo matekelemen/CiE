@@ -5,7 +5,7 @@ class SimpleLight:
     def __init__(self, parent, 
                                 pos=[0.0,0.0,1.0], 
                                 color=[1.0,1.0,1.0],
-                                ambient=[0.15,0.15,0.15] ):
+                                ambient=[0.2,0.2,0.2] ):
         self._parent        = parent
         self._pos           = pos
         self._color         = color

@@ -1,17 +1,17 @@
-# -----------------------------------------------------------
 # --- Splinekernel imports ---
 from pysplinekernel import SurfaceKernel
 
 # --- GL Visualization imports ---
 from lighting import SimpleLight
-from glmesh import TriangleMeshVisual, convertToSurfaceMesh
+from glmesh import convertToSurfaceMesh, MeshApp3D
 
 # --- VisPy imports ---
 from vispy.scene.visuals import create_visual_node
-from vispy import scene, app
+from vispy import scene
 
 # --- Python imports ---
 import numpy as np
+
 # -----------------------------------------------------------
 
 # Settings - sphere
@@ -62,46 +62,9 @@ surf = SurfaceKernel(
     interpolationPoints=np.array(interpolationPoints),
     polynomialOrders=polynomialOrders)
 
-# Sample the spline surface and convert it to a triangle mesh
-surf.samples    = nSamples
-
-geometry        = convertToSurfaceMesh(surf.generatePoints())
-
-# Define vertex colors
-colors  = ( 0.5, 0.5, 0.8 )
-colors  = [ colors for i in range( len(geometry['vertices']) ) ]
-colors  = np.array( colors, dtype=np.float32 )
-
 # -----------------------------------------------------------
-# Add mesh as VisPy node
-TriangleMesh = create_visual_node(TriangleMeshVisual)
-
-# Create a new OpenGL window
-plt = scene.SceneCanvas(        keys='interactive', 
-                                size=(1024, 768) )
-                                
-view = plt.central_widget.add_view(     bgcolor=(0.2,0.2,0.2),
-                                        border_color=(0.0,0.0,0.0),
-                                        border_width=1 )
-
-# Add and configure camera
-view.camera = scene.cameras.ArcballCamera(fov=0)
-view.camera.center  = (0.0,0.0,0.0)
-
-# Update the VisPy node with the mesh data
-mesh = TriangleMesh(    geometry['vertices'],
-                        geometry['faces'],
-                        colors=colors,
-                        light=SimpleLight, 
-                        camera=view.camera )
-
-# Configure lighting
-mesh._light._pos   = np.array( [0.0,0.0,10.0], dtype=np.float32 )
-mesh._light._color = np.array( [1.0,1.0,1.0], dtype=np.float32 )
-
-# Load mesh to the GPU
-view.add(mesh)
-
-# Render
-plt.show()
-app.run()
+# Create GL window and load mesh
+meshApp = MeshApp3D(    convertToSurfaceMesh(surf.generatePoints(nSamples=nSamples)),
+                        colors=(0.5,0.5,0.8) )
+meshApp._mesh._light._pos = np.array( [0.0,0.0,-10.0], dtype=np.float32 )
+meshApp.run()

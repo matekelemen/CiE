@@ -41,5 +41,8 @@ endif( )
 # This will add the install path to the rpath of the installed binaries to make dynamic linking work
 SET( CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}" )
 
+# Create destination folder for data
+install( DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/data )
+
 # ---------------- Set up subprojects -----------------------------
 add_subdirectory( libraries )

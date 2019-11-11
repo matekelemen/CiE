@@ -5,14 +5,13 @@ import numpy as np
 from pysplinekernel import SurfaceKernel
 
 # --- GLmesh imports ---
-from glmesh import TriangleMeshVisual, convertToSurfaceMesh
+from glmesh import convertToSurfaceMesh, MeshApp3D
 
 # --- Lighting imports ---
 from lighting import TimedSpotLight
 
 # --- Vispy imports
-from vispy.scene.visuals import create_visual_node
-from vispy import scene, app
+from vispy import scene
 
 # -----------------------------------------------------
 # Spline surface settings
@@ -53,43 +52,19 @@ surf = SurfaceKernel(
     polynomialOrders=polynomialOrders )
 
 # Generate spline surface points
-surf.samples    = nSamples
-geometry        = convertToSurfaceMesh(surf.generatePoints())
+geometry        = convertToSurfaceMesh(surf.generatePoints(nSamples=nSamples))
 
-# Generate vertex colors as a function of their z coordinate
+# Generate vertex colors based on their height
 colors          = np.transpose( geometry['vertices'], (1,0) )[2]
 colors          = colors / (np.max(colors) - np.min(colors))
 colors          = np.array( (colors, 1-colors/2.0, 1-colors/2.0) ).transpose((1,0))
 
-# -----------------------------------------------------
-# Add mesh as VisPy node
-TriangleMesh = create_visual_node(TriangleMeshVisual)
-
-# Create a new OpenGL window
-plt = scene.SceneCanvas(        keys='interactive', 
-                                size=(1024, 768) )
-                                
-view = plt.central_widget.add_view(     bgcolor=(0.2,0.2,0.2),
-                                        border_color=(0.0,0.0,0.0),
-                                        border_width=1 )
-
-# Add and configure camera
-view.camera = scene.cameras.ArcballCamera(fov=0)
-view.camera.center  = (0.0,0.0,0.5)
-
-# Update the VisPy node with the mesh data
-mesh = TriangleMesh(    geometry['vertices'],
-                        geometry['faces'],
+# -----------------------------------------------------------
+# Create GL window and load mesh
+meshApp = MeshApp3D(    geometry,
                         colors=colors,
-                        light=TimedSpotLight, 
-                        camera=view.camera )
+                        light=TimedSpotLight )
+meshApp._view._camera.center           = (0.0,0.0,0.5)
+meshApp._mesh._light._posFunctor = lambda t : np.array( (3*np.cos(t), 3*np.sin(t), 2.0), dtype=np.float32 )
 
-# Configure lighting
-mesh._light._posFunctor = lambda t : np.array( (3*np.cos(t), 3*np.sin(t), 2.0), dtype=np.float32 )
-
-# Load mesh to the GPU
-view.add(mesh)
-
-# Render
-plt.show()
-app.run()
+meshApp.run()

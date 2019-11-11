@@ -45,7 +45,7 @@ class MeshApp3D:
                                                                 center=(0.0,0.0,0.0), 
                                                                 parent=self._view )
         else:
-            self._view.camera   = camera
+            self._view.camera   = camera( parent=self._view )
 
         # Create visual
         self._mesh              = self._meshNode(   surfaceMesh['vertices'],
@@ -60,7 +60,7 @@ class MeshApp3D:
         vertices                    = np.transpose(  self._mesh._meshData.get_vertices() ,(1,0) )
         self._mesh._light._pos      = ( ( max(vertices[0]) - min(vertices[0]) )/2.0,
                                         ( max(vertices[1]) - min(vertices[1]) )/2.0,
-                                        ( abs(max(vertices[2])) + abs(min(vertices[2])) ) )
+                                          max(vertices[2]) + (max(vertices[2])-min(vertices[2]))*10     )
         self._mesh._light._color    = np.array( (1.0,1.0,1.0), dtype=np.float32 )
 
         self._view.add(self._mesh)

@@ -21,7 +21,6 @@ class SurfaceKernel:
     # GARBAGE COLLECTION AND RESET --------------------------------------------
     def reset(self):
         self.meshSize               = [0,0]
-        self.samples                = [5,5]
         self.polynomialOrders       = [3,3]
         self.interpolationPoints    = np.array( [ [[],[]], [[],[]], [[],[]] ] )
         self.controlPoints          = [[],[],[]]
@@ -122,9 +121,9 @@ class SurfaceKernel:
 
 
     # SURFACE GENERATION ------------------------------------------------------
-    def generatePoints(self):
+    def generatePoints(self,nSamples=(10,10)):
         self.interpolate()
         return pysplinekernel.evaluateSurface(
                 self.knotVectors,
                 self.controlPoints,
-                self.samples)
+                nSamples)
