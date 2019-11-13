@@ -2,7 +2,7 @@
 import numpy as np
 
 # --- GLMesh imports ---
-from glmesh import MeshNode, MeshVisual, ParametricSurface
+from glmesh import MeshNode, MeshVisual, Torus
 
 # --- Lighting imports ---
 from lighting import SimpleLight
@@ -12,17 +12,10 @@ from vispy.gloo import VertexBuffer
 from vispy import scene, app
 
 # -----------------------------------------------------------
-Torus       = lambda radius1, radius2, offset : ParametricSurface(    (   
-                                                    lambda u,v : np.cos(u)*(radius1+radius2*np.cos(v)) + offset[0],
-                                                    lambda u,v : np.sin(u)*(radius1+radius2*np.cos(v)) + offset[1],
-                                                    lambda u,v : radius2*np.sin(v) + offset[2] ),
-                                                    domain=((0.0,2*np.pi),(0.0,-2*np.pi))                           )
-
-# -----------------------------------------------------------
 torus1  = Torus( 1.0, 0.5, [0.0,0.0,0.0] )
 torus2  = Torus( 0.5, 0.2, [1.0, 0.5, 0.2] )
 
-n       = 25
+n       = 100
 data1   = torus1.evaluate( torus1.u(nSamples=n), torus1.v(nSamples=n), format='list' )
 data2   = torus2.evaluate( torus2.u(nSamples=n), torus2.v(nSamples=n), format='list' )
 

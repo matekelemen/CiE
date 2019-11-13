@@ -5,7 +5,7 @@ from .fragmentshaders import *
 
 from .geoconversion import convertToSurfaceMesh
 
-from .parametricsurface import ParametricSurface
+from .parametricsurface import *
 
 from .meshnode import MeshNode
 from .meshvisual import MeshVisual, TriangleMeshVisual

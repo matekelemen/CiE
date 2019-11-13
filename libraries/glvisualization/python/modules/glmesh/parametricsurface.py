@@ -42,3 +42,11 @@ class ParametricSurface:
 
     def v(self,nSamples=10):
         return np.linspace( self._domain[1][0], self._domain[1][1], num=nSamples )
+
+
+# -----------------------------------------------------------
+Torus       = lambda radius1, radius2, offset : ParametricSurface(    (   
+                                                    lambda u,v : np.cos(u)*(radius1+radius2*np.cos(v)) + offset[0],
+                                                    lambda u,v : np.sin(u)*(radius1+radius2*np.cos(v)) + offset[1],
+                                                    lambda u,v : radius2*np.sin(v) + offset[2] ),
+                                                    domain=((0.0,2*np.pi),(0.0,-2*np.pi))                           )

@@ -193,7 +193,6 @@ class MeshVisual(Visual):
 
 
     def _prepare_draw(self,view):
-        self.updateMesh()
         self.updateLight()
 
 
