@@ -141,29 +141,84 @@ class TriangleMeshVisual(Visual):
 
 
 
-def convertToSurfaceMesh(grid):
-    size0 = len(grid[0])
-    size1 = len(grid[0][0])
-    geometry = {'vertices':[], 'faces':[]}
-    geometry['vertices'] = np.reshape(
-                    np.transpose( 
-                        np.array( grid ,dtype=np.float32  ), 
-                        axes=(1,2,0)),
-                    ( size0*size1 ,3))
-    geometry['faces'] = np.zeros( ( 2*(size0-1)*(size1-1), 3 ), dtype=np.uint32 )
-    k = 0
-    for j in range(size0-1):
-        for i in range(size1-1):
-            jni = j*size1+i
-            geometry['faces'][k] = [ 
-                jni, 
-                jni+size1,
-                jni+size1+1
-                ]
-            geometry['faces'][k+1] = [ 
-                jni, 
-                jni+1+size1,
-                jni+1
-                ]
-            k+=2
-    return geometry
+
+class MeshVisual(Visual):
+    def __init__(self,  root,
+                        light=None,
+                        camera=None,
+                        vertexShader=defaultVertexShader,
+                        fragmentShader=defaultFragmentShader ):
+        Visual.__init__(self, vertexShader, fragmentShader)
+
+        # GL init and settings
+        self._draw_mode     = 'triangles'
+        wrappers.set_cull_face(mode='back')
+        self.set_gl_state(  'opaque',
+                            depth_test=True,
+                            cull_face=True)
+
+        # Default arguments
+        self.light  = None
+        if light is not None:
+            self.light      = SimpleLight(parent=self)
+        else:
+            self.light      = light(parent=self)
+
+        if camera is None:
+            raise RuntimeError('Camera is not yet supported')
+        else:
+            self.camera     = camera
+
+        # Set mesh root node
+        self.root           = root
+
+        # Initialize buffers
+        self._vertexBuffer              = None
+        self._normalBuffer              = None
+        self._colorBuffer               = None
+        self._textureBuffer             = None
+        self._textureCoordinateBuffer   = None
+
+        self.updateMesh()
+        self.updateLight()
+
+        self.shared_program.frag['ambientMaterialConstant']     = 0.5
+        self.shared_program.frag['diffuseMaterialConstant']     = 0.5
+        self.shared_program.frag['specularMaterialConstant']    = 0.5
+
+        
+    # --- Function override ---
+    def _prepare_transforms(self, view):
+        view.view_program.vert['transform']         = view.get_transform()
+
+
+    def _prepare_draw(self,view):
+        self.updateMesh()
+        self.updateLight()
+
+
+    # --- State update ---
+    def updateMesh(self):
+        # Collect data from mesh root node
+        data    = self.root.getCompiledMesh()
+
+        # Update buffers
+        self._vertexBuffer              = VertexBuffer( data['vertices'] )
+        self._normalBuffer              = VertexBuffer( data['vertex_normals'] )
+        self._colorBuffer               = VertexBuffer( np.ones( (len(data['vertices']),4), dtype=np.float32 ) )
+        self._textureBuffer             = None
+        self._textureCoordinateBuffer   = None
+
+        # Load to GPU
+        self.shared_program.vert['position']    = self._vertexBuffer
+        self.shared_program.vert['normal']      = self._normalBuffer
+        self.shared_program.vert['color']       = self._colorBuffer
+        #self.shared_program.vert['textureCoordinates]  = self._textureCoordinateBuffer
+        #self.shared_program['u_objectTexture']         = self._textureBuffer
+
+
+    def updateLight(self):
+        self.shared_program.frag['ambientLight']                = self.light._ambient
+        self.shared_program.frag['lightPos']                    = self.light._pos
+        self.shared_program.frag['lightColor']                  = self.light._color
+        self.shared_program.frag['cameraPos']                   = np.array( self.camera._quaternion.rotate_point( [0.0,3.0,0.0] ), dtype=np.float32)

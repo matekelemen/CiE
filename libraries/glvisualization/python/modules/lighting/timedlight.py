@@ -9,12 +9,12 @@ import numpy as np
 from vispy import app
 
 class TimedSpotLight(SimpleLight):
-    def __init__(self, parent,
-                                posFunctor=None,
-                                colorFunctor=None,
-                                *args,
-                                **kwargs ):
-        SimpleLight.__init__(self,parent,**kwargs)
+    def __init__(self,  parent=None,
+                        posFunctor=None,
+                        colorFunctor=None,
+                        *args,
+                        **kwargs ):
+        SimpleLight.__init__(self,parent=parent,**kwargs)
 
         # Default functors
         if posFunctor is None:

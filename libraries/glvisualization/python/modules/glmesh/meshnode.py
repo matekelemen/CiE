@@ -109,7 +109,7 @@ class MeshNode(MeshData):
         if destinationDict is None:
             returnFlag      = True
             sizes           = self.computeCompiledMeshSize()
-            destinationDict = { 'vertices'          : np.empty( (sizes['vertices'],3,3),    dtype=np.float32),
+            destinationDict = { 'vertices'          : np.empty( (sizes['vertices'],3),    dtype=np.float32),
                                 'vertex_normals'    : np.empty( (sizes['vertices'],3),      dtype=np.uint32),
                                 'vertex_colors'     : np.empty( (sizes['vertex_colors'],4), dtype=np.float32),
                                 'objectIDs'         : np.empty( (sizes['vertices'],1),      dtype=np.uint32 ),
