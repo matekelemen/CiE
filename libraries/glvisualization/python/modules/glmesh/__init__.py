@@ -1,5 +1,10 @@
-from glmesh.vertexshaders import *
-from glmesh.fragmentshaders import *
-from glmesh.meshvisual import TriangleMeshVisual, convertToSurfaceMesh
-from glmesh.meshapp import MeshApp3D
-from glmesh.parametricsurface import ParametricSurface
+from .utilities import checkID
+
+from .vertexshaders import *
+from .fragmentshaders import *
+
+from .parametricsurface import ParametricSurface
+
+from .meshnode import MeshNode
+from .meshvisual import TriangleMeshVisual, convertToSurfaceMesh
+from .meshapp import MeshApp3D

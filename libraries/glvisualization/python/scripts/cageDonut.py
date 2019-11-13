@@ -15,9 +15,11 @@ from lighting import TimedSpotLight
 texture             = loadTexture( textureFolderPath + '/cage.png' )
 
 # Geometry
-geom                = ParametricSurface(    (   lambda u,v : np.cos(u)*(1+0.5*np.cos(v)),
-                                                lambda u,v : np.sin(u)*(1+0.5*np.cos(v)),
-                                                lambda u,v : 0.5*np.sin(v) ),
+r1                  = 1.0
+r2                  = 0.5
+geom                = ParametricSurface(    (   lambda u,v : np.cos(u)*(r1+r2*np.cos(v)),
+                                                lambda u,v : np.sin(u)*(r1+r2*np.cos(v)),
+                                                lambda u,v : r2*np.sin(v) ),
                                             domain=((0.0,2*np.pi),(0.0,-2*np.pi)) )
 
 nSamples            = 100
@@ -37,7 +39,8 @@ meshApp             = MeshApp3D(    geometry,
                                     textureCoordinates=textureCoordinates,
                                     vertexShader=defaultVertexShaderWithTexture,
                                     fragmentShader=defaultFragmentShaderWithTexture,
-                                    light=TimedSpotLight )
+                                    light=TimedSpotLight,
+                                    specularMaterialConstant=0.75 )
 
 meshApp._mesh._light._colorFunctor  = lambda t : (1.0,1.0,1.0)
 meshApp._mesh._light._posFunctor    = lambda t : (0.0,0.0,10*np.cos(t))

@@ -134,7 +134,7 @@ class TriangleMeshVisual(Visual):
         self.shared_program.frag['specularMaterialConstant']    = self._specularMaterialConstant
         self.shared_program.frag['lightPos']                    = self._light._pos
         self.shared_program.frag['lightColor']                  = self._light._color
-        self.shared_program.frag['cameraPos']                   = np.array( self._camera._quaternion.rotate_point( [0.0,1.0,0.0] ), dtype=np.float32)
+        self.shared_program.frag['cameraPos']                   = np.array( self._camera._quaternion.rotate_point( [0.0,3.0,0.0] ), dtype=np.float32)
         #print(self._camera.distance)
 
 
