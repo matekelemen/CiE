@@ -10,7 +10,7 @@ from glmesh import checkID
 
 # -----------------------------------------------------
 class MeshNode(MeshData):
-    def __init__(self, parent=None, children=None, objectID=0, materialID=0, **kwargs):
+    def __init__(self, parent=None, children=None, objectID=0, materialID=0, textureCoordinates=None, **kwargs):
         MeshData.__init__(self,**kwargs)
 
         # Set parent (None=root)
@@ -35,6 +35,7 @@ class MeshNode(MeshData):
         # Set empty array for unset data, ndarray for set data
         if self._vertices is None:
             self._vertices          = np.empty(0, dtype=np.float32)
+            warn('Unset vertices for object ' + self.__repr__(), category=RuntimeWarning)
         elif isinstance( self._vertices, list ) or isinstance( self._vertices, tuple ):
             self._vertices          = np.asarray( self._vertices, dtype=np.float32 )
         elif not isinstance( self._vertices, np.ndarray ):
@@ -42,17 +43,21 @@ class MeshNode(MeshData):
 
         if self._faces is None:
             self._faces             = np.empty(0, dtype=np.uint32)
+            warn('Unset faces for object ' + self.__repr__(), category=RuntimeWarning)
         elif isinstance( self._faces, list ) or isinstance( self._faces, tuple ):
             self._faces             = np.asarray( self._faces, dtype=np.uint32 )
         elif not isinstance( self._faces, np.ndarray ):
             raise ValueError('Invalid container type!')     
 
-        if self._vertex_colors is None:
-            self._vertex_colors     = np.empty(0, dtype=np.float32)
-        elif isinstance( self._vertex_colors, list ) or isinstance( self._vertex_colors, tuple ):
-            self._vertex_colors     = np.asarray( self._vertex_colors, dtype=np.float32 )
-        elif not isinstance( self._vertex_colors, np.ndarray ):
-            raise ValueError('Invalid container type!')  
+        if textureCoordinates is None:
+            self._textureCoordinates    = np.empty(0, dtype=np.float32)
+            warn('Unset texture coordinates for object ' + self.__repr__(), category=RuntimeWarning)
+        elif isinstance(textureCoordinates, list) or isinstance(textureCoordinates, tuple):
+            self._textureCoordinates    = np.asarray( textureCoordinates, dtype=np.float32 )
+        elif isinstance(textureCoordinates, np.ndarray):
+            self._textureCoordinates    = textureCoordinates
+        else:
+            raise ValueError('Invalid container type!')
 
 
     def parent(self):
@@ -75,14 +80,23 @@ class MeshNode(MeshData):
         self._children.append(child)
         child.setParent(self)
 
+    
+    def get_texture_coordinates(self, indexed=None):
+        if indexed is None:
+            return self._textureCoordinates
+        elif indexed is 'faces':
+            return self._textureCoordinates[ self._faces ]
+        else:
+            Exception("Invalid indexing mode. Accepts: None, 'faces'")
+
 
     def computeCompiledMeshSize(self):
         '''
         Recursively compute the number of vertices in the entire mesh tree
         '''
         # Prealloc
-        sizes   = { 'vertices'      : 0,
-                    'vertex_colors' : 0,
+        sizes   = { 'faces'         : 0,
+                    'vertices'      : 0,
                     'nodes'         : 0}
 
         # Accumulate children sizes
@@ -93,56 +107,62 @@ class MeshNode(MeshData):
                     sizes[name] += value
                     
         # Add self sizes
+        sizes['faces']          += len(self._faces)
         sizes['vertices']       += len(self._faces)*3
-        sizes['vertex_colors']  += len(self._vertex_colors)
         sizes['nodes']          += 1
             
         return sizes
 
 
-    def getCompiledMesh(self, destinationDict=None, vertexIndex=0, vertexColorIndex=0):
+    def getCompiledMesh(self, destinationDict=None, faceIndex = 0):
         '''
-        Get all vertices and triangles in the mesh
+        Get all vertices, normals, texture coordinates and IDs in the mesh
         '''
         # Create destination
         returnFlag  = False
         if destinationDict is None:
             returnFlag      = True
             sizes           = self.computeCompiledMeshSize()
-            destinationDict = { 'vertices'          : np.empty( (sizes['vertices'],3),    dtype=np.float32),
-                                'vertex_normals'    : np.empty( (sizes['vertices'],3),      dtype=np.uint32),
-                                'vertex_colors'     : np.empty( (sizes['vertex_colors'],4), dtype=np.float32),
-                                'objectIDs'         : np.empty( (sizes['vertices'],1),      dtype=np.uint32 ),
-                                'materialIDs'       : np.empty( (sizes['vertices'],1),      dtype=np.uint32 )}
+            destinationDict = { 'vertices'              : np.empty( (sizes['faces'],3,3),  dtype=np.float32),
+                                'normals'               : np.empty( (sizes['faces'],3,3),  dtype=np.float32),
+                                'textureCoordinates'    : np.empty( (sizes['faces'],3,2),  dtype=np.float32),
+                                'objectIDs'             : np.empty( (sizes['faces'],3,1),  dtype=np.float32 ),
+                                'materialIDs'           : np.empty( (sizes['faces'],3,1),  dtype=np.float32 )}
 
         # Write to container - vertices, normals, IDs
-        for i, (vertices, normals) in enumerate( zip( self.get_vertices(indexed='faces'), self.get_vertex_normals(indexed='faces') ) ):
-            for j, (vertex, normal) in enumerate( zip(vertices,normals) ):
+        for i, (vertices, normals, textureCoordinates) in enumerate( zip(   self.get_vertices(indexed='faces'), 
+                                                                            self.get_vertex_normals(indexed='faces'),
+                                                                            self._textureCoordinates[self.get_faces()] ) ):
+            index   = faceIndex + i
+            # Write Data
+            destinationDict['vertices'][index]                      = vertices
+            destinationDict['normals'][index]                       = normals
+            destinationDict['textureCoordinates'][index]            = textureCoordinates
+            # Write IDs
+            destinationDict['objectIDs'][index]                     = self._objectID * np.ones( (3,1), dtype=np.float32 )
+            destinationDict['materialIDs'][index]                   = self._materialID * np.ones( (3,1), dtype=np.float32 )
+            '''
+            for j, (vertex, normal, coordinates) in enumerate( zip(vertices,normals, textureCoordinates) ):
                 index   = vertexIndex + 3*i + j
-                # Write vertices
+                # Write data
                 destinationDict['vertices'][index]                  = vertex
-                # Write normals
-                destinationDict['vertex_normals'][index]            = normal
+                destinationDict['normals'][index]                   = normal
+                destinationDict['textureCoordinates'][index]        = coordinates
                 # Write IDs
-                destinationDict['objectIDs'][index]                 = self._objectID
-                destinationDict['materialIDs'][index]               = self._materialID
-                
-        # Write to container - colors
-        if destinationDict['vertex_colors']:
-            for i, triangle in enumerate(self.get_vertex_colors(indexed='faces')):
-                for j, color in enumerate(triangle):
-                    destinationDict['vertex_colors'][ vertexColorIndex + 3*i + j]   = color
-
-
+                destinationDict['objectIDs'][index]                 = np.uint32(self._objectID)
+                destinationDict['materialIDs'][index]               = np.uint32(self._materialID)
+        '''
         # Recursive call on the children
+        faceIndex   += len(self._faces)
         for child in self._children:
-            child.getCompiledMesh(  destinationDict=destinationDict,
-                                    vertexIndex=vertexIndex+len(self._faces)*3,
-                                    vertexColorIndex=len(self._vertex_colors) )
+            faceIndex = child.getCompiledMesh(  destinationDict=destinationDict,
+                                                faceIndex=faceIndex )
 
         # Return container if requested
         if returnFlag:
             return destinationDict
+        else:
+            return faceIndex
 
 
 

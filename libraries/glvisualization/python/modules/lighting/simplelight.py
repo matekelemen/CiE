@@ -3,15 +3,14 @@ import numpy as np
 class SimpleLight:
     # Simple spot light
     def __init__(self,  parent=None, 
-                            pos=[0.0,0.0,1.0], 
+                            pos=[0.0,0.0,0.0], 
                             color=[1.0,1.0,1.0],
                             ambient=[0.2,0.2,0.2] ):
 
         self._parent        = parent
-        self._pos           = pos
-        self._color         = color
-        self._ambient       = ambient
-        #self.update()
+        self._pos           = np.array( pos, dtype=np.float32 )
+        self._color         = np.array( color, dtype=np.float32 )
+        self._ambient       = np.array( ambient, dtype=np.float32 )
 
 
     def update(self, 
@@ -19,12 +18,13 @@ class SimpleLight:
                     color=None,
                     ambient=None ):
         if pos is not None:
-            self._pos       = pos
+            self._pos       = np.array( pos, dtype=np.float32 )
         if color is not None:
-            self._color     = color
+            self._color     = np.array( color, dtype=np.float32 )
         if ambient is not None:
-            self._ambient   = ambient
-        self._parent.updateLight()
+            self._ambient   = np.array( ambient, dtype=np.float32 )
+        if self._parent is not None:
+            self._parent.updateLight()
 
 
     def setParent(self,parent):

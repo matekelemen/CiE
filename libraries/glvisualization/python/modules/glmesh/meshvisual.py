@@ -9,12 +9,20 @@ from vispy.visuals import Visual
 # --- Lighting imports ---
 from lighting import SimpleLight
 
+# --- Texture imports ---
+from gltexture import textureFolderPath, loadTexture
+
 # --- Internal imports ---
 from glmesh import defaultVertexShader, defaultFragmentShader
+from glmesh import defaultVertexShaderWithTexture, defaultFragmentShaderWithTexture
 
 # -----------------------------------------------------
 # MESH
 # -----------------------------------------------------
+def increment(value):
+    return value+1.0
+
+
 class TriangleMeshVisual(Visual):
     def __init__(   self, vertices, faces, 
                         colors=None,
@@ -79,7 +87,7 @@ class TriangleMeshVisual(Visual):
 
 
     def _prepare_draw(self,view):
-        self.updateMesh()
+         #self.updateMesh()
         self.updateLight()
 
 
@@ -135,8 +143,7 @@ class TriangleMeshVisual(Visual):
         self.shared_program.frag['lightPos']                    = self._light._pos
         self.shared_program.frag['lightColor']                  = self._light._color
         self.shared_program.frag['cameraPos']                   = np.array( self._camera._quaternion.rotate_point( [0.0,3.0,0.0] ), dtype=np.float32)
-        #print(self._camera.distance)
-
+        self.update()
 
 
 
@@ -144,11 +151,10 @@ class TriangleMeshVisual(Visual):
 
 class MeshVisual(Visual):
     def __init__(self,  root,
+                        aggregatedTexture,
                         light=None,
-                        camera=None,
-                        vertexShader=defaultVertexShader,
-                        fragmentShader=defaultFragmentShader ):
-        Visual.__init__(self, vertexShader, fragmentShader)
+                        camera=None ):
+        Visual.__init__(self, *aggregatedTexture.generateShaderCode())
 
         # GL init and settings
         self._draw_mode     = 'triangles'
@@ -158,38 +164,36 @@ class MeshVisual(Visual):
                             cull_face=True)
 
         # Default arguments
-        self.light  = None
-        if light is not None:
-            self.light      = SimpleLight(parent=self)
-        else:
-            self.light      = light(parent=self)
+        if light is None:
+            self.light      = SimpleLight
+        self.light  = light(parent=self)
 
         if camera is None:
-            raise RuntimeError('Camera is not yet supported')
-        else:
-            self.camera     = camera
+            raise RuntimeError('Default camera is not yet supported')
+        self.camera     = camera
 
         # Set mesh root node
         self.root           = root
 
         # Initialize buffers
-        self._vertexBuffer              = None
-        self._normalBuffer              = None
-        self._colorBuffer               = None
-        self._textureBuffer             = None
-        self._textureCoordinateBuffer   = None
+        self._vertexBuffer                                  = None
+        self._normalBuffer                                  = None
+        self._materialIDBuffer                              = None
+        self._textureCoordinateBuffer                       = None
+        self._textureBuffer                                 = aggregatedTexture
 
-        self.updateMesh()
+        # Bind the texture buffer
+        self.shared_program['aggregatedTexture']            = self._textureBuffer.build()
+        self.shared_program.vert['aggregatedTextureWidth']  = aggregatedTexture.shape[0]
+        self.shared_program.vert['aggregatedTextureHeight'] = aggregatedTexture.shape[1]
+
         self.updateLight()
-
-        self.shared_program.frag['ambientMaterialConstant']     = 0.5
-        self.shared_program.frag['diffuseMaterialConstant']     = 0.5
-        self.shared_program.frag['specularMaterialConstant']    = 0.5
+        self.updateMesh()
 
         
     # --- Function override ---
     def _prepare_transforms(self, view):
-        view.view_program.vert['transform']         = view.get_transform()
+        view.view_program.vert['transform']             = view.get_transform()
 
 
     def _prepare_draw(self,view):
@@ -202,18 +206,19 @@ class MeshVisual(Visual):
         data    = self.root.getCompiledMesh()
 
         # Update buffers
-        self._vertexBuffer              = VertexBuffer( data['vertices'] )
-        self._normalBuffer              = VertexBuffer( data['vertex_normals'] )
-        self._colorBuffer               = VertexBuffer( np.ones( (len(data['vertices']),4), dtype=np.float32 ) )
-        self._textureBuffer             = None
-        self._textureCoordinateBuffer   = None
+        self._vertexBuffer              = VertexBuffer( data=data['vertices'] )
+        self._normalBuffer              = VertexBuffer( data=data['normals'] )
+        self._materialIDBuffer          = VertexBuffer( data=data['materialIDs'] )
+        self._textureCoordinateBuffer   = VertexBuffer( data=data['textureCoordinates'] )
+        # ''' The texture buffer is set in the constructor and cannot be changed '''
 
-        # Load to GPU
-        self.shared_program.vert['position']    = self._vertexBuffer
-        self.shared_program.vert['normal']      = self._normalBuffer
-        self.shared_program.vert['color']       = self._colorBuffer
-        #self.shared_program.vert['textureCoordinates]  = self._textureCoordinateBuffer
-        #self.shared_program['u_objectTexture']         = self._textureBuffer
+        # Bind buffers
+        self.shared_program.vert['position']            = self._vertexBuffer
+        self.shared_program.vert['normal']              = self._normalBuffer
+        self.shared_program.vert['materialID']          = self._materialIDBuffer
+        self.shared_program.vert['textureCoordinates']  = self._textureCoordinateBuffer
+        # ''' The texture buffer is bound in the constructor '''
+        self.update()
 
 
     def updateLight(self):
@@ -221,3 +226,4 @@ class MeshVisual(Visual):
         self.shared_program.frag['lightPos']                    = self.light._pos
         self.shared_program.frag['lightColor']                  = self.light._color
         self.shared_program.frag['cameraPos']                   = np.array( self.camera._quaternion.rotate_point( [0.0,3.0,0.0] ), dtype=np.float32)
+        self.update()

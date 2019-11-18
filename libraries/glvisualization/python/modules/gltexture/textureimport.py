@@ -35,4 +35,12 @@ def loadTexture(                filePath,
         raise ValueError('Invalid data type!')
 
     # Load and format
-    return np.asarray( np.array(Image.open(filePath))/norm, dtype=dataType )[:,:,:texelSize]
+    return np.transpose( np.array( np.asarray(Image.open(filePath))/norm, dtype=dataType )[:,:,:texelSize], axes=(1,0,2) )
+
+
+def emptyTexture(size=(1024,1024),dtype=np.float32):
+    return np.zeros( (size[0],size[1],3), dtype=dtype )
+
+
+def uniformTexture(color=(1.0,1.0,1.0), size=(1024,1024), dtype=np.float32):
+    return np.asarray( [ [color for i in range(size[0])] for j in range(size[0]) ], dtype=dtype )

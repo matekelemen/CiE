@@ -28,16 +28,18 @@ class TimedSpotLight(SimpleLight):
             self._colorFunctor  = colorFunctor
 
         # Timer setup
-        self._t0    = default_timer()
-        self._timer = app.Timer('auto', connect=self.on_timer, start='true')
+        self._t0            = default_timer()
+        self._timer         = app.Timer('auto', connect=self.on_timer, start='true')
+        self._tLast         = self._t0
+        self._period        = 1.0/60.0
 
     
     def on_timer(self, event):
         t = default_timer() - self._t0
-        self.update( 
-            pos=self._posFunctor( t ),
-            color=self._colorFunctor( t )
-            )
+        if abs(t-self._tLast) > self._period:
+            self._tLast = t
+            self.update(    pos=self._posFunctor( t ),
+                            color=self._colorFunctor( t ) )
 
     
 
