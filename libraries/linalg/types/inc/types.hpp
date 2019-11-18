@@ -4,5 +4,6 @@
 #include "scalartypes.hpp"
 #include "arraytypes.hpp"
 #include "vectortypes.hpp"
+#include "typeoperations.hpp"
 
 #endif

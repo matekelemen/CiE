@@ -1,5 +1,5 @@
-#ifndef LINALG_TYPE_OPERATIONS_HPP
-#define LINALG_TYPE_OPERATIONS_HPP
+#ifndef LINALG_TYPE_OPERATIONS_IMPL_HPP
+#define LINALG_TYPE_OPERATIONS_IMPL_HPP
 
 #include <cmath>
 
@@ -25,7 +25,7 @@ double norm(const T& object)
 
 
 template <typename T>
-void normalize(T& object, NormFunction<T> measure=&norm<T>, double tolerance=1e-15)
+void normalize(T& object, NormFunction<T> measure, double tolerance)
 {
     double objectNorm = measure(object);
     if ( std::abs(objectNorm)<tolerance )

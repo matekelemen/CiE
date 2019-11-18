@@ -4,6 +4,6 @@
 #include <functional>
 
 template <typename Object>
-using NormFunction = std::function<double(const Object&)>
+using NormFunction = std::function<double(const Object&)>;
 
 #endif

@@ -23,12 +23,6 @@ TEST_CASE("Gradient estimation")
 
     REQUIRE_NOTHROW( gradient = gradientEstimate( RNRElement<2>({0.0,0.0}), objective, 1e-11 ) );
     CHECK( gradient[0] == Approx(gradient[1]) );
-
-    for (size_t i=0; i<gradient.size(); ++i)
-    {
-        std::cout << gradient[i] << ",";
-    }
-    std::cout << "\n";
 }
 
 }
