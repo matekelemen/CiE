@@ -13,6 +13,7 @@
 namespace linalg
 {
 
+
 inline double& Matrix::operator()( size_t i, size_t j )
 {
      if (!_transpose)
@@ -20,6 +21,7 @@ inline double& Matrix::operator()( size_t i, size_t j )
     else
         return data_[j*size2_ + i];
 }
+
 
 inline double Matrix::operator()( size_t i, size_t j ) const
 {
@@ -29,20 +31,42 @@ inline double Matrix::operator()( size_t i, size_t j ) const
         return data_[j*size2_ + i];
 }
 
+
+inline double& Matrix::operator[]( size_t i )
+{
+    return data_[i];
+}
+
+
+inline double Matrix::operator[]( size_t i ) const
+{
+    return data_[i];
+}
+
+
 inline size_t Matrix::size1( ) const
 {
     return size1_;
 }
+
 
 inline size_t Matrix::size2( ) const
 {
     return size2_;
 }
 
+
+inline size_t Matrix::size() const
+{
+    return data_.size();
+}
+
+
 inline std::array<size_t, 2> Matrix::sizes( ) const
 {
     return { size1_, size2_ };
 }
+
 
 inline void Matrix::transpose()
 {

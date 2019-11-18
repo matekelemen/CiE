@@ -5,7 +5,7 @@
 #include <ctime>
 #include <random>
 
-#include "basictypes.hpp"
+#include "linalgtypes.hpp"
 
 namespace opt {
 

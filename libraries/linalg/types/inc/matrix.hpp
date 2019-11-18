@@ -24,11 +24,14 @@ public:
 
     size_t size1( ) const;
     size_t size2( ) const;
+    size_t size() const;
 
     std::array<size_t, 2> sizes( ) const;
 
     double& operator()( size_t i, size_t j );
     double operator()( size_t i, size_t j ) const;
+    double& operator[]( size_t i );
+    double operator[]( size_t i ) const;
 
 	const std::vector<double>& data() const { return data_; }
 

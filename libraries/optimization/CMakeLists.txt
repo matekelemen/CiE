@@ -2,6 +2,8 @@ cmake_minimum_required( VERSION 3.4.3 )
 
 project( optimization CXX )
 
+include_directories( ../linalg/inc )
+
 # Gather source files into CMake variables
 file( GLOB_RECURSE OPTIMIZATION_TEST_FILES test/*.cpp)
 
@@ -14,6 +16,7 @@ MACRO( ADDFILES curdir )
     # Collect header and source files
     file( GLOB TEMP_HEADERS ${curdir}/inc/*.h* )
     file( GLOB TEMP_SOURCES ${curdir}/src/*.cpp )
+    file( GLOB TEMP_TESTS ${curdir}/test/*.cpp )
     # Append file lists and set them in the parent scope
     list( APPEND OPTIMIZATION_INCLUDE_DIRECTORIES ${curdir}/inc )
     set( OPTIMIZATION_INCLUDE_DIRECTORIES ${OPTIMIZATION_INCLUDE_DIRECTORIES} PARENT_SCOPE )
@@ -21,19 +24,14 @@ MACRO( ADDFILES curdir )
     set( OPTIMIZATION_HEADER_FILES ${OPTIMIZATION_HEADER_FILES} PARENT_SCOPE )
     list( APPEND OPTIMIZATION_SOURCE_FILES ${TEMP_SOURCES} )
     set( OPTIMIZATION_SOURCE_FILES ${OPTIMIZATION_SOURCE_FILES} PARENT_SCOPE )
+    list( APPEND OPTIMIZATION_TEST_FILES ${TEMP_TESTS} )
+    set( OPTIMIZATION_TEST_FILES ${OPTIMIZATION_TEST_FILES} PARENT_SCOPE )
+    message( STATUS ${TEMP_TESTS} )
 ENDMACRO()
 
 SUBDIRLIST( subdirs ${CMAKE_CURRENT_SOURCE_DIR} )
 foreach( subdirectory ${subdirs} )
-    # Include header directories
-    include_directories( ${subdirectory}/inc )
-    # Append library header and source files
-    file( GLOB TEMP_HEADERS ${subdirectory}/inc/*.h* )
-    file( GLOB TEMP_SOURCES ${subdirectory}/src/*.cpp )
-    list( APPEND OPTIMIZATION_HEADER_FILES ${TEMP_HEADERS} )
-    list( APPEND OPTIMIZATION_SOURCE_FILES ${TEMP_SOURCES} )
-    # DEBUG
-    #message( STATUS ${OPTIMIZATION_HEADER_FILES} )
+    ADDFILES( ${subdirectory} )
 endforeach()
 
 add_subdirectory( gradientmethods )
@@ -42,6 +40,7 @@ add_subdirectory( populationmethods )
 include_directories( ${OPTIMIZATION_INCLUDE_DIRECTORIES} )
 #message( STATUS ${OPTIMIZATION_HEADER_FILES} )
 #message( STATUS ${OPTIMIZATION_SOURCE_FILES} )
+#message( STATUS ${OPTIMIZATION_TEST_FILES} )
 
 # This enables exporting all symbols to the dll on windows
 set( CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON )

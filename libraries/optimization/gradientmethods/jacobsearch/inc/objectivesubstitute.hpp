@@ -1,7 +1,7 @@
 #ifndef OPTIMIZATION_OBJECTIVE_SUBSTITUTE
 #define OPTIMIZATION_OBJECTIVE_SUBSTITUTE
 
-#include "basictypes.hpp"
+#include "linalgtypes.hpp"
 #include <utility>
 
 namespace opt {
