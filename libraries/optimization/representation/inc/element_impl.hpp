@@ -28,9 +28,31 @@ Element<DataType,ObjectiveType>::Element() :
 
 
 template <typename DataType, typename ObjectiveType>
+Element<DataType,ObjectiveType>::Element(const Element<DataType, ObjectiveType>& toCopy) :
+    _data(toCopy.getData()),
+    _objective(toCopy.getObjective())
+{
+}
+
+
+template <typename DataType, typename ObjectiveType>
+Element<DataType,ObjectiveType> Element<DataType,ObjectiveType>::operator=(const Element<DataType,ObjectiveType>& toCopy) const
+{
+    return Element<DataType,ObjectiveType>(toCopy.getData(), toCopy.getObjective());
+}
+
+
+template <typename DataType, typename ObjectiveType>
 void Element<DataType,ObjectiveType>::setData(const DataType& data)
 {
     _data = data;
+}
+
+
+template <typename DataType, typename ObjectiveType>
+DataType& Element<DataType,ObjectiveType>::getData()
+{
+    return _data;
 }
 
 

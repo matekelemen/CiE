@@ -12,7 +12,11 @@ public:
     Element(const DataType& data);
     Element();
 
+    Element(const Element<DataType, ObjectiveType>& toCopy);
+    Element<DataType,ObjectiveType> operator=(const Element<DataType,ObjectiveType>& toCopy) const;
+
     void setData(const DataType& data);
+    DataType& getData();
     const DataType& getData() const;
 
     void setObjective(const ObjectiveType& objective);
