@@ -2,6 +2,8 @@ cmake_minimum_required( VERSION 3.4.3 )
 
 project( CSG CXX )
 
+include_directories( ../linalg/inc )
+
 # Initialize file lists
 file( GLOB CSG_SOURCE_FILES src/*.cpp)
 file( GLOB_RECURSE CSG_TEST_FILES test/*.cpp)

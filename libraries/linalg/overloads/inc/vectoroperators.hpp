@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <numeric>
 
-namespace linalg {
 
 Vector operator+(const Vector& vector, double scalar);
 Vector operator+(double scalar, const Vector& vector);
@@ -42,8 +41,7 @@ DoubleArray<N> operator/(const DoubleArray<N>& vector, double scalar);
 
 template <size_t N>
 double operator*(const DoubleArray<N>& lhs, const DoubleArray<N>& rhs); // Dot product
-    
-}
+
 
 #include "vectoroperators_impl.hpp"
 
