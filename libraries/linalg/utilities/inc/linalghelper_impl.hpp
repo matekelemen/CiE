@@ -5,8 +5,8 @@ namespace linalg {
 namespace linalghelper {
 
 
-template<typename VectorType>
-void writeRow( const VectorType& vector, size_t size, std::ostream& out, size_t digits )
+template<typename DoubleVectorType>
+void writeRow( const DoubleVectorType& vector, size_t size, std::ostream& out, size_t digits )
 {
     auto precision = out.precision( );
 

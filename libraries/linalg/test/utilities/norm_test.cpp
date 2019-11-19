@@ -1,15 +1,15 @@
 #include "catch.hpp"
-#include "../../utilities/inc/linalgutilities.hpp"
+#include "../inc/linalg.hpp"
 
 namespace linalg {
 
 TEST_CASE("Norms and normalization")
 {
-    Vector vector = {0.0, 0.0, 0.0, 0.0, 0.0};
+    DoubleVector vector = {0.0, 0.0, 0.0, 0.0, 0.0};
     Matrix matrix( {0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, 2 );
 
-    CHECK( norm(vector) == Approx(0.0) );
-    CHECK( norm(matrix) == Approx(0.0) );
+    CHECK( norm<DoubleVector>(vector) == Approx(0.0) );
+    CHECK( norm<Matrix>(matrix) == Approx(0.0) );
 
     REQUIRE_THROWS( normalize(vector) );
     REQUIRE_THROWS( normalize(matrix) );
@@ -17,8 +17,8 @@ TEST_CASE("Norms and normalization")
     vector = { -1.0, -4.0, 8.0 };
     matrix = Matrix( {1.0, -3.0, 1.0, -5.0}, 2 );
 
-    CHECK( norm(vector) == Approx(9.0) );
-    CHECK( norm(matrix) == Approx(6.0) );
+    CHECK( norm<DoubleVector>(vector) == Approx(9.0) );
+    CHECK( norm<Matrix>(matrix) == Approx(6.0) );
 
     REQUIRE_NOTHROW( normalize(vector) );
     REQUIRE_NOTHROW( normalize(matrix) );

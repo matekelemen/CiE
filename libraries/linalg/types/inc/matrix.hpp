@@ -1,15 +1,13 @@
 #ifndef LINALG_MATRIX_HPP
 #define LINALG_MATRIX_HPP
 
+#include "vectortypes.hpp"
 #include <vector>
 #include <iostream>
 #include <array>
 
 namespace linalg
 {
-
-// Represents a full double vector
-using Vector = std::vector<double>;
 
 class Matrix
 {
@@ -20,7 +18,7 @@ public:
     Matrix( size_t size1, size_t size2, double value );
 
     Matrix( const std::vector<double>& rowMajorData, size_t size1 );
-    Matrix( const std::vector<Vector>& vectorOfRows );
+    Matrix( const std::vector<DoubleVector>& vectorOfRows );
 
     size_t size1( ) const;
     size_t size2( ) const;

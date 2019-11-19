@@ -71,10 +71,10 @@ TEST_CASE("Matrix - vector operator overloads"){
             3.3, 4.4, 5.5 
         }, 2
         );
-    Vector v1 = {0.2, 0.5};
-    Vector v2 = {-0.5, 1.6, 3.5};
-    Vector v3 = {5.0, -5.0, 1.0, 3.0, 12.0};
-    Vector result;
+    DoubleVector v1 = {0.2, 0.5};
+    DoubleVector v2 = {-0.5, 1.6, 3.5};
+    DoubleVector v3 = {5.0, -5.0, 1.0, 3.0, 12.0};
+    DoubleVector result;
 
     REQUIRE_NOTHROW( result = v1 * matrix);
     REQUIRE( result.size() == matrix.size2() );

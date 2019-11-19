@@ -51,7 +51,7 @@ TEST_CASE( "Matrix_zero_size" )
     CHECK( m.size1( ) == 0 );
     CHECK( m.size2( ) == 0 );
 
-    REQUIRE_NOTHROW( m = Matrix{ std::vector<Vector>{ } } );
+    REQUIRE_NOTHROW( m = Matrix{ std::vector<DoubleVector>{ } } );
 
     CHECK( m.size1( ) == 0 );
     CHECK( m.size2( ) == 0 );
@@ -59,19 +59,19 @@ TEST_CASE( "Matrix_zero_size" )
 
 TEST_CASE( "Matrix_inconsistent_input" )
 {
-    std::vector<Vector> inconsistentData
+    std::vector<DoubleVector> inconsistentData
     {
-        Vector{  0.0, 0.0, 0.0 },
-        Vector{  0.0, 0.0 },
-        Vector{  0.0, 0.0, 0.0 }
+        DoubleVector{  0.0, 0.0, 0.0 },
+        DoubleVector{  0.0, 0.0 },
+        DoubleVector{  0.0, 0.0, 0.0 }
     };
 
     CHECK_THROWS_AS( Matrix{ inconsistentData }, std::runtime_error );
 
-    CHECK_NOTHROW( Matrix{ { Vector { } } } );
+    CHECK_NOTHROW( Matrix{ { DoubleVector { } } } );
 
-    CHECK( Matrix{ { Vector { } } }.size1( ) == 1 );
-    CHECK( Matrix{ { Vector { } } }.size2( ) == 0 );
+    CHECK( Matrix{ { DoubleVector { } } }.size1( ) == 1 );
+    CHECK( Matrix{ { DoubleVector { } } }.size2( ) == 0 );
 }
 
 
@@ -124,7 +124,7 @@ namespace linalgtesthelper
 
 TEST_CASE( "write_vector" )
 {
-    Vector v{ 0.0, 2.0, 4.0 };
+    DoubleVector v{ 0.0, 2.0, 4.0 };
 
     auto result = linalgtesthelper::writeAndParse( v );
 
@@ -137,8 +137,8 @@ TEST_CASE( "write_vector" )
 
 TEST_CASE( "write_matrix" )
 {
-    Matrix m( { Vector{ 1.0, -2.0 },
-                Vector{ -8.0, 4.0 } } );
+    Matrix m( { DoubleVector{ 1.0, -2.0 },
+                DoubleVector{ -8.0, 4.0 } } );
 
     auto result = linalgtesthelper::writeAndParse( m );
 
@@ -152,32 +152,32 @@ TEST_CASE( "write_matrix" )
 
 TEST_CASE( "norm" )
 {
-    Vector vector { 4.0, 3.0 };
+    DoubleVector vector { 4.0, 3.0 };
 
     double tolerance = 1e-12;
 
     CHECK( norm( vector ) == Approx( 5.0 ).epsilon( tolerance ) );
 
-    Matrix matrix( { Vector{  1.2,  3.3,  9.1 },
-                     Vector{  2.9,  8.6,  2.6 },
-                     Vector{ -4.8,  0.3, -2.1 } } );
+    Matrix matrix( { DoubleVector{  1.2,  3.3,  9.1 },
+                     DoubleVector{  2.9,  8.6,  2.6 },
+                     DoubleVector{ -4.8,  0.3, -2.1 } } );
 
     CHECK( norm( matrix ) == Approx( 14.553693689232297 ).epsilon( tolerance ) );
 }
 
 TEST_CASE( "solve" )
 {
-    Matrix matrix( { Vector{  5.2,  1.2,  7.3, -2.3 },
-                     Vector{  8.9, -7.6, -0.2,  3.4 },
-                     Vector{ -5.7,  6.2, -3.4,  7.8 },
-                     Vector{  9.8, -0.7,  5.4, -2.1 } } );
+    Matrix matrix( { DoubleVector{  5.2,  1.2,  7.3, -2.3 },
+                     DoubleVector{  8.9, -7.6, -0.2,  3.4 },
+                     DoubleVector{ -5.7,  6.2, -3.4,  7.8 },
+                     DoubleVector{  9.8, -0.7,  5.4, -2.1 } } );
 
-    Vector rhs { -3.8, 0.3, 6.1, 2.8 };
+    DoubleVector rhs { -3.8, 0.3, 6.1, 2.8 };
 
     REQUIRE( matrix.size1( ) == 4 );
     REQUIRE( matrix.size2( ) == 4 );
 
-    Vector solution = solve( matrix, rhs );
+    DoubleVector solution = solve( matrix, rhs );
 
     REQUIRE( solution.size( ) == 4 );
 
@@ -191,10 +191,10 @@ TEST_CASE( "solve" )
 
 TEST_CASE( "solve_singular" )
 {
-    Matrix matrix( { Vector{  1.0, -1.0 },
-                     Vector{ -1.0,  1.0 } } );
+    Matrix matrix( { DoubleVector{  1.0, -1.0 },
+                     DoubleVector{ -1.0,  1.0 } } );
 
-    Vector rhs { 0.0, 0.0 };
+    DoubleVector rhs { 0.0, 0.0 };
 
     REQUIRE( matrix.size1( ) == 2 );
     REQUIRE( matrix.size2( ) == 2 );
@@ -204,18 +204,18 @@ TEST_CASE( "solve_singular" )
 
 TEST_CASE( "solve_zero_pivot" )
 {
-    Matrix matrix( { Vector{ 0.0       , 1.85943691, 6.97111553, 8.69227093 },
-					 Vector{ 3.28991871, 1.53597987, 7.61514532, 3.60326283 },
-					 Vector{ 2.94417179, 6.82592967, 1.11991796, 3.83895535 },
-					 Vector{ 5.35016312, 6.02883842, 6.90193734, 1.79666592 } } );
+    Matrix matrix( { DoubleVector{ 0.0       , 1.85943691, 6.97111553, 8.69227093 },
+					 DoubleVector{ 3.28991871, 1.53597987, 7.61514532, 3.60326283 },
+					 DoubleVector{ 2.94417179, 6.82592967, 1.11991796, 3.83895535 },
+					 DoubleVector{ 5.35016312, 6.02883842, 6.90193734, 1.79666592 } } );
 
-    Vector rhs { 2.50464842, 9.42931494, 3.00660354, 1.41937798 };
+    DoubleVector rhs { 2.50464842, 9.42931494, 3.00660354, 1.41937798 };
 
     REQUIRE( matrix.size1( ) == 4 );
     REQUIRE( matrix.size2( ) == 4 );
 
-    Vector expectedSolution{ 7.57541894507922, -4.311354527696106, -2.8003180763255577, 3.456252253714161 };
-    Vector computedSolution;
+    DoubleVector expectedSolution{ 7.57541894507922, -4.311354527696106, -2.8003180763255577, 3.456252253714161 };
+    DoubleVector computedSolution;
 
     REQUIRE_NOTHROW( computedSolution = solve( matrix, rhs ) );
     REQUIRE( computedSolution.size( ) == 4 );

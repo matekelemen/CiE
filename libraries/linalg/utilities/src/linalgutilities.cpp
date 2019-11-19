@@ -5,7 +5,7 @@
 
 namespace linalg {
 
-
+/*
 double norm( const Vector& vector )
 {
     return std::sqrt( std::inner_product( std::begin( vector ),
@@ -51,7 +51,7 @@ void normalize(Matrix& matrix)
         }
     }
 }
-
+*/
 
 void updatePermutation( const Matrix& matrix,
                         PermutationVector& permutation,

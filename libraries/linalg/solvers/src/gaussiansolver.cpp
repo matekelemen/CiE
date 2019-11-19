@@ -1,10 +1,12 @@
 #include "../inc/gaussiansolver.hpp"
 
+#include "../../types/inc/typeoperations.hpp"
+
 namespace linalg {
 
 
-Vector solve( const Matrix& matrix,
-              const Vector& rhs )
+DoubleVector solve( const Matrix& matrix,
+              const DoubleVector& rhs )
 {
     size_t n = matrix.size1( );
 
@@ -21,14 +23,14 @@ Vector solve( const Matrix& matrix,
 
     std::iota( permute.begin( ), permute.end( ), 0 ); // initialize  with 1 ... n
 
-    Vector x( n ), tmpB = rhs;
+    DoubleVector x( n ), tmpB = rhs;
     Matrix tmpM = matrix;
 
     // Create two convenience lambda functions to access and permute tmpM and tmpP
     auto permuteMatrix = [&]( size_t i, size_t j ) -> double& { return tmpM( permute[i], j ); };
-    auto permuteVector = [&]( size_t i ) -> double& { return tmpB[permute[i]]; };
+    auto permuteDoubleVector = [&]( size_t i ) -> double& { return tmpB[permute[i]]; };
 
-    double tolerance = 1e-10 * norm( matrix );
+    double tolerance = 1e-10 * norm<Matrix>( matrix );
 
     // LU decomposition with partial pivoting
     for( size_t k = 0; k < n - 1; k++ )
@@ -54,7 +56,7 @@ Vector solve( const Matrix& matrix,
     {
         for( size_t j = 0; j < i; j++ )
         {
-            permuteVector( i ) -= permuteMatrix( i, j ) * permuteVector( j );
+            permuteDoubleVector( i ) -= permuteMatrix( i, j ) * permuteDoubleVector( j );
         }
     }
 
@@ -63,10 +65,10 @@ Vector solve( const Matrix& matrix,
     {
         for( size_t j = i; j < n; j++ )
         {
-            permuteVector( i - 1 ) -= permuteMatrix( i - 1, j ) * permuteVector( j );
+            permuteDoubleVector( i - 1 ) -= permuteMatrix( i - 1, j ) * permuteDoubleVector( j );
         }
 
-        permuteVector( i - 1 ) /= permuteMatrix( i - 1, i - 1 );
+        permuteDoubleVector( i - 1 ) /= permuteMatrix( i - 1, i - 1 );
     }
 
     // permute solution and write into x

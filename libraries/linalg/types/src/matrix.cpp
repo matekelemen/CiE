@@ -40,7 +40,7 @@ Matrix::Matrix( const std::vector<double>& rowMajorData, size_t size1 ) :
             throw std::runtime_error("Inconsistent sizes!");
 }
 
-Matrix::Matrix( const std::vector<Vector>& vectorOfRows ) :
+Matrix::Matrix( const std::vector<DoubleVector>& vectorOfRows ) :
     size1_( vectorOfRows.size( ) ), 
     size2_( 0 ),
     _transpose(false)

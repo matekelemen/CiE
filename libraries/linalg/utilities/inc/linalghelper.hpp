@@ -5,18 +5,19 @@
 #include <ostream>
 #include <stdexcept>
 
+#include "../../types/inc/vectortypes.hpp"
 #include "../../types/inc/matrix.hpp"
 
 namespace linalg {
 namespace linalghelper {
 
 
-template<typename VectorType>
-void writeRow( const VectorType& vector, size_t size, std::ostream& out, size_t digits );
+template<typename DoubleVectorType>
+void writeRow( const DoubleVectorType& vector, size_t size, std::ostream& out, size_t digits );
 
 
 // Write to an ostream, default argument is std::cout
-void write( const Vector& vector, std::ostream& out = std::cout );
+void write( const DoubleVector& vector, std::ostream& out = std::cout );
 void write( const Matrix& matrix, std::ostream& out = std::cout );
 
 

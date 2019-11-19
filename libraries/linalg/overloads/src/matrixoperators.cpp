@@ -4,7 +4,7 @@ namespace linalg {
 
 Matrix operator+(const Matrix& matrix, double scalar)
 {
-    Vector rowMajorData(matrix.size1() * matrix.size2());
+    DoubleVector rowMajorData(matrix.size1() * matrix.size2());
     std::transform( 
         matrix.data().begin(), 
         matrix.data().end(), 
@@ -35,7 +35,7 @@ Matrix operator+(const Matrix& lhs, const Matrix& rhs)
     if (lhs.size1() != rhs.size1()  ||  lhs.size2() != rhs.size2())
         throw std::runtime_error("Matrix size mismatch!");
     
-    Vector rowMajorData(lhs.size1()*lhs.size2());
+    DoubleVector rowMajorData(lhs.size1()*lhs.size2());
     std::transform(
         lhs.data().begin(),
         lhs.data().end(),
@@ -55,7 +55,7 @@ Matrix operator-(const Matrix& lhs, const Matrix& rhs)
     if (lhs.size1() != rhs.size1()  ||  lhs.size2() != rhs.size2())
         throw std::runtime_error("Matrix size mismatch!");
     
-    Vector rowMajorData(lhs.size1()*lhs.size2());
+    DoubleVector rowMajorData(lhs.size1()*lhs.size2());
     std::transform(
         lhs.data().begin(),
         lhs.data().end(),
@@ -71,7 +71,7 @@ Matrix operator-(const Matrix& lhs, const Matrix& rhs)
 
 Matrix operator*(const Matrix& matrix, double scalar)
 {
-    Vector rowMajorData(matrix.size1() * matrix.size2());
+    DoubleVector rowMajorData(matrix.size1() * matrix.size2());
     std::transform( 
         matrix.data().begin(), 
         matrix.data().end(), 
@@ -98,7 +98,7 @@ Matrix operator/(const Matrix& matrix, double scalar)
 }
 
 
-Vector operator*(const Vector& vector, const Matrix& matrix)
+DoubleVector operator*(const DoubleVector& vector, const Matrix& matrix)
 {
     // Check size compatibility
     if (vector.size() != matrix.size1())
@@ -109,7 +109,7 @@ Vector operator*(const Vector& vector, const Matrix& matrix)
             std::to_string(matrix.size1()) + "x" + std::to_string(matrix.size2()) 
             );
     
-    Vector result(matrix.size2(),0.0);
+    DoubleVector result(matrix.size2(),0.0);
     for (size_t j=0; j<matrix.size2(); ++j){
         for (size_t i=0; i<matrix.size1(); ++i) 
             result[j] += vector[i] * matrix(i,j);
@@ -119,7 +119,7 @@ Vector operator*(const Vector& vector, const Matrix& matrix)
 }
 
 
-Vector operator*(const Matrix& matrix, const Vector& vector)
+DoubleVector operator*(const Matrix& matrix, const DoubleVector& vector)
 {
     // Check size compatibility
     if (vector.size() != matrix.size2())
@@ -130,7 +130,7 @@ Vector operator*(const Matrix& matrix, const Vector& vector)
             std::to_string(vector.size())
             );
     
-    Vector result(matrix.size1(),0.0);
+    DoubleVector result(matrix.size1(),0.0);
     for (size_t i=0; i<matrix.size1(); ++i){
         for (size_t j=0; j<matrix.size2(); ++j) 
             result[i] += matrix(i,j) * vector[j];

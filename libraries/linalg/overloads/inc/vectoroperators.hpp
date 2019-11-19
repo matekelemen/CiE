@@ -2,23 +2,24 @@
 #define LINALG_VECTOR_OPERATORS
 
 #include "../../types/inc/matrix.hpp"
-#include "../../types/inc/types.hpp"
+#include "../../types/inc/vectortypes.hpp"
+#include "../../types/inc/arraytypes.hpp"
 #include <algorithm>
 #include <numeric>
 
 
-Vector operator+(const Vector& vector, double scalar);
-Vector operator+(double scalar, const Vector& vector);
-Vector operator-(const Vector& vector, double scalar);
+DoubleVector operator+(const DoubleVector& vector, double scalar);
+DoubleVector operator+(double scalar, const DoubleVector& vector);
+DoubleVector operator-(const DoubleVector& vector, double scalar);
 
-Vector operator+(const Vector& lhs, const Vector& rhs);
-Vector operator-(const Vector& lhs, const Vector& rhs);
+DoubleVector operator+(const DoubleVector& lhs, const DoubleVector& rhs);
+DoubleVector operator-(const DoubleVector& lhs, const DoubleVector& rhs);
 
-Vector operator*(const Vector& vector, double scalar);
-Vector operator*(double scalar, const Vector& vector);
-Vector operator/(const Vector& vector, double scalar);
+DoubleVector operator*(const DoubleVector& vector, double scalar);
+DoubleVector operator*(double scalar, const DoubleVector& vector);
+DoubleVector operator/(const DoubleVector& vector, double scalar);
 
-double operator*(const Vector& lhs, const Vector& rhs); // Dot product
+double operator*(const DoubleVector& lhs, const DoubleVector& rhs); // Dot product
 
 template <size_t N>
 DoubleArray<N> operator+(const DoubleArray<N>& vector, double scalar);

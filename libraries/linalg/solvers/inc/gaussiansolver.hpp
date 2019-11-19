@@ -11,8 +11,8 @@
 namespace linalg {
 
 // Solve linear system of equations
-Vector solve( const Matrix& matrix,
-              const Vector& vector );
+DoubleVector solve( const Matrix& matrix,
+              const DoubleVector& vector );
 
 }
 

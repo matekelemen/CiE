@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "../../decomposition/inc/eigendecomposition.hpp"
+#include "../inc/linalg.hpp"
 
 namespace linalg {
 
@@ -13,12 +13,12 @@ TEST_CASE("Principal component - power iteration"){
             0.0,    0.0,    18.0
         }, 3
     );
-    Vector principal = {1.0, 2.0, 3.0};
-    Vector result;
+    DoubleVector principal = {1.0, 2.0, 3.0};
+    DoubleVector result;
     double tolerance = 1e-15;
 
     REQUIRE_NOTHROW( result = principalComponent(matrix, tolerance) );
-    normalize(principal);
+    normalize<DoubleVector>(principal);
 
     REQUIRE( result.size() == principal.size() );
     for (size_t i=0; i<result.size(); ++i){

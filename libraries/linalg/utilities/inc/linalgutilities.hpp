@@ -2,8 +2,8 @@
 #define LINALG_UTILITIES_HPP
 
 #include "../../types/inc/matrix.hpp"
-#include "../../overloads/inc/vectoroperators.hpp"
-#include "../../overloads/inc/matrixoperators.hpp"
+//#include "../../overloads/inc/vectoroperators.hpp"
+//#include "../../overloads/inc/matrixoperators.hpp"
 #include "errortypes.hpp"
 
 #include <algorithm>
@@ -14,11 +14,13 @@ namespace linalg {
 
 
 // Euclidean norms
+/*
 double norm( const Vector& vector );
 double norm( const Matrix& matrix );
 
 void normalize( Vector& vector );
 void normalize( Matrix& matrix );
+*/
 
 using PermutationVector = std::vector<size_t>;
 

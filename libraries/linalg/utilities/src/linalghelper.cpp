@@ -4,7 +4,7 @@ namespace linalg {
 namespace linalghelper {
 
 
-void write( const Vector& vector, std::ostream& out )
+void write( const DoubleVector& vector, std::ostream& out )
 {
     linalghelper::writeRow( [&]( size_t i ){ return vector[i]; }, vector.size( ), out, 12 );
 }

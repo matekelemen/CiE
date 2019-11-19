@@ -1,11 +1,9 @@
 #include "../inc/vectoroperators.hpp"
 
-namespace linalg {
-    
 
-Vector operator+(const Vector& vector, double scalar)
+DoubleVector operator+(const DoubleVector& vector, double scalar)
 {
-    Vector result(vector.size());
+    DoubleVector result(vector.size());
     std::transform( 
         vector.begin(), 
         vector.end(), 
@@ -18,15 +16,15 @@ Vector operator+(const Vector& vector, double scalar)
 }
 
 
-Vector operator+(double scalar, const Vector& vector)
+DoubleVector operator+(double scalar, const DoubleVector& vector)
 {
     return vector + scalar;
 }
 
 
-Vector operator-(const Vector& vector, double scalar)
+DoubleVector operator-(const DoubleVector& vector, double scalar)
 {
-    Vector result(vector.size());
+    DoubleVector result(vector.size());
     std::transform( 
         vector.begin(), 
         vector.end(), 
@@ -39,12 +37,12 @@ Vector operator-(const Vector& vector, double scalar)
 }
 
 
-Vector operator+(const Vector& lhs, const Vector& rhs)
+DoubleVector operator+(const DoubleVector& lhs, const DoubleVector& rhs)
 {
     if (lhs.size() != rhs.size())
         throw std::runtime_error("Inconsistent vector sizes!");
 
-    Vector result(lhs.size());
+    DoubleVector result(lhs.size());
     std::transform( 
         lhs.begin(), 
         lhs.end(), 
@@ -58,12 +56,12 @@ Vector operator+(const Vector& lhs, const Vector& rhs)
 }
 
 
-Vector operator-(const Vector& lhs, const Vector& rhs)
+DoubleVector operator-(const DoubleVector& lhs, const DoubleVector& rhs)
 {
     if (lhs.size() != rhs.size())
         throw std::runtime_error("Inconsistent vector sizes!");
 
-    Vector result(lhs.size());
+    DoubleVector result(lhs.size());
     std::transform( 
         lhs.begin(), 
         lhs.end(), 
@@ -77,9 +75,9 @@ Vector operator-(const Vector& lhs, const Vector& rhs)
 }
 
 
-Vector operator*(const Vector& vector, double scalar)
+DoubleVector operator*(const DoubleVector& vector, double scalar)
 {
-    Vector result(vector.size());
+    DoubleVector result(vector.size());
     std::transform( 
         vector.begin(), 
         vector.end(), 
@@ -92,18 +90,18 @@ Vector operator*(const Vector& vector, double scalar)
 }
 
 
-Vector operator*(double scalar, const Vector& vector)
+DoubleVector operator*(double scalar, const DoubleVector& vector)
 {
     return vector * scalar;
 }
 
 
-Vector operator/(const Vector& vector, double scalar)
+DoubleVector operator/(const DoubleVector& vector, double scalar)
 {
     if (abs(scalar)<1e-15)
         throw std::runtime_error("Division by 0!");
     else {
-        Vector result(vector);
+        DoubleVector result(vector);
         std::transform( 
             vector.begin(), 
             vector.end(), 
@@ -117,13 +115,10 @@ Vector operator/(const Vector& vector, double scalar)
 }
 
 
-double operator*(const Vector& lhs, const Vector& rhs)
+double operator*(const DoubleVector& lhs, const DoubleVector& rhs)
 {
     if (lhs.size() != rhs.size())
         throw std::runtime_error("Inconsistent vector sizes!");
     
     return std::inner_product( lhs.begin(), lhs.end(), rhs.begin(), 0.0 );
-}
-
-
 }
