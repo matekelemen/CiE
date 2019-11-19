@@ -3,8 +3,8 @@
 
 #include "linalgtypes.hpp"
 #include "linalgoverloads.hpp"
+#include "gradientestimate.hpp"
 #include "../../solver/inc/solver.hpp"
-#include "../../objective/inc/gradientestimate.hpp"
 
 #include <functional>
 
@@ -24,8 +24,8 @@ GradientDescent<N>::GradientDescent(  const ObjectivePtr<RNRElement<N>, double>&
 
 
 template <size_t N>
-GradientDescent<N>::GradientDescent(  const ObjectivePtr<RNRElement<N>, double>& objective,
-                                                const RNRElement<N>& initialPoint ) :
+GradientDescent<N>::GradientDescent(    const ObjectivePtr<RNRElement<N>, double>& objective,
+                                        const RNRElement<N>& initialPoint ) :
     _objective(objective),
     _solution(initialPoint),
     _stepCount(0),

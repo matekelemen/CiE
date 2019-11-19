@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "octree_volumenode.hpp"
+#include "../inc/octree_volumenode.hpp"
 
 
 namespace csg {

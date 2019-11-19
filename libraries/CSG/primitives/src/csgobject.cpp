@@ -1,4 +1,4 @@
-#include "csgobject.hpp"
+#include "../inc/csgobject.hpp"
 
 namespace csg {
 

@@ -1,7 +1,7 @@
 #include "catch.hpp"
-#include "octree_vertexnode.hpp"
-#include "box.hpp"
-#include "sphere.hpp"
+#include "../inc/octree_vertexnode.hpp"
+#include "../../primitives/inc/box.hpp"
+#include "../../primitives/inc/sphere.hpp"
 
 
 namespace csg {

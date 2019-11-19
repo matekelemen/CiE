@@ -1,4 +1,4 @@
-#include "octree_node.hpp"
+#include "../inc/octree_node.hpp"
 
 namespace csg {
 

@@ -1,4 +1,4 @@
-#include "sphere.hpp"
+#include "../inc/sphere.hpp"
 
 namespace csg {
 

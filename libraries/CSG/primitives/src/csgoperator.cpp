@@ -1,4 +1,4 @@
-#include "csgoperator.hpp"
+#include "../inc/csgoperator.hpp"
 
 namespace csg {
 

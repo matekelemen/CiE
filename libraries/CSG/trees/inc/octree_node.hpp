@@ -1,7 +1,7 @@
 #ifndef CSG_OCTREE_NODE_HPP
 #define CSG_OCTREE_NODE_HPP
 
-#include "csgtypes.hpp"
+#include "../../inc/csgtypes.hpp"
 #include "octreeutils.hpp"
 
 namespace csg {

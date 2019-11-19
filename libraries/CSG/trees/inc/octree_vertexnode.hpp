@@ -2,7 +2,7 @@
 #define OCTREE_VERTEXNODE_HPP
 
 #include "octree_node.hpp"
-#include "csgobject.hpp"
+#include "../../primitives/inc/csgobject.hpp"
 #include <iostream>
 #include <vector>
 #include <fstream>

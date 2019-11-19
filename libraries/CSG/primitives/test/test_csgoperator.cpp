@@ -1,7 +1,7 @@
 #include "catch.hpp"
-#include "csgoperator.hpp"
-#include "box.hpp"
-#include "sphere.hpp"
+#include "../inc/csgoperator.hpp"
+#include "../inc/box.hpp"
+#include "../inc/sphere.hpp"
 
 namespace csg{
 

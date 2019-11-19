@@ -1,4 +1,4 @@
-#include "csgtypes.hpp"
+#include "../inc/csgtypes.hpp"
 
 namespace csg {
 

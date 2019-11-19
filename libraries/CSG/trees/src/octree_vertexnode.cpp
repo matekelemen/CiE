@@ -1,4 +1,4 @@
-#include "octree_vertexnode.hpp"
+#include "../inc/octree_vertexnode.hpp"
 
 namespace csg {
 

@@ -1,4 +1,4 @@
-#include "box.hpp"
+#include "../inc/box.hpp"
 #include <iostream>
 
 namespace csg {

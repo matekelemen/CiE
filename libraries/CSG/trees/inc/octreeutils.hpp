@@ -1,7 +1,7 @@
 #ifndef CSG_OCTREE_UTILS_HPP
 #define CSG_OCTREE_UTILS_HPP
 
-#include "csgtypes.hpp"
+#include "../../inc/csgtypes.hpp"
 #include <utility>
 
 namespace csg{

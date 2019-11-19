@@ -1,4 +1,4 @@
-#include "octreeutils.hpp"
+#include "../inc/octreeutils.hpp"
 
 namespace csg {
 

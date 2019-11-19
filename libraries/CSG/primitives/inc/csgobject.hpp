@@ -1,7 +1,7 @@
 #ifndef CSG_CSGOBJECT_HPP
 #define CSG_CSGOBJECT_HPP
 
-#include "csgtypes.hpp"
+#include "../../inc/csgtypes.hpp"
 
 namespace csg{
 
