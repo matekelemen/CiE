@@ -100,7 +100,7 @@ namespace linalgtesthelper
     template<typename ContainerType>
     std::vector<double> writeAndParse( const ContainerType& container )
     {
-        std::ofstream outfile( "write.txt" );
+        std::ofstream outfile( "write.csv" );
 
         REQUIRE_NOTHROW( linalghelper::write( container, outfile ) );
 
@@ -108,12 +108,18 @@ namespace linalgtesthelper
 
         std::vector<double> values;
 
-        std::ifstream infile( "write.txt" );
+        std::ifstream infile( "write.csv" );
 
         double result;
-        while( infile >> result )
+		std::string line;
+        while( !infile.eof() )
         {
-            values.push_back( result );
+			getline(infile, line,',');
+			if (!line.empty() && line!="" && line!="\n")
+			{
+				result = std::stod(line);
+				values.push_back(result);
+			}
         }
 
         infile.close( );

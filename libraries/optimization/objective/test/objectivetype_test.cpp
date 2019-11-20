@@ -20,7 +20,7 @@ double parabolicObjective(const RNRElement<N>& point)
 template <size_t N>
 DoubleArray<2> parabolicMultiObjective(const RNRMElement<N,2>& point)
 {
-    DoubleArray<2> out({0.0,0.0});
+	DoubleArray<2> out = {0.0,0.0};
      for (size_t i=0; i<N; ++i)
     {
         out[0] += (point.getData()[i]-1.0)*(point.getData()[i]-1.0);

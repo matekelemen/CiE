@@ -15,14 +15,15 @@ TEST_CASE("Principal component - power iteration"){
     );
     DoubleVector principal = {1.0, 2.0, 3.0};
     DoubleVector result;
-    double tolerance = 1e-15;
+    double tolerance		= 1e-16;
+	double checkTolerance	= 1e-15;
 
     REQUIRE_NOTHROW( result = principalComponent(matrix, tolerance) );
     normalize<DoubleVector>(principal);
 
     REQUIRE( result.size() == principal.size() );
     for (size_t i=0; i<result.size(); ++i){
-        CHECK( abs(result[i]-principal[i]) < tolerance );
+        CHECK( abs(result[i]-principal[i]) < checkTolerance);
     }
 
 }
