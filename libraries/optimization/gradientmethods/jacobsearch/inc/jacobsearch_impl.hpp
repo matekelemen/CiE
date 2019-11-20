@@ -8,9 +8,10 @@ namespace opt {
 
 
 template <size_t N>
-JacobSearch<N>::JacobSearch(    const ObjectivePtr<RNRElement<N>& objective, 
-                                const RNRElement<N>& initialPoint,
-                                double gradientEstimatorStepSize=1e-10) :
+JacobSearch<N>::JacobSearch(		const ObjectivePtr<RNRElement<N>, double>& objective,
+									const RNRElement<N>& initialPoint,
+									double samplingStepSize,
+									double gradientEstimatorStepSize) :
     _objective(objective),
     _solution(initialPoint),
     _stepCount(0),
@@ -28,6 +29,8 @@ void JacobSearch<N>::step()
                                                     _objective, 
                                                     _gradientEstimatorStepSize );
     linalg::normalize<DoubleArray<N>>(gradient.getData());
+
+	// Create a substitute in the gradient direction
 }
 
 
@@ -56,6 +59,13 @@ template <size_t N>
 void JacobSearch<N>::resetStepCount()
 {
     _stepCount = 0;
+}
+
+
+template<size_t N>
+void JacobSearch<N>::setSamplingStepSize(double stepSize)
+{
+	_samplingStepSize = stepSize;
 }
 
 

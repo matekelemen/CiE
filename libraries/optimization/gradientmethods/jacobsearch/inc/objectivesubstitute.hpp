@@ -6,29 +6,30 @@
 
 namespace opt {
 
+template <size_t N>
 class ObjectiveSubstitute {
 public:
     ObjectiveSubstitute();
-    ObjectiveSubstitute(const DoubleVector& coefficients, const DoubleVector& direction, const DoubleVector& base);
+    ObjectiveSubstitute(const DoubleArray<N>& coefficients, const DoubleArray<N>& direction, const DoubleArray<N>& base);
 
-    virtual void build(std::vector<const DoubleVector*>& points, const DoubleVector& values);
-    virtual std::pair<DoubleVector,double> minimum() const =0;
+    virtual void build(std::vector<const DoubleArray<N>*>& points, const DoubleArray<N>& values);
+    virtual std::pair<DoubleArray<N>,double> minimum() const =0;
     virtual double operator()(double parameter) const;
 
     double getCoefficient(uint index) const;
     void setCoefficient(uint index, double coefficient);
 
-    const DoubleVector& getDirection() const;
-    void setDirection(const DoubleVector& direction);
+    const DoubleArray<N>& getDirection() const;
+    void setDirection(const DoubleArray<N>& direction);
     
 protected:
-    ObjectiveSubstitute(uint numberOfCoefficients, uint numberOfVariables);
-
-    DoubleVector _coefficients;
-    DoubleVector _direction;
-    DoubleVector _base;
+    DoubleArray<N> _coefficients;
+    DoubleArray<N> _direction;
+    DoubleArray<N> _base;
 };
 
-}
+} // namespace opt
+
+#include "objectivesubstitute_impl.hpp"
 
 #endif
