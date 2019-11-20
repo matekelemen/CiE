@@ -10,9 +10,9 @@ namespace opt {
 template <size_t N>
 class QuadraticSubstitute : public ObjectiveSubstitute<N> {
 public:
-    QuadraticSubstitute(std::vector<const DoubleArray<N>*>& points, const DoubleVector& values);
+    QuadraticSubstitute(const std::vector<const DoubleArray<N>*>& points, const DoubleVector& values);
 
-    void build(std::vector<const DoubleArray<N>*>& points, const DoubleVector& values) override;
+    void build(const std::vector<const DoubleArray<N>*>& points, const DoubleVector& values) override;
     std::pair<DoubleArray<N>,double> minimum() const override;
     double operator()(double parameter) const override;
 };

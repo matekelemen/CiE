@@ -1,11 +1,10 @@
 
-
 namespace cie {
 namespace opt {
 
 
 template<size_t N>
-QuadraticSubstitute<N>::QuadraticSubstitute(std::vector<const DoubleArray<N>*>& points, const DoubleVector& values) :
+QuadraticSubstitute<N>::QuadraticSubstitute(const std::vector<const DoubleArray<N>*>& points, const DoubleVector& values) :
     ObjectiveSubstitute<N>()
 {
     build(points, values);
@@ -13,46 +12,65 @@ QuadraticSubstitute<N>::QuadraticSubstitute(std::vector<const DoubleArray<N>*>& 
 
 
 template<size_t N>
-void QuadraticSubstitute<N>::build(std::vector<const DoubleArray<N>*>& points, const DoubleVector& values) {
+void QuadraticSubstitute<N>::build(const std::vector<const DoubleArray<N>*>& points, const DoubleVector& values) {
     // Check sizes
     if (points.size()!=3 || values.size()!=3) 
         throw std::runtime_error("Invalid number of data sites!");
 
     if (points[0]->size()!=points[1]->size() || points[1]->size()!=points[2]->size())
         throw std::runtime_error("Inconsistent point sizes!");
+    
+    auto pts = points;
+    auto vls = values;
+
+    // Determine main component
+    size_t mainComponent    = 0;
+    double tolerance        = 1e-16;
+    for (size_t i=0; i<N; ++i)
+    {
+        if ( std::abs( (*pts[0])[i] - (*pts[1])[i] ) > tolerance && std::abs( (*pts[0])[i] - (*pts[2])[i] ) > tolerance )
+        {
+            mainComponent = i;
+            break;
+        }
+    }
 
     // Sort points
-    if ( ( (*points[1])[0]>(*points[0])[0] )  !=  ( (*points[2])[0]>(*points[1])[0] ) ){
-        auto temp = points[1];
-        points[1] = points[0];
-        points[0] = temp;
+    if ( ( (*pts[1])[mainComponent]>(*pts[0])[mainComponent] )  !=  ( (*pts[2])[mainComponent]>(*pts[1])[mainComponent] ) ){
+        auto temp1  = pts[2];
+        pts[2]      = pts[0];
+        pts[0]      = temp1;
+
+        auto temp2  = vls[2];
+        vls[2]      = vls[0];
+        vls[0]      = temp2;
     }
 
     // Set base as first point
-    this->_base = DoubleArray<N>(*points[0]);
+    this->_base = DoubleArray<N>(*pts[0]);
 
     // Compute direction
     for (uint i=0; i<this->_direction.size(); ++i){
-        this->_direction[i] = (*points[2])[i]-(*points[0])[i];
+        this->_direction[i] = (*pts[2])[i]-(*pts[0])[i];
     }
 
     // Compute coefficients (internal parameters: [0,ratio,1])
-    double ratio    = ( (*points[2])[0]-(*points[0])[0] );
+    double ratio    = ( (*pts[2])[mainComponent]-(*pts[0])[mainComponent] );
 
-    if ( std::abs(ratio)<1e-15 )
+    if ( std::abs(ratio)<tolerance )
         throw std::runtime_error("Repeated end sample point!");
 
-    ratio           = ( (*points[1])[0]-(*points[0])[0] ) / ratio;
+    ratio           = ( (*pts[1])[mainComponent]-(*pts[0])[mainComponent] ) / ratio;
     double ratio2   = ratio*ratio;
 
-    if ( std::abs(ratio)<1e-15 || std::abs(ratio-1.0)<1e-15 )
+    if ( std::abs(ratio)<tolerance || std::abs(ratio-1.0)<tolerance )
         throw std::runtime_error("Repeated middle sample point!");
 
     this->_coefficients = {
-        values[2],
-        ( values[2]-values[1]/ratio2-values[0]*(1-1/ratio2) ) / ( 1-1/ratio ),
-        ( values[2]-values[1]/ratio-values[0]*(1-1/ratio) ) / ( 1-ratio )
-    };   
+        vls[2],
+        ( vls[2]-vls[1]/ratio2-vls[0]*(1-1/ratio2) ) / ( 1-1/ratio ),
+        ( vls[2]-vls[1]/ratio-vls[0]*(1-1/ratio) ) / ( 1-ratio )
+    };
 }
 
 

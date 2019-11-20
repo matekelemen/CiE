@@ -13,7 +13,7 @@ public:
     ObjectiveSubstitute();
     ObjectiveSubstitute(const DoubleArray<N>& coefficients, const DoubleArray<N>& direction, const DoubleArray<N>& base);
 
-    virtual void build(std::vector<const DoubleArray<N>*>& points, const DoubleVector& values);
+    virtual void build(const std::vector<const DoubleArray<N>*>& points, const DoubleVector& values);
     virtual std::pair<DoubleArray<N>,double> minimum() const =0;
     virtual double operator()(double parameter) const;
 

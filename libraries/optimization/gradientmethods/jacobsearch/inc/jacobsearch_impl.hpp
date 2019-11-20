@@ -17,6 +17,7 @@ JacobSearch<N>::JacobSearch(		const RNRObjectivePtr<N>& objective,
     _objective(objective),
     _solution(initialPoint),
     _stepCount(0),
+    _samplingStepSize(samplingStepSize),
     _gradientEstimatorStepSize(gradientEstimatorStepSize)
 {
     _solution.setObjective( _objective(_solution) );
@@ -33,25 +34,26 @@ void JacobSearch<N>::step()
     linalg::normalize<DoubleArray<N>>(gradient.getData());
 
     // Get samples in the gradient direction
-    /*
-    RNRElement<N>   point1(_solution.getData() - _samplingStepSize * gradient);
-    RNRElement<N>   point2(_solution.getData() + _samplingStepSize * gradient);
+    
+    RNRElement<N>   point1(_solution.getData() - _samplingStepSize * gradient.getData());
+    RNRElement<N>   point2(_solution.getData() + _samplingStepSize * gradient.getData());
 
     point1.setObjective(_objective(point1.getData()));
     point2.setObjective(_objective(point2.getData()));
 
 	// Create a substitute
-    QuadraticSubstitute<N> substitute(  {   &_solution.getData(),
-                                            &point1.getData(),
+    QuadraticSubstitute<N> substitute(  {   &point1.getData(),
+                                            &_solution.getData(),
                                             &point2.getData()},
-                                        {   _solution.getObjective,
-                                            point1.getObjective(),
+                                        {   point1.getObjective(),
+                                            _solution.getObjective(),
                                             point2.getObjective()   } );
 
     // Find minimum of the substitute
     auto result = substitute.minimum();
-    RNRElement<N> solutionCandidate(result.first);
-    */
+
+    _solution.setData( result.first );
+    _solution.setObjective( _objective(_solution) );
 }
 
 

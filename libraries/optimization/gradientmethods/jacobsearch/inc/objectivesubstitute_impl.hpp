@@ -22,7 +22,7 @@ ObjectiveSubstitute<N>::ObjectiveSubstitute(const DoubleArray<N>& coefficients, 
 
 
 template <size_t N>
-void ObjectiveSubstitute<N>::build(std::vector<const DoubleArray<N>*>& points, const DoubleVector& values) 
+void ObjectiveSubstitute<N>::build(const std::vector<const DoubleArray<N>*>& points, const DoubleVector& values) 
 {
     _coefficients = DoubleVector(points.size(),0.0);
 }

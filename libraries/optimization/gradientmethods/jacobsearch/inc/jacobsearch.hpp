@@ -15,8 +15,8 @@ class JacobSearch : public OptimizationMethod {
 public:
 	JacobSearch(			const RNRObjectivePtr<N>& objective,
 							const RNRElement<N>& initialPoint,
-							double samplingStepSize=1e-5,
-							double gradientEstimatorStepSize=1e-10);
+							double samplingStepSize=1e-1,
+							double gradientEstimatorStepSize=1e-8);
     void step();
 
     const RNRElement<N>& getSolution() const;

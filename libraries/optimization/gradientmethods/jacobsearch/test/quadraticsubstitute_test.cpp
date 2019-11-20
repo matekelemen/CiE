@@ -8,8 +8,8 @@ namespace opt {
 
 
 double paraboloidTestFunction(const DoubleArray<2>& position, const DoubleArray<2>& offset){
-    return  (position[0]-offset[0]) * (position[0]-offset[0]) 
-            + (position[1]-offset[1]) * (position[1]-offset[1]);
+    return  5*(position[0]-offset[0]) * (position[0]-offset[0]) 
+            + 2*(position[1]-offset[1]) * (position[1]-offset[1]);
 }
 
 
