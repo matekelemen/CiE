@@ -54,7 +54,7 @@ target_link_libraries( csg )
 # Add an executable and link to the library
 add_executable( csg_testrunner ${CSG_TEST_FILES} )
 
-target_link_libraries( csg_testrunner csg )
+target_link_libraries( csg_testrunner csg linalg )
 
 # specify the relative path the testrunner shall be installed to
 install( TARGETS csg_testrunner RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX} )

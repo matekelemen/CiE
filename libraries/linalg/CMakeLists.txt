@@ -16,10 +16,12 @@ foreach( subdirectory ${subdirs} )
     # Append library header and source files
     file( GLOB TEMP_HEADERS ${subdirectory}/inc/*.h* )
     file( GLOB TEMP_SOURCES ${subdirectory}/src/*.cpp )
+    file( GLOB TEMP_TESTS ${subdirectory}/test/*.cpp )
     list( APPEND LINALG_HEADER_FILES ${TEMP_HEADERS} )
     list( APPEND LINALG_LIBRARY_SOURCE_FILES ${TEMP_SOURCES} )
+    list( APPEND LINALG_TEST_SOURCE_FILES ${TEMP_TESTS} )
     # DEBUG
-    # message( STATUS ${LINALG_HEADER_FILES} )
+    #message( STATUS ${LINALG_TEST_SOURCE_FILES} )
 endforeach()
 
 # Specify the folders with header files, otherwise our includes are not found

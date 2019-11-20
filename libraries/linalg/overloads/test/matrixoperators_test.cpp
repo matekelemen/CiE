@@ -58,9 +58,22 @@ TEST_CASE("Matrix - scalar operator overloads"){
     REQUIRE( result.size2() == matrix.size2() );
     for (size_t i=0; i<result.size1(); ++i){
         for (size_t j=0; j<result.size2(); ++j){
-            CHECK( result(i,j) == matrix(i,j) * scalar );
+            CHECK( result(i,j) == Approx(matrix(i,j) * scalar) );
         }
     }
+
+
+    // DIVISION
+    REQUIRE_NOTHROW( result = matrix / scalar );
+    REQUIRE( result.size1() == matrix.size1() );
+    REQUIRE( result.size2() == matrix.size2() );
+    for (size_t i=0; i<result.size1(); ++i){
+        for (size_t j=0; j<result.size2(); ++j){
+            CHECK( result(i,j) == Approx(matrix(i,j) / scalar) );
+        }
+    }
+
+    REQUIRE_THROWS( result = matrix / 0.0 );
 
 } // TEST_CASE
 

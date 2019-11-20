@@ -93,7 +93,7 @@ Matrix operator*(double scalar, const Matrix& matrix)
 
 Matrix operator/(const Matrix& matrix, double scalar)
 {
-    if (abs(scalar)<1e-15)
+    if (std::abs(scalar)<1e-16)
         throw std::runtime_error("Division by 0!");
     return matrix * (1/scalar);
 }
