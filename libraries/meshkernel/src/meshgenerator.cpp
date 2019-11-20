@@ -5,6 +5,7 @@
 #include <numeric>
 #include <algorithm>
 
+namespace cie {
 namespace meshkernel
 {
 
@@ -48,3 +49,4 @@ Triangulation triangulate( const Vertex2DVector& vertices,
 
 
 }// namespace meshkernel
+}

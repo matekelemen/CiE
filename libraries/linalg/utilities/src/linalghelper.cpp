@@ -1,5 +1,6 @@
 #include "../inc/linalghelper.hpp"
 
+namespace cie {
 namespace linalg {
 namespace linalghelper {
 
@@ -24,3 +25,4 @@ void write( const Matrix& matrix, std::ostream& out )
 
 } // namespace linalghelper
 } // namespace linalg
+}

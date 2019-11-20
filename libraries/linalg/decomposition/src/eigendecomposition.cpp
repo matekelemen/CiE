@@ -4,6 +4,7 @@
 #include "../../overloads/inc/vectoroperators.hpp"
 #include "../../overloads/inc/matrixoperators.hpp"
 
+namespace cie {
 namespace linalg {
 
 // Get principal component by the power iteration method
@@ -23,7 +24,7 @@ DoubleVector principalComponent(const Matrix& matrix, double tolerance, size_t m
 
     // Iterative approximation
     size_t iteration = 0;
-    while ( norm<DoubleVector>( ::operator-(output, memory) )>tolerance && iteration<maxIterations ){
+    while ( norm<DoubleVector>( cie::operator-(output, memory) )>tolerance && iteration<maxIterations ){
         memory  = output;
         output  = matrix * output;
         normalize<DoubleVector>(output);
@@ -36,4 +37,5 @@ DoubleVector principalComponent(const Matrix& matrix, double tolerance, size_t m
     return output;
 }
 
+}
 }

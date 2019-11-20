@@ -1,6 +1,7 @@
 #include "catch.hpp"
 #include "../inc/linalg.hpp"
 
+namespace cie {
 
 TEST_CASE("DoubleVector operator overloads"){
     DoubleVector v1({ 0.0, 1.0, 2.0 });
@@ -72,5 +73,7 @@ TEST_CASE("DoubleVector operator overloads"){
     REQUIRE_NOTHROW( resultScalar = v1 * v2 );
     CHECK( resultScalar == v1[0]*v2[0]+v1[1]*v2[1]+v1[2]*v2[2] );
 
+
+}
 
 }

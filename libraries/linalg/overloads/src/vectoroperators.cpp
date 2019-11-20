@@ -1,5 +1,6 @@
 #include "../inc/vectoroperators.hpp"
 
+namespace cie {
 
 DoubleVector operator+(const DoubleVector& vector, double scalar)
 {
@@ -121,4 +122,7 @@ double operator*(const DoubleVector& lhs, const DoubleVector& rhs)
         throw std::runtime_error("Inconsistent vector sizes!");
     
     return std::inner_product( lhs.begin(), lhs.end(), rhs.begin(), 0.0 );
+}
+
+
 }

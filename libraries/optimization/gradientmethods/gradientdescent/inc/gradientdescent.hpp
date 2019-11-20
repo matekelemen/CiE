@@ -5,6 +5,7 @@
 #include "../../objective/inc/objectivefunction.hpp"
 #include <functional>
 
+namespace cie {
 namespace opt {
 
 
@@ -43,6 +44,7 @@ RNRElement<N> defaultStepSizeDeterminor(const GradientDescent<N>& solver);
 
 
 } // namespace opt
+}
 
 #include "gradientdescent_impl.hpp"
 

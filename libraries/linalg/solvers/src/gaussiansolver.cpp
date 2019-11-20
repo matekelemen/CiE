@@ -2,6 +2,7 @@
 
 #include "../../types/inc/typeoperations.hpp"
 
+namespace cie {
 namespace linalg {
 
 
@@ -77,4 +78,5 @@ DoubleVector solve( const Matrix& matrix,
     return x;
 }
 
+}
 }

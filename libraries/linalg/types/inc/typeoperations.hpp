@@ -3,6 +3,7 @@
 
 #include "functiontypes.hpp"
 
+namespace cie {
 namespace linalg {
 
 template <typename T>
@@ -15,6 +16,7 @@ template <typename T>
 void normalize(T& object, NormFunction<T> measure=&norm<T>, double tolerance=1e-15);
 
 } // namespace linalg
+}
 
 #include "typeoperations_impl.hpp"
 

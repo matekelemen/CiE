@@ -3,6 +3,7 @@
 
 #include "meshgenerator.hpp"
 
+namespace cie {
 namespace meshkernel
 {
 namespace meshgeneratorhelper
@@ -107,5 +108,6 @@ void prepareForTriangulating( const Vertex2DVector& vertices,
 
 } // namespace meshgeneratorhelper
 } // namespace meshkernel
+}
 
 #endif // MESHGENERATOR_HELPER_HPP_

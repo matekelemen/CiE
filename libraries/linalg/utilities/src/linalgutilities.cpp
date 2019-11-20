@@ -3,6 +3,7 @@
 
 #include "../inc/linalgutilities.hpp"
 
+namespace cie {
 namespace linalg {
 
 /*
@@ -85,5 +86,6 @@ void runtime_check( bool result, const char message[] )
 
     
 } // namespace linalg
+}
 
 #endif

@@ -1,5 +1,7 @@
 #include "../inc/octree_node.hpp"
 
+
+namespace cie {
 namespace csg {
 
 
@@ -56,4 +58,5 @@ void Node::setBoundingBox(const BoundingBox& bbox) {
 
 
 
+}
 }

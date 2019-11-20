@@ -1,5 +1,6 @@
 #include "../inc/matrixoperators.hpp"
 
+namespace cie {
 namespace linalg {
 
 Matrix operator+(const Matrix& matrix, double scalar)
@@ -167,4 +168,5 @@ Matrix operator*(const Matrix& lhs, const Matrix& rhs)
 }
 
 
+}
 }

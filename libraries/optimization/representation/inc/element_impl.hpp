@@ -1,6 +1,7 @@
 #ifndef OPTIMIZATION_ELEMENT_IMPL_HPP
 #define OPTIMIZATION_ELEMENT_IMPL_HPP
 
+namespace cie {
 namespace opt {
 
 template <typename DataType, typename ObjectiveType>
@@ -76,5 +77,6 @@ const ObjectiveType& Element<DataType,ObjectiveType>::getObjective() const {
 
     
 } // namespace opt
+}
 
 #endif

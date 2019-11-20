@@ -1,6 +1,7 @@
 #include "catch.hpp"
 #include "../inc/element.hpp"
 
+namespace cie {
 namespace opt {
 
 TEST_CASE("Element - constructors")
@@ -16,4 +17,5 @@ TEST_CASE("Element - constructors")
     }
 }
 
+}
 }

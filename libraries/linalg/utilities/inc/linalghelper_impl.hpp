@@ -1,6 +1,7 @@
 #ifndef LINALG_HELPER_IMPL_HPP
 #define LINALG_HELPER_IMPL_HPP
 
+namespace cie {
 namespace linalg {
 namespace linalghelper {
 
@@ -24,5 +25,6 @@ void writeRow( const DoubleVectorType& vector, size_t size, std::ostream& out, s
 
 } // namespace linalghelper
 } // namespace linalg
+}
 
 #endif

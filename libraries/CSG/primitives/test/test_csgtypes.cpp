@@ -1,6 +1,8 @@
 #include "catch.hpp"
 #include "../../inc/csgtypes.hpp"
 
+
+namespace cie {
 namespace csg {
 
 
@@ -41,4 +43,5 @@ TEST_CASE("sgn"){
     CHECK( sgn(i) == true );
 }
 
+}
 }

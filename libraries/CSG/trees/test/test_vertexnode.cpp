@@ -3,7 +3,7 @@
 #include "../../primitives/inc/box.hpp"
 #include "../../primitives/inc/sphere.hpp"
 
-
+namespace cie {
 namespace csg {
 
 TEST_CASE("Interior points"){
@@ -78,4 +78,5 @@ TEST_CASE("Octree"){
     
 }
 
+}
 }

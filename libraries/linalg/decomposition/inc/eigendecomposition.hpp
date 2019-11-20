@@ -6,10 +6,13 @@
 
 #include <utility>
 
+
+namespace cie {
 namespace linalg {
 
 DoubleVector principalComponent(const Matrix& matrix, double tolerance=1e-10, size_t maxIterations=100);
 
+}
 }
 
 #endif

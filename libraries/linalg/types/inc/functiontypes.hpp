@@ -3,7 +3,11 @@
 
 #include <functional>
 
+namespace cie {
+
 template <typename Object>
 using NormFunction = std::function<double(const Object&)>;
+
+}
 
 #endif

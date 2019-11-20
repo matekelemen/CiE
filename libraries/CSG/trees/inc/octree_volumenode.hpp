@@ -3,6 +3,8 @@
 
 #include "octree_node.hpp"
 
+
+namespace cie {
 namespace csg {
 
 class VolumeNode : public Node {
@@ -28,7 +30,7 @@ public:
 
 
 }
-
+}
 
 
 #endif

@@ -7,6 +7,7 @@
 
 #include "linalgtypes.hpp"
 
+namespace cie {
 namespace opt {
 
 // ---------------------------------------------------------------
@@ -24,6 +25,6 @@ double randomNormalDouble(double mean, double deviation);
 std::unique_ptr<DoubleVector> randomNormalDoubleVector(double mean, double deviation, uint size);
 
 }
-
+}
 
 #endif

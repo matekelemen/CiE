@@ -7,6 +7,7 @@
 
 #include "linalghelper.hpp"
 
+namespace cie {
 namespace linalg {
 
 class MatrixError : public std::runtime_error {
@@ -14,6 +15,7 @@ public:
     MatrixError(const std::string& message, const Matrix& matrix);
 };
 
+}
 }
 
 

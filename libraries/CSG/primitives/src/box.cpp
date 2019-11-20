@@ -1,6 +1,8 @@
 #include "../inc/box.hpp"
 #include <iostream>
 
+
+namespace cie {
 namespace csg {
 
 
@@ -54,4 +56,5 @@ Box& Box::operator=(const Box& box){
 
 
 
+}
 }

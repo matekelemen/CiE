@@ -1,6 +1,7 @@
 #ifndef OPTIMIZATION_SOLVER_HPP
 #define OPTIMIZATION_SOLVER_HPP
 
+namespace cie {
 namespace opt {
 
 
@@ -10,6 +11,7 @@ public:
 };
 
 
+}
 }
 
 #endif

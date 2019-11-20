@@ -3,6 +3,7 @@
 
 #include "csgobject.hpp"
 
+namespace cie {
 namespace csg{
 
 class CSGOperator : public CSGObject {
@@ -39,5 +40,6 @@ public:
     bool isInside(const Point64& point) const override;
 };
 
+}
 }
 #endif

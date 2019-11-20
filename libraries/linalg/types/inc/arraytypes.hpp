@@ -3,6 +3,8 @@
 
 #include <array>
 
+namespace cie {
+
 typedef std::array<double, 2>   Point2;
 typedef std::array<double, 3>   Point3;
 
@@ -14,5 +16,7 @@ using IntArray = std::array<int, N>;
 
 template <size_t N>
 using UIntArray = std::array<size_t, N>;
+
+}
 
 #endif

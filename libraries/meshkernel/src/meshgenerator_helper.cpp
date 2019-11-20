@@ -4,6 +4,7 @@
 #include <numeric>
 #include <algorithm>
 
+namespace cie {
 namespace meshkernel
 {
 namespace meshgeneratorhelper
@@ -239,4 +240,4 @@ void prepareForTriangulating( const Vertex2DVector& vertices,
 
 } // namespace meshkernel
 } // namespace meshgeneratorhelper
-
+}

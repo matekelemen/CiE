@@ -6,13 +6,14 @@
 #include "../../gradientdescent/inc/gradientestimate.hpp"
 #include "../../../solver/inc/solver.hpp"
 
+namespace cie {
 namespace opt {
 
 
 template <size_t N>
 class JacobSearch : public OptimizationMethod {
 public:
-	JacobSearch(			const ObjectivePtr<RNRElement<N>, double>& objective,
+	JacobSearch(			const RNRObjectivePtr<N>& objective,
 							const RNRElement<N>& initialPoint,
 							double samplingStepSize=1e-5,
 							double gradientEstimatorStepSize=1e-10);
@@ -27,7 +28,7 @@ public:
     void setGradientEstimatorStepSize(double stepSize);
 
 private:
-    ObjectivePtr<RNRElement<N>	_objective;
+    RNRObjectivePtr<N>	        _objective;
     RNRElement<N>				_solution;
     size_t						_stepCount;
 	double						_samplingStepSize;
@@ -36,6 +37,7 @@ private:
 
 
 } // namespace opt
+}
 
 #include "jacobsearch_impl.hpp"
 

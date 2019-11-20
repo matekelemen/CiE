@@ -3,6 +3,8 @@
 #include "../inc/box.hpp"
 #include "../inc/sphere.hpp"
 
+
+namespace cie {
 namespace csg{
 
 TEST_CASE("CSG Operators"){
@@ -65,4 +67,5 @@ TEST_CASE("CSG Operators"){
 
 }
 
+}
 }

@@ -10,6 +10,7 @@
 #include <cmath>
 #include <numeric>
 
+namespace cie {
 namespace linalg {
 
 
@@ -33,6 +34,7 @@ void runtime_check( bool result, const char message[] );
 
 
 } // namespace linalg
+}
 
 
 #endif

@@ -6,6 +6,7 @@
 #include <array>
 #include <memory>
 
+namespace cie {
 namespace csg {
 
 
@@ -50,6 +51,7 @@ private:
 };
 
 
-}
+} // namespace csg
+} // namespace cie
 
 #endif

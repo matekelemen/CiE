@@ -1,5 +1,7 @@
 #include "../inc/sphere.hpp"
 
+
+namespace cie {
 namespace csg {
 
 Sphere::Sphere(double radius, const Point64& center) :
@@ -32,4 +34,5 @@ bool Sphere::isInside(const Point64& point) const {
 }
 
 
+}
 }

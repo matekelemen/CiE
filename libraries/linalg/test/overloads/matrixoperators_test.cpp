@@ -1,6 +1,7 @@
 #include "catch.hpp"
 #include "../../overloads/inc/matrixoperators.hpp"
 
+namespace cie {
 namespace linalg {
 
 TEST_CASE("Matrix - scalar operator overloads"){
@@ -158,4 +159,5 @@ TEST_CASE("Matrix - matrix operator overloads"){
     REQUIRE_THROWS( result = m4x4 * m2x3 );
 }
 
+}
 }

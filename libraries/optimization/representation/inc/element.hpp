@@ -3,6 +3,7 @@
 
 #include "linalgtypes.hpp"
 
+namespace cie {
 namespace opt {
 
 // Solution representation interface
@@ -46,6 +47,7 @@ using RNRMVectorElement = Element<DoubleVector, const DoubleVector>;
 
 
 } // namespace opt
+}
 
 #include "element_impl.hpp"
 

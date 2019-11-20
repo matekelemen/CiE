@@ -1,5 +1,6 @@
 #include "../inc/matrix.hpp"
 
+namespace cie {
 namespace linalg {
 
 Matrix::Matrix( size_t size1, size_t size2, double value ) :
@@ -60,4 +61,5 @@ Matrix::Matrix( const std::vector<DoubleVector>& vectorOfRows ) :
     }
 }
 
+}
 }

@@ -3,12 +3,14 @@
 
 #include "linalgtypes.hpp"
 #include "linalgoverloads.hpp"
+#include "quadraticsubstitute.hpp"
 
+namespace cie {
 namespace opt {
 
 
 template <size_t N>
-JacobSearch<N>::JacobSearch(		const ObjectivePtr<RNRElement<N>, double>& objective,
+JacobSearch<N>::JacobSearch(		const RNRObjectivePtr<N>& objective,
 									const RNRElement<N>& initialPoint,
 									double samplingStepSize,
 									double gradientEstimatorStepSize) :
@@ -30,7 +32,26 @@ void JacobSearch<N>::step()
                                                     _gradientEstimatorStepSize );
     linalg::normalize<DoubleArray<N>>(gradient.getData());
 
-	// Create a substitute in the gradient direction
+    // Get samples in the gradient direction
+    /*
+    RNRElement<N>   point1(_solution.getData() - _samplingStepSize * gradient);
+    RNRElement<N>   point2(_solution.getData() + _samplingStepSize * gradient);
+
+    point1.setObjective(_objective(point1.getData()));
+    point2.setObjective(_objective(point2.getData()));
+
+	// Create a substitute
+    QuadraticSubstitute<N> substitute(  {   &_solution.getData(),
+                                            &point1.getData(),
+                                            &point2.getData()},
+                                        {   _solution.getObjective,
+                                            point1.getObjective(),
+                                            point2.getObjective()   } );
+
+    // Find minimum of the substitute
+    auto result = substitute.minimum();
+    RNRElement<N> solutionCandidate(result.first);
+    */
 }
 
 
@@ -77,5 +98,6 @@ void JacobSearch<N>::setGradientEstimatorStepSize(double stepSize)
 
 
 } // namespace opt
+}
 
 #endif

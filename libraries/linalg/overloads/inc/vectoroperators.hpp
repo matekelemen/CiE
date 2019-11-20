@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <numeric>
 
+namespace cie {
 
 DoubleVector operator+(const DoubleVector& vector, double scalar);
 DoubleVector operator+(double scalar, const DoubleVector& vector);
@@ -43,6 +44,7 @@ DoubleArray<N> operator/(const DoubleArray<N>& vector, double scalar);
 template <size_t N>
 double operator*(const DoubleArray<N>& lhs, const DoubleArray<N>& rhs); // Dot product
 
+}
 
 #include "vectoroperators_impl.hpp"
 

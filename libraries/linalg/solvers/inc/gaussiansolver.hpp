@@ -8,12 +8,14 @@
 #include "../../types/inc/matrix.hpp"
 #include "../../utilities/inc/linalgutilities.hpp"
 
+namespace cie {
 namespace linalg {
 
 // Solve linear system of equations
 DoubleVector solve( const Matrix& matrix,
               const DoubleVector& vector );
 
+}
 }
 
 #endif

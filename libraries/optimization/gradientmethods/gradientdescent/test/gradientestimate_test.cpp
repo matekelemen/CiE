@@ -2,6 +2,7 @@
 #include "../inc/gradientestimate.hpp"
 #include <iostream>
 
+namespace cie {
 namespace opt {
 
 
@@ -25,4 +26,5 @@ TEST_CASE("Gradient estimation")
     CHECK( gradient[0] == Approx(gradient[1]) );
 }
 
+}
 }

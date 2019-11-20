@@ -9,7 +9,7 @@
  * have to recompile everything that includes linalg.hpp.
  */
 
-
+namespace cie {
 namespace linalg
 {
 
@@ -77,5 +77,6 @@ inline void Matrix::transpose()
 }
 
 } // namespace linalg
+}
 
 #endif

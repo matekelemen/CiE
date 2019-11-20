@@ -1,5 +1,6 @@
 #include "../inc/csgoperator.hpp"
 
+namespace cie {
 namespace csg {
 
 CSGOperator::CSGOperator(CSGObject* left, CSGObject* right) :
@@ -34,4 +35,5 @@ bool CSGIntersect::isInside(const Point64& point) const{
 
 
 
+}
 }

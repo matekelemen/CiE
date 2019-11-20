@@ -1,16 +1,19 @@
-#include "quadraticsubstitute.hpp"
 
+
+namespace cie {
 namespace opt {
 
 
-QuadraticSubstitute::QuadraticSubstitute(std::vector<const DoubleVector*>& points, const DoubleVector& values) :
-    ObjectiveSubstitute(points.size(), points[0]->size())
+template<size_t N>
+QuadraticSubstitute<N>::QuadraticSubstitute(std::vector<const DoubleArray<N>*>& points, const DoubleVector& values) :
+    ObjectiveSubstitute<N>()
 {
     build(points, values);
 }
 
 
-void QuadraticSubstitute::build(std::vector<const DoubleVector*>& points, const DoubleVector& values) {
+template<size_t N>
+void QuadraticSubstitute<N>::build(std::vector<const DoubleArray<N>*>& points, const DoubleVector& values) {
     // Check sizes
     if (points.size()!=3 || values.size()!=3) 
         throw std::runtime_error("Invalid number of data sites!");
@@ -26,11 +29,11 @@ void QuadraticSubstitute::build(std::vector<const DoubleVector*>& points, const 
     }
 
     // Set base as first point
-    _base = DoubleVector(*points[0]);
+    this->_base = DoubleArray<N>(*points[0]);
 
     // Compute direction
-    for (uint i=0; i<_direction.size(); ++i){
-        _direction[i] = (*points[2])[i]-(*points[0])[i];
+    for (uint i=0; i<this->_direction.size(); ++i){
+        this->_direction[i] = (*points[2])[i]-(*points[0])[i];
     }
 
     // Compute coefficients (internal parameters: [0,ratio,1])
@@ -45,7 +48,7 @@ void QuadraticSubstitute::build(std::vector<const DoubleVector*>& points, const 
     if ( std::abs(ratio)<1e-15 || std::abs(ratio-1.0)<1e-15 )
         throw std::runtime_error("Repeated middle sample point!");
 
-    _coefficients   = {
+    this->_coefficients = {
         values[2],
         ( values[2]-values[1]/ratio2-values[0]*(1-1/ratio2) ) / ( 1-1/ratio ),
         ( values[2]-values[1]/ratio-values[0]*(1-1/ratio) ) / ( 1-ratio )
@@ -53,36 +56,39 @@ void QuadraticSubstitute::build(std::vector<const DoubleVector*>& points, const 
 }
 
 
-std::pair<DoubleVector,double> QuadraticSubstitute::minimum() const {
+template<size_t N>
+std::pair<DoubleArray<N>,double> QuadraticSubstitute<N>::minimum() const {
 
     // Check minimum requirements
-    if (std::abs(_coefficients[2])<1e-15)
+    if (std::abs(this->_coefficients[2])<1e-15)
         throw std::runtime_error("Substitute function is linear!");
 
-    if (_coefficients[2]<0.0)
+    if (this->_coefficients[2]<0.0)
         throw std::runtime_error("Substitute function does not have a minimum!");
 
     // Compute parameter at minimum
-    double minParam     = -_coefficients[1]/2/_coefficients[2];
+    double minParam     = -this->_coefficients[1]/2/this->_coefficients[2];
 
     // Get coordinates at minimum
-    DoubleVector minPos(_base);
+    DoubleArray<N> minPos(this->_base);
     for (uint i=0; i<minPos.size(); ++i){
-        minPos[i] += minParam*_direction[i];
+        minPos[i] += minParam*this->_direction[i];
     }
     
     // Return minimum coordinates and minimum value
-    return std::make_pair<DoubleVector, double> (
-        DoubleVector(minPos),
+    return std::make_pair<DoubleArray<N>, double> (
+        DoubleArray<N>(minPos),
         (*this)(minParam)
     );
 }
 
 
-double QuadraticSubstitute::operator()(double parameter) const {
-    return _coefficients[0] + parameter * (_coefficients[1] + parameter*_coefficients[2]);
+template<size_t N>
+double QuadraticSubstitute<N>::operator()(double parameter) const {
+    return this->_coefficients[0] + parameter * (this->_coefficients[1] + parameter*this->_coefficients[2]);
 }
 
 
 
+}
 }

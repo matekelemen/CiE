@@ -3,6 +3,7 @@
 
 #include <cmath>
 
+namespace cie {
 namespace linalg {
 
 template <typename T>
@@ -42,5 +43,6 @@ void normalize(T& object, NormFunction<T> measure, double tolerance)
 }
 
 } // namespace linalg
+}
 
 #endif

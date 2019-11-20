@@ -3,8 +3,12 @@
 
 #include <vector>
 
+namespace cie {
+
 typedef std::vector<size_t> UIntVector;
 typedef std::vector<int>    IntVector;
 typedef std::vector<double> DoubleVector;
+
+}
 
 #endif

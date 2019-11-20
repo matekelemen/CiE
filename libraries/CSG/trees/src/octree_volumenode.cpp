@@ -1,5 +1,7 @@
 #include "../inc/octree_volumenode.hpp"
 
+
+namespace cie {
 namespace csg {
 
 VolumeNode::VolumeNode() :
@@ -133,4 +135,5 @@ void VolumeNode::setPoints(const std::vector<Point64>& set){
 
 
 
+}
 }

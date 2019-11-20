@@ -4,6 +4,7 @@
 #include "../../inc/csgtypes.hpp"
 #include "octreeutils.hpp"
 
+namespace cie {
 namespace csg {
 
 class Node {
@@ -29,6 +30,6 @@ public:
 };
 
 }
-
+}
 
 #endif

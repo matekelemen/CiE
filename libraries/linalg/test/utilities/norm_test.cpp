@@ -1,6 +1,7 @@
 #include "catch.hpp"
 #include "../inc/linalg.hpp"
 
+namespace cie {
 namespace linalg {
 
 TEST_CASE("Norms and normalization")
@@ -31,4 +32,5 @@ TEST_CASE("Norms and normalization")
     CHECK( matrix(1,1) == Approx( -5/6.0 ) );
 }
 
+}
 }

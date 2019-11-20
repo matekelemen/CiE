@@ -3,6 +3,8 @@
 
 #include "linalg.hpp"
 
+
+namespace cie {
 namespace fem {
 
 
@@ -16,6 +18,7 @@ public:
 };
 
 
+}
 }
 
 #endif

@@ -6,6 +6,7 @@
 #include <cmath>
 #include <numeric>
 
+namespace cie {
 namespace meshkernel
 {
 
@@ -460,4 +461,4 @@ TEST_CASE_METHOD( CircularRegionFixture, "triangulate" )
 } // triangulate
 
 } // namespace meshkernel
-
+}

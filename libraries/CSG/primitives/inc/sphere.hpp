@@ -4,6 +4,8 @@
 #include "csgobject.hpp"
 #include "math.h"
 
+
+namespace cie {
 namespace csg {
 
 
@@ -28,5 +30,6 @@ public:
 
 
 
+}
 }
 #endif

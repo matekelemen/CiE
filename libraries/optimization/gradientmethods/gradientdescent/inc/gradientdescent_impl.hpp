@@ -8,6 +8,7 @@
 
 #include <functional>
 
+namespace cie {
 namespace opt {
 
 template <size_t N>
@@ -105,5 +106,6 @@ RNRElement<N> defaultStepSizeDeterminor(const GradientDescent<N>& solver)
 
 
 } // namespace opt
+}
 
 #endif

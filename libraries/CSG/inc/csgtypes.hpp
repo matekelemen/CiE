@@ -7,7 +7,8 @@
 #include <iostream>
 #include <fstream>
 
-namespace csg{
+namespace cie {
+namespace csg {
 
 typedef unsigned int uint;
 
@@ -69,5 +70,7 @@ bool sgn(num number) {return (number>=0 ? true : false);}
 // -----------------------------------------------------------
 void writePointVector(const std::string& filename, const std::vector<Point64>& data);
 
-}
+} // namespace csg
+} // namespace cie
+
 #endif

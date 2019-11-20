@@ -3,6 +3,7 @@
 
 #include "../../inc/csgtypes.hpp"
 
+namespace cie {
 namespace csg{
 
 class CSGObject {
@@ -12,5 +13,6 @@ public:
 };
 
 
+}
 }
 #endif

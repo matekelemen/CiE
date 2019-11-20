@@ -5,6 +5,7 @@
 #include <array>
 #include <tuple>
 
+namespace cie {
 namespace meshkernel
 {
 
@@ -34,5 +35,6 @@ Triangulation triangulate( const Vertex2DVector& vertices,
                            TriangulationParameters parameters );
 
 } // namespace meshkernel
+}
 
 #endif // MESHGENERATOR_HPP

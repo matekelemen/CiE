@@ -1,5 +1,6 @@
 #include "../inc/csgtypes.hpp"
 
+namespace cie {
 namespace csg {
 
 void writePointVector(const std::string& filename, const std::vector<Point64>& data){
@@ -18,4 +19,5 @@ void writePointVector(const std::string& filename, const std::vector<Point64>& d
     }
 }
 
+}
 }

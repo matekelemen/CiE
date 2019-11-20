@@ -1,6 +1,7 @@
 #include "catch.hpp"
 #include "../inc/linalg.hpp"
 
+namespace cie {
 namespace linalg {
 
 TEST_CASE("Principal component - power iteration"){
@@ -28,4 +29,5 @@ TEST_CASE("Principal component - power iteration"){
 
 }
 
+}
 }

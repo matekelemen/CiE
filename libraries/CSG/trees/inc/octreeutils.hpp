@@ -4,6 +4,8 @@
 #include "../../inc/csgtypes.hpp"
 #include <utility>
 
+
+namespace cie {
 namespace csg{
 
 // General octree node helpers
@@ -13,6 +15,7 @@ uint                base10(const std::array<bool,3>& index);
 uint                base10(const std::array<uint,3>& index);
 uint                uintPow(uint base, uint exponent);
 
+}
 }
 
 #endif

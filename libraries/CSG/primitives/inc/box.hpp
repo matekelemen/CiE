@@ -3,6 +3,7 @@
 
 #include "csgobject.hpp"
 
+namespace cie {
 namespace csg {
 
 class Box : public CSGObject {
@@ -21,6 +22,7 @@ public:
     Box& operator=(const Box& box);
 };
 
-}
+} // namepsace csg
+} // namespace cie
 
 #endif

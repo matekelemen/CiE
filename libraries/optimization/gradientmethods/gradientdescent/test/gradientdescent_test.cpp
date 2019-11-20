@@ -2,6 +2,7 @@
 #include "../inc/gradientdescent.hpp"
 #include <iostream>
 
+namespace cie {
 namespace opt {
 
 
@@ -29,4 +30,5 @@ TEST_CASE("Gradient descent")
     }
 }
 
+}
 }

@@ -2,6 +2,8 @@
 #include "linalgoverloads.hpp"
 #include <numeric>
 
+
+namespace cie {
 namespace csg {
 
 
@@ -114,4 +116,5 @@ const DoubleArray<2>& MinimumEnclosingDisc::getPoint(size_t index) const
 }
 
 
-}
+} // namespace csg
+} // namespace cie

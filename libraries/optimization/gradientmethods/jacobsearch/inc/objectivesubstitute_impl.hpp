@@ -1,10 +1,12 @@
+
+namespace cie {
 namespace opt {
 
 
 template <size_t N>
-ObjectiveSubstitute<N>::ObjectiveSubstitute()
+ObjectiveSubstitute<N>::ObjectiveSubstitute() :
+    _coefficients(0)
 {
-	_coefficients.fill(0.0);
 	_direction.fill(0.0);
 	_base.fill(0.0);
 }
@@ -20,9 +22,9 @@ ObjectiveSubstitute<N>::ObjectiveSubstitute(const DoubleArray<N>& coefficients, 
 
 
 template <size_t N>
-void ObjectiveSubstitute<N>::build(std::vector<const DoubleArray<N>*>& points, const DoubleArray<N>& values) 
+void ObjectiveSubstitute<N>::build(std::vector<const DoubleArray<N>*>& points, const DoubleVector& values) 
 {
-    _coefficients = DoubleArray<N>( values.size(), 0.0 );
+    _coefficients = DoubleVector(points.size(),0.0);
 }
 
 
@@ -61,4 +63,5 @@ void ObjectiveSubstitute<N>::setDirection(const DoubleArray<N>& direction)
 }
 
 
+}
 }

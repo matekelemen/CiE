@@ -1,6 +1,8 @@
 #include "catch.hpp"
 #include "../inc/octreeutils.hpp"
 
+
+namespace cie {
 namespace csg {
 
 
@@ -34,4 +36,5 @@ TEST_CASE("Base converters"){
 
 
 
+}
 }

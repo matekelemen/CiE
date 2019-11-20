@@ -1,6 +1,8 @@
 #ifndef LINALG_MATRIX_OPERATORS_IMPL_HPP
 #define LINALG_MATRIX_OPERATORS_IMPL_HPP
 
+
+namespace cie {
 namespace linalg {
 
 template <size_t N>
@@ -48,6 +50,7 @@ DoubleArray<N> operator*(const Matrix& matrix, const DoubleArray<N>& vector)
     return result;
 }
 
+}
 }
 
 #endif

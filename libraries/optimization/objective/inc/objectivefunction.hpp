@@ -6,6 +6,7 @@
 #include "../../representation/inc/element.hpp"
 #include "linalgtypes.hpp"
 
+namespace cie {
 namespace opt {
 
 // DataType -> ObjectiveType
@@ -22,5 +23,6 @@ using RNRObjectivePtr = ObjectivePtr< RNRElement<N>, double >;
 
 
 } // namespace opt
+}
 
 #endif

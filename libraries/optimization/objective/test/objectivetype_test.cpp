@@ -2,6 +2,7 @@
 #include "catch.hpp"
 #include "../inc/objectivefunction.hpp"
 
+namespace cie {
 namespace opt {
 
 // Parabola offset to [1,1,1,...,1]^T
@@ -45,3 +46,4 @@ TEST_CASE("Objective")
 
 
 } // namespace opt
+}

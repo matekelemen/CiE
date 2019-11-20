@@ -5,6 +5,7 @@
 #include "../../representation/inc/element.hpp"
 #include "objectivefunction.hpp"
 
+namespace cie {
 namespace opt {
 
 
@@ -21,6 +22,7 @@ DoubleArray<N> gradientEstimate(    const RNRElement<N>& point,
 
 
 } // namespace opt
+}
 
 #include "gradientestimate_impl.hpp"
 

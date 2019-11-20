@@ -8,6 +8,7 @@
 #include "../../types/inc/vectortypes.hpp"
 #include "../../types/inc/matrix.hpp"
 
+namespace cie {
 namespace linalg {
 namespace linalghelper {
 
@@ -23,6 +24,7 @@ void write( const Matrix& matrix, std::ostream& out = std::cout );
 
 } // namespace linalghelper
 } // namespace linalg
+}
 
 #include "linalghelper_impl.hpp"
 

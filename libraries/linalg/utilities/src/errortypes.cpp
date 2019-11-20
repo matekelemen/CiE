@@ -1,5 +1,6 @@
 #include "../inc/errortypes.hpp"
 
+namespace cie {
 namespace linalg {
 
 MatrixError::MatrixError(const std::string& message, const Matrix& matrix) :
@@ -12,4 +13,5 @@ MatrixError::MatrixError(const std::string& message, const Matrix& matrix) :
     }
 }
 
+}
 }

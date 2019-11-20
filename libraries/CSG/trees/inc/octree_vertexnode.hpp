@@ -7,6 +7,8 @@
 #include <vector>
 #include <fstream>
 
+
+namespace cie {
 namespace csg{
 
 
@@ -42,7 +44,7 @@ std::pair<const VertexNode&, uint> getNeighbour(const VertexNode& root, uint ind
 
     
 }
-
+}
 
 
 

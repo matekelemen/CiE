@@ -7,6 +7,7 @@
 #include <string>
 #include <algorithm>
 
+namespace cie {
 namespace linalg {
 
 Matrix operator+(const Matrix& matrix, double scalar);
@@ -31,6 +32,7 @@ DoubleArray<N> operator*(const Matrix& matrix, const DoubleArray<N>& vector);
 Matrix operator*(const Matrix& lhs, const Matrix& rhs);
 
 } // namespace linalg
+}
 
 #include "matrixoperators_impl.hpp"
 

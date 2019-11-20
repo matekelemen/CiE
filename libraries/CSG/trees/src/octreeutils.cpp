@@ -1,5 +1,7 @@
 #include "../inc/octreeutils.hpp"
 
+
+namespace cie {
 namespace csg {
 
 
@@ -59,4 +61,5 @@ uint uintPow(uint base, uint exponent){
 }
 
 
+}
 }

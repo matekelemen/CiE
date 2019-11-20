@@ -6,6 +6,7 @@
 #include <iostream>
 #include <array>
 
+namespace cie {
 namespace linalg
 {
 
@@ -42,6 +43,7 @@ private:
 }; // class Matrix
 
 } // namespace linalg
+}
 
 #include "matrix_impl.hpp"
 

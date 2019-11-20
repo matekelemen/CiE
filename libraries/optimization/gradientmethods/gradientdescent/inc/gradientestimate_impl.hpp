@@ -1,6 +1,7 @@
 #ifndef OPTIMIZATION_GRADIENT_ESTIMATE_IMPL_HPP
 #define OPTIMIZATION_GRADIENT_ESTIMATE_IMPL_HPP
 
+namespace cie {
 namespace opt {
 
 
@@ -46,5 +47,6 @@ DoubleArray<N> gradientEstimate(    const RNRElement<N>& point,
 
 
 } // namespace opt
+}
 
 #endif

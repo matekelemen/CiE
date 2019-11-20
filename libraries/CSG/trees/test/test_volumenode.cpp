@@ -1,7 +1,7 @@
 #include "catch.hpp"
 #include "../inc/octree_volumenode.hpp"
 
-
+namespace cie {
 namespace csg {
 
 TEST_CASE("VolumeNode - locate"){
@@ -67,4 +67,5 @@ TEST_CASE("VolumeNode - divide"){
     root->divide(0,10,2);
 }
 
+}
 }

@@ -2,7 +2,7 @@
 
 #include "randomgenerators.hpp"
 
-
+namespace cie {
 namespace opt {
 
 // ---------------------------------------------------------------
@@ -64,3 +64,4 @@ std::unique_ptr<DoubleVector> randomNormalDoubleVector(double mean, double devia
 
 
 } // namespace opt
+}
