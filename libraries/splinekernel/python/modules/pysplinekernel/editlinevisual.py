@@ -5,12 +5,15 @@ class EditLineVisual(scene.visuals.Line):
     # CONSTRUCTOR AND INITIALZER ----------------------------------------------------------------------
     def __init__(self, *args, **kwargs):
         scene.visuals.Line.__init__(self, *args, **kwargs)
-        self.reset()
+        self.reset(pos=kwargs['pos'])
         
-    def reset(self):
+
+    def reset(self,pos=None):
         self.unfreeze()
+        if pos is None:
+            pos=np.empty((1,3),dtype=np.float32)
         # initialize point markers
-        self.markers = scene.visuals.Markers(parent=self)
+        self.markers = scene.visuals.Markers(parent=self, pos=pos)
         self.marker_colors = np.ones((len(self.pos), 4), dtype=np.float32)
         self.markers.set_data(pos=self.pos, symbol="s", edge_color="red",
                               size=6)
@@ -19,6 +22,7 @@ class EditLineVisual(scene.visuals.Line):
         # Grid size
         self.gridsize = 5
         self.freeze()
+
 
     # MARKER CONTROLS ------------------------------------------------------------
     def updateMarkers(self, selected_index=-1, highlight_color=(1, 0, 0, 1)):

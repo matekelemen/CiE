@@ -308,11 +308,10 @@ IntVector MinimumEnclosingDisc::getActiveIndices() const
 	{
 		if (_activeIndices[i] != -1)
 		{
-			indices[count] = (int)_map[_activeIndices[i]];
-			++count;
+			indices[count++] = (int)_map[_activeIndices[i]];
 		}
 	}
-	indices.resize(--count);
+	indices.resize(count);
 	return indices;
 }
 

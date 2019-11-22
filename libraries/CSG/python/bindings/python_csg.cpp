@@ -11,6 +11,7 @@ PYBIND11_MODULE( pycsg,m ){
 		.def("build", &cie::csg::MinimumEnclosingDisc::build)
 		.def("getCenter", &cie::csg::MinimumEnclosingDisc::getCenter)
 		.def("getRadius", &cie::csg::MinimumEnclosingDisc::getRadius)
+		.def("getActiveIndices",&cie::csg::MinimumEnclosingDisc::getActiveIndices)
 		;
 
 }
