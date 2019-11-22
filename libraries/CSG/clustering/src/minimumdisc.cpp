@@ -10,8 +10,8 @@ namespace csg {
 
 // Define the necessary permutations to check, possible scenarios (neglecting 0 radius discs):
 //	-	all possible discs defined by a set of 2 points:	1 possibility
-//	-	all possible discs defined by a set of 3 points:	4 possibilities
-//	-	all possible discs defined by a set of 4 points:	10 possibilities
+//	-	all possible discs defined by a set of 3 points:	3 possibilities
+//	-	all possible discs defined by a set of 4 points:	6 possibilities
 std::vector<std::vector<IntVector>> permutationSets =
 {
 	{

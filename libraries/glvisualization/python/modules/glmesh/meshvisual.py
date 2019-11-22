@@ -165,7 +165,7 @@ class MeshVisual(Visual):
 
         # Default arguments
         if light is None:
-            self.light      = SimpleLight
+            light      = SimpleLight
         self.light  = light(parent=self)
 
         if camera is None:

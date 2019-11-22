@@ -2,8 +2,11 @@
 import numpy as np
 
 # --- Internal imports ---
-from glmesh import TriangleMeshVisual
+from glmesh import MeshVisual
 from glmesh import defaultVertexShader, defaultFragmentShader
+
+# --- Texture imports ---
+from gltexture import uniformTexture, AggregatedTexture
 
 # --- Lighting imports ---
 from lighting import SimpleLight
@@ -14,42 +17,55 @@ from vispy import scene, app
 # -----------------------------------------------------
 class MeshApp3D:
     def __init__(self,
-                        surfaceMesh,
+                        meshRoot,
+                        aggregatedTexture=None,
                         camera=None,
                         bgcolor=(0.2,0.2,0.2),
                         border_color=(0.0,0.0,0.0),
                         border_width=1,
                         **kwargs ):
+        # Default texture
+        if aggregatedTexture is None:
+            aggregatedTexture   = AggregatedTexture(shape=(2,2))
+            aggregatedTexture.registerTexture(  uniformTexture(size=(2,2)),
+                                                0,
+                                                ambientMaterialConstant=0.7,
+                                                specularMaterialConstant=0.8)
+
         # Vispy init
-        self._meshNode          = scene.visuals.create_visual_node(TriangleMeshVisual)
+        self._meshNode          = scene.visuals.create_visual_node(MeshVisual)
         self._canvas            = scene.SceneCanvas(    keys='interactive',
                                                         size=(1024,768) )
-        self._view              = self._canvas.central_widget.add_view(     bgcolor=bgcolor,
+        self.view               = self._canvas.central_widget.add_view(     bgcolor=bgcolor,
                                                                             border_color=border_color,
                                                                             border_width=border_width )
 
         # Default arguments
         if camera is None:
-            self._view.camera   = scene.cameras.ArcballCamera(  fov=0, 
+            self.view.camera   = scene.cameras.ArcballCamera(  fov=0, 
                                                                 center=(0.0,0.0,0.0), 
-                                                                parent=self._view )
+                                                                parent=self.view )
         else:
-            self._view.camera   = camera( parent=self._view )
+            self.view.camera   = camera( parent=self.view )
 
         # Create visual
-        self._mesh              = self._meshNode(   surfaceMesh['vertices'],
-                                                    surfaceMesh['faces'],
-                                                    camera=self._view.camera,
-                                                    **kwargs )
+        self.mesh               = self._meshNode(   meshRoot,
+                                                    aggregatedTexture,
+                                                    camera=self.view.camera )
         
         # Adjust lighting
-        vertices                    = np.transpose(  self._mesh._meshData.get_vertices() ,(1,0) )
-        self._mesh._light._pos      = ( ( max(vertices[0]) - min(vertices[0]) )/2.0,
-                                        ( max(vertices[1]) - min(vertices[1]) )/2.0,
-                                          max(vertices[2]) + (max(vertices[2])-min(vertices[2]))*10     )
-        self._mesh._light._color    = np.array( (1.0,1.0,1.0), dtype=np.float32 )
+        vertices                    = self.mesh.root.getCompiledMesh()['vertices']
+        vertices                    = np.reshape( vertices, (len(vertices)*3,3) )
 
-        self._view.add(self._mesh)
+        center                      = ( ( np.max(vertices[:,0]) - np.min(vertices[:,0]) )/2.0,
+                                        ( np.max(vertices[:,1]) - np.min(vertices[:,1]) )/2.0,
+                                        ( np.max(vertices[:,2]) - np.min(vertices[:,2]) )/2.0     )
+        
+        self.mesh.light._pos        = center
+        self.view.camera.center     = center
+        self.mesh.light._color      = np.array( (1.0,1.0,1.0), dtype=np.float32 )
+
+        self.view.add(self.mesh)
         
 
 

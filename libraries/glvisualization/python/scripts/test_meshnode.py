@@ -2,7 +2,7 @@
 import numpy as np
 
 # --- GLMesh imports ---
-from glmesh import MeshNode, MeshVisual, Torus
+from glmesh import MeshNode, MeshVisual, MeshApp3D
 
 # --- GLTexture imports ---
 from gltexture import textureFolderPath, loadTexture
@@ -106,25 +106,6 @@ root.addChild( MeshNode(    vertices=v3,
                             materialID=0) )
 
 # -----------------------------------------------------------
-MeshVisualNode  = scene.visuals.create_visual_node(MeshVisual)
-
-canvas          = scene.SceneCanvas(    keys='interactive',
-                                        size=(1024,768)     )
-
-view            = canvas.central_widget.add_view( bgcolor=(0.2,0.2,0.2) )
-view.camera     = scene.cameras.ArcballCamera(  fov=0,
-                                                center=(0.5,0.5,0.5),
-                                                parent=view )
-
-meshVisual      = MeshVisualNode(   root,
-                                    agg,
-                                    light=SimpleLight,
-                                    camera=view.camera )
-
-#meshVisual.light._posFunctor    = lambda t : (0.0,np.cos(t/2.0),0.0)
-#meshVisual.light._color = np.asarray( (1.0,1.0,1.0) ,dtype=np.float32)
-meshVisual.light._pos   = np.asarray( (0.5,0.5,0.5) ,dtype=np.float32)
-
-view.add(meshVisual)
-canvas.show()
-app.run()
+mApp    = MeshApp3D(    root,
+                        agg )
+mApp.run()
