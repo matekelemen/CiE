@@ -8,6 +8,26 @@ namespace cie {
 namespace csg {
 
 
+// Define the necessary permutations to check, possible scenarios (neglecting 0 radius discs):
+//	-	all possible discs defined by a set of 2 points:	1 possibility
+//	-	all possible discs defined by a set of 3 points:	4 possibilities
+//	-	all possible discs defined by a set of 4 points:	10 possibilities
+std::vector<std::vector<IntVector>> permutationSets =
+{
+	{
+		{0,1}
+	},
+	{
+		{0,2},{1,2},
+		{0,1,2}
+	},
+	{
+		{0,3},{1,3},{2,3},
+		{0,1,3},{0,2,3},{1,2,3}
+	}
+};
+
+
 // Specialize and rename linalg::norm2 for easier use
 double squareNorm(const DoubleArray<2>& vector)
 {
@@ -43,7 +63,7 @@ Disc::Disc( const DoubleArray<2>& point1,
             const DoubleArray<2>& point3 )
 {
     // Check whether the definition is unique
-    double tolerance    = 1e-16;
+    double tolerance    = 1e-15;
     double determinant  =   (point1[0]-point2[0])*(point1[1]-point3[1]) 
                             - (point1[0]-point3[0])*(point1[1]-point2[1]);
 
@@ -142,8 +162,7 @@ bool Disc::isInside(const DoubleArray<2>& point)
 MinimumEnclosingDisc::MinimumEnclosingDisc( const PointSet2D& pointSet) :
     _disc({0.0,0.0},0.0),
     _pointSetPtr(std::make_shared<const PointSet2D>(pointSet)),
-    _activeIndices({0,0,0,0}),
-    _activeCount(0),
+    _activeIndices({-1,-1,-1,-1}),
     _map(pointSet.size())
 {
     // Initialize map and shuffle it:
@@ -154,40 +173,104 @@ MinimumEnclosingDisc::MinimumEnclosingDisc( const PointSet2D& pointSet) :
     std::iota(_map.begin(), _map.end(), 0);
     std::random_shuffle(_map.begin(), _map.end());
 
-    // Fill the active set with the first 2 points
+    // Fill the active set with the first point
     _activeIndices[0]   = 0;
-    _activeIndices[1]   = 1;
-    _activeCount        = 2;
-
-    // Define disc based on the two points
-    _disc._radius2  = distance(getPoint(_activeIndices[0]), getPoint(_activeIndices[1])) / 2.0;
-    _disc._center   = (getPoint(_activeIndices[0]) + getPoint(_activeIndices[1])) / 2.0;
+	_disc._center		= getPoint(0);
+	_disc._radius2		= 0.0;
 }
 
 
-void MinimumEnclosingDisc::build(double tolerance)
+int MinimumEnclosingDisc::build(double tolerance)
 {
-    while (true)
+	int outlierIndex;
+	int activeSize;
+	int restartCount = 0;
+
+    for (restartCount=0;restartCount<_pointSetPtr->size();++restartCount)
     {
         // Check whether all points are inside the current disc
-        int outlierIndex = -1;
-        for (size_t i=0; i<(*_pointSetPtr).size(); ++i )
-        {
-            if ( !_disc.isInside(getPoint(i)) )
-            {
-                outlierIndex = (int)i;
-                break;
-            }
-        }
+		outlierIndex = checkEnclosure(tolerance);
         if (outlierIndex==-1) 
             // Check succeeded, end the loop
             break;
 
         // Check failed, outlier identified
-        // Todo: implement the rest of the Welzl algorithm
-        //          - disc definitions missing
+		// Add outlier ti the list of active indices
+		activeSize = addActiveIndex(outlierIndex);
 
-    }
+		// Construct a circle that encloses all points in the active set
+		Disc trialDisc({0.0,0.0},0.0);
+		IntArray<4> activeIndices;
+		bool enclosed = true;
+
+		for (uint8_t permutation = 0; permutation < permutationSets[activeSize-2].size(); ++permutation)
+			{
+				auto indices = permutationSets[activeSize-2][permutation];
+
+				// Define disc
+				if (indices.size() == 2)
+				{
+					trialDisc = Disc(	getPoint(_activeIndices[indices[0]]),
+										getPoint(_activeIndices[indices[1]])	);
+				}
+				else if (indices.size() == 3)
+				{
+					trialDisc = Disc(	getPoint(_activeIndices[indices[0]]),
+										getPoint(_activeIndices[indices[1]]),
+										getPoint(_activeIndices[indices[2]])	);
+				}
+				else
+					throw std::runtime_error("Invalid number of disc points");
+
+				// Check disc
+				enclosed = true;
+				for (uint8_t pIndex = 0; pIndex < activeSize; ++pIndex)
+				{
+					if (distance(trialDisc._center, getPoint(_activeIndices[pIndex])) > trialDisc._radius2+tolerance)
+					{
+						enclosed = false;
+						break;
+					}
+				}
+
+				// Update if disc encloses the active set
+				if (enclosed)
+				{
+					// Copy disc data
+					_disc._center	= trialDisc._center;
+					_disc._radius2	= trialDisc._radius2;
+
+					// Remove unnecessary indices
+					activeIndices = _activeIndices;
+					for (uint8_t k=0; k<activeSize; ++k)
+					{
+						if (std::find(indices.begin(), indices.end(), k) == indices.end())
+						{
+							removeActiveIndex(activeIndices[k]);
+						}
+					}
+
+					break;
+				}
+		} // for permutation
+
+		if (!enclosed)
+		{
+			std::cout << "Dumping MinimumEnclosingDisc data:\n";
+			std::cout << "\tActive set (" << activeSize << "):\n";
+			for (uint8_t k = 0; k < _activeIndices.size(); ++k)
+			{
+				if (_activeIndices[k] == -1)
+					std::cout << "\t\tempty\n";
+				else
+					std::cout << "\t\t" << getPoint(_activeIndices[k])[0] << ", " << getPoint(_activeIndices[k])[1] << "\n";
+			}
+			throw std::runtime_error("Failed to find a new disc!");
+		}
+
+    } // while
+
+	return restartCount;
 }
 
 
@@ -203,10 +286,116 @@ DoubleArray<2> MinimumEnclosingDisc::getCenter() const
 }
 
 
+IntVector MinimumEnclosingDisc::getActiveIndices() const
+{
+	// Returns the unshuffled indices of the active set
+	IntVector indices(_activeIndices.size());
+	uint8_t count = 0;
+	for (uint8_t i = 0; i < _activeIndices.size(); ++i)
+	{
+		if (_activeIndices[i] != -1)
+		{
+			indices[count] = (int)_map[_activeIndices[i]];
+			++count;
+		}
+	}
+	indices.resize(--count);
+	return indices;
+}
+
+
 const DoubleArray<2>& MinimumEnclosingDisc::getPoint(size_t index) const 
 {
     // Reroute container indexing through the member variable: _map
     return (*_pointSetPtr)[_map[index]];
+}
+
+
+int MinimumEnclosingDisc::checkEnclosure(double tolerance) const
+{
+	int outlierIndex = -1;
+	for (size_t i=0; i<_pointSetPtr->size();++i)
+	{
+		if (distance(_disc._center, getPoint(i)) > _disc._radius2+tolerance)
+		{
+			outlierIndex = (int)i;
+			break;
+		}
+	}
+	return outlierIndex;
+}
+
+
+int MinimumEnclosingDisc::addActiveIndex(int index)
+{
+	// Copy index to an empty position in _activeIndices, return the 
+	// number of non-empty active indices
+	// (empty entries have a value of -1)
+	size_t i = 0;
+	for (i = 0; i < _activeIndices.size(); ++i)
+	{
+		if (_activeIndices[i] < 0)
+		{
+			_activeIndices[i] = index;
+			break;
+		}
+		else if (i == _activeIndices.size() - 1)
+		{
+			std::cout << "Dumping MinimumEnclosingDisc data:\n"
+				<< "Active indices: "
+				<< _activeIndices[0] << ", "
+				<< _activeIndices[1] << ", "
+				<< _activeIndices[2] << ", "
+				<< _activeIndices[3] << "\n";
+			std::cout << "Current disc:\n"
+				<< "\tcenter: " << _disc._center[0] << ", " << _disc._center[1] << "\n"
+				<< "\tradius: " << std::sqrt(_disc._radius2) << "\n";
+			throw std::runtime_error("Failed to add index " + std::to_string(index) + " to the active set!");
+		}
+	}
+
+	return (int)++i;
+}
+
+
+void MinimumEnclosingDisc::removeActiveIndex(int index)
+{
+	// Set the entry of _activeIndices containing index to -1,
+	// then compress
+	bool swap = false;
+	int temp;
+	for (size_t i = 0; i < _activeIndices.size(); ++i)
+	{
+		if (!swap && _activeIndices[i] == index)
+			swap = true;
+		else if (!swap && i == _activeIndices.size() - 1)
+		{
+			std::cout << "Dumping MinimumEnclosingDisc data:\n"
+				<< "Active indices: "
+				<< _activeIndices[0] << ", "
+				<< _activeIndices[1] << ", "
+				<< _activeIndices[2] << ", "
+				<< _activeIndices[3] << "\n";
+			std::cout << "Current disc:\n"
+				<< "\tcenter: " << _disc._center[0] << ", " << _disc._center[1] << "\n"
+				<< "\tradius: " << std::sqrt(_disc._radius2) << "\n";
+			throw std::runtime_error("Failed to remove index " + std::to_string(index) + " from the active set!");
+		}
+
+		if (swap)
+		{
+			if (i < _activeIndices.size() - 1)
+			{
+				temp					= _activeIndices[i];
+				_activeIndices[i]		= _activeIndices[i + 1];
+				_activeIndices[i + 1]	= temp;
+			}
+			else
+			{
+				_activeIndices[i] = -1;
+			}
+		}
+	}
 }
 
 

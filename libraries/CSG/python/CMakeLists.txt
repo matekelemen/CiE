@@ -12,7 +12,7 @@ include_directories( ../inc )
 file( GLOB PYTHON_PYCSG_CPP_FILES bindings/*.cpp )
 
 # Add shared library of python bindings
-pybind11_add_module( pycsg ${PYTHON_CSG_CPP_FILES} )
+pybind11_add_module( pycsg ${PYTHON_PYCSG_CPP_FILES} )
 
 # Link to c++ libraries
 target_link_libraries( pycsg PRIVATE csg )
@@ -32,6 +32,6 @@ endforeach()
 install( DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/modules/pycsg )
 file( GLOB PYCSG_MODULE_SCRIPTS modules/pycsg/* )
 install( TARGETS pycsg LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/modules/pycsg )
-foreach( filename ${PYSMESHKERNEL_MODULE_SCRIPTS} )
+foreach( filename ${PYCSG_MODULE_SCRIPTS} )
   install(FILES ${filename} DESTINATION ${CMAKE_INSTALL_PREFIX}/modules/pycsg )
 endforeach()

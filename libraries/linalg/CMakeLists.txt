@@ -28,9 +28,9 @@ endforeach()
 include_directories( inc )
 
 # Changes the default install path to build/install, assuming build is the project directory
-if ( CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT )
-    set ( CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/install" CACHE PATH "default install path" FORCE )
-endif( )
+#if ( CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT )
+#    set ( CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/install" CACHE PATH "default install path" FORCE )
+#endif( )
 
 # This will add the install path to the rpath of the installed binaries to make dynamic linking work
 SET( CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}" )

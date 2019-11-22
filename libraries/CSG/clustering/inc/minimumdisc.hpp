@@ -10,16 +10,17 @@ namespace cie {
 namespace csg {
 
 
+// Type aliases -----------------------------------------------------------------
 using PointSet2D            = std::vector<DoubleArray<2>>;
 using PointSet2DPtr         = std::shared_ptr<PointSet2D>;
 using ConstPointSet2DPtr    = std::shared_ptr<const PointSet2D>;
 
 
-// Quick norm definition
+// Quick norm definition --------------------------------------------------------
 double distance(const DoubleArray<2>& point1, const DoubleArray<2>& point2);
 
 
-// Quick disc definition
+// Quick disc definition --------------------------------------------------------
 struct Disc {
     Disc(const DoubleArray<2>& center, double radius);
     Disc(const DoubleArray<2>& point1, const DoubleArray<2>& point2);
@@ -31,22 +32,26 @@ struct Disc {
 };
 
 
+// Solver ----------------------------------------------------------------------
 // Define class for encapsulating everything related to computing
 // the minimum enclosing disc of a 2D point set
 class MinimumEnclosingDisc {
 public:
     MinimumEnclosingDisc(const PointSet2D& pointSet);
-    void            build(double tolerance=1e-15);
+    int				build(double tolerance=1e-10);
     double          getRadius() const;
     DoubleArray<2>  getCenter() const;
+	IntVector		getActiveIndices() const;
 
 private:
     const DoubleArray<2>&   getPoint(size_t index) const;
+	int						checkEnclosure(double tolerance) const;
+	int						addActiveIndex(int index);
+	void					removeActiveIndex(int index);
 
     Disc                _disc;
     ConstPointSet2DPtr  _pointSetPtr;
     IntArray<4>         _activeIndices;
-    int                 _activeCount;
     UIntVector          _map;
 };
 

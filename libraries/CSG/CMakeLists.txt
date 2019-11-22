@@ -47,7 +47,7 @@ else( )
   install( TARGETS csg LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX} )
 endif( )
 
-target_link_libraries( csg )
+target_link_libraries( csg linalg )
 
 # ------------------- Set up unit tests ---------------------------
 
@@ -58,3 +58,15 @@ target_link_libraries( csg_testrunner csg linalg )
 
 # specify the relative path the testrunner shall be installed to
 install( TARGETS csg_testrunner RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX} )
+
+# To be able to debug in Windows we have to copy the linalg library to the csg debug folder.
+# This adds a post build command that after building csg_testrunner copies linalg.dll over.
+if( MSVC )
+    add_custom_command(TARGET csg_testrunner POST_BUILD        	
+        COMMAND ${CMAKE_COMMAND} -E copy 					
+            $<TARGET_FILE_DIR:linalg>/linalg.dll  
+            $<TARGET_FILE_DIR:csg_testrunner>)
+endif( )
+
+
+add_subdirectory( python )
