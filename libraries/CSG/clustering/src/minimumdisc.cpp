@@ -198,11 +198,16 @@ int MinimumEnclosingDisc::build(double tolerance)
 		// Add outlier ti the list of active indices
 		activeSize = addActiveIndex(outlierIndex);
 
-		// Construct a circle that encloses all points in the active set
+		// Find the points which defines a circle that encloses all other points
+		// and pick the one with the least radius
+		// 1) Define containers
 		Disc trialDisc({0.0,0.0},0.0);
 		IntArray<4> activeIndices;
 		bool enclosed = true;
+		std::pair<std::vector<Disc>,std::vector<IntVector>> candidates;
 
+		// 2) Loop through possible permutations of the points
+		//		(see the definition of permutationSets - the new point must be on the new circle)
 		for (uint8_t permutation = 0; permutation < permutationSets[activeSize-2].size(); ++permutation)
 			{
 				auto indices = permutationSets[activeSize-2][permutation];
@@ -226,35 +231,25 @@ int MinimumEnclosingDisc::build(double tolerance)
 				enclosed = true;
 				for (uint8_t pIndex = 0; pIndex < activeSize; ++pIndex)
 				{
-					if (distance(trialDisc._center, getPoint(_activeIndices[pIndex])) > trialDisc._radius2+tolerance)
+					if (	distance(trialDisc._center, getPoint(_activeIndices[pIndex])) > trialDisc._radius2+tolerance	)
 					{
 						enclosed = false;
 						break;
 					}
 				}
 
-				// Update if disc encloses the active set
+				// If the current trialDisc encloses all other points from the active set,
+				// store its data and the indices of the points in _activeIndices (yes, that's double index referencing)
 				if (enclosed)
 				{
-					// Copy disc data
-					_disc._center	= trialDisc._center;
-					_disc._radius2	= trialDisc._radius2;
-
-					// Remove unnecessary indices
-					activeIndices = _activeIndices;
-					for (uint8_t k=0; k<activeSize; ++k)
-					{
-						if (std::find(indices.begin(), indices.end(), k) == indices.end())
-						{
-							removeActiveIndex(activeIndices[k]);
-						}
-					}
-
-					break;
+					candidates.first.push_back(trialDisc);
+					candidates.second.push_back(indices);
 				}
+
 		} // for permutation
 
-		if (!enclosed)
+		// Dump current state and throw error if no enclosing disc was found
+		if (candidates.first.empty())
 		{
 			std::cout << "Dumping MinimumEnclosingDisc data:\n";
 			std::cout << "\tActive set (" << activeSize << "):\n";
@@ -266,6 +261,24 @@ int MinimumEnclosingDisc::build(double tolerance)
 					std::cout << "\t\t" << getPoint(_activeIndices[k])[0] << ", " << getPoint(_activeIndices[k])[1] << "\n";
 			}
 			throw std::runtime_error("Failed to find a new disc!");
+		}
+
+		// Find best disc if there are candidates
+		auto minDisc = std::min_element(	candidates.first.begin(),
+											candidates.first.end(),
+											[this](const Disc& lhs, const Disc& rhs) ->bool
+												{return (lhs._radius2 < rhs._radius2 && lhs._radius2 >= this->_disc._radius2) ? true : false; });
+		_disc = *minDisc;
+
+		// Remove points from the active set that are enclosed (no longer active)
+		activeIndices = _activeIndices;
+		int discIndex = std::distance(candidates.first.begin(), minDisc);
+		for (uint8_t k = 0; k < activeSize; ++k)
+		{
+			if (std::find(candidates.second[discIndex].begin(), candidates.second[discIndex].end(), k) == candidates.second[discIndex].end())
+			{
+				removeActiveIndex(activeIndices[k]);
+			}
 		}
 
     } // while

@@ -17,8 +17,11 @@ for i in range(nSamples):
     points[i,:] = [random.randrange(*xRange),random.randrange(*yRange)]
 
 # Build disc
-minimumDisc = csg.MinimumEnclosingDisc(points)
-print('Number of restarts: ' + str(minimumDisc.build(1e-10)))
+minimumDisc     = csg.MinimumEnclosingDisc(points)
+numRestarts     = minimumDisc.build(1e-10)
+print('Number of restarts: ' + str(numRestarts))
+
+    
 center      = minimumDisc.getCenter()
 radius      = minimumDisc.getRadius()
 
