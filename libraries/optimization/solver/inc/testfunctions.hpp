@@ -25,7 +25,7 @@ auto paraboloidTestFunction(const ElementType& offset, const ElementType& coeffi
 
 
 // Rosenbrock function - only for solvers supporting RNRElement<2>
-auto rosenbrockTestFunction()
+inline auto rosenbrockTestFunction()
 {
 	return [](const RNRElement<2>& element) -> double
 	{

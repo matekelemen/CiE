@@ -186,7 +186,7 @@ int MinimumEnclosingDisc::build(double tolerance)
 	int activeSize;
 	int restartCount = 0;
 
-    for (restartCount=0;restartCount<_pointSetPtr->size();++restartCount)
+    for (restartCount=0;restartCount<(int)_pointSetPtr->size();++restartCount)
     {
         // Check whether all points are inside the current disc
 		outlierIndex = checkEnclosure(tolerance);

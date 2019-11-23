@@ -79,11 +79,10 @@ TEST_CASE("Minimum enclosing disc")
 	PointSet2D points = {	{0.0,0.0},{1.0,1.0},{3.0,3.0},
 							{0.5,0.2},{-1.0,-1.0},{-3.0,-3.0},
 							{-0.2,0.0},{1.0,-1.0},{0.4,1.2}		};
-	int restartCount;
 
 	// Find minimum enclosing disc
 	MinimumEnclosingDisc minimumDisc(points);
-	restartCount = minimumDisc.build();
+	minimumDisc.build();
 
 }
 
