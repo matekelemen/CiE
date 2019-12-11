@@ -13,8 +13,8 @@ namespace opt {
 
 template <size_t N>
 GradientDescent<N>::GradientDescent(  const ObjectivePtr<RNRElement<N>, double>& objective,
-                                                const RNRElement<N>& initialPoint, 
-                                                const std::function<RNRElement<N>(const GradientDescent<N>&)> stepSizeDeterminor ) :
+                                      const RNRElement<N>& initialPoint, 
+                                      const std::function<RNRElement<N>(const GradientDescent<N>&)> stepSizeDeterminor ) :
     _objective(objective),
     _solution(initialPoint),
     _stepCount(0),

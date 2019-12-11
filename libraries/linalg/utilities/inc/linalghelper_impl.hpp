@@ -16,7 +16,8 @@ void writeRow( const DoubleVectorType& vector, size_t size, std::ostream& out, s
     for( size_t i = 0; i < size; ++i )
     {
         //out << std::setw( digits ) << vector( i );
-        out << vector( i ) << ",";
+        out << vector( i );
+        if (i<size-1) out << ',';
     }
 
     out << std::endl << std::setprecision( precision );

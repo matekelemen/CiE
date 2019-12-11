@@ -9,6 +9,8 @@
  * have to recompile everything that includes linalg.hpp.
  */
 
+#include <string>
+
 namespace cie {
 namespace linalg
 {
@@ -16,7 +18,9 @@ namespace linalg
 
 inline double& Matrix::operator()( size_t i, size_t j )
 {
-     if (!_transpose)
+    checkIndices(i,j);
+
+    if (!_transpose)
         return data_[i * size2_ + j];
     else
         return data_[j*size2_ + i];
@@ -25,6 +29,8 @@ inline double& Matrix::operator()( size_t i, size_t j )
 
 inline double Matrix::operator()( size_t i, size_t j ) const
 {
+    checkIndices(i, j);
+
     if (!_transpose)
         return data_[i * size2_ + j];
     else
@@ -74,6 +80,24 @@ inline void Matrix::transpose()
     size1_      = size2_;
     size2_      = temp;
     _transpose  = !_transpose;
+}
+
+
+inline void Matrix::checkIndices(size_t i, size_t j) const
+{
+    if (i >= size1_)
+        throw std::range_error("Matrix subscript1 "
+            + std::to_string(i)
+            + " out of range! ("
+            + std::to_string(size1_)
+            + ")");
+
+    if (j >= size2_)
+        throw std::range_error("Matrix subscript2 "
+            + std::to_string(i)
+            + " out of range! ("
+            + std::to_string(size2_)
+            + ")");
 }
 
 } // namespace linalg

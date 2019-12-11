@@ -37,6 +37,8 @@ public:
     void transpose();
 
 private:
+    void checkIndices(size_t i, size_t j) const;
+
     size_t size1_, size2_;
     std::vector<double> data_;
     bool _transpose;

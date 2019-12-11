@@ -2,6 +2,7 @@
 #include "../inc/linalg.hpp"
 
 #include <fstream>
+#include <sstream>
 
 namespace cie {
 namespace linalg
@@ -115,11 +116,12 @@ namespace linalgtesthelper
 		std::string line;
         while( !infile.eof() )
         {
-			getline(infile, line,',');
+			getline(infile, line);
 			if (!line.empty() && line!="" && line!="\n")
 			{
-				result = std::stod(line);
-				values.push_back(result);
+                std::stringstream ss(line);
+                while(getline(ss,line,','))
+                    values.push_back( std::stod(line) );
 			}
         }
 

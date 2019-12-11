@@ -5,9 +5,10 @@
 
 namespace cie {
 
-typedef std::vector<size_t> UIntVector;
-typedef std::vector<int>    IntVector;
-typedef std::vector<double> DoubleVector;
+typedef std::vector<uint8_t>    UInt8Vector;
+typedef std::vector<size_t>     UIntVector;
+typedef std::vector<int>        IntVector;
+typedef std::vector<double>     DoubleVector;
 
 }
 

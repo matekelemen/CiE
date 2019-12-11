@@ -98,12 +98,12 @@ root.addChild( MeshNode(    vertices=v2,
                             faces=f2,
                             textureCoordinates=tc2,
                             objectID=1,
-                            materialID=0) )
+                            materialID=1) )
 root.addChild( MeshNode(    vertices=v3,
                             faces=f3,
                             textureCoordinates=tc3,
                             objectID=2,
-                            materialID=0) )
+                            materialID=2) )
 
 # -----------------------------------------------------------
 mApp    = MeshApp3D(    root,
