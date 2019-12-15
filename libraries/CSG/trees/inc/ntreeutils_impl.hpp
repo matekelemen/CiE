@@ -33,7 +33,7 @@ template <uint8_t M>
 UInt8Array<M> baseN(size_t base_10, uint8_t base)
 {
     UInt8Array<M> result;
-    baseN(base_10, base, result);
+    baseN<M>(base_10, base, result);
     return result;
 }
 

@@ -2,6 +2,7 @@
 #define LINALG_VECTOR_TYPES_HPP
 
 #include <vector>
+#include <stdint.h>
 
 namespace cie {
 

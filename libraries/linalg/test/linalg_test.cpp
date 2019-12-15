@@ -112,7 +112,6 @@ namespace linalgtesthelper
 
         std::ifstream infile( "write.csv" );
 
-        double result;
 		std::string line;
         while( !infile.eof() )
         {

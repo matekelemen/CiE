@@ -1,6 +1,7 @@
 #ifndef CSG_NTREENODE_IMPL_HPP
 #define CSG_NTREENODE_IMPL_HPP
 #include <string>
+#include <iostream>
 
 namespace cie {
 namespace csg {
@@ -11,6 +12,10 @@ NTreeNode<N, M>::NTreeNode() :
     _children(intPow(2,N)),
     _edgeLength(2.0)
 {
+    for (auto it = _children.begin(); it!=_children.end(); ++it)
+    {
+        *it = nullptr;
+    }
     for (auto it = _center.begin(); it != _center.end(); ++it)
     {
         *it = 0.0;
@@ -26,6 +31,10 @@ NTreeNode<N, M>::NTreeNode(const DoubleArray<N>& center, double edgeLength) :
     _children(intPow(2, N)),
     _edgeLength(edgeLength)
 {
+    for (auto it = _children.begin(); it!=_children.end(); ++it)
+    {
+        *it = nullptr;
+    }
     check();
 }
 
@@ -40,6 +49,12 @@ NTreeNode<N, M>::NTreeNode(         const NTreeNode<N, M>& parent,
 {
     // Check dimensions
     check();
+
+    // Initialize children
+    for (auto it = _children.begin(); it!=_children.end(); ++it)
+    {
+        *it = nullptr;
+    }
     
     // Initialize center
     UInt8Array<N> indexN = baseN<N>(index, 2);
@@ -49,37 +64,31 @@ NTreeNode<N, M>::NTreeNode(         const NTreeNode<N, M>& parent,
     }
 
     // Copy parent data and evaluate new points
-    bool evaluate;
-    DoubleArray<N> point;
-    double dx = _edgeLength / (M-1.0);
+    bool evaluatePoint;
 
     for (size_t i = 0; i < _data.size(); ++i)
     {
         // Convert index
         baseN<N>(i,M,indexN);
         // Check if this point is shared with the parent
-        evaluate = true;   
-        for (uint8_t j = 0; j < indexN.size(); ++j)
+        evaluatePoint = true;   
+        for (size_t j = 0; j < indexN.size(); ++j)
         {
             if (indexN[j] % 2 != 0)
             {
-                evaluate = false;
+                evaluatePoint = false;
                 break;
             }
         }
         // Copy parent data if shared, evaluate geometry if not
-        if (!evaluate)
+        if (!evaluatePoint)
         {
             for (auto it=indexN.begin();it!=indexN.end();++it) *it /= 2;
             _data[i] = parent._data[ base10<N>(indexN,M) ];
         }
         else
         {
-            for (uint8_t j = 0; j < N; ++j)
-            {
-                point[j] = _center[j] + dx*(j - (M-1.0)/2.0);
-            }
-            _data[i] = geometry(point);
+            evaluate(geometry,i);
         }
     }
 }
@@ -114,6 +123,44 @@ bool NTreeNode<N, M>::divide(const GeometryFunction<N>& geometry, uint8_t level)
     }
 
     return boundary;
+}
+
+
+template <uint8_t N, uint8_t M>
+void NTreeNode<N, M>::evaluate(const GeometryFunction<N>& geometry, size_t index)
+{   
+    _data[index] = geometry(pointCoordinates(index));
+}
+
+
+template <uint8_t N, uint8_t M>
+void NTreeNode<N, M>::evaluate(const GeometryFunction<N>& geometry)
+{
+    for (size_t i=0; i<_data.size(); ++i)
+        evaluate(geometry,i);
+}
+
+
+template <uint8_t N, uint8_t M>
+DoubleArray<N> NTreeNode<N, M>::pointCoordinates(const UInt8Array<N>& indexN) const
+{
+    DoubleArray<N> point;
+    double dx = _edgeLength / ((double)M-1.0);
+    for (uint8_t j = 0; j < N; ++j)
+        point[j] = _center[j] + dx*(j - (M-1.0)/2.0);
+
+    std::cout << dx << std::endl;
+    std::cout << point[0] << "," << point[1] << std::endl;
+
+    return point;
+}
+
+
+template <uint8_t N, uint8_t M>
+DoubleArray<N> NTreeNode<N, M>::pointCoordinates(size_t index) const
+{
+    UInt8Array<N> indexN = baseN<N>(index,M);
+    return pointCoordinates( indexN );
 }
 
 
@@ -156,7 +203,10 @@ const std::vector<NTreeNodePtr<N, M>>& NTreeNode<N, M>::children() const
 template <uint8_t N, uint8_t M>
 const NTreeNode<N, M>& NTreeNode<N, M>::child(size_t index) const
 {
-    return *(_children[index]);
+    if (_children[index]!=nullptr)
+        return *(_children[index]);
+    else
+        throw std::runtime_error("Unable to dereference child node (nullptr)!");
 }
 
 
