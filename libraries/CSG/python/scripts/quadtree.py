@@ -8,7 +8,7 @@ from vispy import app
 
 # -----------------------------------------------------------
 data    = loadSpaceTreeCSV("ntree2D.csv")
-canvas  = QuadTreeCanvas(data)
+canvas  = QuadTreeCanvas(data,boundary=True)
 
 canvas.show()
 app.run()

@@ -9,6 +9,14 @@ from glvisuals import ModularCanvas
 from vispy import scene, app
 
 # -----------------------------------------------------------
+def matchSigns(data):
+    result = data[0] > 0.0
+    for item in data:
+        if (item>0.0) is not result:
+            return False
+    return True
+
+
 def loadSpaceTreeCSV(fileName):
     data    = dict()
     header  = []
@@ -31,12 +39,20 @@ def loadSpaceTreeCSV(fileName):
 
 
 class QuadTreeCanvas(ModularCanvas):
-    def __init__(self,data):
+    def __init__(self,data,boundary=False):
         ModularCanvas.__init__(self)
 
-        pos = []
+        pos     = []
+        numVals = len(data) - 2 - 1 - 1
+        edgeMin = min(data["length"])
 
-        for edgeLength, centerX, centerY in zip(data["length"],data["center0"],data["center1"]):
+        for index, edgeLength, centerX, centerY in zip(range(len(data["length"])), data["length"],data["center0"],data["center1"]):
+            
+            if boundary:
+                values = [ data["value"+str(vIndex)][index] for vIndex in range(numVals)  ]
+                if matchSigns(values) or not np.abs(edgeMin-edgeLength)<1e-10:
+                    continue
+            
             radius = edgeLength/2.0
             pos.append( [centerX-radius, centerY-radius, 0.0] )
             pos.append( [centerX+radius, centerY-radius, 0.0] )
@@ -52,12 +68,20 @@ class QuadTreeCanvas(ModularCanvas):
 
 
 class OctreeCanvas(ModularCanvas):
-    def __init__(self,data):
+    def __init__(self,data,boundary=False):
         ModularCanvas.__init__(self)
 
         pos = []
+        numVals = len(data) - 3 - 1 - 1
+        edgeMin = min(data["length"])
 
-        for edgeLength, centerX, centerY, centerZ in zip(data["length"],data["center0"],data["center1"],data["center2"]):
+        for index, edgeLength, centerX, centerY, centerZ in zip(range(len(data["length"])), data["length"],data["center0"],data["center1"],data["center2"]):
+            
+            if boundary:
+                values = [ data["value"+str(vIndex)][index] for vIndex in range(numVals)  ]
+                if matchSigns(values) or not np.abs(edgeMin-edgeLength)<1e-10:
+                    continue
+            
             radius = edgeLength/2.0
             pos.append( [centerX-radius, centerY-radius, centerZ-radius] )
             pos.append( [centerX+radius, centerY-radius, centerZ-radius] )

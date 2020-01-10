@@ -8,7 +8,7 @@ from vispy import app
 
 # -----------------------------------------------------------
 data    = loadSpaceTreeCSV("ntree3D.csv")
-canvas  = OctreeCanvas(data)
+canvas  = OctreeCanvas(data,boundary=True)
 
 canvas.show()
 app.run()
