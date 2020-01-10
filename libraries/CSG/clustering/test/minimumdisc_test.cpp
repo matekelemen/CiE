@@ -73,6 +73,7 @@ TEST_CASE("Disc constructors - extreme cases")
 }
 
 
+/*
 TEST_CASE("Minimum enclosing disc")
 {
 	// Create vector of points
@@ -83,8 +84,8 @@ TEST_CASE("Minimum enclosing disc")
 	// Find minimum enclosing disc
 	MinimumEnclosingDisc minimumDisc(points);
 	minimumDisc.build();
-
 }
+*/
 
 
 }

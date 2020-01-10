@@ -27,7 +27,7 @@ NTreeNode<N, M>::NTreeNode() :
 template <uint8_t N, uint8_t M>
 NTreeNode<N, M>::NTreeNode(const DoubleArray<N>& center, double edgeLength) :
     _center(center),
-    _data(intPow(M, N)),
+    _data(intPow(M, N),0.0),
     _children(intPow(2, N)),
     _edgeLength(edgeLength)
 {
@@ -76,14 +76,15 @@ NTreeNode<N, M>::NTreeNode(         const NTreeNode<N, M>& parent,
         {
             if (indexN[j] % 2 != 0)
             {
-                evaluatePoint = false;
+                evaluatePoint = true;
                 break;
             }
         }
         // Copy parent data if shared, evaluate geometry if not
         if (!evaluatePoint)
         {
-            for (auto it=indexN.begin();it!=indexN.end();++it) *it /= 2;
+            for (auto it=indexN.begin();it!=indexN.end();++it) 
+                *it /= 2.0;
             _data[i] = parent._data[ base10<N>(indexN,M) ];
         }
         else
@@ -98,12 +99,13 @@ template <uint8_t N, uint8_t M>
 bool NTreeNode<N, M>::divide(const GeometryFunction<N>& geometry, uint8_t level)
 {
     bool boundary = false;
-    uint8_t value = _data[0];
+    bool value = false;
+    if (_data[0] > 0.0) value = true;
 
     // Check if boundary node
     for (auto it = _data.begin(); it != _data.end(); ++it)
     {
-        if (*it != value)
+        if ( (*it>0.0) != value )
         {
             boundary = true;
             break;
@@ -123,6 +125,16 @@ bool NTreeNode<N, M>::divide(const GeometryFunction<N>& geometry, uint8_t level)
     }
 
     return boundary;
+}
+
+
+template <uint8_t N, uint8_t M>
+void NTreeNode<N,M>::write(std::ostream& file) const
+{
+    writeNTree<N,M>(*this,file);
+    for (auto it=_children.begin(); it!=_children.end(); ++it)
+        if (*it!=nullptr) 
+            (**it).write(file);
 }
 
 
@@ -147,10 +159,7 @@ DoubleArray<N> NTreeNode<N, M>::pointCoordinates(const UInt8Array<N>& indexN) co
     DoubleArray<N> point;
     double dx = _edgeLength / ((double)M-1.0);
     for (uint8_t j = 0; j < N; ++j)
-        point[j] = _center[j] + dx*(j - (M-1.0)/2.0);
-
-    std::cout << dx << std::endl;
-    std::cout << point[0] << "," << point[1] << std::endl;
+        point[j] = _center[j] + dx*(indexN[j] - (M-1.0)/2.0);
 
     return point;
 }
@@ -187,7 +196,7 @@ const DoubleArray<N>& NTreeNode<N, M>::center() const
 
 
 template <uint8_t N, uint8_t M>
-const UInt8Vector& NTreeNode<N, M>::data() const
+const DoubleVector& NTreeNode<N, M>::data() const
 {
     return _data;
 }
@@ -207,6 +216,13 @@ const NTreeNode<N, M>& NTreeNode<N, M>::child(size_t index) const
         return *(_children[index]);
     else
         throw std::runtime_error("Unable to dereference child node (nullptr)!");
+}
+
+
+template <uint8_t N, uint8_t M>
+double NTreeNode<N, M>::edgeLength() const
+{
+    return _edgeLength;
 }
 
 

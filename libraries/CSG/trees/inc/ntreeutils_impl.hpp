@@ -23,9 +23,7 @@ void baseN(size_t base_10, uint8_t base, UInt8Array<M>& base_N)
         }
     }
     if (base_10 != 0)
-    {
         throw std::overflow_error("Error converting to base " + std::to_string(base));
-    }
 }
 
 
@@ -51,6 +49,43 @@ size_t base10(const UInt8Array<M>& base_N, uint8_t base)
     return base_10;
 }
 
+
+template <uint8_t N, uint8_t M>
+void writeNTree(const NTreeNode<N,M>& node, std::ostream& file)
+{
+    std::string buffer = std::to_string(node.edgeLength()) + ',';
+    for (auto it=node.center().begin(); it!=node.center().end(); ++it) buffer += std::to_string(*it) + ',';
+    for (auto it=node.data().begin(); it!=node.data().end()-1; ++it) buffer += std::to_string(*it) + ',';
+    buffer += std::to_string(*(node.data().end()-1)) + '\n';
+    file << buffer;
+}
+
+
+template <uint8_t N, uint8_t M>
+void writeNTree(const NTreeNode<N,M>& node, const std::string& filename)
+{
+    //std::ofstream file(filename, std::ios::out | std::ios::binary);
+    std::ofstream file(filename);
+    if (file.is_open())
+    {
+        // Write header
+        std::string buffer = "length,";
+        int dataSize    = intPow(M,N);
+
+        for (int i=0; i<N; ++i)  buffer += "center" + std::to_string(i) + ',';
+        for (int i=0; i<dataSize-1; ++i) buffer += "value" + std::to_string(i) + ',';
+
+        buffer += 'v' + std::to_string(dataSize-1) + '\n';
+
+        file << buffer;
+
+        // Write data
+        node.write(file);
+    }
+    else throw std::runtime_error("Unable to write to " + filename);
+
+    file.close();
+}
 
 }
 }

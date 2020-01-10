@@ -46,6 +46,7 @@ class ModularCanvas(scene.SceneCanvas):
             if peep is observer:
                 peep.detach()
                 del self.observers[index]
+                break
 
 
     def updateObservers(self, event):

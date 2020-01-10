@@ -32,20 +32,23 @@ public:
     
     bool divide(const GeometryFunction<N>& geometry, uint8_t level);
 
+    void write(std::ostream& file) const;
+
     DoubleArray<N> pointCoordinates(size_t index) const;
     DoubleArray<N> pointCoordinates(const UInt8Array<N>& indexN) const;
 
     DoubleArray<N>& center();
     const DoubleArray<N>& center() const;
-    const UInt8Vector& data() const;
+    const DoubleVector& data() const;
     const std::vector<NTreeNodePtr<N,M>>& children() const;
     const NTreeNode<N,M>& child(size_t index) const;
+    double edgeLength() const;
 
 private:
     void check() const;
     
     DoubleArray<N>                              _center;
-    UInt8Vector                                 _data;
+    DoubleVector                                _data;
     std::vector<NTreeNodePtr<N,M>>              _children;
     double                                      _edgeLength;
 };
