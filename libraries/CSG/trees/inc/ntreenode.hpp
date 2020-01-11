@@ -33,6 +33,7 @@ public:
     bool divide(const GeometryFunction<N>& geometry, uint8_t level);
 
     void write(std::ostream& file) const;
+    void wipe();
 
     DoubleArray<N> pointCoordinates(size_t index) const;
     DoubleArray<N> pointCoordinates(const UInt8Array<N>& indexN) const;

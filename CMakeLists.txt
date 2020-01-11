@@ -43,5 +43,10 @@ set(PYBIND11_CPP_STANDARD -std=c++14)
 # Create destination folder for data
 install( DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/data )
 
+# Create destination folder for executable applications
+install( DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/applications )
+set( INSTALL_APPLICATION_PREFIX ${CMAKE_INSTALL_PREFIX}/applications )
+
 # ---------------- Set up subprojects -----------------------------
 add_subdirectory( libraries )
+add_subdirectory( applications )

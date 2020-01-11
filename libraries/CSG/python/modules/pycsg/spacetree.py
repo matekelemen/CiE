@@ -68,12 +68,20 @@ class QuadTreeCanvas(ModularCanvas):
 
 
 class OctreeCanvas(ModularCanvas):
-    def __init__(self,data,boundary=False):
+    def __init__(self,data,boundary=False,visual="cell"):
         ModularCanvas.__init__(self)
 
         pos = []
         numVals = len(data) - 3 - 1 - 1
         edgeMin = min(data["length"])
+
+        cell = True
+        if visual is "cell":
+            cell = True
+        elif visual is "point":
+            cell = False
+        else:
+            raise ValueError("Invalid visual type!")
 
         for index, edgeLength, centerX, centerY, centerZ in zip(range(len(data["length"])), data["length"],data["center0"],data["center1"],data["center2"]):
             
@@ -82,35 +90,43 @@ class OctreeCanvas(ModularCanvas):
                 if matchSigns(values) or not np.abs(edgeMin-edgeLength)<1e-10:
                     continue
             
-            radius = edgeLength/2.0
-            pos.append( [centerX-radius, centerY-radius, centerZ-radius] )
-            pos.append( [centerX+radius, centerY-radius, centerZ-radius] )
-            pos.append( [centerX+radius, centerY-radius, centerZ-radius] )
-            pos.append( [centerX+radius, centerY+radius, centerZ-radius] )
-            pos.append( [centerX+radius, centerY+radius, centerZ-radius] )
-            pos.append( [centerX-radius, centerY+radius, centerZ-radius] )
-            pos.append( [centerX-radius, centerY+radius, centerZ-radius] )
-            pos.append( [centerX-radius, centerY-radius, centerZ-radius] )
+            if cell:
+                radius = edgeLength/2.0
+                pos.append( [centerX-radius, centerY-radius, centerZ-radius] )
+                pos.append( [centerX+radius, centerY-radius, centerZ-radius] )
+                pos.append( [centerX+radius, centerY-radius, centerZ-radius] )
+                pos.append( [centerX+radius, centerY+radius, centerZ-radius] )
+                pos.append( [centerX+radius, centerY+radius, centerZ-radius] )
+                pos.append( [centerX-radius, centerY+radius, centerZ-radius] )
+                pos.append( [centerX-radius, centerY+radius, centerZ-radius] )
+                pos.append( [centerX-radius, centerY-radius, centerZ-radius] )
 
-            pos.append( [centerX-radius, centerY-radius, centerZ+radius] )
-            pos.append( [centerX+radius, centerY-radius, centerZ+radius] )
-            pos.append( [centerX+radius, centerY-radius, centerZ+radius] )
-            pos.append( [centerX+radius, centerY+radius, centerZ+radius] )
-            pos.append( [centerX+radius, centerY+radius, centerZ+radius] )
-            pos.append( [centerX-radius, centerY+radius, centerZ+radius] )
-            pos.append( [centerX-radius, centerY+radius, centerZ+radius] )
-            pos.append( [centerX-radius, centerY-radius, centerZ+radius] )
+                pos.append( [centerX-radius, centerY-radius, centerZ+radius] )
+                pos.append( [centerX+radius, centerY-radius, centerZ+radius] )
+                pos.append( [centerX+radius, centerY-radius, centerZ+radius] )
+                pos.append( [centerX+radius, centerY+radius, centerZ+radius] )
+                pos.append( [centerX+radius, centerY+radius, centerZ+radius] )
+                pos.append( [centerX-radius, centerY+radius, centerZ+radius] )
+                pos.append( [centerX-radius, centerY+radius, centerZ+radius] )
+                pos.append( [centerX-radius, centerY-radius, centerZ+radius] )
 
-            pos.append( [centerX-radius, centerY-radius, centerZ-radius] )
-            pos.append( [centerX-radius, centerY-radius, centerZ+radius] )
-            pos.append( [centerX-radius, centerY+radius, centerZ-radius] )
-            pos.append( [centerX-radius, centerY+radius, centerZ+radius] )
-            pos.append( [centerX+radius, centerY-radius, centerZ-radius] )
-            pos.append( [centerX+radius, centerY-radius, centerZ+radius] )
-            pos.append( [centerX+radius, centerY+radius, centerZ-radius] )
-            pos.append( [centerX+radius, centerY+radius, centerZ+radius] )
+                pos.append( [centerX-radius, centerY-radius, centerZ-radius] )
+                pos.append( [centerX-radius, centerY-radius, centerZ+radius] )
+                pos.append( [centerX-radius, centerY+radius, centerZ-radius] )
+                pos.append( [centerX-radius, centerY+radius, centerZ+radius] )
+                pos.append( [centerX+radius, centerY-radius, centerZ-radius] )
+                pos.append( [centerX+radius, centerY-radius, centerZ+radius] )
+                pos.append( [centerX+radius, centerY+radius, centerZ-radius] )
+                pos.append( [centerX+radius, centerY+radius, centerZ+radius] )
 
-        self.addVisualObject(1,scene.visuals.Line(pos=np.asarray(pos,dtype=np.float32),connect="segments"))
+            else:
+                pos.append( [centerX,centerY,centerZ] )
+
+        if cell:
+            self.addVisualObject(1,scene.visuals.Line(pos=np.asarray(pos,dtype=np.float32),connect="segments"))
+        else:
+            self.addVisualObject(1,scene.visuals.Markers(pos=np.asarray(pos,dtype=np.float32)))
+
         del data
 
         self.view.camera = scene.ArcballCamera(fov=0)

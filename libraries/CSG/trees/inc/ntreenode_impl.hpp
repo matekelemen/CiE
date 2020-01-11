@@ -128,6 +128,8 @@ bool NTreeNode<N, M>::divide(const GeometryFunction<N>& geometry, uint8_t level)
 }
 
 
+// Write edge length, center coordinates and data to the output stream, then
+// call write on the children
 template <uint8_t N, uint8_t M>
 void NTreeNode<N,M>::write(std::ostream& file) const
 {
@@ -138,6 +140,22 @@ void NTreeNode<N,M>::write(std::ostream& file) const
 }
 
 
+// Call wipe on children then delete them
+template <uint8_t N, uint8_t M>
+void NTreeNode<N,M>::wipe()
+{
+    for (auto it=_children.begin(); it!=_children.end(); ++it)
+    {
+        if (*it != nullptr)
+        {
+            (*it)->wipe();
+            it->reset();
+        }
+    }
+}
+
+
+// Evaluate the geometry at a specific point defined by its index
 template <uint8_t N, uint8_t M>
 void NTreeNode<N, M>::evaluate(const GeometryFunction<N>& geometry, size_t index)
 {   
@@ -145,6 +163,7 @@ void NTreeNode<N, M>::evaluate(const GeometryFunction<N>& geometry, size_t index
 }
 
 
+// Evaluate the geometry at all the points
 template <uint8_t N, uint8_t M>
 void NTreeNode<N, M>::evaluate(const GeometryFunction<N>& geometry)
 {
