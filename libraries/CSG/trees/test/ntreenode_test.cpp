@@ -92,5 +92,23 @@ TEST_CASE("NTreeNode divide 3D")
 }
 
 
+TEST_CASE("Boundary nodes")
+{
+    // Create geometry
+    NTreeNode<2, 3> root({ 1.0,1.0 }, 2.0);
+    GeometryFunction<2> circle = unitCircle;
+
+    // Initialize and divide tree
+    root.evaluate(circle);
+    root.divide(circle, 4);
+
+    auto nodes = boundaryNodes<2,3>(root);
+    /*
+    for (auto it=nodes.begin(); it!=nodes.end(); ++it)
+        std::cout << std::to_string( (**it).center()[0] ) << std::endl;
+    */
+}
+
+
 }
 }

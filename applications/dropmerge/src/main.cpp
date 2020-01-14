@@ -5,7 +5,7 @@ namespace cie {
 namespace csg {
 
 const uint8_t dimension     = 3;
-const uint8_t subdivision   = 5;
+const uint8_t subdivision   = 7;
 const uint8_t depth         = 6;
 
 int main(std::function<double(const DoubleArray<dimension>&)> target, double offset = 0.25)
@@ -31,13 +31,12 @@ int main(std::function<double(const DoubleArray<dimension>&)> target, double off
 int main(int argc, char *argv[])
 {
     // Parse argument
-    double offset = 0.25;
+    double offset = 0.0;
     if (argc>0)
         offset = std::atof(argv[1]);
-    std::cout << offset << std::endl;
 
     auto target =  [=](const cie::DoubleArray<cie::csg::dimension>& point) 
-        {return cie::csg::mergeFunction<cie::csg::dimension>(point,offset);};
+        {return cie::csg::exponentialMergeFunction<cie::csg::dimension>(point,offset);};
 
 
     return cie::csg::main(target, offset);

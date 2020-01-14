@@ -8,7 +8,11 @@ namespace csg {
 
 
 template <uint8_t D>
-double mergeFunction( const DoubleArray<D>& point, double offset=0.0 );
+double polynomialMergeFunction( const DoubleArray<D>& point, double offset=0.0 );
+
+
+template <uint8_t D>
+double exponentialMergeFunction( const DoubleArray<D>& point, double offset=0.0 );
 
 
 }

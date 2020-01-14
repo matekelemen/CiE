@@ -37,13 +37,23 @@ size_t base10(const UInt8Array<M>& base_N, uint8_t base);
 
 
 // Writing to file ---------------------------------------------------
-
 template <uint8_t N, uint8_t M>
 void writeNTree(const NTreeNode<N,M>& node, std::ostream& file);
 
 
 template <uint8_t N, uint8_t M>
 void writeNTree(const NTreeNode<N,M>& node, const std::string& filename);
+
+
+// Collecting nodes --------------------------------------------------
+bool uniformSigns(const DoubleVector& data);
+
+template <uint8_t N, uint8_t M>
+std::vector<const NTreeNode<N,M>*> boundaryNodes(const NTreeNode<N,M>& root);
+
+template <uint8_t N, uint8_t M>
+void boundaryNodes(   const NTreeNode<N,M>& root,
+                                                    std::vector<const NTreeNode<N,M>*>& nodes );
 
 
 }

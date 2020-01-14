@@ -87,6 +87,39 @@ void writeNTree(const NTreeNode<N,M>& node, const std::string& filename)
     file.close();
 }
 
+
+// Collecting nodes --------------------------------------------------
+bool uniformSigns(const DoubleVector& data)
+{
+    bool result = data[0] > 0.0;
+    for (auto it=data.begin()+1; it!=data.end(); ++it)
+        if ( ((*it) > 0.0) != result) return false;
+    return true;
+}
+
+
+template <uint8_t N, uint8_t M>
+std::vector<const NTreeNode<N,M>*> boundaryNodes(const NTreeNode<N,M>& root)
+{
+    std::vector<const NTreeNode<N,M>*> nodes;
+    boundaryNodes<N,M>(root,nodes);
+    return nodes;
+}
+
+
+template <uint8_t N, uint8_t M>
+void boundaryNodes(     const NTreeNode<N,M>& root,
+                        std::vector<const NTreeNode<N,M>*>& nodes )
+{
+    if (uniformSigns(root.data()))
+        nodes.push_back(&root);
+
+    for (auto it=root.children().begin(); it!=root.children().end(); ++it)
+        if (*it!=nullptr)
+            boundaryNodes(**it, nodes);
+}
+
+
 }
 }
 

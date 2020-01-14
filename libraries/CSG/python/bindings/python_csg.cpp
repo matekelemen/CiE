@@ -2,6 +2,9 @@
 #include "pybind11/stl.h"
 
 #include "../../clustering/inc/minimumdisc.hpp"
+#include "../../trees/inc/ntreeutils.hpp"
+#include "../../trees/inc/ntreenode.hpp"
+#include "csgconversion.hpp"
 
 PYBIND11_MODULE( pycsg,m ){
     m.doc() = "Constructive Solid Geometry module";
@@ -13,5 +16,4 @@ PYBIND11_MODULE( pycsg,m ){
 		.def("getRadius", &cie::csg::MinimumEnclosingDisc::getRadius)
 		.def("getActiveIndices",&cie::csg::MinimumEnclosingDisc::getActiveIndices)
 		;
-
 }

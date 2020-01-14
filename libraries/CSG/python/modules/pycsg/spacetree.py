@@ -123,9 +123,11 @@ class OctreeCanvas(ModularCanvas):
                 pos.append( [centerX,centerY,centerZ] )
 
         if cell:
-            self.addVisualObject(1,scene.visuals.Line(pos=np.asarray(pos,dtype=np.float32),connect="segments"))
+            self.addVisualObject(1,scene.visuals.Line(  pos=np.asarray(pos,dtype=np.float32),
+                                                        connect="segments"))
         else:
-            self.addVisualObject(1,scene.visuals.Markers(pos=np.asarray(pos,dtype=np.float32)))
+            self.addVisualObject(1,scene.visuals.Markers(   pos=np.asarray(pos,dtype=np.float32),
+                                                            size=3))
 
         del data
 
