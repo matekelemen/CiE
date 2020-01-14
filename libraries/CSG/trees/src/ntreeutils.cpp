@@ -15,5 +15,14 @@ const size_t intPow(int base, uint8_t exponent)
 }
 
 
+bool uniformSigns(const DoubleVector& data)
+{
+    bool result = data[0] > 0.0;
+    for (auto it=data.begin()+1; it!=data.end(); ++it)
+        if ( ((*it) > 0.0) != result) return false;
+    return true;
+}
+
+
 }
 }

@@ -1,6 +1,7 @@
 # --- Python Imports ---
 import numpy as np
 import csv
+from timeit import default_timer
 
 # --- Visualization Imports ---
 from glvisuals import ModularCanvas
@@ -46,7 +47,7 @@ class QuadTreeCanvas(ModularCanvas):
         numVals = len(data) - 2 - 1 - 1
         edgeMin = min(data["length"])
 
-        for index, edgeLength, centerX, centerY in zip(range(len(data["length"])), data["length"],data["center0"],data["center1"]):
+        for index, edgeLength, x, y in zip(range(len(data["length"])), data["length"],data["center0"],data["center1"]):
             
             if boundary:
                 values = [ data["value"+str(vIndex)][index] for vIndex in range(numVals)  ]
@@ -54,81 +55,107 @@ class QuadTreeCanvas(ModularCanvas):
                     continue
             
             radius = edgeLength/2.0
-            pos.append( [centerX-radius, centerY-radius, 0.0] )
-            pos.append( [centerX+radius, centerY-radius, 0.0] )
-            pos.append( [centerX+radius, centerY-radius, 0.0] )
-            pos.append( [centerX+radius, centerY+radius, 0.0] )
-            pos.append( [centerX+radius, centerY+radius, 0.0] )
-            pos.append( [centerX-radius, centerY+radius, 0.0] )
-            pos.append( [centerX-radius, centerY+radius, 0.0] )
-            pos.append( [centerX-radius, centerY-radius, 0.0] )
+            pos.append( [x-radius, y-radius, 0.0] )
+            pos.append( [x+radius, y-radius, 0.0] )
+            pos.append( [x+radius, y-radius, 0.0] )
+            pos.append( [x+radius, y+radius, 0.0] )
+            pos.append( [x+radius, y+radius, 0.0] )
+            pos.append( [x-radius, y+radius, 0.0] )
+            pos.append( [x-radius, y+radius, 0.0] )
+            pos.append( [x-radius, y-radius, 0.0] )
 
         self.addVisualObject(1,scene.visuals.Line(pos=np.asarray(pos,dtype=np.float32),connect="segments"))
         del data
 
 
 class OctreeCanvas(ModularCanvas):
-    def __init__(self,data,boundary=False,visual="cell"):
+    def __init__(   self,
+                    data,
+                    boundary=False,
+                    visual="cell",
+                    animation=None):
         ModularCanvas.__init__(self)
 
-        pos = []
-        numVals = len(data) - 3 - 1 - 1
-        edgeMin = min(data["length"])
+        self.unfreeze()
 
-        cell = True
-        if visual is "cell":
-            cell = True
-        elif visual is "point":
-            cell = False
+        self.boundary   = boundary
+        self.visual     = visual
+        self.animation  = animation
+        self._timer     = app.Timer('auto', connect=self.on_timer, start='true')
+        self.t0         = default_timer()
+        self.t          = 0
+
+        pos             = np.empty( (1,3), dtype=np.float32 )
+        if self.visual is "cell":
+            self.addVisualObject(0,scene.visuals.Line(  pos=np.asarray(pos,dtype=np.float32),
+                                                        connect="segments"))
+        elif self.visual is "point":
+            self.addVisualObject(0,scene.visuals.Markers(   pos=np.asarray(pos,dtype=np.float32),
+                                                            size=3))
         else:
             raise ValueError("Invalid visual type!")
 
-        for index, edgeLength, centerX, centerY, centerZ in zip(range(len(data["length"])), data["length"],data["center0"],data["center1"],data["center2"]):
+        self.updateData(data)
+        self.view.camera = scene.ArcballCamera(fov=0)
+
+        self.freeze()
+
+
+    def updateData(self,data):
+        pos = []
+        for boundary, edgeLength, center in zip( data["boundary"], data["length"], data["center"] ):
             
-            if boundary:
-                values = [ data["value"+str(vIndex)][index] for vIndex in range(numVals)  ]
-                if matchSigns(values) or not np.abs(edgeMin-edgeLength)<1e-10:
+            if self.boundary:
+                if boundary is 0:
                     continue
+
+            x = center[0]
+            y = center[1]
+            z = center[2]
             
-            if cell:
+            if self.visual is "cell":
                 radius = edgeLength/2.0
-                pos.append( [centerX-radius, centerY-radius, centerZ-radius] )
-                pos.append( [centerX+radius, centerY-radius, centerZ-radius] )
-                pos.append( [centerX+radius, centerY-radius, centerZ-radius] )
-                pos.append( [centerX+radius, centerY+radius, centerZ-radius] )
-                pos.append( [centerX+radius, centerY+radius, centerZ-radius] )
-                pos.append( [centerX-radius, centerY+radius, centerZ-radius] )
-                pos.append( [centerX-radius, centerY+radius, centerZ-radius] )
-                pos.append( [centerX-radius, centerY-radius, centerZ-radius] )
+                pos.append( [x-radius, y-radius, z-radius] )
+                pos.append( [x+radius, y-radius, z-radius] )
+                pos.append( [x+radius, y-radius, z-radius] )
+                pos.append( [x+radius, y+radius, z-radius] )
+                pos.append( [x+radius, y+radius, z-radius] )
+                pos.append( [x-radius, y+radius, z-radius] )
+                pos.append( [x-radius, y+radius, z-radius] )
+                pos.append( [x-radius, y-radius, z-radius] )
 
-                pos.append( [centerX-radius, centerY-radius, centerZ+radius] )
-                pos.append( [centerX+radius, centerY-radius, centerZ+radius] )
-                pos.append( [centerX+radius, centerY-radius, centerZ+radius] )
-                pos.append( [centerX+radius, centerY+radius, centerZ+radius] )
-                pos.append( [centerX+radius, centerY+radius, centerZ+radius] )
-                pos.append( [centerX-radius, centerY+radius, centerZ+radius] )
-                pos.append( [centerX-radius, centerY+radius, centerZ+radius] )
-                pos.append( [centerX-radius, centerY-radius, centerZ+radius] )
+                pos.append( [x-radius, y-radius, z+radius] )
+                pos.append( [x+radius, y-radius, z+radius] )
+                pos.append( [x+radius, y-radius, z+radius] )
+                pos.append( [x+radius, y+radius, z+radius] )
+                pos.append( [x+radius, y+radius, z+radius] )
+                pos.append( [x-radius, y+radius, z+radius] )
+                pos.append( [x-radius, y+radius, z+radius] )
+                pos.append( [x-radius, y-radius, z+radius] )
 
-                pos.append( [centerX-radius, centerY-radius, centerZ-radius] )
-                pos.append( [centerX-radius, centerY-radius, centerZ+radius] )
-                pos.append( [centerX-radius, centerY+radius, centerZ-radius] )
-                pos.append( [centerX-radius, centerY+radius, centerZ+radius] )
-                pos.append( [centerX+radius, centerY-radius, centerZ-radius] )
-                pos.append( [centerX+radius, centerY-radius, centerZ+radius] )
-                pos.append( [centerX+radius, centerY+radius, centerZ-radius] )
-                pos.append( [centerX+radius, centerY+radius, centerZ+radius] )
+                pos.append( [x-radius, y-radius, z-radius] )
+                pos.append( [x-radius, y-radius, z+radius] )
+                pos.append( [x-radius, y+radius, z-radius] )
+                pos.append( [x-radius, y+radius, z+radius] )
+                pos.append( [x+radius, y-radius, z-radius] )
+                pos.append( [x+radius, y-radius, z+radius] )
+                pos.append( [x+radius, y+radius, z-radius] )
+                pos.append( [x+radius, y+radius, z+radius] )
 
             else:
-                pos.append( [centerX,centerY,centerZ] )
+                pos.append( [x,y,z] )
+                
 
-        if cell:
-            self.addVisualObject(1,scene.visuals.Line(  pos=np.asarray(pos,dtype=np.float32),
-                                                        connect="segments"))
+        if self.visual is "cell":
+            self.objects[0].set_data( pos=np.asarray(pos,dtype=np.float32) )
         else:
-            self.addVisualObject(1,scene.visuals.Markers(   pos=np.asarray(pos,dtype=np.float32),
-                                                            size=3))
+            self.objects[0].set_data( pos=np.asarray(pos,dtype=np.float32), size=3 )
 
-        del data
 
-        self.view.camera = scene.ArcballCamera(fov=0)
+    def on_timer(self,event):
+        if self.animation is not None:
+            self.t = 2.0 - (default_timer() - self.t0) / 10.0
+            if self.t < 2.0 and self.t > 0.0:
+                self.animation(self)
+            else:
+                app.quit()
