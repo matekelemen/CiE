@@ -8,7 +8,7 @@ from vispy import app
 
 # -----------------------------------------------------------
 data    = loadSpaceTreeCSV("dropmerge.csv")
-canvas  = OctreeCanvas(data,boundary=True,visual="point")
+canvas  = OctreeCanvas(data,boundary=False,visual="cell")
 
 canvas.view.camera.rect = (-2.0,-2.0,4.0,4.0)
 
