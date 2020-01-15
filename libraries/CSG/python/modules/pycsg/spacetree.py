@@ -90,7 +90,7 @@ class OctreeCanvas(ModularCanvas):
         if self.visual is "cell" and self.dimensions > 1:
             self.addVisualObject(0,scene.visuals.Line(  pos=np.asarray(pos,dtype=np.float32),
                                                         connect="segments"))
-        elif self.visual is "point":
+        elif self.visual is "point" or self.dimensions==1:
             self.addVisualObject(0,scene.visuals.Markers(   pos=np.asarray(pos,dtype=np.float32),
                                                             size=3))
         else:

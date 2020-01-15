@@ -13,7 +13,7 @@ from vispy import app
 
 # -----------------------------------------------------------
 nDim                = 2
-treeDepth           = 10
+treeDepth           = 9
 boundary            = False
 visual              = "cell"
 
