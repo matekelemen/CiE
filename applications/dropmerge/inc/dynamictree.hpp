@@ -5,8 +5,8 @@
 #include "../../libraries/CSG/trees/inc/ntreenode.hpp"
 #include "mergefunction.hpp"
 
-const uint8_t N = 3;
-const uint8_t M = 5;
+const uint8_t N = 2;
+const uint8_t M = 3;
 using DropFunction = std::function<double(const std::array<double,N>&, double)>;
 
 namespace cie {

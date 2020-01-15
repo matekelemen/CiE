@@ -78,6 +78,7 @@ class OctreeCanvas(ModularCanvas):
 
         self.unfreeze()
 
+        self.dimensions = len(data["center"][0])
         self.boundary   = boundary
         self.visual     = visual
         self.animation  = animation
@@ -86,7 +87,7 @@ class OctreeCanvas(ModularCanvas):
         self.t          = 0
 
         pos             = np.empty( (1,3), dtype=np.float32 )
-        if self.visual is "cell":
+        if self.visual is "cell" and self.dimensions > 1:
             self.addVisualObject(0,scene.visuals.Line(  pos=np.asarray(pos,dtype=np.float32),
                                                         connect="segments"))
         elif self.visual is "point":
@@ -96,7 +97,9 @@ class OctreeCanvas(ModularCanvas):
             raise ValueError("Invalid visual type!")
 
         self.updateData(data)
-        self.view.camera = scene.ArcballCamera(fov=0)
+
+        if self.dimensions > 2:
+            self.view.camera = scene.ArcballCamera(fov=0)
 
         self.freeze()
 
@@ -110,8 +113,13 @@ class OctreeCanvas(ModularCanvas):
                     continue
 
             x = center[0]
-            y = center[1]
-            z = center[2]
+            y = 0.0
+            z = 0.0
+
+            if self.dimensions > 1:
+                y = center[1]
+            if self.dimensions > 2:
+                z = center[2]
             
             if self.visual is "cell":
                 radius = edgeLength/2.0

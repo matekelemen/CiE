@@ -34,6 +34,7 @@ int checkBoundary(const NTreeNode<N,M>& root)
 TreeData collectNodes(const DynamicTree& root)
 {
     TreeData data;
+
     collectNodesRecursive(  root,
                             data._centers,
                             data._edgeLengths,

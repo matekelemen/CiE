@@ -1,5 +1,6 @@
 # --- Python Imports ---
 import numpy as np
+from timeit import default_timer
 
 # --- Internal Imports ---
 from pydropmerge import *
@@ -11,24 +12,37 @@ from pycsg import OctreeCanvas
 from vispy import app
 
 # -----------------------------------------------------------
-treeDepth           = 5
+nDim                = 2
+treeDepth           = 10
+boundary            = False
+visual              = "cell"
 
-tree    = DynamicTree( [0.0,0.0,0.0], 4.0 )
+tree    = DynamicTree( [0.0 for i in range(nDim)], 4.0 )
 
 
 def on_timer(canvas):
+
+    #t0 = default_timer()
     tree.offset(canvas.t)
-    tree.divide(treeDepth)
+    #print("Offsetting:\t" + str(default_timer()-t0))
 
-    data    = collectNodes(tree)
-
+    #t0 = default_timer()
     tree.divide(treeDepth)
+    #print("Dividing:\t" + str(default_timer()-t0))
+
+    #t0 = default_timer()
     data    = collectNodes(tree)
+    #print("Collecting:\t" + str(default_timer()-t0))
+
+    #t0 = default_timer()
     data    = { "length"    : data.edgeLengths(),
                 "center"    : data.centers(),
                 "boundary"  : data.boundaries()}
+    #print("Organizing:\t" + str(default_timer()-t0))
 
+    #t0 = default_timer()
     canvas.updateData(data)
+    #print("Rendering:\t" + str(default_timer()-t0) + "\n")
 
 
 tree.offset(0.0)
@@ -37,7 +51,7 @@ data    = collectNodes(tree)
 data    = { "length"    : data.edgeLengths(),
             "center"    : data.centers(),
             "boundary"  : data.boundaries()}
-canvas  = OctreeCanvas(data,boundary=True,visual="point",animation=on_timer)
+canvas  = OctreeCanvas(data,boundary=boundary,visual=visual,animation=on_timer)
 del data
 
 
