@@ -7,20 +7,20 @@
 namespace cie {
 namespace csg {
 
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 class NTreeIndexConverter
 {
 public:
     NTreeIndexConverter();
 
-    const UInt8Array<N>& operator()(uint8_t index) const;
-    uint8_t operator()(const UInt8Array<N>& indexM) const;
+    const UIntArray<N>& operator()(size_t index) const;
+    size_t operator()(const UIntArray<N>& indexM) const;
 
     size_t numberOfChildren() const;
     size_t numberOfDataPoints() const;
 
 private:
-    std::vector<UInt8Array<N>>  _indices;
+    std::vector<UIntArray<N>>  _indices;
     size_t                      _numberOfChildren;
     size_t                      _numberOfDataPoints;
 };

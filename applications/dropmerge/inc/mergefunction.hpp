@@ -7,11 +7,11 @@ namespace cie {
 namespace csg {
 
 
-template <uint8_t D>
+template <size_t D>
 double polynomialMergeFunction( const DoubleArray<D>& point, double offset=0.0 );
 
 
-template <uint8_t D>
+template <size_t D>
 double exponentialMergeFunction( const DoubleArray<D>& point, double offset=0.0 );
 
 

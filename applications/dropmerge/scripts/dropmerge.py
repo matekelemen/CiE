@@ -6,14 +6,14 @@ from timeit import default_timer
 from pydropmerge import *
 
 # --- CSG Imports ---
-from pycsg import OctreeCanvas
+from pycsg import SpaceTreeCanvas
 
 # --- Vispy Imports ---
 from vispy import app
 
 # -----------------------------------------------------------
-treeDepth           = 6
-boundary            = True
+treeDepth           = 10
+boundary            = False
 visual              = "cell"
 
 tree                = None
@@ -59,7 +59,7 @@ data    = collectNodes(tree)
 data    = { "length"    : data.edgeLengths(),
             "center"    : data.centers(),
             "boundary"  : data.boundaries()}
-canvas  = OctreeCanvas(data,boundary=boundary,visual=visual,animation=on_timer)
+canvas  = SpaceTreeCanvas(data,boundary=boundary,visual=visual,animation=on_timer)
 del data
 
 

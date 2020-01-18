@@ -5,8 +5,8 @@
 #include "dynamictree.hpp"
 #include "collectnodes.hpp"
 
-// const uint8_t N
-// const uint8_t M
+// const size_t N
+// const size_t M
 // both defined in dynamictree.hpp
 
 PYBIND11_MODULE( pydropmerge, m )

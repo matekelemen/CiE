@@ -36,39 +36,28 @@ def loadSpaceTreeCSV(fileName):
                 for itemIndex, item in enumerate(row):
                     data[header[itemIndex]].append(float(item))
 
+    # Collect centers and values
+    numberOfCells   = len(data["center0"])
+    centers         = []
+    values          = []
+    for name in header:
+        if "center" in name:
+            centers.append(name)
+        elif "value" in name:
+            values.append(name)
+    
+    centers     = [ [ data[name][index] for name in centers ] for index in range(numberOfCells) ]
+    values      = [ [ data[name][index] for name in values  ] for index in range(numberOfCells) ]
+
+    data        = { "center"    : centers,
+                    "value"     : values,
+                    "length"    : data["length"],
+                    "boundary"  : [ not matchSigns(value) for value in values ]  }
+
     return data
 
 
-class QuadTreeCanvas(ModularCanvas):
-    def __init__(self,data,boundary=False):
-        ModularCanvas.__init__(self)
-
-        pos     = []
-        numVals = len(data) - 2 - 1 - 1
-        edgeMin = min(data["length"])
-
-        for index, edgeLength, x, y in zip(range(len(data["length"])), data["length"],data["center0"],data["center1"]):
-            
-            if boundary:
-                values = [ data["value"+str(vIndex)][index] for vIndex in range(numVals)  ]
-                if matchSigns(values) or not np.abs(edgeMin-edgeLength)<1e-10:
-                    continue
-            
-            radius = edgeLength/2.0
-            pos.append( [x-radius, y-radius, 0.0] )
-            pos.append( [x+radius, y-radius, 0.0] )
-            pos.append( [x+radius, y-radius, 0.0] )
-            pos.append( [x+radius, y+radius, 0.0] )
-            pos.append( [x+radius, y+radius, 0.0] )
-            pos.append( [x-radius, y+radius, 0.0] )
-            pos.append( [x-radius, y+radius, 0.0] )
-            pos.append( [x-radius, y-radius, 0.0] )
-
-        self.addVisualObject(1,scene.visuals.Line(pos=np.asarray(pos,dtype=np.float32),connect="segments"))
-        del data
-
-
-class OctreeCanvas(ModularCanvas):
+class SpaceTreeCanvas(ModularCanvas):
     def __init__(   self,
                     data,
                     boundary=False,

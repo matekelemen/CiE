@@ -8,10 +8,10 @@ namespace cie {
 namespace csg {
 
 
-template <uint8_t M>
-void baseN(size_t base_10, uint8_t base, UInt8Array<M>& base_N)
+template <size_t M>
+void baseN(size_t base_10, size_t base, UIntArray<M>& base_N)
 {
-    for (int i = 0; i < M; ++i)
+    for (size_t i = 0; i < M; ++i)
     {
         if (base_10 == 0)
         {
@@ -28,21 +28,21 @@ void baseN(size_t base_10, uint8_t base, UInt8Array<M>& base_N)
 }
 
 
-template <uint8_t M>
-UInt8Array<M> baseN(size_t base_10, uint8_t base)
+template <size_t M>
+UIntArray<M> baseN(size_t base_10, size_t base)
 {
-    UInt8Array<M> result;
+    UIntArray<M> result;
     baseN<M>(base_10, base, result);
     return result;
 }
 
 
-template <uint8_t M>
-size_t base10(const UInt8Array<M>& base_N, uint8_t base)
+template <size_t M>
+size_t base10(const UIntArray<M>& base_N, size_t base)
 {
     size_t power = 1;
     size_t base_10 = 0;
-    for (uint8_t i = 0; i < M; ++i)
+    for (size_t i = 0; i < M; ++i)
     {
         base_10 += power*base_N[i];
         power *= base;
@@ -51,12 +51,12 @@ size_t base10(const UInt8Array<M>& base_N, uint8_t base)
 }
 
 
-template <uint8_t M>
-size_t reinterpretBase( const UInt8Array<M>& baseN, uint8_t newBase )
+template <size_t M>
+size_t reinterpretBase( const UIntArray<M>& baseN, size_t newBase )
 {
     size_t power = 1;
     size_t value = 0;
-    for (uint8_t i=0; i<M; ++i)
+    for (size_t i=0; i<M; ++i)
     {
         value += power*baseN[i];
         power *= newBase;
@@ -65,7 +65,7 @@ size_t reinterpretBase( const UInt8Array<M>& baseN, uint8_t newBase )
 }
 
 
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 void writeNTree(const NTreeNode<N,M>& node, std::ostream& file)
 {
     std::string buffer = std::to_string(node.edgeLength()) + ',';
@@ -83,7 +83,7 @@ void writeNTree(const NTreeNode<N,M>& node, std::ostream& file)
 }
 
 
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 void writeNTree(const NTreeNode<N,M>& node, const std::string& filename)
 {
     //std::ofstream file(filename, std::ios::out | std::ios::binary);
@@ -114,7 +114,7 @@ void writeNTree(const NTreeNode<N,M>& node, const std::string& filename)
 
 
 // Collecting nodes --------------------------------------------------
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 std::vector<const NTreeNode<N,M>*> boundaryNodes(const NTreeNode<N,M>& root)
 {
     std::vector<const NTreeNode<N,M>*> nodes;
@@ -123,7 +123,7 @@ std::vector<const NTreeNode<N,M>*> boundaryNodes(const NTreeNode<N,M>& root)
 }
 
 
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 void boundaryNodes(     const NTreeNode<N,M>& root,
                         std::vector<const NTreeNode<N,M>*>& nodes )
 {

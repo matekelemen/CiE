@@ -9,14 +9,14 @@ namespace csg {
 
 
 // Initialize the static converters
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 NTreeIndexConverter<N,M> NTreeNode<N,M>::_dataIndex = NTreeIndexConverter<N,M>();
 
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 NTreeIndexConverter<N,2> NTreeNode<N,M>::_centerIndex = NTreeIndexConverter<N,2>();
 
 
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 NTreeNode<N, M>::NTreeNode() :
     _data(0.0),
     _children( _dataIndex.numberOfChildren() ),
@@ -34,7 +34,7 @@ NTreeNode<N, M>::NTreeNode() :
 }
 
 
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 NTreeNode<N, M>::NTreeNode(const DoubleArray<N>& center, double edgeLength) :
     _center(center),
     _data( _dataIndex.numberOfDataPoints() ,0.0),
@@ -49,9 +49,9 @@ NTreeNode<N, M>::NTreeNode(const DoubleArray<N>& center, double edgeLength) :
 }
 
 
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 NTreeNode<N, M>::NTreeNode(         const NTreeNode<N, M>& parent, 
-                                    uint8_t index, 
+                                    size_t index, 
                                     const GeometryFunction<N>& geometry) :
     _data( _dataIndex.numberOfDataPoints() ),
     _children( _dataIndex.numberOfChildren() ),
@@ -67,7 +67,7 @@ NTreeNode<N, M>::NTreeNode(         const NTreeNode<N, M>& parent,
     }
     
     // Initialize center
-    for (uint8_t i = 0; i < N; ++i)
+    for (size_t i = 0; i < N; ++i)
         _center[i] =    parent._center[i] 
                         + parent._edgeLength/4.0 * (2.0*_centerIndex(index)[i]-1.0);
 
@@ -77,8 +77,8 @@ NTreeNode<N, M>::NTreeNode(         const NTreeNode<N, M>& parent,
     for (size_t i = 0; i < _data.size(); ++i)
     {
         // Check if this point is shared with the parent
-        evaluatePoint = true;   
-        for (uint8_t j=0; j<N; ++j)
+        evaluatePoint = false;   
+        for (size_t j=0; j<N; ++j)
         {
             if ( (_dataIndex(i)[j]%2) != 0 )
                 {
@@ -88,15 +88,15 @@ NTreeNode<N, M>::NTreeNode(         const NTreeNode<N, M>& parent,
         }
         // Copy parent data if shared, evaluate geometry if not
         if (!evaluatePoint)
-            _data[i] = parent._data[ i/2 +  (M-1)/2 * reinterpretBase<N>( _centerIndex(index), M ) ];
+            _data[i] = parent._data[ i/2 + (M-1)/2 * reinterpretBase<N>( _centerIndex(index), M ) ];
         else
             evaluate(geometry,i);
     }
 }
 
 
-template <uint8_t N, uint8_t M>
-bool NTreeNode<N, M>::divide(const GeometryFunction<N>& geometry, uint8_t level)
+template <size_t N, size_t M>
+bool NTreeNode<N, M>::divide(const GeometryFunction<N>& geometry, size_t level)
 {
     bool boundary   = false;
     bool value      = false;
@@ -130,7 +130,7 @@ bool NTreeNode<N, M>::divide(const GeometryFunction<N>& geometry, uint8_t level)
 
 // Write edge length, center coordinates and data to the output stream, then
 // call write on the children
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 void NTreeNode<N,M>::write(std::ostream& file) const
 {
     writeNTree<N,M>(*this,file);
@@ -141,7 +141,7 @@ void NTreeNode<N,M>::write(std::ostream& file) const
 
 
 // Call wipe on children then delete them
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 void NTreeNode<N,M>::wipe()
 {
     for (auto it=_children.begin(); it!=_children.end(); ++it)
@@ -156,7 +156,7 @@ void NTreeNode<N,M>::wipe()
 
 
 // Evaluate the geometry at a specific point defined by its index
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 void NTreeNode<N, M>::evaluate(const GeometryFunction<N>& geometry, size_t index)
 {   
     _data[index] = geometry(pointCoordinates(index));
@@ -164,7 +164,7 @@ void NTreeNode<N, M>::evaluate(const GeometryFunction<N>& geometry, size_t index
 
 
 // Evaluate the geometry at all the points
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 void NTreeNode<N, M>::evaluate(const GeometryFunction<N>& geometry)
 {
     for (size_t i=0; i<_data.size(); ++i)
@@ -172,26 +172,26 @@ void NTreeNode<N, M>::evaluate(const GeometryFunction<N>& geometry)
 }
 
 
-template <uint8_t N, uint8_t M>
-DoubleArray<N> NTreeNode<N, M>::pointCoordinates(const UInt8Array<N>& indexN) const
+template <size_t N, size_t M>
+DoubleArray<N> NTreeNode<N, M>::pointCoordinates(const UIntArray<N>& indexN) const
 {
     DoubleArray<N> point;
     double dx = _edgeLength / ((double)M-1.0);
-    for (uint8_t j = 0; j < N; ++j)
+    for (size_t j = 0; j < N; ++j)
         point[j] = _center[j] + dx*(indexN[j] - (M-1.0)/2.0);
 
     return point;
 }
 
 
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 DoubleArray<N> NTreeNode<N, M>::pointCoordinates(size_t index) const
 {
     return pointCoordinates( _dataIndex(index) );
 }
 
 
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 void NTreeNode<N, M>::check() const
 {
     if (M%2 != 1)
@@ -199,35 +199,35 @@ void NTreeNode<N, M>::check() const
 }
 
 
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 DoubleArray<N>& NTreeNode<N, M>::center()
 {
     return _center;
 }
 
 
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 const DoubleArray<N>& NTreeNode<N, M>::center() const
 {
     return _center;
 }
 
 
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 const DoubleVector& NTreeNode<N, M>::data() const
 {
     return _data;
 }
 
 
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 const std::vector<NTreeNodePtr<N, M>>& NTreeNode<N, M>::children() const
 {
     return _children;
 }
 
 
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 const NTreeNode<N, M>& NTreeNode<N, M>::child(size_t index) const
 {
     if (_children[index]!=nullptr)
@@ -237,7 +237,7 @@ const NTreeNode<N, M>& NTreeNode<N, M>::child(size_t index) const
 }
 
 
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 double NTreeNode<N, M>::edgeLength() const
 {
     return _edgeLength;

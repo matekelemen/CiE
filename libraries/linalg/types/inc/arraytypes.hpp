@@ -19,6 +19,9 @@ using UIntArray     = std::array<size_t, N>;
 template <size_t N>
 using UInt8Array    = std::array<uint8_t, N>;
 
+template <size_t N>
+using UInt16Array   = std::array<uint16_t, N>;
+
 }
 
 #endif

@@ -11,51 +11,51 @@ namespace cie {
 namespace csg {
 
 
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 class NTreeNode;
 
 
-template <uint8_t N>
+template <size_t N>
 using GeometryFunction = std::function<double(const DoubleArray<N>&)>;
 
 
 // Integer power and base conversions --------------------------------
 
-const size_t intPow(int base, uint8_t exponent);
+const size_t intPow(int base, size_t exponent);
 
 
-template <uint8_t M>
-void baseN(size_t base_10, uint8_t base, UInt8Array<M>& base_N);
+template <size_t M>
+void baseN(size_t base_10, size_t base, UIntArray<M>& base_N);
 
 
-template <uint8_t M>
-UInt8Array<M> baseN(size_t base_10, uint8_t base);
+template <size_t M>
+UIntArray<M> baseN(size_t base_10, size_t base);
 
 
-template <uint8_t M>
-size_t base10(const UInt8Array<M>& base_N, uint8_t base);
+template <size_t M>
+size_t base10(const UIntArray<M>& base_N, size_t base);
 
 
-template <uint8_t M>
-size_t reinterpretBase( const UInt8Array<M>& baseN, uint8_t newBase );
+template <size_t M>
+size_t reinterpretBase( const UIntArray<M>& baseN, size_t newBase );
 
 
 // Writing to file ---------------------------------------------------
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 void writeNTree(const NTreeNode<N,M>& node, std::ostream& file);
 
 
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 void writeNTree(const NTreeNode<N,M>& node, const std::string& filename);
 
 
 // Collecting nodes --------------------------------------------------
 bool uniformSigns(const DoubleVector& data);
 
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 std::vector<const NTreeNode<N,M>*> boundaryNodes(const NTreeNode<N,M>& root);
 
-template <uint8_t N, uint8_t M>
+template <size_t N, size_t M>
 void boundaryNodes(   const NTreeNode<N,M>& root,
                                                     std::vector<const NTreeNode<N,M>*>& nodes );
 

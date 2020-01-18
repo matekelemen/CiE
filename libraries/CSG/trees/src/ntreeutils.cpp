@@ -4,10 +4,10 @@ namespace cie {
 namespace csg {
 
 
-const size_t intPow(int base, uint8_t exponent)
+const size_t intPow(int base, size_t exponent)
 {
     size_t result = 1;
-    for (uint8_t i = 0; i < exponent; ++i)
+    for (size_t i = 0; i < exponent; ++i)
     {
         result *= base;
     }

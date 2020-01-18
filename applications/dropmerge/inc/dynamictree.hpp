@@ -6,8 +6,8 @@
 #include "mergefunction.hpp"
 
 // Set dimension and subdivision (needed for python bindings)
-const uint8_t N = 3;
-const uint8_t M = 7;
+const size_t N = 2;
+const size_t M = 7;
 
 using DropFunction = std::function<double(const std::array<double,N>&, double)>;
 
@@ -19,9 +19,8 @@ class DynamicTree : public NTreeNode<N,M>
 {
 public:
     DynamicTree( const DoubleArray<N>& center, double edgeLength );
-    DynamicTree( const DynamicTree& parent, uint8_t index );
 
-    void divide(uint8_t level);
+    void divide(size_t level);
     void offset(double value);
 
     DropFunction        _drop;
