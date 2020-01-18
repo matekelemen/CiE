@@ -1,10 +1,12 @@
 #ifndef CSG_NTREENODE_HPP
 #define CSG_NTREENODE_HPP
 
+#include "indexconverter.hpp"
+#include "ntreeutils.hpp"
+#include "linalgtypes.hpp"
+
 #include <stdint.h>
 #include <memory>
-#include "linalgtypes.hpp"
-#include "ntreeutils.hpp"
 
 namespace cie {
 namespace csg {
@@ -52,6 +54,8 @@ private:
     DoubleVector                                _data;
     std::vector<NTreeNodePtr<N,M>>              _children;
     double                                      _edgeLength;
+    static NTreeIndexConverter<N,M>             _dataIndex;
+    static NTreeIndexConverter<N,2>             _centerIndex;
 };
 
 

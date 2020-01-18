@@ -1,6 +1,7 @@
 #ifndef CSG_NTREE_UTILITIES_IMPL_HPP
 #define CSG_NTREE_UTILITIES_IMPL_HPP
 
+#include <algorithm>
 #include <string>
 
 namespace cie {
@@ -50,13 +51,34 @@ size_t base10(const UInt8Array<M>& base_N, uint8_t base)
 }
 
 
+template <uint8_t M>
+size_t reinterpretBase( const UInt8Array<M>& baseN, uint8_t newBase )
+{
+    size_t power = 1;
+    size_t value = 0;
+    for (uint8_t i=0; i<M; ++i)
+    {
+        value += power*baseN[i];
+        power *= newBase;
+    }
+    return value;
+}
+
+
 template <uint8_t N, uint8_t M>
 void writeNTree(const NTreeNode<N,M>& node, std::ostream& file)
 {
     std::string buffer = std::to_string(node.edgeLength()) + ',';
-    for (auto it=node.center().begin(); it!=node.center().end(); ++it) buffer += std::to_string(*it) + ',';
-    for (auto it=node.data().begin(); it!=node.data().end()-1; ++it) buffer += std::to_string(*it) + ',';
+
+    std::for_each(  node.center().begin(),
+                    node.center().end(),
+                    [&buffer] (auto value) { buffer += std::to_string(value) + ','; } );
+
+    for (auto it=node.data().begin(); it!=node.data().end()-1; ++it) 
+        buffer += std::to_string(*it) + ',';
+
     buffer += std::to_string(*(node.data().end()-1)) + '\n';
+
     file << buffer;
 }
 
@@ -69,13 +91,16 @@ void writeNTree(const NTreeNode<N,M>& node, const std::string& filename)
     if (file.is_open())
     {
         // Write header
-        std::string buffer = "length,";
-        int dataSize    = intPow(M,N);
+        std::string buffer  = "length,";
+        size_t dataSize     = intPow(M,N);
 
-        for (int i=0; i<N; ++i)  buffer += "center" + std::to_string(i) + ',';
-        for (int i=0; i<dataSize-1; ++i) buffer += "value" + std::to_string(i) + ',';
+        for (size_t i=0; i<N; ++i)  
+            buffer += "center" + std::to_string(i) + ',';
 
-        buffer += 'v' + std::to_string(dataSize-1) + '\n';
+        for (size_t i=0; i<dataSize-1; ++i) 
+            buffer += "value" + std::to_string(i) + ',';
+
+        buffer += "value" + std::to_string(dataSize-1) + '\n';
 
         file << buffer;
 

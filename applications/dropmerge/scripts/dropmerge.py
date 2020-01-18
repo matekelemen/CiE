@@ -12,12 +12,20 @@ from pycsg import OctreeCanvas
 from vispy import app
 
 # -----------------------------------------------------------
-nDim                = 2
-treeDepth           = 9
-boundary            = False
+treeDepth           = 6
+boundary            = True
 visual              = "cell"
 
-tree    = DynamicTree( [0.0 for i in range(nDim)], 4.0 )
+tree                = None
+for nDim in range(1,4):
+    try:
+        tree    = DynamicTree( [0.0 for i in range(nDim)], 4.0 )
+    except:
+        continue
+    break
+
+if tree is None:
+    raise RuntimeError("Could not determine tree dimension!")
 
 
 def on_timer(canvas):
@@ -26,9 +34,9 @@ def on_timer(canvas):
     tree.offset(canvas.t)
     #print("Offsetting:\t" + str(default_timer()-t0))
 
-    #t0 = default_timer()
+    t0 = default_timer()
     tree.divide(treeDepth)
-    #print("Dividing:\t" + str(default_timer()-t0))
+    print("Dividing:\t" + str(default_timer()-t0))
 
     #t0 = default_timer()
     data    = collectNodes(tree)

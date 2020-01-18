@@ -36,6 +36,10 @@ template <uint8_t M>
 size_t base10(const UInt8Array<M>& base_N, uint8_t base);
 
 
+template <uint8_t M>
+size_t reinterpretBase( const UInt8Array<M>& baseN, uint8_t newBase );
+
+
 // Writing to file ---------------------------------------------------
 template <uint8_t N, uint8_t M>
 void writeNTree(const NTreeNode<N,M>& node, std::ostream& file);
