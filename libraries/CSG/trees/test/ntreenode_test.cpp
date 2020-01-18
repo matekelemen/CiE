@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "../inc/ntreenode.hpp"
+#include "../inc/spacetreenode.hpp"
 
 #include <iostream>
 
@@ -19,22 +19,22 @@ double unitSphere(const DoubleArray<3>& point)
 }
 
 
-TEST_CASE("NTreeNode constructors")
+TEST_CASE("SpaceTreeNode constructors")
 {
-    NTreeNode<2,3> root({0.0,0.0}, 2.0);
+    SpaceTreeNode<2,3> root({0.0,0.0}, 2.0);
 }
 
 
-TEST_CASE("NTreeNode set/get")
+TEST_CASE("SpaceTreeNode set/get")
 {
-    NTreeNode<2,3> root({1.0,2.0},3.0);
+    SpaceTreeNode<2,3> root({1.0,2.0},3.0);
     REQUIRE( root.center().size() == 2 );
     CHECK( root.center()[0] == Approx(1.0) );
     CHECK( root.center()[1] == Approx(2.0) );
 }
 
 
-TEST_CASE("NTreeNode divide 2D")
+TEST_CASE("SpaceTreeNode divide 2D")
 {
     // 2---+---+
     // |   |   |
@@ -43,7 +43,7 @@ TEST_CASE("NTreeNode divide 2D")
     // 0---1---2
 
     // Create geometry
-    NTreeNode<2, 3> root({ 1.0,1.0 }, 2.0);
+    SpaceTreeNode<2, 3> root({ 1.0,1.0 }, 2.0);
     GeometryFunction<2> circle = unitCircle;
 
     // Initialize and divide tree
@@ -73,14 +73,14 @@ TEST_CASE("NTreeNode divide 2D")
     CHECK(root.child(0).children().size() == 4);
 
     // Check writing to file
-    CHECK_NOTHROW(writeNTree<2,3>(root, "ntree2D.csv"));
+    CHECK_NOTHROW(writeSpaceTree<2,3>(root, "spacetree2D.csv"));
 }
 
 
-TEST_CASE("NTreeNode divide 3D")
+TEST_CASE("SpaceTreeNode divide 3D")
 {
     // Create geometry
-    NTreeNode<3, 3> root({ 1.0,1.0,1.0 }, 2.0);
+    SpaceTreeNode<3, 3> root({ 1.0,1.0,1.0 }, 2.0);
     GeometryFunction<3> sphere = unitSphere;
 
     // Initialize and divide tree
@@ -88,14 +88,14 @@ TEST_CASE("NTreeNode divide 3D")
     root.divide(sphere, 6);
 
     // Check writing to file
-    CHECK_NOTHROW(writeNTree<3,3>(root, "ntree3D.csv"));
+    CHECK_NOTHROW(writeSpaceTree<3,3>(root, "spacetree3D.csv"));
 }
 
 
 TEST_CASE("Boundary nodes")
 {
     // Create geometry
-    NTreeNode<2, 3> root({ 1.0,1.0 }, 2.0);
+    SpaceTreeNode<2, 3> root({ 1.0,1.0 }, 2.0);
     GeometryFunction<2> circle = unitCircle;
 
     // Initialize and divide tree

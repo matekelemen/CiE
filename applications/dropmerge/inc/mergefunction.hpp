@@ -1,7 +1,7 @@
 #ifndef DROPMERGE_MERGE_FUNCTION_HPP
 #define DROPMERGE_MERGE_FUNCTION_HPP
 
-#include "../../libraries/CSG/trees/inc/ntreenode.hpp"
+#include "../../libraries/CSG/trees/inc/spacetreenode.hpp"
 
 namespace cie {
 namespace csg {

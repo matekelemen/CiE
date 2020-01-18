@@ -2,8 +2,8 @@
 #include "pybind11/stl.h"
 
 #include "../../clustering/inc/minimumdisc.hpp"
-#include "../../trees/inc/ntreeutils.hpp"
-#include "../../trees/inc/ntreenode.hpp"
+#include "../../trees/inc/spacetreeutils.hpp"
+#include "../../trees/inc/spacetreenode.hpp"
 #include "csgconversion.hpp"
 
 PYBIND11_MODULE( pycsg,m ){

@@ -1,17 +1,17 @@
 #ifndef CSG_NTREE_INDEX_CONVERTER_HPP
 #define CSG_NTREE_INDEX_CONVERTER_HPP
 
-#include "ntreeutils.hpp"
+#include "spacetreeutils.hpp"
 #include "linalgtypes.hpp"
 
 namespace cie {
 namespace csg {
 
 template <size_t N, size_t M>
-class NTreeIndexConverter
+class SpaceTreeIndexConverter
 {
 public:
-    NTreeIndexConverter();
+    SpaceTreeIndexConverter();
 
     const UIntArray<N>& operator()(size_t index) const;
     size_t operator()(const UIntArray<N>& indexM) const;

@@ -2,7 +2,7 @@
 #define CSG_NTREENODE_HPP
 
 #include "indexconverter.hpp"
-#include "ntreeutils.hpp"
+#include "spacetreeutils.hpp"
 #include "linalgtypes.hpp"
 
 #include <stdint.h>
@@ -13,19 +13,19 @@ namespace csg {
 
 // Define node pointer (needs forward declaration)
 template <size_t N, size_t M>
-class NTreeNode;
+class SpaceTreeNode;
 
 template <size_t N, size_t M>
-using NTreeNodePtr = std::unique_ptr<NTreeNode<N,M>>;
+using SpaceTreeNodePtr = std::unique_ptr<SpaceTreeNode<N,M>>;
 
 
 
 template <size_t N, size_t M>
-class NTreeNode {
+class SpaceTreeNode {
 public:
-    NTreeNode();
-    NTreeNode(const DoubleArray<N>& center, double edgeLength);
-    NTreeNode(  const NTreeNode<N, M>& parent,
+    SpaceTreeNode();
+    SpaceTreeNode(const DoubleArray<N>& center, double edgeLength);
+    SpaceTreeNode(  const SpaceTreeNode<N, M>& parent,
                 size_t index,
                 const GeometryFunction<N>& geometry);
 
@@ -43,8 +43,8 @@ public:
     DoubleArray<N>& center();
     const DoubleArray<N>& center() const;
     const DoubleVector& data() const;
-    const std::vector<NTreeNodePtr<N,M>>& children() const;
-    const NTreeNode<N,M>& child(size_t index) const;
+    const std::vector<SpaceTreeNodePtr<N,M>>& children() const;
+    const SpaceTreeNode<N,M>& child(size_t index) const;
     double edgeLength() const;
 
 protected:
@@ -52,16 +52,16 @@ protected:
     
     DoubleArray<N>                              _center;
     DoubleVector                                _data;
-    std::vector<NTreeNodePtr<N,M>>              _children;
+    std::vector<SpaceTreeNodePtr<N,M>>              _children;
     double                                      _edgeLength;
-    static NTreeIndexConverter<N,M>             _dataIndex;
-    static NTreeIndexConverter<N,2>             _centerIndex;
+    static SpaceTreeIndexConverter<N,M>             _dataIndex;
+    static SpaceTreeIndexConverter<N,2>             _centerIndex;
 };
 
 
 }
 }
 
-#include "ntreenode_impl.hpp"
+#include "spacetreenode_impl.hpp"
 
 #endif

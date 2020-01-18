@@ -1,7 +1,7 @@
 #ifndef CSG_CSG_CONVERSION_CPP
 #define CSG_CSG_CONVERSION_CPP
 
-#include "../../trees/inc/ntreeutils.hpp"
+#include "../../trees/inc/spacetreeutils.hpp"
 
 namespace cie {
 namespace csg {
@@ -11,7 +11,7 @@ using CellGeometry = std::array<DoubleVector,N+1>;
 
 
 template <uint8_t N, uint8_t M>
-CellGeometry<N> boundaryCells(const NTreeNode<N,M>& root)
+CellGeometry<N> boundaryCells(const SpaceTreeNode<N,M>& root)
 {
     auto nodes = boundaryNodes(root);
     CellGeometry<N> cells;

@@ -10,11 +10,11 @@ const size_t depth         = 10;
 
 int main(std::function<double(const DoubleArray<dimension>&)> target, double offset = 0.0)
 {
-    NTreeNode<dimension,subdivision> root( {0.0,0.0}, 4.0 );
+    SpaceTreeNode<dimension,subdivision> root( {0.0,0.0}, 4.0 );
     root.evaluate(target);
     root.divide(target,depth);
 
-    writeNTree<dimension,subdivision>(root, "dropmerge.csv");
+    writeSpaceTree<dimension,subdivision>(root, "dropmerge.csv");
 
     std::string filename    = "install/applications/dropmerge/dropmerge_csv.py";
     std::string command     = "python3 ";

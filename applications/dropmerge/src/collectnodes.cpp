@@ -12,7 +12,7 @@ TreeData::TreeData() :
 }
 
 
-int checkBoundary(const NTreeNode<N,M>& root)
+int checkBoundary(const SpaceTreeNode<N,M>& root)
 {
     bool result = root.data()[0] > 0.0;
 
@@ -43,7 +43,7 @@ TreeData collectNodes(const DynamicTree& root)
 }
 
 
-void collectNodesRecursive(     const NTreeNode<N,M>& root,
+void collectNodesRecursive(     const SpaceTreeNode<N,M>& root,
                                 std::vector<DoubleArray<N>>& centers,
                                 DoubleVector& edgeLengths,
                                 std::vector<int>& boundaries)

@@ -66,7 +66,7 @@ size_t reinterpretBase( const UIntArray<M>& baseN, size_t newBase )
 
 
 template <size_t N, size_t M>
-void writeNTree(const NTreeNode<N,M>& node, std::ostream& file)
+void writeSpaceTree(const SpaceTreeNode<N,M>& node, std::ostream& file)
 {
     std::string buffer = std::to_string(node.edgeLength()) + ',';
 
@@ -84,7 +84,7 @@ void writeNTree(const NTreeNode<N,M>& node, std::ostream& file)
 
 
 template <size_t N, size_t M>
-void writeNTree(const NTreeNode<N,M>& node, const std::string& filename)
+void writeSpaceTree(const SpaceTreeNode<N,M>& node, const std::string& filename)
 {
     //std::ofstream file(filename, std::ios::out | std::ios::binary);
     std::ofstream file(filename);
@@ -115,17 +115,17 @@ void writeNTree(const NTreeNode<N,M>& node, const std::string& filename)
 
 // Collecting nodes --------------------------------------------------
 template <size_t N, size_t M>
-std::vector<const NTreeNode<N,M>*> boundaryNodes(const NTreeNode<N,M>& root)
+std::vector<const SpaceTreeNode<N,M>*> boundaryNodes(const SpaceTreeNode<N,M>& root)
 {
-    std::vector<const NTreeNode<N,M>*> nodes;
+    std::vector<const SpaceTreeNode<N,M>*> nodes;
     boundaryNodes<N,M>(root,nodes);
     return nodes;
 }
 
 
 template <size_t N, size_t M>
-void boundaryNodes(     const NTreeNode<N,M>& root,
-                        std::vector<const NTreeNode<N,M>*>& nodes )
+void boundaryNodes(     const SpaceTreeNode<N,M>& root,
+                        std::vector<const SpaceTreeNode<N,M>*>& nodes )
 {
     if (uniformSigns(root.data()))
         nodes.push_back(&root);

@@ -1,8 +1,8 @@
 #ifndef DROPMERGE_DYNAMIC_TREE_HPP
 #define DROPMERGE_DYNAMIC_TREE_HPP
 
-#include "../../libraries/CSG/trees/inc/ntreeutils.hpp"
-#include "../../libraries/CSG/trees/inc/ntreenode.hpp"
+#include "../../libraries/CSG/trees/inc/spacetreeutils.hpp"
+#include "../../libraries/CSG/trees/inc/spacetreenode.hpp"
 #include "mergefunction.hpp"
 
 // Set dimension and subdivision (needed for python bindings)
@@ -15,7 +15,7 @@ namespace cie {
 namespace csg {
 
 
-class DynamicTree : public NTreeNode<N,M>
+class DynamicTree : public SpaceTreeNode<N,M>
 {
 public:
     DynamicTree( const DoubleArray<N>& center, double edgeLength );

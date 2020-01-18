@@ -10,14 +10,14 @@ namespace csg {
 
 // Initialize the static converters
 template <size_t N, size_t M>
-NTreeIndexConverter<N,M> NTreeNode<N,M>::_dataIndex = NTreeIndexConverter<N,M>();
+SpaceTreeIndexConverter<N,M> SpaceTreeNode<N,M>::_dataIndex = SpaceTreeIndexConverter<N,M>();
 
 template <size_t N, size_t M>
-NTreeIndexConverter<N,2> NTreeNode<N,M>::_centerIndex = NTreeIndexConverter<N,2>();
+SpaceTreeIndexConverter<N,2> SpaceTreeNode<N,M>::_centerIndex = SpaceTreeIndexConverter<N,2>();
 
 
 template <size_t N, size_t M>
-NTreeNode<N, M>::NTreeNode() :
+SpaceTreeNode<N, M>::SpaceTreeNode() :
     _data(0.0),
     _children( _dataIndex.numberOfChildren() ),
     _edgeLength(2.0)
@@ -35,7 +35,7 @@ NTreeNode<N, M>::NTreeNode() :
 
 
 template <size_t N, size_t M>
-NTreeNode<N, M>::NTreeNode(const DoubleArray<N>& center, double edgeLength) :
+SpaceTreeNode<N, M>::SpaceTreeNode(const DoubleArray<N>& center, double edgeLength) :
     _center(center),
     _data( _dataIndex.numberOfDataPoints() ,0.0),
     _children( _dataIndex.numberOfChildren() ),
@@ -50,7 +50,7 @@ NTreeNode<N, M>::NTreeNode(const DoubleArray<N>& center, double edgeLength) :
 
 
 template <size_t N, size_t M>
-NTreeNode<N, M>::NTreeNode(         const NTreeNode<N, M>& parent, 
+SpaceTreeNode<N, M>::SpaceTreeNode(         const SpaceTreeNode<N, M>& parent, 
                                     size_t index, 
                                     const GeometryFunction<N>& geometry) :
     _data( _dataIndex.numberOfDataPoints() ),
@@ -96,7 +96,7 @@ NTreeNode<N, M>::NTreeNode(         const NTreeNode<N, M>& parent,
 
 
 template <size_t N, size_t M>
-bool NTreeNode<N, M>::divide(const GeometryFunction<N>& geometry, size_t level)
+bool SpaceTreeNode<N, M>::divide(const GeometryFunction<N>& geometry, size_t level)
 {
     bool boundary   = false;
     bool value      = false;
@@ -117,7 +117,7 @@ bool NTreeNode<N, M>::divide(const GeometryFunction<N>& geometry, size_t level)
     {
         for (auto it = _children.begin(); it != _children.end(); ++it)
         {
-            *it = std::make_unique<NTreeNode>(  *this,
+            *it = std::make_unique<SpaceTreeNode>(  *this,
                                                 std::distance(_children.begin(),it),
                                                 geometry);
             if (level>1) (*it)->divide(geometry, level-1);
@@ -131,9 +131,9 @@ bool NTreeNode<N, M>::divide(const GeometryFunction<N>& geometry, size_t level)
 // Write edge length, center coordinates and data to the output stream, then
 // call write on the children
 template <size_t N, size_t M>
-void NTreeNode<N,M>::write(std::ostream& file) const
+void SpaceTreeNode<N,M>::write(std::ostream& file) const
 {
-    writeNTree<N,M>(*this,file);
+    writeSpaceTree<N,M>(*this,file);
     for (auto it=_children.begin(); it!=_children.end(); ++it)
         if (*it!=nullptr) 
             (**it).write(file);
@@ -142,7 +142,7 @@ void NTreeNode<N,M>::write(std::ostream& file) const
 
 // Call wipe on children then delete them
 template <size_t N, size_t M>
-void NTreeNode<N,M>::wipe()
+void SpaceTreeNode<N,M>::wipe()
 {
     for (auto it=_children.begin(); it!=_children.end(); ++it)
     {
@@ -157,7 +157,7 @@ void NTreeNode<N,M>::wipe()
 
 // Evaluate the geometry at a specific point defined by its index
 template <size_t N, size_t M>
-void NTreeNode<N, M>::evaluate(const GeometryFunction<N>& geometry, size_t index)
+void SpaceTreeNode<N, M>::evaluate(const GeometryFunction<N>& geometry, size_t index)
 {   
     _data[index] = geometry(pointCoordinates(index));
 }
@@ -165,7 +165,7 @@ void NTreeNode<N, M>::evaluate(const GeometryFunction<N>& geometry, size_t index
 
 // Evaluate the geometry at all the points
 template <size_t N, size_t M>
-void NTreeNode<N, M>::evaluate(const GeometryFunction<N>& geometry)
+void SpaceTreeNode<N, M>::evaluate(const GeometryFunction<N>& geometry)
 {
     for (size_t i=0; i<_data.size(); ++i)
         evaluate(geometry,i);
@@ -173,7 +173,7 @@ void NTreeNode<N, M>::evaluate(const GeometryFunction<N>& geometry)
 
 
 template <size_t N, size_t M>
-DoubleArray<N> NTreeNode<N, M>::pointCoordinates(const UIntArray<N>& indexN) const
+DoubleArray<N> SpaceTreeNode<N, M>::pointCoordinates(const UIntArray<N>& indexN) const
 {
     DoubleArray<N> point;
     double dx = _edgeLength / ((double)M-1.0);
@@ -185,14 +185,14 @@ DoubleArray<N> NTreeNode<N, M>::pointCoordinates(const UIntArray<N>& indexN) con
 
 
 template <size_t N, size_t M>
-DoubleArray<N> NTreeNode<N, M>::pointCoordinates(size_t index) const
+DoubleArray<N> SpaceTreeNode<N, M>::pointCoordinates(size_t index) const
 {
     return pointCoordinates( _dataIndex(index) );
 }
 
 
 template <size_t N, size_t M>
-void NTreeNode<N, M>::check() const
+void SpaceTreeNode<N, M>::check() const
 {
     if (M%2 != 1)
         throw std::runtime_error("Number of partitions must be odd and >1! (" + std::to_string(M) + ")");
@@ -200,35 +200,35 @@ void NTreeNode<N, M>::check() const
 
 
 template <size_t N, size_t M>
-DoubleArray<N>& NTreeNode<N, M>::center()
+DoubleArray<N>& SpaceTreeNode<N, M>::center()
 {
     return _center;
 }
 
 
 template <size_t N, size_t M>
-const DoubleArray<N>& NTreeNode<N, M>::center() const
+const DoubleArray<N>& SpaceTreeNode<N, M>::center() const
 {
     return _center;
 }
 
 
 template <size_t N, size_t M>
-const DoubleVector& NTreeNode<N, M>::data() const
+const DoubleVector& SpaceTreeNode<N, M>::data() const
 {
     return _data;
 }
 
 
 template <size_t N, size_t M>
-const std::vector<NTreeNodePtr<N, M>>& NTreeNode<N, M>::children() const
+const std::vector<SpaceTreeNodePtr<N, M>>& SpaceTreeNode<N, M>::children() const
 {
     return _children;
 }
 
 
 template <size_t N, size_t M>
-const NTreeNode<N, M>& NTreeNode<N, M>::child(size_t index) const
+const SpaceTreeNode<N, M>& SpaceTreeNode<N, M>::child(size_t index) const
 {
     if (_children[index]!=nullptr)
         return *(_children[index]);
@@ -238,7 +238,7 @@ const NTreeNode<N, M>& NTreeNode<N, M>::child(size_t index) const
 
 
 template <size_t N, size_t M>
-double NTreeNode<N, M>::edgeLength() const
+double SpaceTreeNode<N, M>::edgeLength() const
 {
     return _edgeLength;
 }

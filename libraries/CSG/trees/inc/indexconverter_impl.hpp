@@ -8,7 +8,7 @@ namespace csg {
 
 
 template <size_t N, size_t M>
-NTreeIndexConverter<N,M>::NTreeIndexConverter() :
+SpaceTreeIndexConverter<N,M>::SpaceTreeIndexConverter() :
     _numberOfChildren(intPow(2,N)),
     _numberOfDataPoints(intPow(M,N))
 {
@@ -20,28 +20,28 @@ NTreeIndexConverter<N,M>::NTreeIndexConverter() :
 
 
 template <size_t N, size_t M>
-const UIntArray<N>& NTreeIndexConverter<N,M>::operator()(size_t index) const
+const UIntArray<N>& SpaceTreeIndexConverter<N,M>::operator()(size_t index) const
 {
     return _indices[index];
 }
 
 
 template <size_t N, size_t M>
-size_t NTreeIndexConverter<N,M>::operator()(const UIntArray<N>& indexN) const
+size_t SpaceTreeIndexConverter<N,M>::operator()(const UIntArray<N>& indexN) const
 {
     return std::distance( _indices.begin(), &indexN );
 }
 
 
 template <size_t N, size_t M>
-size_t NTreeIndexConverter<N,M>::numberOfChildren() const
+size_t SpaceTreeIndexConverter<N,M>::numberOfChildren() const
 {
     return _numberOfChildren;
 }
 
 
 template <size_t N, size_t M>
-size_t NTreeIndexConverter<N,M>::numberOfDataPoints() const
+size_t SpaceTreeIndexConverter<N,M>::numberOfDataPoints() const
 {
     return _numberOfDataPoints;
 }

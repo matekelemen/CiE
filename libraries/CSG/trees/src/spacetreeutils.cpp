@@ -1,4 +1,4 @@
-#include "../inc/ntreeutils.hpp"
+#include "../inc/spacetreeutils.hpp"
 
 namespace cie {
 namespace csg {
