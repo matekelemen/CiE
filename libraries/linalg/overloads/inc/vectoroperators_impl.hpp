@@ -45,17 +45,14 @@ DoubleArray<N> operator-(const DoubleArray<N>& vector, double scalar)
 template <size_t N>
 DoubleArray<N> operator+(const DoubleArray<N>& lhs, const DoubleArray<N>& rhs)
 {
-    if (lhs.size() != rhs.size())
-        throw std::runtime_error("Inconsistent vector sizes!");
-
     DoubleArray<N> result;
     std::transform( 
         lhs.begin(), 
         lhs.end(), 
         rhs.begin(), 
         result.begin(), 
-        [](auto lhsIt, auto rhsIt) -> double
-            {return (lhsIt) + (rhsIt);}
+        [](double lhsIt, double rhsIt) -> double
+            {return lhsIt + rhsIt;}
         );
     
     return result;
@@ -65,9 +62,6 @@ DoubleArray<N> operator+(const DoubleArray<N>& lhs, const DoubleArray<N>& rhs)
 template <size_t N>
 DoubleArray<N> operator-(const DoubleArray<N>& lhs, const DoubleArray<N>& rhs)
 {
-    if (lhs.size() != rhs.size())
-        throw std::runtime_error("Inconsistent vector sizes!");
-
     DoubleArray<N> result;
     std::transform( 
         lhs.begin(), 
@@ -128,9 +122,6 @@ DoubleArray<N> operator/(const DoubleArray<N>& vector, double scalar)
 template <size_t N>
 double operator*(const DoubleArray<N>& lhs, const DoubleArray<N>& rhs)
 {
-    if (lhs.size() != rhs.size())
-        throw std::runtime_error("Inconsistent vector sizes!");
-    
     return std::inner_product( lhs.begin(), lhs.end(), rhs.begin(), 0.0 );
 }
 

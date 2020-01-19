@@ -1,18 +1,22 @@
-#ifndef CSG_CSGOBJECT_HPP
-#define CSG_CSGOBJECT_HPP
+#ifndef CSG_CSG_OBJECT_HPP
+#define CSG_CSG_OBJECT_HPP
 
-#include "../../inc/csgtypes.hpp"
+#include "linalgtypes.hpp"
 
 namespace cie {
-namespace csg{
+namespace csg {
 
-class CSGObject {
+
+template <size_t N>
+class CSGObject
+{
 public:
-    virtual ~CSGObject(){}
-    virtual bool isInside(const Point64& point) const;
+    virtual double operator()(const DoubleArray<N>& point) const = 0; 
 };
 
 
 }
 }
+
+
 #endif
