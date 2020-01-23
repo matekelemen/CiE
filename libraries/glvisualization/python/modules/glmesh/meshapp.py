@@ -30,7 +30,7 @@ class MeshApp3D:
             aggregatedTexture.registerTexture(  uniformTexture(size=(2,2)),
                                                 0,
                                                 ambientMaterialConstant=0.7,
-                                                specularMaterialConstant=0.8)
+                                                specularMaterialConstant=0.8    )
 
         # Vispy init
         self._meshNode          = scene.visuals.create_visual_node(MeshVisual)
@@ -51,7 +51,8 @@ class MeshApp3D:
         # Create visual
         self.mesh               = self._meshNode(   meshRoot,
                                                     aggregatedTexture,
-                                                    camera=self.view.camera )
+                                                    camera=self.view.camera,
+                                                    **kwargs )
         
         # Adjust lighting
         vertices                    = self.mesh.root.getCompiledMesh()['vertices']

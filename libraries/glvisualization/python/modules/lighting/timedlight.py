@@ -33,6 +33,7 @@ class TimedSpotLight(SimpleLight):
         self._tLast         = self._t0
         self._period        = 1.0/60.0
 
+
     
     def on_timer(self, event):
         t = default_timer() - self._t0
@@ -40,6 +41,7 @@ class TimedSpotLight(SimpleLight):
             self._tLast = t
             self.update(    pos=self._posFunctor( t ),
                             color=self._colorFunctor( t ) )
+
 
     
 

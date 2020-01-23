@@ -3,7 +3,7 @@ from pysplinekernel import SurfaceKernel
 
 # --- GL Visualization imports ---
 from lighting import SimpleLight
-from glmesh import convertToSurfaceMesh, MeshApp3D
+from glmesh import convertToSurfaceMesh, MeshApp3D, MeshNode
 
 # --- VisPy imports ---
 from vispy.scene.visuals import create_visual_node
@@ -63,8 +63,12 @@ surf = SurfaceKernel(
     polynomialOrders=polynomialOrders)
 
 # -----------------------------------------------------------
+# Load geometry in a mesh node
+geometry        = convertToSurfaceMesh( surf.generatePoints(nSamples=nSamples) )
+root            = MeshNode( vertices=geometry["vertices"], faces=geometry["faces"] )
+
 # Create GL window and load mesh
-meshApp = MeshApp3D(    convertToSurfaceMesh(surf.generatePoints(nSamples=nSamples)),
-                        colors=(0.5,0.5,0.8) )
-meshApp._mesh._light._pos = np.array( [0.0,0.0,-10.0], dtype=np.float32 )
+meshApp = MeshApp3D( root )
+meshApp.view.camera.center = np.asarray( [0.0,0.0,0.0], dtype=np.float32 )
+meshApp.mesh.light._pos = np.array( [0.0,0.0,-10.0], dtype=np.float32 )
 meshApp.run()

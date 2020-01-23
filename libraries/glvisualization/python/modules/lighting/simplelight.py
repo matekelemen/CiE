@@ -27,5 +27,6 @@ class SimpleLight:
             self._parent.updateLight()
 
 
+
     def setParent(self,parent):
         self._parent = parent

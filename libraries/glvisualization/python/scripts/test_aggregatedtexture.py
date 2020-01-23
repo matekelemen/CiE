@@ -2,8 +2,10 @@
 import numpy as np
 
 # --- Texture imports ---
-from gltexture import AggregatedTexture, loadTexture, emptyTexture
+from gltexture import loadTexture, emptyTexture
+from gltexture import AggregatedTexture
 
+# --- Vispy Imports ---
 from vispy.gloo import Texture2D
 
 # -----------------------------------------------------------

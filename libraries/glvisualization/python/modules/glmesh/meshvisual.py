@@ -14,7 +14,6 @@ from gltexture import textureFolderPath, loadTexture
 
 # --- Internal imports ---
 from glmesh import defaultVertexShader, defaultFragmentShader
-from glmesh import defaultVertexShaderWithTexture, defaultFragmentShaderWithTexture
 
 # -----------------------------------------------------
 # MESH

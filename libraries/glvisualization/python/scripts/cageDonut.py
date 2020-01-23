@@ -5,9 +5,9 @@ import numpy as np
 from vispy import scene, app
 
 # --- Visualization imports ---
-from glmesh import defaultFragmentShaderWithTexture, defaultVertexShaderWithTexture
-from glmesh import MeshApp3D, convertToSurfaceMesh, ParametricSurface
-from gltexture import loadTexture, textureFolderPath
+from glmesh import MeshApp3D, convertToSurfaceMesh, ParametricSurface, MeshNode
+from gltexture import defaultFragmentShaderWithTexture, defaultVertexShaderWithTexture
+from gltexture import loadTexture, textureFolderPath, AggregatedTexture
 from lighting import TimedSpotLight
 
 # -----------------------------------------------------------
@@ -33,17 +33,23 @@ textureCoordinates  = np.stack( np.meshgrid(    np.linspace(0.0,1.0,num=nSamples
                                 axis=2 )
 textureCoordinates  = np.reshape( textureCoordinates, (textureCoordinates.shape[0]*textureCoordinates.shape[1],2) )
 
-# Create OpenGL window
-meshApp             = MeshApp3D(    geometry,
-                                    texture=texture,
-                                    textureCoordinates=textureCoordinates,
-                                    vertexShader=defaultVertexShaderWithTexture,
-                                    fragmentShader=defaultFragmentShaderWithTexture,
-                                    light=TimedSpotLight,
-                                    specularMaterialConstant=0.75 )
+# Pack geometry in a mesh node, and create corresponding texture aggregate
+root                = MeshNode( vertices=geometry["vertices"], 
+                                faces=geometry["faces"],
+                                materialID=0,
+                                textureCoordinates=textureCoordinates   )
 
-meshApp._mesh._light._colorFunctor  = lambda t : (1.0,1.0,1.0)
-meshApp._mesh._light._posFunctor    = lambda t : (0.0,0.0,10*np.cos(t))
-meshApp._mesh._light._color  = (1.0,1.0,1.0)
+aggregatedTexture   = AggregatedTexture( shape=(2*len(texture), 2*len(texture[0])) )
+aggregatedTexture.registerTexture( texture, 0 )
+
+# Create OpenGL window
+meshApp             = MeshApp3D(    root,
+                                    aggregatedTexture=aggregatedTexture,
+                                    light=TimedSpotLight )
+
+meshApp.view.camera.center          = np.asarray( [0.0,0.0,0.0], dtype=np.float32 )
+meshApp.mesh.light._colorFunctor    = lambda t : (1.0,1.0,1.0)
+meshApp.mesh.light._posFunctor      = lambda t : (0.0,0.0,10*np.cos(t))
+meshApp.mesh.light._color           = (1.0,1.0,1.0)
 
 meshApp.run()

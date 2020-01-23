@@ -2,7 +2,7 @@
 import numpy as np
 
 # --- Visualization imports ---
-from glmesh import ParametricSurface, convertToSurfaceMesh, MeshApp3D
+from glmesh import ParametricSurface, convertToSurfaceMesh, MeshNode, MeshApp3D
 
 # --- Lighting imports ---
 from lighting import TimedSpotLight
@@ -20,12 +20,16 @@ torus   = ParametricSurface(    (   lambda u,v : np.cos(u)*(radius1+radius2*np.c
                                     lambda u,v : radius2*np.sin(v) ),
                                 domain=((min(U),max(U)),(min(V),max(V))) )
 # -----------------------------------------------------------
-# Create GL window
-meshApp     = MeshApp3D(    convertToSurfaceMesh( torus.evaluate(U,V) ),
-                            light=TimedSpotLight,
-                            colors=(1.0,1.0,1.0) )
+# Pack geometry in a mesh node
+geometry        = convertToSurfaceMesh( torus.evaluate(U,V) )
+root            = MeshNode( vertices=geometry["vertices"], faces=geometry["faces"] )
 
-meshApp._mesh._light._colorFunctor  = lambda t : (1.0,1.0,1.0)
-meshApp._mesh._light._posFunctor    = lambda t : (0.0,0.0,10*(radius1+radius2)*np.cos(t))
+# Create GL window
+meshApp     = MeshApp3D(    root,
+                            light=TimedSpotLight )
+
+meshApp.view.camera.center          = np.asarray( [0.0,0.0,0.0], dtype=np.float32 )
+meshApp.mesh.light._colorFunctor    = lambda t : (1.0,1.0,1.0)
+meshApp.mesh.light._posFunctor      = lambda t : (0.0,0.0,10*(radius1+radius2)*np.cos(t))
 
 meshApp.run()

@@ -50,7 +50,7 @@ class MeshNode(MeshData):
             raise ValueError('Invalid container type!')     
 
         if textureCoordinates is None:
-            self._textureCoordinates    = np.empty(0, dtype=np.float32)
+            self._textureCoordinates    = np.zeros( (len(self._vertices),2) , dtype=np.float32)
             warn('Unset texture coordinates for object ' + self.__repr__(), category=RuntimeWarning)
         elif isinstance(textureCoordinates, list) or isinstance(textureCoordinates, tuple):
             self._textureCoordinates    = np.asarray( textureCoordinates, dtype=np.float32 )

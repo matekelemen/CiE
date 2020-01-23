@@ -6,13 +6,24 @@ from PIL import Image
 # --- Vispy imports ---
 from vispy.gloo import TextureAtlas
 
-# --- GLMesh imports ---
-from glmesh import checkID
-from glmesh import incompleteAggregatedVertexShader, incompleteAggregatedFragmentShader
-
 # --- Internal imports ---
 from gltexture import textureFolderPath, loadTexture, emptyTexture
+from gltexture import incompleteAggregatedVertexShader, incompleteAggregatedFragmentShader
 
+# -----------------------------------------------------------
+def checkID(obj,id):
+    '''
+    Check if the input ID is a valid, which means it is:
+        - an integer
+        - non-negative
+    Issue a warning if the ID is unset (None)
+    Raise an exception if the ID does not satisfy ID conditions and is not None
+    '''
+    if id is None:
+        warn(   'Unset ID of object ' + obj.__repr__(),
+                category=RuntimeWarning )
+    elif not isinstance(id,int) or id<0:
+        raise ValueError( 'Invalid ID of object ' + obj.__repr__() )
 
 # -----------------------------------------------------------
 class AggregatedTexture(TextureAtlas):
@@ -20,7 +31,7 @@ class AggregatedTexture(TextureAtlas):
         TextureAtlas.__init__(self, **kwargs)
 
         # Initialize map:
-        #   Stores the the base location, width and height of every texture
+        #   Stores the base location, width and height of every texture
         #   in the TextureAtlas, accessible by their texture IDs.
         self._map       = {}
         self._IDMap     = np.empty(0)
