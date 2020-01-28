@@ -15,8 +15,14 @@ class CanvasSpline2D(scene.SceneCanvas):
         self.pos = np.empty((1,3),dtype=np.float32)
         # create new editable line
         self.objects = {
-            'markers'   : EditMarkerVisual(pos=self.pos, face_color='w', scaling=True),
-            'spline'    : SplineVisual(pos=self.pos, color='w', width=1, antialias=False, method='gl')
+            'markers'   : EditMarkerVisual( pos=self.pos, 
+                                            face_color='w', 
+                                            scaling=True    ),
+            'spline'    : SplineVisual( pos=self.pos, 
+                                        color='w', 
+                                        width=1, 
+                                        antialias=False, 
+                                        method='gl'         )
             }
         # Add view and camera
         self.view = self.central_widget.add_view()

@@ -11,25 +11,7 @@ from gltexture import emptyTexture, uniformTexture, AggregatedTexture
 # --- Lighting imports ---
 from lighting import SimpleLight, TimedSpotLight
 
-# --- Vispy imports ---
-from vispy.gloo import VertexBuffer
-from vispy import scene, app
-
 # -----------------------------------------------------------
-'''
-torus1  = Torus( 1.0, 0.5, [0.0,0.0,0.0] )
-torus2  = Torus( 0.5, 0.2, [1.0, 0.5, 0.2] )
-
-n       = 100
-data1   = torus1.evaluate( torus1.u(nSamples=n), torus1.v(nSamples=n), format='list' )
-data2   = torus2.evaluate( torus2.u(nSamples=n), torus2.v(nSamples=n), format='list' )
-
-v1      = data1['vertices']
-f1      = data1['faces']
-v2      = data2['vertices']
-f2      = data2['faces']
-'''
-
 v1      = np.asarray(   [   [0.0,0.0,0.0],
                             [1.0,0.0,0.0],
                             [1.0,1.0,0.0],

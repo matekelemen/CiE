@@ -31,7 +31,7 @@ class SplineVisual(scene.visuals.Line):
 
     def pop(self):
         state = self.splineKernel.pop()
-        self.draw()
+        self.drawSpline()
         return state
         
 
@@ -39,7 +39,7 @@ class SplineVisual(scene.visuals.Line):
         if index < len(self.splineKernel.interpolationPoints[0]) and len(self.splineKernel.interpolationPoints[0]) is not 0:
             self.splineKernel.interpolationPoints[0][index] = point[0]
             self.splineKernel.interpolationPoints[1][index] = point[1]
-            self.draw()
+            self.drawSpline()
         else:
             return False
         return True
@@ -47,17 +47,17 @@ class SplineVisual(scene.visuals.Line):
 
     def setPolynomialOrder(self,polynomialOrder):
         self.splineKernel.polynomialOrder = polynomialOrder
-        self.draw()
+        self.drawSpline()
 
 
-    def draw(self):
+    def drawSpline(self):
         if len(self.splineKernel.interpolationPoints[0]) > self.splineKernel.polynomialOrder:
             self.splineKernel.getPoints()
             self.set_data( pos=np.transpose(
                 np.append( self.splineKernel.curvePoints, np.zeros( [1,len(self.splineKernel.curvePoints[0])] ), axis=0 ),
                 [1,0]
                 ))
-            scene.visuals.Line.draw(self)
+            self.update()
         else:
             return False
         return True

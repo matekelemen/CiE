@@ -48,7 +48,8 @@ floatSize       = 4
 pointSize       = 3*floatSize
 triangleSize    = 3*pointSize
 
+print(mApp.mesh._vertexBuffer.nbytes)
 newPos          = np.array( ((0.0,-1.0,0.0),(1.0,-1.0,0.0),(1.0,0.0,0.0)), dtype=np.float32 )
-mApp.mesh._vertexBuffer.set_subdata(newPos,offset=4)
+mApp.mesh._vertexBuffer.set_subdata(newPos,offset=3)
 
 mApp.run()

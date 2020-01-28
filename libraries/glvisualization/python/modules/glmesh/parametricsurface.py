@@ -50,3 +50,9 @@ Torus       = lambda radius1, radius2, offset : ParametricSurface(    (
                                                     lambda u,v : np.sin(u)*(radius1+radius2*np.cos(v)) + offset[1],
                                                     lambda u,v : radius2*np.sin(v) + offset[2] ),
                                                     domain=((0.0,2*np.pi),(0.0,-2*np.pi))                           )
+
+
+Sphere      = lambda radius, offset : ParametricSurface(    (  lambda u,v : radius * np.cos(u) * np.cos(v) + offset[0],
+                                                               lambda u,v : radius * np.sin(u) * np.cos(v) + offset[1],
+                                                               lambda u,v : radius * np.sin(v) + offset[2]  ),
+                                                            domain=((0.0, np.pi), (-np.pi,np.pi))              )

@@ -5,7 +5,7 @@ import numpy as np
 from pysplinekernel import SurfaceKernel
 
 # --- GLmesh imports ---
-from glmesh import convertToSurfaceMesh, MeshApp3D
+from glmesh import convertToSurfaceMesh, MeshApp3D, MeshNode
 
 # --- Lighting imports ---
 from lighting import TimedSpotLight
@@ -54,17 +54,15 @@ surf = SurfaceKernel(
 # Generate spline surface points
 geometry        = convertToSurfaceMesh(surf.generatePoints(nSamples=nSamples))
 
-# Generate vertex colors based on their height
-colors          = np.transpose( geometry['vertices'], (1,0) )[2]
-colors          = colors / (np.max(colors) - np.min(colors))
-colors          = np.array( (colors, 1-colors/2.0, 1-colors/2.0) ).transpose((1,0))
-
 # -----------------------------------------------------------
+# Pack geometry into a mesh node
+root    = MeshNode(     vertices=geometry["vertices"],
+                        faces=geometry["faces"]  )
+
 # Create GL window and load mesh
-meshApp = MeshApp3D(    geometry,
-                        colors=colors,
+meshApp = MeshApp3D(    root,
                         light=TimedSpotLight )
-meshApp._view._camera.center           = (0.0,0.0,0.5)
-meshApp._mesh._light._posFunctor = lambda t : np.array( (3*np.cos(t), 3*np.sin(t), 2.0), dtype=np.float32 )
+meshApp.view._camera.center           = (0.0,0.0,0.5)
+meshApp.mesh.light._posFunctor = lambda t : np.array( (3*np.cos(t), 3*np.sin(t), 2.0), dtype=np.float32 )
 
 meshApp.run()

@@ -32,8 +32,11 @@ class EditMarkerVisual(scene.visuals.Markers):
             self.marker_colors[selected_index] = highlight_color
             shape = "s"
             size = 8
-        self.set_data(pos=self.pos, symbol=shape, edge_color='red',
-                              size=size, face_color=self.marker_colors)
+        self.set_data(  pos=self.pos, 
+                        symbol=shape, 
+                        edge_color='red',
+                        size=size, 
+                        face_color=self.marker_colors   )
     
     def highlightMarkers(self, pos):
         #  if no button is pressed, just highlight the marker that would be
