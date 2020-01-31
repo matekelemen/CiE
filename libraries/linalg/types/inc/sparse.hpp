@@ -1,5 +1,5 @@
-#ifndef CIE_SPARSE_HPP
-#define CIE_SPARSE_HPP
+#ifndef LINALG_SPARSE_HPP
+#define LINALG_SPARSE_HPP
 
 #include "linalg.hpp"
 
@@ -9,7 +9,7 @@
 
 namespace cie
 {
-namespace splinekernel
+namespace linalg
 {
 
 template<typename IndexType>

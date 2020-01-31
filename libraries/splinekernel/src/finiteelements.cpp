@@ -1,7 +1,6 @@
 #include "finiteelements.hpp"
 #include "basisfunctions.hpp"
 #include "linalg.hpp"
-#include "sparse.hpp"
 #include "utilities.hpp"
 
 #include <cmath>
@@ -187,7 +186,7 @@ void BSplineFiniteElementMesh::evaluateBasisAt( std::array<double, 2> patchCoord
 
 LinearSystem BSplineFiniteElementMesh::assembleLinearSystem( const SpatialFunction& sourceFunction ) const
 {
-    CompressedSparseRowMatrix<ScipyIndexType> globalMatrix;
+    linalg::CompressedSparseRowMatrix<ScipyIndexType> globalMatrix;
 
     globalMatrix.allocate( locationMaps_ );
 

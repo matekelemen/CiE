@@ -2,6 +2,7 @@
 #define LINALG_MATRIX_TYPES_HPP
 
 #include "matrix.hpp"
+#include "sparse.hpp"
 #include <memory>
 
 namespace cie {

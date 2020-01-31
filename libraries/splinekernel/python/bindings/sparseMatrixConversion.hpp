@@ -13,7 +13,7 @@ struct type_caster<cie::splinekernel::SparseDataStructure>
 {
 public:
 
-    PYBIND11_TYPE_CASTER( cie::splinekernel::SparseDataStructure, _( "cie::splinekernel::CompressedSparseRowMatrix" ) );
+    PYBIND11_TYPE_CASTER( cie::splinekernel::SparseDataStructure, _( "cie::linalg::CompressedSparseRowMatrix" ) );
 
     // Convet sparse data structure to three numpy arrays and make sure memory is freed properly
     static pybind11::handle cast( const cie::splinekernel::SparseDataStructure& constSrc,

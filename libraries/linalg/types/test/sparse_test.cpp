@@ -6,7 +6,7 @@
 
 namespace cie
 {
-namespace splinekernel
+namespace linalg
 {
 
 /*

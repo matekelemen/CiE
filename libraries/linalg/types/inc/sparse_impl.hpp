@@ -1,13 +1,12 @@
-#ifndef CIE_SPARSE_IMPL_HPP
-#define CIE_SPARSE_IMPL_HPP
+#ifndef LINALG_SPARSE_IMPL_HPP
+#define LINALG_SPARSE_IMPL_HPP
 
-#include "utilities.hpp"
 #include <algorithm>
 #include <numeric>
 
 namespace cie
 {
-namespace splinekernel
+namespace linalg
 {
 
 template<typename IndexType>
@@ -83,7 +82,8 @@ double CompressedSparseRowMatrix<IndexType>::operator ()( size_t i,
 template<typename IndexType>
 std::vector<double> CompressedSparseRowMatrix<IndexType>::operator*( const std::vector<double>& vector )
 {
-    check( vector.size( ) == size2_, "Inconsistent sizes in matrix vector multiplication." );
+    if (vector.size() != size2_)
+        throw std::runtime_error("Inconsistent sizes in matrix vector multiplication.");
 
     std::vector<double> result( size1_, 0.0 );
 
@@ -139,7 +139,8 @@ void CompressedSparseRowMatrix<IndexType>::allocate( const std::vector<std::vect
 
     for( size_t iDof = 0; iDof < globalNumberOfDofs; ++iDof )
     {
-        check( dofToElementCoupling[iDof].size( ) > 0, "Found dof without connected element!" );
+        if (dofToElementCoupling[iDof].size( ) <= 0)
+            throw std::runtime_error("Found dof without connected element!");
 
         tmp.resize( 0 );
 
@@ -198,7 +199,8 @@ void CompressedSparseRowMatrix<IndexType>::scatter( const linalg::Matrix& elemen
 {
     size_t size = elementMatrix.size1( );
 
-    check( size == elementMatrix.size2( ), "Can only scatter square matrix!" );
+    if (size != elementMatrix.size2( ))
+        throw std::runtime_error("Can only scatter square matrix!");
 
     for( size_t iRow = 0; iRow < size; ++iRow )
     {
@@ -210,7 +212,8 @@ void CompressedSparseRowMatrix<IndexType>::scatter( const linalg::Matrix& elemen
 
             auto result = std::find( indices_ + indptr_[rowIndex], indices_ + indptr_[rowIndex + 1], columnIndex );
 
-            check( result, "Entry was not found in sparsity pattern!" );
+            if (!result)
+                throw std::runtime_error("Entry was not found in sparsity pattern!");
 
             size_t index = std::distance( indices_, result );
 

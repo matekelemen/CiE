@@ -20,7 +20,7 @@ offset                  = [ 0.0, 0.0, 0.0 ]
 # Settings - spline
 nInterpolationPoints    = [15,15]
 polynomialOrders        = [3,3]
-nSamples                = [100,100]
+nSamples                = [10,10]
 
 # -----------------------------------------------------------
 # Define sphere
