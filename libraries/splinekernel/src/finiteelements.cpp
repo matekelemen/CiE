@@ -1,7 +1,6 @@
 #include "finiteelements.hpp"
 #include "basisfunctions.hpp"
 #include "linalg.hpp"
-#include "utilities.hpp"
 
 #include <cmath>
 #include <algorithm>
@@ -125,7 +124,8 @@ std::array<double, 2> BSplineFiniteElementMesh::mapToGlobal( std::array<double, 
 
 std::vector<size_t> BSplineFiniteElementMesh::boundaryDofIds( size_t normal, bool side ) const
 {
-    check( normal < 2, "Invalid normal." );
+    if (normal >= 2)
+        throw std::runtime_error("Invalid normal!");
 
     std::array<size_t, 2> numberOfDofs { knotVectors_[0].size( ) - polynomialDegrees_[0] - 1,
                                          knotVectors_[1].size( ) - polynomialDegrees_[1] - 1 };
