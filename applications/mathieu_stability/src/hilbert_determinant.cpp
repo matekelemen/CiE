@@ -11,23 +11,22 @@ Complex hilbertDeterminant( double delta,
                             double omegaCritical,
                             size_t N)
 {
-    // Initialize the first two subdeterminants
-    double temp     = omegaCritical - N*omega;
+    double temp = omegaCritical - (double)N*omega;
     double subDiag  = epsilon * epsilon / 4.0;
+    
+    Complex determinant0( delta-temp*temp, gamma*temp );
 
-    Complex determinant0(   delta - temp * temp,
-                            gamma * temp );
-
-    temp            += omega;
-    Complex determinant1 = Complex(delta - temp * temp, gamma * temp ) * determinant0;
+    temp            = omegaCritical - (double)(N-1)*omega;
+    Complex determinant1 = Complex(delta - temp * temp, gamma*temp ) * determinant0;
     determinant1    -= subDiag;
-        
-    // Recursively loop through the band
+
     Complex swap;
     
-    for (size_t i = 2; i < 2 * N + 1; ++i)
+    // Recursively compute the determinant of a tridiagonal matrix
+    for (int k = -1*(int)(N-2); k <= (int)N; ++k)
     {
-        temp    += omega;
+        temp    = k*omega + omegaCritical;
+
         swap    =   Complex(delta-temp*temp, gamma*temp) * determinant1
                     - subDiag * determinant0;
 

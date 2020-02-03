@@ -1,5 +1,3 @@
-cmake_minimum_required( VERSION 3.4.3 )
-
 project( optimization CXX )
 
 include_directories( ../linalg/inc )
@@ -37,15 +35,8 @@ add_subdirectory( gradientmethods )
 add_subdirectory( populationmethods )
 
 include_directories( ${OPTIMIZATION_INCLUDE_DIRECTORIES} )
-#message( STATUS ${OPTIMIZATION_HEADER_FILES} )
-#message( STATUS ${OPTIMIZATION_SOURCE_FILES} )
-#message( STATUS ${OPTIMIZATION_TEST_FILES} )
-
-# This enables exporting all symbols to the dll on windows
-set( CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 # ----------------- Set up libraries -------------------------
-
 # Add library from the collected source files. The headers are given so visual studio displays them
 add_library( optimization SHARED ${OPTIMIZATION_SOURCE_FILES} ${OPTIMIZATION_HEADER_FILES} ) 
 
@@ -59,7 +50,6 @@ endif( )
 target_link_libraries( optimization )
 
 # ------------------- Set up unit tests ---------------------------
-
 # Add an executable and link to the library
 add_executable( optimization_testrunner ${OPTIMIZATION_TEST_FILES} )
 
