@@ -38,6 +38,7 @@ def loadSpaceTreeCSV(fileName):
 
     # Collect centers and values
     numberOfCells   = len(data["center0"])
+    minimumEdge     = np.min(data["length"])
     centers         = []
     values          = []
     for name in header:
@@ -52,7 +53,8 @@ def loadSpaceTreeCSV(fileName):
     data        = { "center"    : centers,
                     "value"     : values,
                     "length"    : data["length"],
-                    "boundary"  : [ not matchSigns(value) for value in values ]  }
+                    "boundary"  : [ ((length<1.1*minimumEdge) and (not matchSigns(value))) 
+                                        for value, length in zip(values, data["length"]) ]  }
 
     return data
 
@@ -98,7 +100,7 @@ class SpaceTreeCanvas(ModularCanvas):
         for boundary, edgeLength, center in zip( data["boundary"], data["length"], data["center"] ):
             
             if self.boundary:
-                if boundary is 0:
+                if not boundary:
                     continue
 
             x = center[0]

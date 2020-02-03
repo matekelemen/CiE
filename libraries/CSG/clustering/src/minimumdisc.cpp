@@ -2,6 +2,13 @@
 #include "linalgoverloads.hpp"
 #include <numeric>
 #include <iostream>
+#include <random>
+#include <algorithm>
+
+
+// Create random generator
+std::random_device randomDevice;
+std::mt19937 randomGenerator( randomDevice() );
 
 
 namespace cie {
@@ -171,7 +178,7 @@ MinimumEnclosingDisc::MinimumEnclosingDisc( const PointSet2D& pointSet) :
     //      should be accessed with operator[], the private member
     //      function getPoint will be used instead.
     std::iota(_map.begin(), _map.end(), 0);
-    std::random_shuffle(_map.begin(), _map.end());
+    std::shuffle(_map.begin(), _map.end(), randomGenerator);
 
     // Fill the active set with the first point
     _activeIndices[0]   = 0;

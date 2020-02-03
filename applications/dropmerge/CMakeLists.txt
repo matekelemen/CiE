@@ -17,11 +17,6 @@ target_link_libraries( dropmerge_executable csg )
 # Build library
 set( CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON )
 add_library( dropmerge_lib SHARED ${DROPMERGE_HEADER_FILES} src/collectnodes.cpp src/dynamictree.cpp )
-if( WIN32 )
-  install( TARGETS dropmerge_lib RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX} )
-else( )
-  install( TARGETS dropmerge_lib LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX} )
-endif( )
 target_link_libraries( dropmerge_lib PRIVATE csg )
 
 # Python bindings
@@ -38,5 +33,24 @@ endforeach()
 # Move to install folder
 install( DIRECTORY DESTINATION ${INSTALL_APPLICATION_PREFIX}/dropmerge )
 install( TARGETS dropmerge_executable RUNTIME DESTINATION ${INSTALL_APPLICATION_PREFIX}/dropmerge )
-install( TARGETS pydropmerge LIBRARY DESTINATION ${INSTALL_APPLICATION_PREFIX}/dropmerge )
-install( TARGETS dropmerge_lib LIBRARY DESTINATION ${INSTALL_APPLICATION_PREFIX}/dropmerge )
+if( WIN32 )
+  install( TARGETS dropmerge_lib DESTINATION ${INSTALL_APPLICATION_PREFIX}/dropmerge )
+  install( TARGETS pydropmerge DESTINATION ${INSTALL_APPLICATION_PREFIX}/dropmerge )
+else( )
+  install( TARGETS dropmerge_lib LIBRARY DESTINATION ${INSTALL_APPLICATION_PREFIX}/dropmerge )
+  install( TARGETS pydropmerge LIBRARY DESTINATION ${INSTALL_APPLICATION_PREFIX}/dropmerge )
+endif( )
+
+if( MSVC )
+    add_custom_command(TARGET pydropmerge POST_BUILD        	
+        COMMAND ${CMAKE_COMMAND} -E copy 					
+            $<TARGET_FILE_DIR:csg>/csg.dll  
+            ${INSTALL_APPLICATION_PREFIX}/dropmerge)
+endif( )
+
+if( MSVC )
+    add_custom_command(TARGET pydropmerge POST_BUILD        	
+        COMMAND ${CMAKE_COMMAND} -E copy 					
+            $<TARGET_FILE_DIR:linalg>/linalg.dll  
+            ${INSTALL_APPLICATION_PREFIX}/dropmerge)
+endif( )

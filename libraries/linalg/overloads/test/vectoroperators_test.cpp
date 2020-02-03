@@ -76,8 +76,8 @@ TEST_CASE("DoubleVector operator overloads"){
 
 
 TEST_CASE("DoubleArray operator overloads"){
-    DoubleArray<3> v1({ 0.0, 1.0, 2.0 });
-    DoubleArray<3> v2({-5.0, 0.0, 5.0 });
+    DoubleArray<3> v1   = { 0.0, 1.0, 2.0 };
+    DoubleArray<3> v2   = {-5.0, 0.0, 5.0 };
     DoubleArray<3> resultDoubleVector;
     double scalar = 2.5;
     double resultScalar;

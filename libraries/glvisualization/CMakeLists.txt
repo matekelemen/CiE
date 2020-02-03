@@ -1,10 +1,11 @@
-cmake_minimum_required( VERSION 3.4.3 )
-
 project( glvisualization CXX )
 
 # --------------------------------------------------
-# COPY DATA
+# GATHER FILES
+
+
 # --------------------------------------------------
+# COPY DATA
 # Create directory for project data
 install( DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/data/${PROJECT_NAME} )
 # Discover data directories
