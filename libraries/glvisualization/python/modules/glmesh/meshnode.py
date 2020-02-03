@@ -6,7 +6,7 @@ from warnings import warn
 from vispy.geometry import MeshData
 
 # --- Internal imports ---
-from glmesh import checkID
+from . import checkID
 
 # -----------------------------------------------------
 class MeshNode(MeshData):

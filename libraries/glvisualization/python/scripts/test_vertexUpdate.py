@@ -3,11 +3,11 @@ from sys import getsizeof as sizeof
 import numpy as np
 
 # --- GLMesh imports ---
-from glmesh import MeshNode, MeshApp3D
+from glvisualization.glmesh import MeshNode, MeshApp3D
 
 # --- GLTexture imports ---
-from gltexture import textureFolderPath, loadTexture
-from gltexture import AggregatedTexture
+from glvisualization.gltexture import textureFolderPath, loadTexture
+from glvisualization.gltexture import AggregatedTexture
 
 # -----------------------------------------------------------
 v1      = np.asarray(   [   [0.0,0.0,0.0],

@@ -1,5 +1,5 @@
 # --- Internal imports ---
-from lighting.simplelight import SimpleLight
+from . import SimpleLight
 
 # --- Python imports ---
 from timeit import default_timer

@@ -12,11 +12,17 @@ file( GLOB MATHIEU_STABILITY_SOURCE_FILES src/*.cpp )
 
 # Build executable
 add_executable( mathieu_stability ${MATHIEU_STABILITY_HEADER_FILES} ${MATHIEU_STABILITY_SOURCE_FILES} )
-target_link_libraries( mathieu_stability csg )
+TARGET_LINK_LIBRARIES_INSTALL( mathieu_stability csg )
 
 # Move to install folder
 install( DIRECTORY DESTINATION ${INSTALL_APPLICATION_PREFIX}/mathieu_stability )
 install( TARGETS mathieu_stability RUNTIME DESTINATION ${INSTALL_APPLICATION_PREFIX}/mathieu_stability )
+
+# Copy python scripts
+file( GLOB MATHIEU_PYTHON_SCRIPTS scripts/*.py )
+foreach( filename ${MATHIEU_PYTHON_SCRIPTS} )
+    install( FILES ${filename} DESTINATION ${INSTALL_APPLICATION_PREFIX}/mathieu_stability )
+endforeach()
 
 if( MSVC )
     add_custom_command(TARGET mathieu_stability POST_BUILD        	

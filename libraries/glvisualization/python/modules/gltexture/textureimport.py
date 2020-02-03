@@ -7,7 +7,7 @@ import os
 
 # -----------------------------------------------------------
 # Define texture folder path
-textureFolderPath   = os.path.abspath( os.path.join( os.path.realpath(__file__), os.path.pardir ) + '/../../data/glvisualization/textures/' )
+textureFolderPath   = os.path.abspath( os.path.join( os.path.realpath(__file__), os.path.pardir ) + '/../../../data/glvisualization/textures/' )
 
 
 # -----------------------------------------------------------

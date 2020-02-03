@@ -2,14 +2,14 @@
 import numpy as np
 
 # --- GLMesh imports ---
-from glmesh import MeshNode, MeshVisual, MeshApp3D
+from glvisualization.glmesh import MeshNode, MeshVisual, MeshApp3D
 
 # --- GLTexture imports ---
-from gltexture import textureFolderPath, loadTexture
-from gltexture import emptyTexture, uniformTexture, AggregatedTexture
+from glvisualization.gltexture import textureFolderPath, loadTexture
+from glvisualization.gltexture import emptyTexture, uniformTexture, AggregatedTexture
 
 # --- Lighting imports ---
-from lighting import SimpleLight, TimedSpotLight
+from glvisualization.lighting import SimpleLight, TimedSpotLight
 
 # -----------------------------------------------------------
 v1      = np.asarray(   [   [0.0,0.0,0.0],

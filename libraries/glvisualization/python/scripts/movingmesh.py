@@ -3,13 +3,13 @@ import numpy as np
 from timeit import default_timer
 
 # --- GLMesh imports ---
-from glmesh import Sphere
-from glmesh import convertToSurfaceMesh
-from glmesh import MeshNode, MeshVisual, MeshApp3D
+from glvisualization.glmesh import Sphere
+from glvisualization.glmesh import convertToSurfaceMesh
+from glvisualization.glmesh import MeshNode, MeshVisual, MeshApp3D
 
 # --- GLTexture imports ---
-from gltexture import textureFolderPath, loadTexture
-from gltexture import uniformTexture, AggregatedTexture
+from glvisualization.gltexture import textureFolderPath, loadTexture
+from glvisualization.gltexture import uniformTexture, AggregatedTexture
 
 # --- Vispy Imports ---
 from vispy.app import Timer

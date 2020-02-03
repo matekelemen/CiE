@@ -1,43 +1,34 @@
-cmake_minimum_required( VERSION 3.4.3 )
 
 project( splinekernel CXX )
 
-# Directories to include header files from
+# ---------------------------------------------------------
+# GATHER FILES AND INCLUDE DIRECTORIES
+# ---------------------------------------------------------
 include_directories( inc )
 include_directories( ../linalg/inc )
 
-# Gather source files into CMake variables
 file( GLOB SPLINEKERNEL_SOURCE_FILES src/*.cpp)
 file( GLOB SPLINEKERNEL_TEST_FILES test/*.cpp)
 file( GLOB SPLINEKERNEL_HEADER_FILES inc/*.h* )
 
-# This enables exporting all symbols to the dll on windows
-set( CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON )
-
-# ----------------- Set up spline library -------------------------
-
-# Add library from the collected source files. The headers are given so visual studio displays them
+# ---------------------------------------------------------
+# LIBRARIES AND EXECUTABLES
+# ---------------------------------------------------------
 add_library( splinekernel SHARED ${SPLINEKERNEL_SOURCE_FILES} ${SPLINEKERNEL_HEADER_FILES} ) 
+TARGET_LINK_LIBRARIES_INSTALL( splinekernel linalg )
 
-# specify the relative path the shared library object shall be installed to
-if( WIN32 )
-  install( TARGETS splinekernel RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX} )
-else( )
-  install( TARGETS splinekernel LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX} )
-endif( )
-
-target_link_libraries( splinekernel linalg )
-
-# ------------------- Set up unit tests ---------------------------
-
-# Add an executable and link to the library
 add_executable( splinekernel_testrunner ${SPLINEKERNEL_TEST_FILES} )
+TARGET_LINK_LIBRARIES_INSTALL( splinekernel_testrunner splinekernel )
 
-target_link_libraries( splinekernel_testrunner splinekernel linalg )
+# ---------------------------------------------------------
+# INSTALL
+# ---------------------------------------------------------
+INSTALL_LIBRARY( splinekernel )
+INSTALL_TEST( splinekernel_testrunner )
 
-# specify the relative path the testrunner shall be installed to
-install( TARGETS splinekernel_testrunner RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX} )
-
+# ---------------------------------------------------------
+# WINDOWS
+# ---------------------------------------------------------
 # To be able to debug in Windows we have to copy the linalg library to the splinekernel debug folder.
 # This adds a post build command that after building splinekernel_testrunner copies linalg.dll over.
 if( MSVC )
@@ -47,5 +38,7 @@ if( MSVC )
             $<TARGET_FILE_DIR:splinekernel_testrunner>)
 endif( )
 
-# Add python bindings and scripts
+# ---------------------------------------------------------
+# PYTHON
+# ---------------------------------------------------------
 add_subdirectory( python )

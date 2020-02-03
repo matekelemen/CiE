@@ -1,6 +1,8 @@
 #ifndef MATHIEU_STABILITY_COMPLEX_HPP
 #define MATHIEU_STABILITY_COMPLEX_HPP
 
+#include <cstddef>
+
 namespace cie {
 namespace mathieu {
 

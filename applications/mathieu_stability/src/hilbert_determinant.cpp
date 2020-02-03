@@ -11,7 +11,7 @@ Complex hilbertDeterminant( double delta,
                             double omegaCritical,
                             size_t N)
 {
-    double temp = omegaCritical - (double)N*omega;
+    double temp = omegaCritical - ((double)N)*omega;
     double subDiag  = epsilon * epsilon / 4.0;
     
     Complex determinant0( delta-temp*temp, gamma*temp );

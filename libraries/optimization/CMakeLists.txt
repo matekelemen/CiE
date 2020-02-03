@@ -2,6 +2,9 @@ project( optimization CXX )
 
 include_directories( ../linalg/inc )
 
+# ---------------------------------------------------------
+# GATHER FILES AND INCLUDE DIRECTORIES
+# ---------------------------------------------------------
 # Gather source files into CMake variables
 file( GLOB_RECURSE OPTIMIZATION_TEST_FILES test/*.cpp)
 
@@ -36,27 +39,24 @@ add_subdirectory( populationmethods )
 
 include_directories( ${OPTIMIZATION_INCLUDE_DIRECTORIES} )
 
-# ----------------- Set up libraries -------------------------
+# ---------------------------------------------------------
+# LIBRARIES AND EXECUTABLES
+# ---------------------------------------------------------
 # Add library from the collected source files. The headers are given so visual studio displays them
-add_library( optimization SHARED ${OPTIMIZATION_SOURCE_FILES} ${OPTIMIZATION_HEADER_FILES} ) 
+add_library( optimization SHARED ${OPTIMIZATION_SOURCE_FILES} ${OPTIMIZATION_HEADER_FILES} )
+TARGET_LINK_LIBRARIES_INSTALL( optimization linalg )
 
-# specify the relative path the shared library object shall be installed to
-if( WIN32 )
-  install( TARGETS optimization RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX} )
-else( )
-  install( TARGETS optimization LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX} )
-endif( )
-
-target_link_libraries( optimization )
-
-# ------------------- Set up unit tests ---------------------------
 # Add an executable and link to the library
 add_executable( optimization_testrunner ${OPTIMIZATION_TEST_FILES} )
+TARGET_LINK_LIBRARIES_INSTALL( optimization_testrunner optimization )
 
-target_link_libraries( optimization_testrunner optimization )
+# ---------------------------------------------------------
+# INSTALL
+# ---------------------------------------------------------
+INSTALL_LIBRARY( optimization )
+INSTALL_TEST( optimization_testrunner )
 
-# specify the relative path the testrunner shall be installed to
-install( TARGETS optimization_testrunner RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX} )
-
-# Add python stuff
+# ---------------------------------------------------------
+# PYTHON
+# ---------------------------------------------------------
 add_subdirectory( python )

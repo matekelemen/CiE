@@ -1,2 +1,2 @@
-from lighting.simplelight import SimpleLight
-from lighting.timedlight import TimedSpotLight
+from .simplelight import SimpleLight
+from .timedlight import TimedSpotLight

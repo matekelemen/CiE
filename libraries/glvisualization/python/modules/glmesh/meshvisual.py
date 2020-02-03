@@ -7,13 +7,13 @@ from vispy.gloo import VertexBuffer, Texture2D, wrappers
 from vispy.visuals import Visual
 
 # --- Lighting imports ---
-from lighting import SimpleLight
+from glvisualization.lighting import SimpleLight
 
 # --- Texture imports ---
-from gltexture import textureFolderPath, loadTexture
+from glvisualization.gltexture import textureFolderPath, loadTexture
 
 # --- Internal imports ---
-from glmesh import defaultVertexShader, defaultFragmentShader
+from . import defaultVertexShader, defaultFragmentShader
 
 # -----------------------------------------------------
 # MESH

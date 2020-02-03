@@ -1,7 +1,9 @@
-cmake_minimum_required( VERSION 3.4.3 )
-
 project( CSG CXX )
 
+# ---------------------------------------------------------
+# GATHER FILES AND INCLUDE DIRECTORIES
+# ---------------------------------------------------------
+include_directories( inc )
 include_directories( ../linalg/inc )
 
 # Initialize file lists
@@ -32,35 +34,26 @@ foreach( subdirectory ${subdirs} )
     ADDFILES( ${subdirectory} )
 endforeach()
 
-# This enables exporting all symbols to the dll on windows
-set( CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON )
+# ---------------------------------------------------------
+# LIBRARIES AND EXECUTABLES
+# ---------------------------------------------------------
+add_library( csg SHARED ${CSG_SOURCE_FILES} ${CSG_HEADER_FILES} )
+TARGET_LINK_LIBRARIES_INSTALL( csg linalg )
 
-# ----------------- Set up spline library -------------------------
-
-# Add library from the collected source files. The headers are given so visual studio displays them
-add_library( csg SHARED ${CSG_SOURCE_FILES} ${CSG_HEADER_FILES} ) 
-
-# specify the relative path the shared library object shall be installed to
-if( WIN32 )
-  install( TARGETS csg RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX} )
-else( )
-  install( TARGETS csg LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX} )
-endif( )
-
-target_link_libraries( csg linalg )
-
-# ------------------- Set up unit tests ---------------------------
-
-# Add an executable and link to the library
 add_executable( csg_testrunner ${CSG_TEST_FILES} )
+TARGET_LINK_LIBRARIES_INSTALL( csg_testrunner csg linalg )
 
-target_link_libraries( csg_testrunner csg linalg )
+# ---------------------------------------------------------
+# INSTALL
+# ---------------------------------------------------------
+INSTALL_LIBRARY( csg )
+INSTALL_TEST( csg_testrunner )
 
-# specify the relative path the testrunner shall be installed to
-install( TARGETS csg_testrunner RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX} )
-
-# To be able to debug in Windows we have to copy the linalg library to the csg debug folder.
-# This adds a post build command that after building csg_testrunner copies linalg.dll over.
+# ---------------------------------------------------------
+# WINDOWS
+# ---------------------------------------------------------
+# To be able to debug in Windows we have to copy the desired library to the project debug folder.
+# This adds a post build command that after building the executable copies the library over.
 if( MSVC )
     add_custom_command(TARGET csg_testrunner POST_BUILD        	
         COMMAND ${CMAKE_COMMAND} -E copy 					
@@ -68,5 +61,7 @@ if( MSVC )
             $<TARGET_FILE_DIR:csg_testrunner>)
 endif( )
 
-
+# ---------------------------------------------------------
+# PYTHON
+# ---------------------------------------------------------
 add_subdirectory( python )

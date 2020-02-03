@@ -7,8 +7,8 @@ from PIL import Image
 from vispy.gloo import TextureAtlas
 
 # --- Internal imports ---
-from gltexture import textureFolderPath, loadTexture, emptyTexture
-from gltexture import incompleteAggregatedVertexShader, incompleteAggregatedFragmentShader
+from . import textureFolderPath, loadTexture, emptyTexture
+from . import incompleteAggregatedVertexShader, incompleteAggregatedFragmentShader
 
 # -----------------------------------------------------------
 def checkID(obj,id):

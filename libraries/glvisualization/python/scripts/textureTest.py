@@ -1,9 +1,9 @@
 from vispy import scene, app
 
 import numpy as np
-from glmesh import TriangleMeshVisual
+from glvisualization.glmesh import TriangleMeshVisual
 
-from gltexture import defaultFragmentShaderWithTexture, defaultVertexShaderWithTexture
+from glvisualization.gltexture import defaultFragmentShaderWithTexture, defaultVertexShaderWithTexture
 
 vertices    = np.array( [   (0.0, 0.0, 0.0),
                             (1.0, 0.0, 0.0),

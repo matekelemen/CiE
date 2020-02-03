@@ -2,14 +2,14 @@
 import numpy as np
 
 # --- Internal imports ---
-from glmesh import MeshVisual
-from glmesh import defaultVertexShader, defaultFragmentShader
+from . import MeshVisual
+from . import defaultVertexShader, defaultFragmentShader
 
 # --- Texture imports ---
-from gltexture import uniformTexture, AggregatedTexture
+from glvisualization.gltexture import uniformTexture, AggregatedTexture
 
 # --- Lighting imports ---
-from lighting import SimpleLight
+from glvisualization.lighting import SimpleLight
 
 # --- Vispy imports ---
 from vispy import scene, app

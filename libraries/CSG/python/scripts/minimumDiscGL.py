@@ -5,8 +5,8 @@ import numpy as np
 from vispy import scene, app
 
 # --- Visualization imports ---
-from glvisuals import LineMarkerCanvas, Observer
-from glvisuals import LineVisual
+from glvisualization.glvisuals import LineMarkerCanvas, Observer
+from glvisualization.glvisuals import LineVisual
 
 # --- CSG imports ---
 import pycsg as csg

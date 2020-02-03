@@ -2,7 +2,7 @@
 import numpy as np
 
 # --- Internal imports ---
-from glmesh import convertToSurfaceMesh
+from . import convertToSurfaceMesh
 
 # -----------------------------------------------------------
 class ParametricSurface:

@@ -2,10 +2,10 @@
 import numpy as np
 
 # --- Visualization imports ---
-from glmesh import ParametricSurface, convertToSurfaceMesh, MeshNode, MeshApp3D
+from glvisualization.glmesh import ParametricSurface, convertToSurfaceMesh, MeshNode, MeshApp3D
 
 # --- Lighting imports ---
-from lighting import TimedSpotLight
+from glvisualization.lighting import TimedSpotLight
 
 # -----------------------------------------------------------
 # Torus parameters

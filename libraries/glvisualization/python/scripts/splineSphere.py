@@ -2,8 +2,8 @@
 from pysplinekernel import SurfaceKernel
 
 # --- GL Visualization imports ---
-from lighting import SimpleLight
-from glmesh import convertToSurfaceMesh, MeshApp3D, MeshNode
+from glvisualization.lighting import SimpleLight
+from glvisualization.glmesh import convertToSurfaceMesh, MeshApp3D, MeshNode
 
 # --- VisPy imports ---
 from vispy.scene.visuals import create_visual_node

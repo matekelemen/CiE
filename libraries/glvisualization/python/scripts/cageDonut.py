@@ -5,10 +5,10 @@ import numpy as np
 from vispy import scene, app
 
 # --- Visualization imports ---
-from glmesh import MeshApp3D, convertToSurfaceMesh, ParametricSurface, MeshNode
-from gltexture import defaultFragmentShaderWithTexture, defaultVertexShaderWithTexture
-from gltexture import loadTexture, textureFolderPath, AggregatedTexture
-from lighting import TimedSpotLight
+from glvisualization.glmesh import MeshApp3D, convertToSurfaceMesh, ParametricSurface, MeshNode
+from glvisualization.gltexture import defaultFragmentShaderWithTexture, defaultVertexShaderWithTexture
+from glvisualization.gltexture import loadTexture, textureFolderPath, AggregatedTexture
+from glvisualization.lighting import TimedSpotLight
 
 # -----------------------------------------------------------
 # Texture

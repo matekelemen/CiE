@@ -14,8 +14,8 @@ for fileName in binaryFileNames:
 	    shutil.copyfile(filePath, os.path.join(curDir,os.path.basename(filePath)))
 '''
         
-from pysplinekernel.pysplinekernel import *
-from pysplinekernel.surfacekernel import SurfaceKernel
-from pysplinekernel.editlinevisual import EditLineVisual
-from pysplinekernel.editmarkervisual import EditMarkerVisual
-from pysplinekernel.canvas import CanvasSpline2D
+from .pysplinekernel import *
+from .surfacekernel import SurfaceKernel
+from .editlinevisual import EditLineVisual
+from .editmarkervisual import EditMarkerVisual
+from .canvas import CanvasSpline2D

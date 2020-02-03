@@ -5,8 +5,8 @@ import numpy as np
 from vispy import scene
 
 # --- Internal imports ---
-from glvisuals import ModularCanvas, EventHandlerClass
-from glvisuals import MarkerVisual, LineVisual
+from . import ModularCanvas, EventHandlerClass
+from . import MarkerVisual, LineVisual
 
 # -----------------------------------------------------------
 class LineMarkerCanvas(ModularCanvas):

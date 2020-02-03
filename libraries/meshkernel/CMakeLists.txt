@@ -1,39 +1,29 @@
-cmake_minimum_required( VERSION 3.4.3 )
-
 project( meshkernel CXX )
 
-# Directories to include header files from
+# ---------------------------------------------------------
+# GATHER FILES AND INCLUDE DIRECTORIES
+# ---------------------------------------------------------
 include_directories( inc )
 
-# Gather source files into CMake variables
-file( GLOB SOURCE_FILES src/*.cpp)
-file( GLOB TEST_FILES test/*.cpp)
-file( GLOB HEADER_FILES inc/*.h* )
+file( GLOB MESHKERNEL_SOURCE_FILES src/*.cpp)
+file( GLOB MESHKERNEL_TEST_FILES test/*.cpp)
+file( GLOB MESHKERNEL_HEADER_FILES inc/*.h* )
 
-# This enables exporting all symbols to the dll on windows
-set( CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON )
+# ---------------------------------------------------------
+# LIBRARIES AND EXECUTABLES
+# ---------------------------------------------------------
+add_library( meshkernel SHARED ${MESHKERNEL_SOURCE_FILES} ${MESHKERNEL_HEADER_FILES} ) 
 
-# ----------------- Set up spline library -------------------------
+add_executable( meshkernel_testrunner ${MESHKERNEL_TEST_FILES} ${MESHKERNEL_HEADER_FILES} )
+TARGET_LINK_LIBRARIES_INSTALL( meshkernel_testrunner meshkernel )
 
-# Add library from the collected source files. The headers are given so visual studio displays them
-add_library( meshkernel SHARED ${SOURCE_FILES} ${HEADER_FILES} ) 
- 
-# specify the relative path the shared library object shall be installed to
-if( WIN32 )
-  install( TARGETS meshkernel RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX} )
-else( )
-  install( TARGETS meshkernel LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX} )
-endif( )
+# ---------------------------------------------------------
+# INSTALL
+# ---------------------------------------------------------
+INSTALL_LIBRARY( meshkernel )
+INSTALL_TEST( meshkernel_testrunner )
 
-# ------------------- Set up unit tests ---------------------------
-
-# Add an executable and link to the library
-add_executable( meshkernel_testrunner ${TEST_FILES} ${HEADER_FILES} )
-
-target_link_libraries( meshkernel_testrunner meshkernel )
-
-# specify the relative path the testrunner shall be installed to
-install( TARGETS meshkernel_testrunner RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX} )
-
-# Add python bindings and scripts
+# ---------------------------------------------------------
+# PYTHON
+# ---------------------------------------------------------
 add_subdirectory( python )
