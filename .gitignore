@@ -1,5 +1,1 @@
 .vscode
-
-# Externals except catch
-/external
-!/external/catch/
