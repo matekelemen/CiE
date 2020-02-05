@@ -21,28 +21,19 @@ TARGET_LINK_PYTHON_BINDINGS( pydropmerge csg )
 
 # Copy python scripts
 file( GLOB DROPMERGE_PYTHON_SCRIPTS scripts/*.py )
-foreach( filename ${DROPMERGE_PYTHON_SCRIPTS} )
-    install( FILES ${filename} DESTINATION ${INSTALL_APPLICATION_PREFIX}/dropmerge )
-endforeach()
+INSTALL_APPLICATION_SCRIPTS( ${DROPMERGE_PYTHON_SCRIPTS} )
 
-# Move to install folder
-install( DIRECTORY DESTINATION ${INSTALL_APPLICATION_PREFIX}/dropmerge )
-install( TARGETS dropmerge_executable RUNTIME DESTINATION ${INSTALL_APPLICATION_PREFIX}/dropmerge )
-if( WIN32 )
-  install( TARGETS pydropmerge DESTINATION ${INSTALL_APPLICATION_PREFIX}/dropmerge )
-else( )
-  install( TARGETS pydropmerge LIBRARY DESTINATION ${INSTALL_APPLICATION_PREFIX}/dropmerge )
-endif( )
+# Install binaries
+INSTALL_APPLICATION_BINARY( dropmerge_executable )
+INSTALL_APPLICATION_PYTHON_BINDINGS( pydropmerge )
 
 if( MSVC )
-    add_custom_command(TARGET pydropmerge POST_BUILD        	
+    add_custom_command(TARGET dropmerge_executable POST_BUILD        	
         COMMAND ${CMAKE_COMMAND} -E copy 					
             $<TARGET_FILE_DIR:csg>/csg.dll  
             ${INSTALL_APPLICATION_PREFIX}/dropmerge)
-endif( )
-
-if( MSVC )
-    add_custom_command(TARGET pydropmerge POST_BUILD        	
+            
+    add_custom_command(TARGET dropmerge_executable POST_BUILD        	
         COMMAND ${CMAKE_COMMAND} -E copy 					
             $<TARGET_FILE_DIR:linalg>/linalg.dll  
             ${INSTALL_APPLICATION_PREFIX}/dropmerge)

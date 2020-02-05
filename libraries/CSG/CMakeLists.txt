@@ -37,7 +37,7 @@ endforeach()
 # ---------------------------------------------------------
 # LIBRARIES AND EXECUTABLES
 # ---------------------------------------------------------
-add_library( csg SHARED ${CSG_SOURCE_FILES} ${CSG_HEADER_FILES} )
+ADD_SHARED_LIBRARY( csg ${CSG_SOURCE_FILES} ${CSG_HEADER_FILES}  )
 TARGET_LINK_LIBRARIES_INSTALL( csg linalg )
 
 add_executable( csg_testrunner ${CSG_TEST_FILES} )

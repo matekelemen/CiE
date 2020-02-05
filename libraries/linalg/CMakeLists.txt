@@ -25,7 +25,7 @@ include_directories( inc )
 # ---------------------------------------------------------
 # LIBRARIES AND EXECUTABLES
 # ---------------------------------------------------------
-add_library( linalg SHARED ${LINALG_LIBRARY_SOURCE_FILES} ${LINALG_HEADER_FILES} )
+ADD_SHARED_LIBRARY(  linalg SHARED ${LINALG_LIBRARY_SOURCE_FILES} ${LINALG_HEADER_FILES}  )
 
 add_executable( linalg_testrunner ${LINALG_TEST_SOURCE_FILES} )
 TARGET_LINK_LIBRARIES_INSTALL( linalg_testrunner linalg )

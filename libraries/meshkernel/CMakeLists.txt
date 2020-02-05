@@ -12,7 +12,7 @@ file( GLOB MESHKERNEL_HEADER_FILES inc/*.h* )
 # ---------------------------------------------------------
 # LIBRARIES AND EXECUTABLES
 # ---------------------------------------------------------
-add_library( meshkernel SHARED ${MESHKERNEL_SOURCE_FILES} ${MESHKERNEL_HEADER_FILES} ) 
+ADD_SHARED_LIBRARY( meshkernel ${MESHKERNEL_SOURCE_FILES} ${MESHKERNEL_HEADER_FILES} ) 
 
 add_executable( meshkernel_testrunner ${MESHKERNEL_TEST_FILES} ${MESHKERNEL_HEADER_FILES} )
 TARGET_LINK_LIBRARIES_INSTALL( meshkernel_testrunner meshkernel )

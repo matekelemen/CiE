@@ -7,10 +7,17 @@ set( CMAKE_CXX_STANDARD 17 )
 
 # ---------------------------------------------------------
 # OPTIONS
+# ---------------------------------------------------------
 OPTION( INSTALL_TESTS "Install unit-and system tests" ON )
 
 # ---------------------------------------------------------
+# WINDOWS
+# ---------------------------------------------------------
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+# ---------------------------------------------------------
 # INSTALL PATH SETUP
+# ---------------------------------------------------------
 # Changes the default install path to build/install, assuming build is the project directory
 if ( CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT )
     set ( CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/install" CACHE PATH "default install path" FORCE )
@@ -22,6 +29,7 @@ SET( CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}:$ORIGIN" )
 
 # ---------------------------------------------------------
 # CREATE DESTINATION FOLDERS
+# ---------------------------------------------------------
 install( DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX} )
 
 # Executable applications
@@ -50,6 +58,7 @@ install( DIRECTORY DESTINATION ${INSTALL_PYTHON_SCRIPTS_PREFIX} )
 
 # ---------------------------------------------------------
 # GLOBAL MACRO DEFINITIONS
+# ---------------------------------------------------------
 MACRO(SUBDIRLIST result curdir)
   FILE(GLOB children RELATIVE ${curdir} ${curdir}/*)
   SET(dirlist "")
@@ -85,11 +94,7 @@ ENDMACRO()
 
 MACRO( INSTALL_PYTHON_BINDINGS target moduleName )
   install( DIRECTORY DESTINATION ${INSTALL_PYTHON_MODULES_PREFIX}/${moduleName} )
-  if( WIN32 )
-  install( TARGETS ${target} RUNTIME DESTINATION ${INSTALL_PYTHON_MODULES_PREFIX}/${moduleName} )
-  else( )
   install( TARGETS ${target} LIBRARY DESTINATION ${INSTALL_PYTHON_MODULES_PREFIX}/${moduleName} )
-  endif( )
 ENDMACRO()
 
 
@@ -105,6 +110,38 @@ ENDMACRO()
 
 MACRO( INSTALL_PYTHON_SCRIPTS scriptFolder )
   install( DIRECTORY ${scriptFolder}/ DESTINATION ${INSTALL_PYTHON_SCRIPTS_PREFIX}/${PROJECT_NAME} )
+ENDMACRO()
+
+
+MACRO( INSTALL_APPLICATION_BINARY target )
+    install( TARGETS ${target} RUNTIME DESTINATION ${INSTALL_APPLICATION_PREFIX}/${PROJECT_NAME} )
+ENDMACRO()
+
+
+MACRO( INSTALL_APPLICATION_LIBRARY target )
+    if( WIN32 )
+        install( TARGETS ${target} RUNTIME DESTINATION ${INSTALL_APPLICATION_PREFIX}/${PROJECT_NAME} )
+    else()
+        install( TARGETS ${target} LIBRARY DESTINATION ${INSTALL_APPLICATION_PREFIX}/${PROJECT_NAME} )
+    endif()
+ENDMACRO()
+
+
+MACRO( INSTALL_APPLICATION_PYTHON_BINDINGS target )
+    install( TARGETS ${target} LIBRARY DESTINATION ${INSTALL_APPLICATION_PREFIX}/${PROJECT_NAME} )
+ENDMACRO()
+
+
+MACRO( INSTALL_APPLICATION_SCRIPTS )
+    #install( DIRECTORY DESTINATION ${INSTALL_APPLICATION_PREFIX}/${PROJECT_NAME}/scripts )
+    #install( FILES ${ARGV} DESTINATION ${INSTALL_APPLICATION_PREFIX}/${PROJECT_NAME}/scripts )
+    install( FILES ${ARGV} DESTINATION ${INSTALL_APPLICATION_PREFIX}/${PROJECT_NAME} )
+ENDMACRO()
+
+
+MACRO( INSTALL_APPLICATION_DATA )
+    install( DIRECTORY DESTINATION ${INSTALL_APPLICATION_PREFIX}/${PROJECT_NAME}/data )
+    install( FILES ${ARGV} DESTINATION ${INSTALL_APPLICATION_PREFIX}/${PROJECT_NAME}/data )
 ENDMACRO()
 
 
@@ -142,8 +179,20 @@ FUNCTION( TARGET_LINK_LIBRARIES_INSTALL target )
   set_target_properties( ${target} PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)
 ENDFUNCTION()
 
+include (GenerateExportHeader)
+FUNCTION( ADD_SHARED_LIBRARY target )
+    LIST( REMOVE_ITEM ARGV ${target} )
+    ADD_LIBRARY( ${target} SHARED ${ARGV} )
+    GENERATE_EXPORT_HEADER( ${target}
+            BASE_NAME "${target}"
+            EXPORT_MACRO_NAME "${target}_EXPORT"
+            EXPORT_FILE_NAME "${target}_EXPORT.h"
+            STATIC_DEFINE "${target}_BUILT_AS_STATIC" )
+ENDFUNCTION( )
+
 # ---------------------------------------------------------
 # EXTERNAL
+# ---------------------------------------------------------
 include_directories( external/catch )
 
 # If compiler is g++: Enable further  warnings and treat all warnings as errors. fPIC stands for position independent code.
@@ -153,11 +202,14 @@ endif( CMAKE_COMPILER_IS_GNUCXX )
 
 # Add pybind11 project (this is just the folder available at https://github.com/pybind/pybind11)
 add_subdirectory( external/pybind11 )
-set(PYBIND11_CPP_STANDARD -std=c++17)
+set(PYBIND11_CPP_STANDARD -std=c++14)
 
 # ---------------------------------------------------------
-# Build libraries and tests
+# BUILD LIBRARIES AND TESTS
+# ---------------------------------------------------------
 add_subdirectory( libraries )
 
-# Build applications
+# ---------------------------------------------------------
+# BUILD APPLICATIONS
+# ---------------------------------------------------------
 add_subdirectory( applications )
