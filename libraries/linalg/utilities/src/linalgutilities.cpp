@@ -2,6 +2,9 @@
 #define LINALG_UTILITIES_CPP
 
 #include "../inc/linalgutilities.hpp"
+#include <algorithm>
+#include <cmath>
+#include <numeric>
 
 namespace cie {
 namespace linalg {

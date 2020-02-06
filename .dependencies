@@ -1,1 +1,1 @@
-vispy, Image
+numpy, matplotlib, vispy, Image

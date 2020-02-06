@@ -6,10 +6,6 @@
 //#include "../../overloads/inc/matrixoperators.hpp"
 #include "errortypes.hpp"
 
-#include <algorithm>
-#include <cmath>
-#include <numeric>
-
 namespace cie {
 namespace linalg {
 

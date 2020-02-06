@@ -15,7 +15,7 @@ add_executable( mathieu_stability ${MATHIEU_STABILITY_HEADER_FILES} ${MATHIEU_ST
 TARGET_LINK_LIBRARIES_INSTALL( mathieu_stability csg )
 
 # Move to install folder
-INSTALL_APPLICATION_BINARY( mathieu_stability )
+INSTALL_APPLICATION_EXECUTABLE( mathieu_stability )
 
 # Copy python scripts
 file( GLOB MATHIEU_PYTHON_SCRIPTS scripts/*.py )

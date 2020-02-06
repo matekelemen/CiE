@@ -22,7 +22,7 @@ class SplineKernel:
     
     def updateSpline(self, lastPoint=[]):
         # Interpolate the stored points - if the last point is not empty, interpolate that too
-        if lastPoint != []:
+        if len(lastPoint) > 1:
             self.controlPoints, self.knotVector = pysplinekernel.interpolateWithBSplineCurve(
                     [self.interpolationPoints[0]+[lastPoint[0]], self.interpolationPoints[1]+[lastPoint[1]]],
                     self.polynomialOrder)
