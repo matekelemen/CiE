@@ -40,7 +40,7 @@ include_directories( ${MACHINELEARNING_INCLUDE_DIRECTORIES} )
 # ---------------------------------------------------------
 # LIBRARIES AND EXECUTABLES
 # ---------------------------------------------------------
-add_library( machinelearning SHARED ${MACHINELEARNING_SOURCE_FILES} ${MACHINELEARNING_HEADER_FILES} ) 
+ADD_SHARED_LIBRARY(  machinelearning SHARED ${MACHINELEARNING_SOURCE_FILES} ${MACHINELEARNING_HEADER_FILES} )
 
 add_executable( machinelearning_testrunner ${MACHINELEARNING_TEST_FILES} )
 TARGET_LINK_LIBRARIES_INSTALL( machinelearning_testrunner machinelearning )

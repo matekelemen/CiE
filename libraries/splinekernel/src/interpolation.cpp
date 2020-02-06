@@ -81,7 +81,7 @@ ControlPointsAndKnotVector interpolateWithBSplineCurve( const ControlPoints2D& i
 
     if( interpolationPoints[1].size( ) != numberOfPoints )
     {
-        throw std::runtime_error( "Inconsistent sizes in interpolate Curve!" );
+		throw std::runtime_error("Inconsistent sizes in interpolate Curve!");
     }
 
     std::vector<double> parameterPositions = centripetalParameterPositions( interpolationPoints );

@@ -14,7 +14,7 @@ file( GLOB SPLINEKERNEL_HEADER_FILES inc/*.h* )
 # ---------------------------------------------------------
 # LIBRARIES AND EXECUTABLES
 # ---------------------------------------------------------
-add_library( splinekernel SHARED ${SPLINEKERNEL_SOURCE_FILES} ${SPLINEKERNEL_HEADER_FILES} ) 
+ADD_SHARED_LIBRARY( splinekernel ${SPLINEKERNEL_SOURCE_FILES} ${SPLINEKERNEL_HEADER_FILES} ) 
 TARGET_LINK_LIBRARIES_INSTALL( splinekernel linalg )
 
 add_executable( splinekernel_testrunner ${SPLINEKERNEL_TEST_FILES} )

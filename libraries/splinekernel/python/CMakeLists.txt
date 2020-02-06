@@ -11,7 +11,7 @@ file( GLOB PYTHON_SPLINEKERNEL_BINDINGS bindings/* )
 pybind11_add_module( pysplinekernel ${PYTHON_SPLINEKERNEL_BINDINGS} )
 
 # Link to c++ libraries
-TARGET_LINK_PYTHON_BINDINGS( pysplinekernel splinekernel )
+TARGET_LINK_PYTHON_BINDINGS( pysplinekernel splinekernel linalg )
 
 # ---------------------------------------------------------
 # INSTALL

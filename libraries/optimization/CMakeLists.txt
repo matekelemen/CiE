@@ -43,7 +43,7 @@ include_directories( ${OPTIMIZATION_INCLUDE_DIRECTORIES} )
 # LIBRARIES AND EXECUTABLES
 # ---------------------------------------------------------
 # Add library from the collected source files. The headers are given so visual studio displays them
-add_library( optimization SHARED ${OPTIMIZATION_SOURCE_FILES} ${OPTIMIZATION_HEADER_FILES} )
+ADD_SHARED_LIBRARY( optimization ${OPTIMIZATION_SOURCE_FILES} ${OPTIMIZATION_HEADER_FILES} )
 TARGET_LINK_LIBRARIES_INSTALL( optimization linalg )
 
 # Add an executable and link to the library

@@ -12,7 +12,7 @@ file( GLOB FEM_HEADER_FILES inc/*.h* )
 # ---------------------------------------------------------
 # LIBRARIES AND EXECUTABLES
 # ---------------------------------------------------------
-add_library( fem SHARED ${FEM_SOURCE_FILES} ${FEM_HEADER_FILES} ) 
+ADD_SHARED_LIBRARY( fem SHARED ${FEM_SOURCE_FILES} ${FEM_HEADER_FILES} )
 TARGET_LINK_LIBRARIES_INSTALL( fem )
 
 add_executable( fem_testrunner ${FEM_TEST_FILES} )
