@@ -7,7 +7,7 @@ set( CMAKE_CXX_STANDARD 17 )
 # ---------------------------------------------------------
 # OPTIONS
 # ---------------------------------------------------------
-OPTION( INSTALL_TESTS "Install unit-and system tests" ON )
+include( cmake/options.cmake )
 
 # ---------------------------------------------------------
 # INSTALL PATH SETUP
@@ -56,6 +56,11 @@ include_directories( external/catch )
 # Add pybind11 project (this is just the folder available at https://github.com/pybind/pybind11)
 set(PYBIND11_CPP_STANDARD -std=c++17)
 add_subdirectory( external/pybind11 )
+
+if( CIE_USE_CPP_GRAPHICS )
+    find_package( OpenGL REQUIRED )
+    add_subdirectory( external/glfw )
+endif(  )
 
 # ---------------------------------------------------------
 # BUILD LIBRARIES AND TESTS

@@ -1,1 +1,5 @@
+# Linux
+xorg-dev, libglu1-mesa-dev
+
+# Python
 numpy, matplotlib, vispy, Image
