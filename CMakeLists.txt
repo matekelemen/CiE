@@ -61,6 +61,7 @@ if( CIE_USE_CPP_GRAPHICS )
     find_package( OpenGL REQUIRED )
     add_subdirectory( external/glfw )
     add_subdirectory( external/glm )
+    add_subdirectory( external/glad )
 endif(  )
 
 # ---------------------------------------------------------

@@ -6,7 +6,7 @@ include_directories( ../../external/glfw/include )
 # GATHER FILES AND INCLUDE DIRECTORIES
 # ---------------------------------------------------------
 # Gather source files into CMake variables
-file( GLOB_RECURSE GLVISUALIZATION_TEST_FILES test/*.cpp)
+file( GLOB_RECURSE GLVISUALIZATION_TEST_FILES test/*.cpp )
 
 file( GLOB GLVISUALIZATION_SOURCE_FILES src/*.cpp)
 file( GLOB GLVISUALIZATION_HEADER_FILES inc/*.h* )

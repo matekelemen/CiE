@@ -1,6 +1,7 @@
 #ifndef GLVISUALIZATION_GL_CONTEXT_HPP
 #define GLVISUALIZATION_GL_CONTEXT_HPP
 
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "../inc/windowutilities.hpp"
 #include "../../logging/inc/GLLogger.hpp"
