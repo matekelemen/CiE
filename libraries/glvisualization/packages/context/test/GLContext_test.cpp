@@ -2,7 +2,7 @@
 #include "../inc/GLContext.hpp"
 #include <iostream>
 
-TEST_CASE( "Context" )
+TEST_CASE( "GLContext" )
 {
 
     auto loopFactory = [] (cie::gl::GLContext& context) -> cie::gl::EventLoopFunction

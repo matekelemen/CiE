@@ -4,7 +4,6 @@ project( CSG CXX )
 # GATHER FILES AND INCLUDE DIRECTORIES
 # ---------------------------------------------------------
 include_directories( inc )
-include_directories( ../linalg/inc )
 
 # Initialize file lists
 file( GLOB CSG_SOURCE_FILES src/*.cpp)

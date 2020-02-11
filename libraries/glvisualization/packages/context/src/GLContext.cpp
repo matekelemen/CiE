@@ -34,13 +34,11 @@ GLContext::GLContext(   uint8_t versionMajor,
     glfwSetErrorCallback( callback_errorPrint );
     _eventLoop = loopFactory( *this );
 
-    // Check initialization
     if (!glfwInit())
     {
-        //terminate(EXIT_FAILURE);
-        _logger.error( "Failed to initialize GLFW!" );
+        glfwTerminate();
+        _logger.error("Failed to initialize GLContext");
     }
-
     _logger.report( "Open context" );
 }
 
@@ -148,7 +146,7 @@ void GLContext::startEventLoop( KeyCallbackFunction keyCallback )
 
 GLLogger& GLContext::logger()
 {
-    _logger.report( "External log report:" );
+    _logger.report( "External report:" );
     return _logger;
 }
 

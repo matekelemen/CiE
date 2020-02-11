@@ -3,8 +3,6 @@ project( machinelearning CXX )
 # ---------------------------------------------------------
 # GATHER FILES AND INCLUDE DIRECTORIES
 # ---------------------------------------------------------
-include_directories( ../linalg/inc )
-
 file( GLOB_RECURSE MACHINELEARNING_TEST_FILES test/*.cpp)
 file( GLOB MACHINELEARNING_SOURCE_FILES src/*.cpp)
 file( GLOB MACHINELEARNING_HEADER_FILES inc/*.h* )

@@ -1,7 +1,5 @@
 project( optimization CXX )
 
-include_directories( ../linalg/inc )
-
 # ---------------------------------------------------------
 # GATHER FILES AND INCLUDE DIRECTORIES
 # ---------------------------------------------------------
