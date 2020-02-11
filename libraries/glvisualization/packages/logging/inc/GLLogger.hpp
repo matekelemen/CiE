@@ -17,6 +17,8 @@ public:
     void warn( const std::string& message );
     void error( const std::string& message );
 
+    void close();
+
 private:
     std::ofstream _file;
 };

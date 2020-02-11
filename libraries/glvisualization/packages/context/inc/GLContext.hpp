@@ -4,6 +4,8 @@
 #include <GLFW/glfw3.h>
 #include "../inc/windowutilities.hpp"
 #include "../../logging/inc/GLLogger.hpp"
+#include "../inc/callbacks_keys.hpp"
+#include <functional>
 #include <memory>
 #include <string>
 
@@ -12,17 +14,25 @@ namespace gl {
 
 
 class GLContext;
-using GLContextPtr  = std::shared_ptr<GLContext>;
-using WindowPtr     = GLFWwindow*;
+using WindowPtr                 = GLFWwindow*;
+using EventLoopFunction         = std::function<void()>;
+using EventLoopFunctionFactory  = std::function<EventLoopFunction(GLContext&)>;
+
+
+
+EventLoopFunction makeEmptyEventLoopFunction( GLContext& );
+
 
 
 // GL context and window manager
 class GLContext
 {
 public:
-    GLContext(  uint8_t versionMajor = 4,
-                uint8_t versionMinor = 5,
-                uint8_t samples = 4);
+    GLContext(  uint8_t versionMajor                    = 4,
+                uint8_t versionMinor                    = 5,
+                uint8_t samples                         = 4, 
+                EventLoopFunctionFactory loopFactory    = makeEmptyEventLoopFunction,
+                const std::string& logFileName          = "DefaultGLLogger.txt" );
     ~GLContext();
 
     WindowPtr openWindow(   size_t width                    = getPrimaryMonitorResolution().first,
@@ -32,12 +42,16 @@ public:
                             GLFWwindow* sharedWindow        = nullptr );
     void closeWindow();
     void makeContextCurrent();
+    void startEventLoop( KeyCallbackFunction keyCallback    = callback_keyExit );
 
-    void startEventLoop( );
+    GLLogger& logger();
+    WindowPtr window();
+    const WindowPtr window() const;
 
 private:
-    WindowPtr   _window;
-    GLLogger    _logger;
+    WindowPtr           _window;
+    GLLogger            _logger;
+    EventLoopFunction   _eventLoop;
 };
 
 

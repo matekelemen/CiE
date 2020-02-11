@@ -1,6 +1,6 @@
 #include "../inc/GLLogger.hpp"
 #include <iostream>
-#include <iomanip>
+#include <chrono>
 #include <ctime>
 
 
@@ -13,10 +13,8 @@ GLLogger::GLLogger( const std::string& fileName ) :
 {
     if (_file.is_open())
     {
-        auto t      = std::time(nullptr);
-        auto time   = *std::localtime(&t);
-        _file << std::put_time(&time, "%d-%m-%Y %H-%M-%S");
-        _file << "\n";
+        auto t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+        _file << std::ctime(&t);
     }
     else 
     {
@@ -27,9 +25,8 @@ GLLogger::GLLogger( const std::string& fileName ) :
 
 GLLogger::~GLLogger()
 {
-    auto t      = std::time(nullptr);
-    auto time   = *std::localtime(&t);
-    _file << std::put_time(&time, "%d-%m-%Y %H-%M-%S");
+    auto t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    _file << std::ctime(&t);
     _file.close();
 }
 

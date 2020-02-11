@@ -1,17 +1,27 @@
 #include "../inc/GLContext.hpp"
 #include "../inc/callbacks_error.hpp"
-#include "../inc/callbacks_keys.hpp"
 
 namespace cie {
 namespace gl {
 
 
 
+EventLoopFunction makeEmptyEventLoopFunction( GLContext& )
+{
+    auto function = [&]() -> void {  };
+    return function;
+}
+
+
+
+
 GLContext::GLContext(   uint8_t versionMajor,
                         uint8_t versionMinor,
-                        uint8_t samples )   :
+                        uint8_t samples,
+                        EventLoopFunctionFactory loopFactory,
+                        const std::string& logFileName  )   :
     _window(nullptr),
-    _logger("GLContext_log.txt")
+    _logger(logFileName)
 {
     // Apply settings
     glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, versionMajor );
@@ -20,15 +30,18 @@ GLContext::GLContext(   uint8_t versionMajor,
     glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE );
     glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
 
-    // Bind callbacks
+    // Bind callbacks and event loops
     glfwSetErrorCallback( callback_errorPrint );
+    _eventLoop = loopFactory( *this );
 
     // Check initialization
     if (!glfwInit())
     {
-        exit(EXIT_FAILURE);
+        //terminate(EXIT_FAILURE);
         _logger.error( "Failed to initialize GLFW!" );
     }
+
+    _logger.report( "Open context" );
 }
 
 
@@ -43,9 +56,8 @@ GLContext::~GLContext()
     else 
         _logger.warn( "Attempt to destroy non-existent window while destroying the context!" );
     
-    _logger.report( "Destroy context" );
     glfwTerminate();
-    exit(EXIT_SUCCESS);   
+    _logger.report( "Destroy context" );
 }
 
 
@@ -70,7 +82,6 @@ WindowPtr GLContext::openWindow(    size_t width,
     {
         _logger.warn( "Failed to create window!" );
         glfwTerminate();
-        exit(EXIT_FAILURE);
     }
     else 
         _logger.report( "Open window" );
@@ -98,35 +109,61 @@ void GLContext::closeWindow()
 void GLContext::makeContextCurrent()
 {
     if (_window != nullptr)
+    {
         glfwMakeContextCurrent(_window);
+        _logger.report( "Make context current" );
+    }
     else
         _logger.error( "Attempt to make non-existent window current!" );
-    _logger.report( "Make context current" );
 }
 
 
 
-void GLContext::startEventLoop( )
+void GLContext::startEventLoop( KeyCallbackFunction keyCallback )
 {
     // Bind events
     if (_window != nullptr)
     {
-        glfwSetKeyCallback( _window, callback_keyExit );
+        glfwSetKeyCallback( _window, keyCallback );
         _logger.report("Start event loop");
     }
     else 
     {
         glfwTerminate();
-        exit(EXIT_FAILURE);
         _logger.error( "Attempt to start event loop without an existing window!" );
     }
 
     // Start event loop
     while(!glfwWindowShouldClose(_window))
     {
+        _eventLoop();
         glfwSwapBuffers( _window );
         glfwPollEvents();
     }
+
+    _logger.report( "End event loop" );
+}
+
+
+
+GLLogger& GLContext::logger()
+{
+    _logger.report( "External log report:" );
+    return _logger;
+}
+
+
+
+WindowPtr GLContext::window()
+{
+    return _window;
+}
+
+
+
+const WindowPtr GLContext::window() const
+{
+    return _window;
 }
 
 
