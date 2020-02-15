@@ -104,6 +104,8 @@ WindowPtr GLContext::openWindow(    size_t width,
 
 void GLContext::closeWindow()
 {
+    _current = false;
+
     if (_window != nullptr)
     {
         glfwDestroyWindow(_window);
@@ -190,6 +192,7 @@ void GLContext::startEventLoop( DrawFunctionFactory eventLoopGenerator,
     }
 
     log( "End event loop" );
+    closeWindow();
 }
 
 

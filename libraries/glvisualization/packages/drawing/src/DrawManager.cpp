@@ -9,8 +9,25 @@ DrawManager::DrawManager( GLContext& context ) :
     _buffers( context, GL_STREAM_DRAW ),
     _shaderCode( context ),
     _shaders( ),
-    _programID(0)
+    _programID(0),
+    _vaoID(0)
 {
+}
+
+
+DrawManager::~DrawManager()
+{
+    logID( "Delete program", _programID );
+    glDeleteProgram( _programID );
+
+    for (auto shaderID : _shaders)
+    {
+        logID( "Delete shader", shaderID );
+        glDeleteShader(shaderID);
+    }
+
+    logID( "Delete VAO", _vaoID );
+    glDeleteVertexArrays( 1, &_vaoID );
 }
 
 
@@ -49,6 +66,15 @@ void DrawManager::draw()
 }
 
 
+DrawFunction DrawManager::makeDrawFunction( GLContext& context )
+{
+    return [&context, this]()->void
+        {
+            this->draw();
+        };
+}
+
+
 
 void DrawManager::compileShaders()
 {
@@ -84,7 +110,9 @@ void DrawManager::compileShaders()
         {
             char buffer[512];
             glGetShaderInfoLog( id, 512, NULL, buffer );
-            logID("Shader compilation failed", id, CONTEXT_LOG_TYPE_ERROR );
+            log(    "Shader compilation failed | ID_" + std::to_string(id) + "\n" + 
+                    std::string(buffer), 
+                    CONTEXT_LOG_TYPE_ERROR );
         }
         else
             logID("Shader compilation successful!", id );
@@ -129,9 +157,9 @@ void DrawManager::makeProgram()
     logID( "Set active program", _programID );
 
     // VAO
-    GLuint vertexArrayObject;
-    glGenVertexArrays( 1, &vertexArrayObject );
-    glBindVertexArray( vertexArrayObject );
+    glGenVertexArrays( 1, &_vaoID );
+    glBindVertexArray( _vaoID );
+    logID( "Create VAO", _vaoID );
 
     // Generate and bind buffers
     GLuint vertexBufferID   = _buffers.createBuffer();

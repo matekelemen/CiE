@@ -16,8 +16,12 @@ class DrawManager : public AbsContextClass
 {
 public:
     DrawManager( GLContext& context );
+    virtual ~DrawManager();
+
     virtual void initialize();
     virtual void draw();
+
+    DrawFunction makeDrawFunction( GLContext& context );
 
     void compileShaders();
     void makeProgram();
@@ -31,7 +35,10 @@ protected:
     BufferHandler       _buffers;
     ShaderManager       _shaderCode;
     std::vector<GLuint> _shaders;
+
+private:
     GLuint              _programID;
+    GLuint              _vaoID;
 };
 
 

@@ -5,12 +5,21 @@ namespace gl {
 
 
 BufferHandler::BufferHandler(   GLContext& context,
-                                GLuint drawMode,
-                                GLuint numberOfBuffers ) :
+                                GLuint drawMode ) :
     AbsContextClass( context, "BufferHandler" ),
-    _buffers( numberOfBuffers ),
+    _buffers( ),
     _drawMode( drawMode )
 {
+}
+
+
+BufferHandler::~BufferHandler()
+{
+    for (auto bufferID : _buffers)
+    {
+        logID( "Delete buffer", bufferID );
+        glDeleteBuffers(1, &bufferID);
+    }
 }
 
 

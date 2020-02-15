@@ -10,7 +10,6 @@ cie::gl::GLContext context_global( 4,5,4,"glvisualization_testrunner_log.txt" );
 namespace cie {
 namespace gl {
 
-/*
 TEST_CASE( "GLContext" )
 {
 
@@ -21,7 +20,7 @@ TEST_CASE( "GLContext" )
         auto function = [&context, loopCounter]() -> void
         {
             context.log( std::to_string(*loopCounter) );
-            if (++(*loopCounter) > 8 )
+            if (++(*loopCounter) >= 9 )
             {
                 delete loopCounter;
                 glfwSetWindowShouldClose( context.window(), 1 );
@@ -35,7 +34,6 @@ TEST_CASE( "GLContext" )
     REQUIRE_NOTHROW( context_global.makeContextCurrent() );
     REQUIRE_NOTHROW( context_global.startEventLoop( loopFactory ) );
 }
-*/
 
 
 
@@ -52,12 +50,7 @@ TEST_CASE( "DrawManager" )
     REQUIRE_NOTHROW(drawManager.initialize());
 
     // Start the event loop
-    auto drawFunctionFactory = [&drawManager](GLContext& context_global)->DrawFunction 
-    {
-        auto function = [&drawManager] () ->void { drawManager.draw(); };
-        return function;
-    };
-    REQUIRE_NOTHROW(context_global.startEventLoop( drawFunctionFactory ));
+    REQUIRE_NOTHROW(context_global.startEventLoop( std::bind(&DrawManager::makeDrawFunction, &drawManager, std::placeholders::_1) ));
 }
 
 
