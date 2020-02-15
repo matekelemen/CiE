@@ -37,6 +37,12 @@ void GLLogger::report( const std::string& message )
 }
 
 
+void GLLogger::print( const std::string& message ) const
+{
+    std::cout << message << "\n";
+}
+
+
 void GLLogger::warn( const std::string& message )
 {
     _file << "WARNING: " << message << "\n";

@@ -7,3 +7,5 @@ file( GLOB GLAD_SOURCES src/*.c* )
 
 ADD_SHARED_LIBRARY( glad ${GLAD_HEADERS} ${GLAD_SOURCES} )
 target_include_directories( glad PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include )
+
+INSTALL_LIBRARY( glad )

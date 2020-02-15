@@ -14,6 +14,7 @@ public:
     ~GLLogger();
 
     void report( const std::string& message );
+    void print( const std::string& message ) const;
     void warn( const std::string& message );
     void error( const std::string& message );
 
