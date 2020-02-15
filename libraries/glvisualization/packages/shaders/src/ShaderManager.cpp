@@ -1,4 +1,4 @@
-#include "../inc/ShaderAssembler.hpp"
+#include "../inc/ShaderManager.hpp"
 #include "../inc/shaders.hpp"
 #include <algorithm>
 #include <iostream>
@@ -7,7 +7,8 @@ namespace cie {
 namespace gl {
 
 
-ShaderAssembler::ShaderAssembler() :
+ShaderManager::ShaderManager( GLContext& context ) :
+    AbsContextClass( context, "ShaderManager" ),
     _vertexShader( defaultColorVertexShader ),
     _geometryShader( defaultColorGeometryShader ),
     _fragmentShader( defaultColorFragmentShader ),
@@ -18,7 +19,7 @@ ShaderAssembler::ShaderAssembler() :
 }
 
 
-ShaderAssembler::~ShaderAssembler()
+ShaderManager::~ShaderManager()
 {
     if (_vertexPtr != nullptr)
         delete _vertexPtr;
@@ -26,10 +27,12 @@ ShaderAssembler::~ShaderAssembler()
         delete _geometryPtr;
     if (_fragmentPtr != nullptr)
         delete _fragmentPtr;
+
+    log( "Destroy ShaderManager" );
 }
 
 
-ShaderPtr ShaderAssembler::getVertexShader()
+ShaderPtr ShaderManager::getVertexShader()
 {
     if (_vertexPtr != nullptr)
         delete _vertexPtr;
@@ -42,7 +45,7 @@ ShaderPtr ShaderAssembler::getVertexShader()
 }
 
 
-ShaderPtr ShaderAssembler::getGeometryShader()
+ShaderPtr ShaderManager::getGeometryShader()
 {
     if (_geometryPtr != nullptr)
         delete _geometryPtr;
@@ -55,7 +58,7 @@ ShaderPtr ShaderAssembler::getGeometryShader()
 }
 
 
-ShaderPtr ShaderAssembler::getFragmentShader()
+ShaderPtr ShaderManager::getFragmentShader()
 {
     if (_fragmentPtr != nullptr)
         delete _fragmentPtr;
@@ -68,31 +71,52 @@ ShaderPtr ShaderAssembler::getFragmentShader()
 }
 
 
-const std::vector<std::string>&  ShaderAssembler::attributes() const
+void ShaderManager::setVertexShader( const ShaderStruct& shader )
+{
+    _vertexShader = shader;
+    log( "Set new vertex shader" );
+}
+
+
+void ShaderManager::setGeometryShader( const ShaderStruct& shader )
+{
+    _geometryShader = shader;
+    log( "Set new geometry shader" );
+}
+
+
+void ShaderManager::setFragmentShader( const ShaderStruct& shader )
+{
+    _fragmentShader = shader;
+    log( "Set new fragment shader" );
+}
+
+
+const std::vector<std::string>&  ShaderManager::attributes() const
 {
     return _vertexShader._attributes;
 }
 
 
-const std::vector<GLuint>& ShaderAssembler::attributeSizes() const
+const std::vector<GLuint>& ShaderManager::attributeSizes() const
 {
     return _vertexShader._sizes;
 }
 
 
-const std::vector<GLuint>& ShaderAssembler::attributeStrides() const
+const std::vector<GLuint>& ShaderManager::attributeStrides() const
 {
     return _vertexShader._strides;
 }
 
 
-const std::vector<GLuint>& ShaderAssembler::attributeOffsets() const
+const std::vector<GLuint>& ShaderManager::attributeOffsets() const
 {
     return _vertexShader._offsets;
 }
 
 
-const std::vector<std::string>& ShaderAssembler::fragOutputNames() const
+const std::vector<std::string>& ShaderManager::fragOutputNames() const
 {
     return _fragmentShader._attributes;
 }

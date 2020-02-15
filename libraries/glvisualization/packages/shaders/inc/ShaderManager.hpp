@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "shaders.hpp"
+#include "../../context/inc/AbsContextClass.hpp"
 #include <string>
 #include <vector>
 
@@ -14,14 +15,18 @@ using Shader    = char;
 using ShaderPtr = Shader*;
 
 
-class ShaderAssembler
+class ShaderManager : public AbsContextClass
 {
 public:
-    ShaderAssembler();
-    ~ShaderAssembler();
+    ShaderManager( GLContext& context );
+    ~ShaderManager();
     ShaderPtr getVertexShader();
     ShaderPtr getGeometryShader();
     ShaderPtr getFragmentShader();
+
+    void setVertexShader( const ShaderStruct& shader );
+    void setGeometryShader( const ShaderStruct& shader );
+    void setFragmentShader( const ShaderStruct& shader );
 
     const std::vector<std::string>& attributes() const;
     const std::vector<GLuint>& attributeSizes() const;

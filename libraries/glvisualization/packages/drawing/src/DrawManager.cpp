@@ -6,8 +6,10 @@ namespace gl {
 
 DrawManager::DrawManager( GLContext& context ) :
     AbsContextClass( context, "DrawManager" ),
-    _buffers( GL_STATIC_DRAW ),
-    _shaders()
+    _buffers( context, GL_STREAM_DRAW ),
+    _shaderCode( context ),
+    _shaders( ),
+    _programID(0)
 {
 }
 
@@ -15,10 +17,10 @@ DrawManager::DrawManager( GLContext& context ) :
 void DrawManager::initialize()
 {
     std::vector<float> vertices = {
-        -1.0f, -1.0f, 0.0f,     1.0f,0.0f,0.0f,
-        1.0f, -1.0f, 0.0f,      0.0f,1.0f,0.0f,
-        1.0f, 1.0f, 0.0f,       0.0f,0.0f,1.0f,
-        -1.0f, 1.0f, 0.0f,      1.0f,1.0f,1.0f
+        -0.9f, -0.9f, 0.0f,     1.0f,0.0f,0.0f,
+        0.9f, -0.9f, 0.0f,      0.0f,1.0f,0.0f,
+        0.9f, 0.9f, 0.0f,       0.0f,0.0f,1.0f,
+        -0.9f, 0.9f, 0.0f,      1.0f,1.0f,1.0f
     };
 
     std::vector<GLuint> triangles = {
@@ -33,32 +35,36 @@ void DrawManager::initialize()
 
 void DrawManager::draw()
 {
+    // Set background and clear
     glClearColor( 0.2f, 0.2f, 0.2f, 1.0f );
-    glClear( GL_COLOR_BUFFER_BIT );
-    glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0 );
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-    GLuint error = glGetError();
-    if (error!=0)
-        log( std::to_string(error), CONTEXT_LOG_TYPE_ERROR );
+    // Get number of elements to draw
+    GLint64 numberOfElements;
+    glGetBufferParameteri64v( GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &numberOfElements );
+    numberOfElements /= sizeof(GLuint);
+
+    // Draw buffer
+    glDrawElements( GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0 );
 }
 
 
-void DrawManager::makeProgram()
-{
 
+void DrawManager::compileShaders()
+{
     // Load vertex shader source
     GLuint vertexID     = glCreateShader( GL_VERTEX_SHADER );
     ShaderPtr shaderPtr = _shaderCode.getVertexShader();
     glShaderSource( vertexID, 1, &shaderPtr, NULL );
     _shaders.push_back( vertexID );
-    log( "Load vertex shader (id=" + std::to_string(vertexID) + ")" );
+    logID( "Load vertex shader", vertexID );
 
     // Load geometry shader source
     GLuint geometryID   = glCreateShader( GL_GEOMETRY_SHADER );
     shaderPtr           = _shaderCode.getGeometryShader();
     glShaderSource( geometryID, 1, &shaderPtr, NULL );
     _shaders.push_back( geometryID );
-    log( "Load geometry shader (id=" + std::to_string(geometryID) + ")" );
+    logID( "Load geometry shader", geometryID );
     
 
     // Load fragment shader source
@@ -66,7 +72,7 @@ void DrawManager::makeProgram()
     shaderPtr           = _shaderCode.getFragmentShader();
     glShaderSource( fragmentID, 1, &shaderPtr, NULL );
     _shaders.push_back( fragmentID );
-    log( "Load fragment shader (id=" + std::to_string(fragmentID) + ")" );
+    logID( "Load fragment shader", fragmentID );
 
     // Compile shaders
     for ( GLuint id : _shaders )
@@ -78,41 +84,56 @@ void DrawManager::makeProgram()
         {
             char buffer[512];
             glGetShaderInfoLog( id, 512, NULL, buffer );
-            log("Shader compilation failed (id=" + std::to_string(id) + ")!\n" + std::string(buffer),
-                CONTEXT_LOG_TYPE_ERROR );
+            logID("Shader compilation failed", id, CONTEXT_LOG_TYPE_ERROR );
         }
         else
-            log("Shader compilation successful! (id=" + std::to_string(id) + ")" );
+            logID("Shader compilation successful!", id );
     }
+}
+
+
+
+void DrawManager::makeProgram()
+{
+    // GL enables
+    glEnable( GL_DEPTH_TEST );
+
+    // Finalize shaders
+    compileShaders();
 
     // Combine shaders into a program
-    GLuint programID = glCreateProgram();
-    glAttachShader( programID, vertexID );
-    glAttachShader( programID, geometryID );
-    glAttachShader( programID, fragmentID );
+    _programID = glCreateProgram();
+    for (auto shaderID : _shaders)
+        glAttachShader( _programID, shaderID );
+    logID( "Create program", _programID );
 
-    glBindFragDataLocation( programID, 0, "color" );
+    // Bind fragment shader output
+    glBindFragDataLocation( _programID, 0, _shaderCode.fragOutputNames()[0].c_str() );
 
     // Link program
-    glLinkProgram( programID );
+    glLinkProgram( _programID );
     GLint linkStatus;
-    glGetProgramiv(programID, GL_LINK_STATUS, &linkStatus);
+    glGetProgramiv(_programID, GL_LINK_STATUS, &linkStatus);
     if (linkStatus != GL_TRUE)
     {
         char buffer[512];
-        glGetProgramInfoLog( programID, 512, NULL, buffer );
+        glGetProgramInfoLog( _programID, 512, NULL, buffer );
         log("Program linking failed!\n" + std::string(buffer),
             CONTEXT_LOG_TYPE_ERROR );
     }
+    else
+        logID( "Program linked successfully", _programID );
     
-    glUseProgram( programID );
+    // Activate program
+    glUseProgram( _programID );
+    logID( "Set active program", _programID );
 
     // VAO
     GLuint vertexArrayObject;
     glGenVertexArrays( 1, &vertexArrayObject );
     glBindVertexArray( vertexArrayObject );
 
-    // Buffers
+    // Generate and bind buffers
     GLuint vertexBufferID   = _buffers.createBuffer();
     GLuint elementBufferID  = _buffers.createBuffer();
     _buffers.bindVertexBuffer( vertexBufferID );
@@ -121,7 +142,7 @@ void DrawManager::makeProgram()
     // Enable vertex shader attributes
     for (size_t i=0; i<_shaderCode.attributes().size(); ++i)
     {
-        GLint attributeID = glGetAttribLocation(    programID, 
+        GLint attributeID = glGetAttribLocation(    _programID, 
                                                     _shaderCode.attributes()[i].c_str() );
 
         glVertexAttribPointer(  attributeID,
@@ -137,7 +158,7 @@ void DrawManager::makeProgram()
 
     // Check error
     if (glGetError()!=0)
-        log( "Failed to make program", CONTEXT_LOG_TYPE_ERROR );
+        logID( "Failed to make program", _programID, CONTEXT_LOG_TYPE_ERROR );
 }
 
 
@@ -147,7 +168,7 @@ BufferHandler& DrawManager::buffers()
 }
 
 
-ShaderAssembler& DrawManager::shaderCode()
+ShaderManager& DrawManager::shaderCode()
 {
     return _shaderCode;
 }

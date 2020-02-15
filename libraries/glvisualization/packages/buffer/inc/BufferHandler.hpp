@@ -3,17 +3,21 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
 #include "linalgtypes.hpp"
+#include "../../context/inc/AbsContextClass.hpp"
+
 #include <vector>
 
 namespace cie {
 namespace gl {
 
 
-class BufferHandler
+class BufferHandler : AbsContextClass
 {
 public:
-    BufferHandler(  GLuint drawMode,
+    BufferHandler(  GLContext& context,
+                    GLuint drawMode,
                     GLuint numberOfBuffers=2 );
     [[nodiscard]] GLuint createBuffer();
 

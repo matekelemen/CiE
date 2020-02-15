@@ -5,7 +5,7 @@
 #include <GLFW/glfw3.h>
 #include "../../context/inc/AbsContextClass.hpp"
 #include "../../buffer/inc/BufferHandler.hpp"
-#include "../../shaders/inc/ShaderAssembler.hpp"
+#include "../../shaders/inc/ShaderManager.hpp"
 #include <string>
 
 namespace cie {
@@ -19,17 +19,19 @@ public:
     virtual void initialize();
     virtual void draw();
 
+    void compileShaders();
     void makeProgram();
 
     BufferHandler& buffers();
     const BufferHandler& buffers() const;
-    ShaderAssembler& shaderCode();
+    ShaderManager& shaderCode();
     const std::vector<GLuint>& shaders() const;
 
 protected:
     BufferHandler       _buffers;
-    ShaderAssembler     _shaderCode;
+    ShaderManager       _shaderCode;
     std::vector<GLuint> _shaders;
+    GLuint              _programID;
 };
 
 

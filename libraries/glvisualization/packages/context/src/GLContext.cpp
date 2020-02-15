@@ -6,7 +6,7 @@ namespace gl {
 
 
 
-EventLoopFunction makeEmptyEventLoopFunction( GLContext& )
+DrawFunction makeEmptyDrawFunction( GLContext& )
 {
     auto function = [&]() -> void {  };
     return function;
@@ -44,14 +44,14 @@ GLContext::GLContext(   uint8_t versionMajor,
         if (!glfwInit())
         {
             terminate();
-            _logger.error("Failed to initialize GLFW");
+            log("Failed to initialize GLFW", CONTEXT_LOG_TYPE_ERROR );
         }
 
         _initialized = true;
-        _logger.report( "Open context" );
+        log( "Open context" );
     }
     else
-        _logger.warn( "Attempt to reinitialize the context" );
+        log( "Attempt to reinitialize the context", CONTEXT_LOG_TYPE_WARNING );
 }
 
 
@@ -64,10 +64,10 @@ GLContext::~GLContext()
         _window = nullptr;
     }
     else 
-        _logger.warn( "Attempt to destroy non-existent window while destroying the context!" );
+        log( "Attempt to destroy non-existent window while destroying the context!", CONTEXT_LOG_TYPE_WARNING );
 
     terminate();
-    _logger.report( "Destroy context" );
+    log( "Destroy context" );
 }
 
 
@@ -80,7 +80,7 @@ WindowPtr GLContext::openWindow(    size_t width,
 {
     if (_window != nullptr)
     {
-        _logger.warn( "Open new window on an existing one, closing old window..." );
+        log( "Open new window on an existing one, closing old window...", CONTEXT_LOG_TYPE_WARNING );
         closeWindow();
     }
     _window = glfwCreateWindow( width, 
@@ -91,10 +91,10 @@ WindowPtr GLContext::openWindow(    size_t width,
     if (!_window)
     {
         terminate();
-        _logger.error( "Failed to create window!" );
+        log( "Failed to create window!", CONTEXT_LOG_TYPE_ERROR );
     }
     else
-        _logger.report("Open window");
+        log("Open window");
         
 
     return _window;
@@ -107,10 +107,10 @@ void GLContext::closeWindow()
     if (_window != nullptr)
     {
         glfwDestroyWindow(_window);
-        _logger.report( "Close window" );
+        log( "Close window" );
     }
     else
-        _logger.warn( "Attempted to close non-existent window!" );
+        log( "Attempt to close non-existent window!", CONTEXT_LOG_TYPE_WARNING );
 
     _window = nullptr;
 }
@@ -124,55 +124,72 @@ void GLContext::makeContextCurrent()
         if (!_current)
         {
             glfwMakeContextCurrent(_window);
-            _logger.report( "Make context current" );
+            log( "Make context current" );
             _current = true;
         }
         else
-            _logger.warn( "Attempt to make an existing current context current" );
+            log( "Attempt to make an existing current context current", CONTEXT_LOG_TYPE_WARNING );
 
         if ((!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)))
         {
             terminate();
-            _logger.error("Failed to initialize GLAD");
+            log( "Failed to initialize GLAD", CONTEXT_LOG_TYPE_ERROR );
         }
         else
-            _logger.report("Initialize GLAD");
+            log("Initialize GLAD");
 
         glDebugMessageCallback( messageCallback, &_logger );
     }
     else
-        _logger.error( "Attempt to make non-existent window current!" );
+        log( "Attempt to make non-existent window current!", CONTEXT_LOG_TYPE_ERROR );
 }
 
 
 
-void GLContext::startEventLoop( EventLoopFunctionFactory eventLoopGenerator,
+void GLContext::startEventLoop( DrawFunctionFactory eventLoopGenerator,
                                 KeyCallbackFunction keyCallback )
 {
     // Bind loop
-    _eventLoop = eventLoopGenerator( *this );
+    _drawFunction = eventLoopGenerator( *this );
 
     // Bind events
     if (_window != nullptr)
     {
         glfwSetKeyCallback( _window, keyCallback );
-        _logger.report("Start event loop");
+        log("Start event loop");
     }
     else 
     {
         terminate();
-        _logger.error( "Attempt to start event loop without an existing window!" );
+        log( "Attempt to start event loop without an existing window!", CONTEXT_LOG_TYPE_ERROR );
     }
 
     // Start event loop
     while(!glfwWindowShouldClose(_window))
     {
-        _eventLoop();
+        _drawFunction();
+
+        // Check errors
+        GLuint error = glGetError();
+        if (error!=0)
+            log( "Error drawing! Error code: " + std::to_string(error), CONTEXT_LOG_TYPE_ERROR );
+
         glfwPollEvents();
+
+        // Check errors
+        error = glGetError();
+        if (error!=0)
+            log( "Error polling events! Error code: " + std::to_string(error), CONTEXT_LOG_TYPE_ERROR );
+        
         glfwSwapBuffers( _window );
+
+        // Check errors
+        error = glGetError();
+        if (error!=0)
+            log( "Error swapping buffers! Error code: " + std::to_string(error), CONTEXT_LOG_TYPE_ERROR );
     }
 
-    _logger.report( "End event loop" );
+    log( "End event loop" );
 }
 
 
@@ -200,7 +217,7 @@ void GLContext::terminate()
 {
 
     glfwTerminate();
-    _logger.report( "Terminate context" );
+    log( "Terminate context" );
 }
 
 

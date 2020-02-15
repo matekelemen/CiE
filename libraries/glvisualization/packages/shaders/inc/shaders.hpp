@@ -39,5 +39,6 @@ struct ShaderStruct
 
 #include "defaultShaders.hpp"
 #include "defaultColorShaders.hpp"
+#include "wireFrameShaders.hpp"
 
 #endif

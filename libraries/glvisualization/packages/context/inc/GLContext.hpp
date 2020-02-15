@@ -20,13 +20,13 @@ const GLuint CONTEXT_LOG_TYPE_ERROR     = 2;
 
 
 class GLContext;
-using WindowPtr                 = GLFWwindow*;
-using EventLoopFunction         = std::function<void()>;
-using EventLoopFunctionFactory  = std::function<EventLoopFunction(GLContext&)>;
+using WindowPtr             = GLFWwindow*;
+using DrawFunction          = std::function<void()>;
+using DrawFunctionFactory   = std::function<DrawFunction(GLContext&)>;
 
 
 
-EventLoopFunction makeEmptyEventLoopFunction( GLContext& );
+DrawFunction makeEmptyDrawFunction( GLContext& );
 
 
 
@@ -47,7 +47,7 @@ public:
                             GLFWwindow* sharedWindow        = nullptr );
     void closeWindow();
     void makeContextCurrent();
-    void startEventLoop(    EventLoopFunctionFactory eventLoopGenerator = makeEmptyEventLoopFunction,
+    void startEventLoop(    DrawFunctionFactory eventLoopGenerator = makeEmptyDrawFunction,
                             KeyCallbackFunction keyCallback             = callback_keyExit );
 
     void log(   const std::string& message,
@@ -60,7 +60,7 @@ public:
 private:
     WindowPtr           _window;
     GLLogger            _logger;
-    EventLoopFunction   _eventLoop;
+    DrawFunction        _drawFunction;
     
     static bool         _initialized;
     static bool         _active;
