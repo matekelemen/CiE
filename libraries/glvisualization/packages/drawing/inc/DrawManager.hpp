@@ -1,44 +1,38 @@
 #ifndef GLVISUALIZATION_DRAW_MANAGER_HPP
 #define GLVISUALIZATION_DRAW_MANAGER_HPP
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include "../../context/inc/AbsContextClass.hpp"
-#include "../../buffer/inc/BufferHandler.hpp"
+// --- Internal Includes ---
+#include "ProgramManager.hpp"
 #include "../../shaders/inc/ShaderManager.hpp"
-#include <string>
+#include "../../drawing/inc/Camera.hpp"
 
 namespace cie {
 namespace gl {
 
 
-class DrawManager : public AbsContextClass
+class DrawManager : public ProgramManager
 {
 public:
     DrawManager( GLContext& context );
-    virtual ~DrawManager();
 
-    virtual void initialize();
+    void initialize() override;
+    void compileShaders() override;
+    void makeProgram() override;
+
     virtual void draw();
-
     DrawFunction makeDrawFunction( GLContext& context );
 
-    void compileShaders();
-    void makeProgram();
-
-    BufferHandler& buffers();
-    const BufferHandler& buffers() const;
-    ShaderManager& shaderCode();
-    const std::vector<GLuint>& shaders() const;
+    ShaderManager& shaderManager();
+    const ShaderManager& shaderManager() const;
+    Camera& camera();
+    const Camera& camera() const;
 
 protected:
-    BufferHandler       _buffers;
-    ShaderManager       _shaderCode;
-    std::vector<GLuint> _shaders;
+    ShaderManager   _shaderManager;
+    Camera          _camera;
 
 private:
-    GLuint              _programID;
-    GLuint              _vaoID;
+    std::vector<GLint> _uniformIDs;
 };
 
 

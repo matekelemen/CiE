@@ -122,6 +122,28 @@ const std::vector<std::string>& ShaderManager::fragOutputNames() const
 }
 
 
+const std::vector<std::string>& ShaderManager::uniforms() const
+{
+    return _vertexShader._uniforms;
+}
+
+
+const ShaderStruct ShaderManager::vertexShader() const
+{
+    return _vertexShader;
+}
+
+
+const ShaderStruct ShaderManager::geometryShader() const
+{
+    return _geometryShader;
+}
+
+
+const ShaderStruct ShaderManager::fragmentShader() const
+{
+    return _fragmentShader;
+}
 
 
 }

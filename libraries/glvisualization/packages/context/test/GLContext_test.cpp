@@ -1,5 +1,6 @@
 #include "catch.hpp"
 #include "../inc/GLContext.hpp"
+#include "../../drawing/inc/Camera.hpp"
 #include "../inc/DrawManager.hpp"
 #include <iostream>
 
@@ -36,6 +37,14 @@ TEST_CASE( "GLContext" )
 }
 
 
+/*
+TEST_CASE( "Scene" )
+{
+    Scene scene( context_global );
+    glm::vec3 test = { 5.0f, 4.0f, 3.0f };
+    scene.setCameraPose( test, test );
+}
+*/
 
 
 TEST_CASE( "DrawManager" )

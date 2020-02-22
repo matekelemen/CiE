@@ -1,6 +1,7 @@
 project( glvisualization CXX )
 
 include_directories( ../../external/glfw/include )
+include_directories( ../../external/glm )
 
 # ---------------------------------------------------------
 # GATHER FILES AND INCLUDE DIRECTORIES

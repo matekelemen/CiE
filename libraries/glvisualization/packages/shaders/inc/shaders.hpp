@@ -20,7 +20,8 @@ struct ShaderStruct
                     const std::vector<GLuint>& sizes,
                     const std::vector<GLuint>& strides,
                     const std::vector<GLuint>& offsets,
-                    const std::vector<std::string>& uniforms );
+                    const std::vector<std::string>& uniforms,
+                    const std::vector<std::string>& textures );
     ShaderStruct( const ShaderStruct& copy );
     ShaderStruct operator=( const ShaderStruct& copy );
     ShaderStruct( );
@@ -31,6 +32,7 @@ struct ShaderStruct
     std::vector<GLuint>         _strides;
     std::vector<GLuint>         _offsets;
     std::vector<std::string>    _uniforms;
+    std::vector<std::string>    _textures;
 };
 
 

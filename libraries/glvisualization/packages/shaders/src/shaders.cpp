@@ -12,13 +12,15 @@ ShaderStruct::ShaderStruct( const ShaderCode& source,
                             const std::vector<GLuint>& sizes,
                             const std::vector<GLuint>& strides,
                             const std::vector<GLuint>& offsets,
-                            const std::vector<std::string>& uniforms ) :
+                            const std::vector<std::string>& uniforms,
+                            const std::vector<std::string>& textures ) :
     _source(source),
     _attributes(attributes),
     _sizes(sizes),
     _strides(strides),
     _offsets(offsets),
-    _uniforms(uniforms)
+    _uniforms(uniforms),
+    _textures(textures)
 {
 }
 
@@ -29,7 +31,8 @@ ShaderStruct::ShaderStruct( const ShaderStruct& copy ) :
     _sizes(copy._sizes),
     _strides(copy._strides),
     _offsets(copy._offsets),
-    _uniforms(copy._uniforms)
+    _uniforms(copy._uniforms),
+    _textures(copy._textures)
 {
 }
 
@@ -42,6 +45,7 @@ ShaderStruct ShaderStruct::operator=( const ShaderStruct& copy )
     _strides    = copy._strides;
     _offsets    = copy._offsets;
     _uniforms   = copy._uniforms;
+    _textures   = copy._textures;
     return *this;
 }
 

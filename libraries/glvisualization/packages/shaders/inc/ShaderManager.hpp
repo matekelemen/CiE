@@ -33,6 +33,11 @@ public:
     const std::vector<GLuint>& attributeStrides() const;
     const std::vector<GLuint>& attributeOffsets() const;
     const std::vector<std::string>& fragOutputNames() const;
+    const std::vector<std::string>& uniforms() const;
+
+    const ShaderStruct vertexShader() const;
+    const ShaderStruct geometryShader() const;
+    const ShaderStruct fragmentShader() const;
 
 protected:
     ShaderStruct    _vertexShader;

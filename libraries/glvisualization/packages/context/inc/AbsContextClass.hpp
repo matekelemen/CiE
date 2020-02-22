@@ -24,7 +24,8 @@ protected:
 
     void terminate();
 
-protected:
+
+
     std::string     _className;
     GLContext*      _context;
 };

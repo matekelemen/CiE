@@ -15,7 +15,7 @@ AbsContextClass::AbsContextClass(   GLContext& context,
 void AbsContextClass::log(  const std::string& message,
                             GLuint messageType )
 {
-    _context->log( _className + ": " + message, messageType );
+    _context->log( _className + ":\t" + message, messageType );
 }
 
 
