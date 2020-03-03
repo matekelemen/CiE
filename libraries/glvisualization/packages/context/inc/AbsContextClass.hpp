@@ -10,6 +10,9 @@ namespace gl {
 
 class AbsContextClass
 {
+public:
+    void terminate();
+
 protected:
     void log(   const std::string& message,
                 GLuint messageType = CONTEXT_LOG_TYPE_REPORT );
@@ -21,8 +24,6 @@ protected:
 
     AbsContextClass(    GLContext& context,
                         const std::string& className );
-
-    void terminate();
 
 
 

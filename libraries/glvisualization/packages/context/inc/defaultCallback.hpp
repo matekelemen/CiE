@@ -28,6 +28,10 @@ void GLAPIENTRY messageCallback(    GLenum source,
                             
 void callback_errorPrint(int error, const char* description);
 
+void frameBufferResizeCallback( GLFWwindow* window,
+                                int width,
+                                int height  );
+
 
 }
 }

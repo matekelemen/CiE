@@ -35,5 +35,14 @@ void callback_errorPrint(int error, const char* description)
 }
 
 
+void frameBufferResizeCallback( GLFWwindow* window,
+                                int width,
+                                int height  )
+{
+    std::cout << "Frame buffer resize!\n";
+    glViewport( 0, 0, width, height );
+}
+
+
 }
 }

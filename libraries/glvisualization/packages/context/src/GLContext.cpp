@@ -1,6 +1,9 @@
 #include "../inc/GLContext.hpp"
 #include "../inc/defaultCallback.hpp"
 
+#include <string>
+#include <iostream>
+
 namespace cie {
 namespace gl {
 
@@ -58,14 +61,6 @@ GLContext::GLContext(   uint8_t versionMajor,
 
 GLContext::~GLContext()
 {
-    if (_window!=nullptr)
-    {
-        glfwDestroyWindow(_window);
-        _window = nullptr;
-    }
-    else 
-        log( "Attempt to destroy non-existent window while destroying the context!", CONTEXT_LOG_TYPE_WARNING );
-
     terminate();
     log( "Destroy context" );
 }
@@ -95,7 +90,20 @@ WindowPtr GLContext::openWindow(    size_t width,
     }
     else
         log("Open window");
+
+    // Set basic callbacks
+    glfwSetFramebufferSizeCallback( _window, frameBufferResizeCallback );
+
+    // Resize window
+    std::cout << "Requested:\t" << std::to_string(width) << ", " << std::to_string(height) << "\n";
+    //glfwSetWindowSize( _window, width, height );
         
+    // Check window dimensions
+    int checkWidth, checkHeight;
+    glfwGetFramebufferSize( _window, &checkWidth, &checkHeight );
+    std::cout << "Got:\t" << std::to_string(checkWidth) << ", " << std::to_string(checkHeight) << "\n";
+    if ( (size_t)checkWidth!=width || (size_t)checkHeight!=height )
+        log( "Created window is not of the requested size!", CONTEXT_LOG_TYPE_WARNING );
 
     return _window;
 }
@@ -108,7 +116,7 @@ void GLContext::closeWindow()
 
     if (_window != nullptr)
     {
-        glfwDestroyWindow(_window);
+        glfwSetWindowShouldClose( _window, 1 );
         log( "Close window" );
     }
     else
@@ -163,7 +171,8 @@ void GLContext::startEventLoop( DrawFunctionFactory eventLoopGenerator,
     else 
     {
         terminate();
-        log( "Attempt to start event loop without an existing window!", CONTEXT_LOG_TYPE_ERROR );
+        log(    "Attempt to start event loop without an existing window!", 
+                CONTEXT_LOG_TYPE_ERROR );
     }
 
     // Start event loop
@@ -218,7 +227,7 @@ void GLContext::log(    const std::string& message,
 
 void GLContext::terminate()
 {
-
+    closeWindow();
     glfwTerminate();
     log( "Terminate context" );
 }

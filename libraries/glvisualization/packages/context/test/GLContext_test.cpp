@@ -2,15 +2,18 @@
 #include "../inc/GLContext.hpp"
 #include "../../drawing/inc/Camera.hpp"
 #include "../inc/DrawManager.hpp"
+#include "../../callbacks/inc/key_callbacks.hpp"
 #include <iostream>
 
-
-cie::gl::GLContext context_global( 4,5,4,"glvisualization_testrunner_log.txt" );
 
 
 namespace cie {
 namespace gl {
 
+
+GLContext context_global( 4,5,4,"glvisualization_testrunner_log.txt" );
+
+/*
 TEST_CASE( "GLContext" )
 {
 
@@ -35,16 +38,14 @@ TEST_CASE( "GLContext" )
     REQUIRE_NOTHROW( context_global.makeContextCurrent() );
     REQUIRE_NOTHROW( context_global.startEventLoop( loopFactory ) );
 }
-
-
-/*
-TEST_CASE( "Scene" )
-{
-    Scene scene( context_global );
-    glm::vec3 test = { 5.0f, 4.0f, 3.0f };
-    scene.setCameraPose( test, test );
-}
 */
+
+//TEST_CASE( "Scene" )
+//{
+//    Scene scene( context_global );
+//    glm::vec3 test = { 5.0f, 4.0f, 3.0f };
+//    scene.setCameraPose( test, test );
+//}
 
 
 TEST_CASE( "DrawManager" )
@@ -58,9 +59,43 @@ TEST_CASE( "DrawManager" )
     REQUIRE_NOTHROW(drawManager.makeProgram());
     REQUIRE_NOTHROW(drawManager.initialize());
 
+
+    // Bind callbacks
+    KeyCallbackFunction keyCallback = makeKeyCallbackFunction(  defaultArcballKeyCallback,
+                                                                context_global, 
+                                                                drawManager );
+
     // Start the event loop
-    REQUIRE_NOTHROW(context_global.startEventLoop( std::bind(&DrawManager::makeDrawFunction, &drawManager, std::placeholders::_1) ));
+    REQUIRE_NOTHROW(context_global.startEventLoop(  std::bind(&DrawManager::makeDrawFunction, &drawManager, std::placeholders::_1),
+                                                    keyCallback     ));
 }
+
+
+//TEST_CASE( "Window resolution" )
+//{
+//    glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
+//    glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 5 );
+//    glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
+//    glfwWindowHint( GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE );
+//
+//    if (!glfwInit())
+//        glfwTerminate();
+//
+//    const GLFWvidmode* mode = glfwGetVideoMode( glfwGetPrimaryMonitor() );
+//
+//    GLFWwindow* window = glfwCreateWindow(  mode->width, 
+//                                            mode->height,
+//                                            "Test Window",
+//                                            glfwGetPrimaryMonitor(),
+//                                            nullptr );
+//
+//    glfwSetFramebufferSizeCallback( window, frameBufferResizeCallback );
+//
+//    int width, height;
+//    glfwGetWindowSize( window, &width, &height );
+//    std::cout << "Requested window size:\t" << std::to_string(mode->width) << ", " << std::to_string(mode->height) << "\n";
+//    std::cout << "Created window size:\t" << std::to_string(width) << ", " << std::to_string(height) << "\n";
+//}
 
 
 

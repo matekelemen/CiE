@@ -9,6 +9,7 @@ DrawManager::DrawManager( GLContext& context ) :
     _shaderManager( context ),
     _camera( context )
 {
+    _buffers.setDrawMode( GL_DYNAMIC_DRAW );
 }
 
 
@@ -35,7 +36,11 @@ void DrawManager::initialize()
                             &type,
                             &name);
         
-        glUniformMatrix4fv( id, 1, GL_FALSE, glm::value_ptr(_camera.transformationMatrix()) );
+        if (type == GL_FLOAT_MAT4)
+            glUniformMatrix4fv( id, 
+                                1, 
+                                GL_FALSE, 
+                                glm::value_ptr(_camera.transformationMatrix()) );
 
         //for (size_t i=0; i<4; ++i)
         //{
@@ -87,6 +92,31 @@ void DrawManager::draw()
     // Set background and clear
     glClearColor( 0.2f, 0.2f, 0.2f, 1.0f );
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+    // Set transformation
+    for (auto uniform : _shaderManager.uniforms())
+    {
+        GLint id = glGetUniformLocation( _programID, &uniform[0] );
+        _uniformIDs.push_back( id );
+
+        GLsizei     length;
+        GLsizei     size;
+        GLenum      type;
+        GLchar      name;
+        glGetActiveUniform( _programID,
+                            id,
+                            0,
+                            &length,
+                            &size,
+                            &type,
+                            &name);
+        
+        if (type == GL_FLOAT_MAT4)
+            glUniformMatrix4fv( id, 
+                                1, 
+                                GL_FALSE, 
+                                glm::value_ptr(_camera.transformationMatrix()) );
+    }
 
     // Get number of elements to draw
     GLint64 numberOfElements;

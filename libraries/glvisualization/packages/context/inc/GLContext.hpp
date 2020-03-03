@@ -36,14 +36,14 @@ class GLContext
 public:
     GLContext(  uint8_t versionMajor                    = 4,
                 uint8_t versionMinor                    = 5,
-                uint8_t samples                         = 4, 
+                uint8_t samples                         = 0, 
                 const std::string& logFileName          = "DefaultGLLogger.txt" );
     ~GLContext();
 
-    WindowPtr openWindow(   size_t width                    = getPrimaryMonitorResolution().first,
-                            size_t height                   = getPrimaryMonitorResolution().second,
+    WindowPtr openWindow(   size_t width                    = 800,
+                            size_t height                   = 600,
                             const std::string& windowName   = "OpenGL",
-                            GLFWmonitor* fullscreenMonitor  = glfwGetPrimaryMonitor(),
+                            GLFWmonitor* fullscreenMonitor  = nullptr,
                             GLFWwindow* sharedWindow        = nullptr );
     void closeWindow();
     void makeContextCurrent();

@@ -6,16 +6,18 @@ namespace gl {
 
 Camera::Camera( GLContext& context ) :
     AbsContextClass( context, "Camera" ),
-    _cameraPosition( {0.0f, 0.0f, 1.0f} ),
-    _cameraDirection( {0.0f, 0.0f, -1.0f} ),
-    _fieldOfView( 0.0f ),
+    _cameraPosition( 0.0f, 0.0f, 1.0f ),
+    _cameraDirection( 0.0f, 0.0f, -1.0f ),
+    _fieldOfView( 90.0f ),
+    _width( 2.0f ),
+    _height( 2.0f ),
     _nearClippingPlane( 0.1f ),
     _farClippingPlane( 100.0f ),
     _viewMatrix( 1.0f ),
     _transformationMatrix( 1.0f )
 {
-    setCameraPose<glm::vec3>(   glm::vec3( 0.0, 0.0, 10.0),
-                                glm::vec3( 0.0f, 0.0f, -1.0f) );
+    setCameraPose<glm::vec3>(   _cameraPosition,
+                                _cameraDirection );
 
     setCameraProperties(    _fieldOfView, 
                             _nearClippingPlane, 
@@ -36,7 +38,7 @@ void Camera::setCameraProperties(   float fieldOfView,
 
     int width, height;
     if (_context->window() != nullptr)
-        glfwGetWindowSize( _context->window(), &width, &height );
+        glfwGetFramebufferSize( _context->window(), &width, &height );
     else
     {
         auto windowSizes    = getPrimaryMonitorResolution();
@@ -50,10 +52,10 @@ void Camera::setCameraProperties(   float fieldOfView,
                                                 _nearClippingPlane,
                                                 _farClippingPlane );
     else
-        _projectionMatrix = glm::ortho( -1.0f,
-                                        1.0f,
-                                        -1.0f,
-                                        1.0f,
+        _projectionMatrix = glm::ortho( -width/2.0f,
+                                        width/2.0f,
+                                        -height/2.0f,
+                                        height/2.0f,
                                         _nearClippingPlane,
                                         _farClippingPlane   );
 }
@@ -62,6 +64,17 @@ void Camera::setCameraProperties(   float fieldOfView,
 void Camera::updateTransformationMatrix()
 {
     _transformationMatrix = _projectionMatrix * _viewMatrix;
+}
+
+
+void Camera::update()
+{
+    setCameraPose(  _cameraPosition,
+                    _cameraPosition );
+    setCameraProperties(    _fieldOfView,
+                            _nearClippingPlane,
+                            _farClippingPlane   );
+    updateTransformationMatrix();
 }
 
 
@@ -83,6 +96,46 @@ const glm::mat4& Camera::transformationMatrix() const
 }
 
 
+GLfloat& Camera::width()
+{
+    return _width;
+}
+
+
+GLfloat& Camera::height()
+{
+    return _height;
+}
+
+
+const glm::vec3& Camera::cameraPosition() const
+{
+    return _cameraPosition;
+}
+
+
+const glm::vec3& Camera::cameraDirection() const
+{
+    return _cameraDirection;
+}
+
+
+GLfloat Camera::fieldOfView() const
+{
+    return _fieldOfView;
+}
+
+
+GLfloat Camera::nearClippingPlane() const
+{
+    return _nearClippingPlane;
+}
+
+
+GLfloat Camera::farClippingPlane() const
+{
+    return _farClippingPlane;
+}
 
 
 }
