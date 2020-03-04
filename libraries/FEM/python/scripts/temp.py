@@ -34,7 +34,7 @@ polynomialOrder = 3
 basisFunctions  = IntegratedHierarchicBasisFunctions( polynomialOrder=polynomialOrder )
 #basisFunctions  = HierarchicBasisFunctions( polynomialOrder=polynomialOrder )
 #basisFunctions  = BasisFunctions( functions=[np.polynomial.legendre.Legendre(coefficients) for coefficients in oneHotArray(polynomialOrder+1)] )
-t               = np.linspace( basisFunctions.domain[0], basisFunctions.domain[1], num=100 )
+t               = np.linspace( 2*basisFunctions.domain[0], 2*basisFunctions.domain[1], num=100 )
 
 for basisID in range( polynomialOrder+1 ):
     plt.plot( t, basisFunctions( basisID, t ) )

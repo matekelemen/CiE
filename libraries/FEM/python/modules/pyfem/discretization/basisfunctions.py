@@ -26,17 +26,13 @@ class BasisFunctions:
         if self._functions is None:
             raise AttributeError("Unset basis function!")
 
-        # Evaluate at a single point: check bounds and evaluate
+        # Evaluate at a single point (zero if out of bounds)
         if not isNumpyArray(position):
-            if position<self.domain[0] or position>self.domain[1]:
-                raise ValueError( "Argument for basis function is out of bounds!" )
-            return self.dtype( self._functions[basisID](position) )
+            return float(self.domain[0]<=position and position<=self.domain[1]) * self.dtype( self._functions[basisID](position) )
         
-        # Evaluate at multiple points: check bounds and evaluate
+        # Evaluate at multiple points (zero if out of bounds)
         else:
-            if np.min( position )<self.domain[0] or np.max(position)>self.domain[1]:
-                raise ValueError( "Argument for basis function is out of bounds!" )
-            return np.asarray( [self._functions[basisID](x) for x in position], dtype=self.dtype )
+            return np.asarray( [ float(self.domain[0]<=x and x<=self.domain[1]) * self._functions[basisID](x) for x in position], dtype=self.dtype )
 
 
 
