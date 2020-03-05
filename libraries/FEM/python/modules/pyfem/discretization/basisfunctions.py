@@ -15,11 +15,13 @@ class BasisFunctions:
         dtype=np.float64        : storage and function return data types
     '''
     def __init__( self, functions=None, dtype=np.float64 ):
-        self.dtype      = dtype
-        self.domain     = np.array( (-1.0, 1.0), dtype=dtype )
-        self._functions = functions
+        # Initialize basic members
+        self.dtype              = dtype
+        self.domain             = np.array( (-1.0, 1.0), dtype=dtype )
+        self._functions         = functions
+        self._nodalFunctions    = None    
+        self._counter           = -1
 
-    
 
     def evaluate( self, basisID, position ):
         # Check if the function was set
@@ -47,6 +49,47 @@ class BasisFunctions:
         return self.evaluate( basisID, position )
 
 
+    def __iter__( self ):
+        self._counter = -1
+        return self
+
+
+    def __next__( self ):
+        if self._counter < len(self._functions)-1:
+            self._counter += 1
+            return self._functions[self._counter]
+        else:
+            raise StopIteration
+
+
+    def __len__( self ):
+        return len(self._functions)
+
+
+    def __getitem__( self, index ):
+        return self._functions[index]
+
+
+    @property
+    def nodalFunctions(self):
+        # Check whether finding nodal functions is necessary
+        if self._nodalFunctions is not None:
+            return self._nodalFunctions
+
+        else:
+            # Check whether instance was initialized 
+            if self._functions is None:
+                raise AttributeError( "List of basis functions must be filled before calling initialize" )
+
+            # Find functions that do not vanish at the borders of the domain
+            # (needed during assembly, to ensure C0 continuity across elements)
+            self._nodalFunctions   = []
+            for i, function in enumerate(self._functions):
+                if np.abs(function(self.domain[0]))>1e-12 or np.abs(function(self.domain[1]))>1e-12:
+                    self._nodalFunctions.append(i)
+
+            return self._nodalFunctions
+
 
 class PolynomialBasisFunctions( BasisFunctions ):
     '''
@@ -68,7 +111,6 @@ class LinearBasisFunctions( PolynomialBasisFunctions ):
     Classic linear basis functions
 
     Constructor arguments:
-        functions=None          : basis functions to store
         dtype=np.float64        : storage and function return data types
     '''
     def __init__( self, *args, **kwargs ):
