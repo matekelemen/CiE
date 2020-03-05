@@ -66,7 +66,7 @@ class FEModel:
                                                 shape=self.shape )
         self.mass       = sparse.csc_matrix(    ( np.zeros( DoFs.shape[1] ), DoFs ), 
                                                 shape=self.shape )
-        self.load       = np.zeros( (self.size, 1) )
+        self.load       = np.zeros( self.size )
 
 
     @requiresInitialized
@@ -89,3 +89,44 @@ class FEModel:
     @requiresInitialized
     def applyNeumannBoundary( self, DoF, value ):
         self.load[DoF]          = value
+
+
+    @requiresInitialized
+    def solveStationary( self ):
+        '''
+        Solve current system.
+        '''
+        x, info = sparse.linalg.gmres(  self.stiffness, 
+                                        self.load,
+                                        x0=np.random.rand(self.size),
+                                        atol=1e-12,
+                                        maxiter=np.max((5*self.size,100)) )
+        if info<0:
+            raise RuntimeError( "Error solving the system" )
+        elif info>0:
+            print( "Solution has not converged after " +str(info) + " iterations" )
+        
+        return x
+
+
+    @requiresInitialized
+    def sample( self, solution, samples ):
+        values = np.zeros( samples.shape )
+        for element in self.elements:
+            values += element( solution[element.DoFs], samples )
+
+        return values
+
+
+    @requiresInitialized
+    def updateLoad( self, load ):
+        '''
+        Set load on all elements and reintegrate
+        '''
+        # Clear
+        self.load = np.zeros( self.load.shape )
+        
+        # Set load on all elements and integrate
+        for element in self.elements:
+            element.load = load
+            element.integrateLoad( self.load )

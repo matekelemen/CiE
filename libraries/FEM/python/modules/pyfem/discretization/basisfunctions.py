@@ -139,8 +139,8 @@ class HierarchicBasisFunctions( PolynomialBasisFunctions ):
 
         # Standard linear basis functions if the polynomial order is 1
         if self.polynomialOrder is 1:
-            self._functions = [ Legendre( (0,-1) ),
-                                Legendre( (0,1) ) ]
+            self._functions = [ Legendre( (0.5,-0.5) ),
+                                Legendre( (0.5,0.5) ) ]
         
         # Legendre polynomials, but replace the constant function with a linear one
         elif self.polynomialOrder > 1:
@@ -168,6 +168,7 @@ class HierarchicBasisFunctions( PolynomialBasisFunctions ):
 class IntegratedHierarchicBasisFunctions( PolynomialBasisFunctions ):
     '''
     Hierarchic basis functions as proposed by Szabó & Babuska
+    For easier assembly, the first and last functions are nodal ones, the others vanish at the boundaries
 
     Constructor arguments:
         polynomialOrder=1       : polynomial order of the basis to compute the number of functions
@@ -178,23 +179,24 @@ class IntegratedHierarchicBasisFunctions( PolynomialBasisFunctions ):
 
         # Standard linear basis functions if the polynomial order is 1
         if self.polynomialOrder is 1:
-            self._functions = [ Legendre( (0,-1) ),
-                                Legendre( (0,1) ) ]
+            self._functions = [ Legendre( (0.5,-0.5) ),
+                                Legendre( (0.5,0.5) ) ]
         
         # Integrated Legendre polynomials (first two functions replaced by classic linear ones)
         elif self.polynomialOrder > 1:
             # Base
             self._functions     = [ Legendre( coefficients ) for coefficients in oneHotArray(self.polynomialOrder+1) ]
 
-            # Replace the constant function
-            self._functions[0]  = Legendre( (0,-1) )
-
             # Integrate base functions
-            for index in range( self.polynomialOrder, 1, -1 ):
-                self._functions[index] = Legendre( legint( np.sqrt(float(index) - 0.5) * self._functions[index-1].coef,
+            for index in range( self.polynomialOrder-1, 0, -1 ):
+                self._functions[index] = Legendre( legint( np.sqrt(float(index) - 0.5) * self._functions[index].coef,
                                                                     m=1,
                                                                     lbnd=-1.0),
                                                             domain=self.domain  )
+
+            # Replace first and last functions
+            self._functions[0]  = Legendre( (0.5,-0.5) )
+            self._functions[-1] = Legendre( (0.5, 0.5) )
         
         else:
             raise ValueError( "Invalid polynomial order!" )

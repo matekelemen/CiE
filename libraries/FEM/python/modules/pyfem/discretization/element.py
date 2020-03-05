@@ -30,11 +30,11 @@ class Element:
     def updateGlobalMatrix( self, matrix, index1, index2, value ):
         matrix[self.DoFs[index1], self.DoFs[index2]] += value
         if index1 is not index2:
-            matrix[self.DoFs[index1], self.DoFs[index2]] += value
+            matrix[self.DoFs[index2], self.DoFs[index1]] += value
 
 
     def updateGlobalVector( self, vector, index, value ):
-        vector[index] += value
+        vector[self.DoFs[index]] += value
 
 
     def integrateStiffness( self, globalStiffnessMatrix ):
@@ -85,6 +85,17 @@ class Element1D( Element ):
             return (globalCoordinates-self.domain[0]) * self._invJacobian - 1.0
 
 
+    def __call__( self, coefficients, positions ):
+        '''
+        Given the solution coefficients, sample and sum the basis functions at the given coordinates
+        '''
+        values = np.zeros( positions.shape, positions.dtype )
+        for basisID, coefficient in enumerate( coefficients ):
+            values += coefficient * self.basisFunctions( basisID, self.toLocalCoordinates(positions) )
+        
+        return values
+
+
 
 class LinearHeatElement1D( Element1D ):
     '''
@@ -99,18 +110,18 @@ class LinearHeatElement1D( Element1D ):
     def integrateStiffness( self, globalStiffnessMatrix ):
         for i, function in enumerate(self.basisDerivatives):
             for j in range( i, len(self.basisDerivatives) ):
-                value = self.conductivity * self._invJacobian * self.integrator( lambda t: function(t)*self.basisDerivatives[j](t), self.basisDerivatives.domain )
+                value = self.conductivity * self._invJacobian * self.integrator( lambda x: function(x)*self.basisDerivatives[j](x), self.basisDerivatives.domain )
                 self.updateGlobalMatrix( globalStiffnessMatrix, i, j, value )
 
 
     def integrateMass( self, globalMassMatrix ):
         for i, function in enumerate(self.basisFunctions):
             for j in range( i, len(self.basisFunctions) ):
-                value = self.capacity * self._jacobian * self.integrator( lambda t: function(t)*self.basisFunctions[j](t), self.basisFunctions.domain )
+                value = self.capacity * self._jacobian * self.integrator( lambda x: function(x)*self.basisFunctions[j](x), self.basisFunctions.domain )
                 self.updateGlobalMatrix( globalMassMatrix, i, j, value )
 
 
     def integrateLoad( self, globalLoadVector ):
         for i, function in enumerate(self.basisFunctions):
-            value = self._jacobian * self.integrator( lambda t: function(t) * self.load(self.toLocalCoordinates(t)), self.basisFunctions.domain )
+            value = self._jacobian * self.integrator( lambda x: function(x) * self.load(self.toGlobalCoordinates(x)), self.basisFunctions.domain )
             self.updateGlobalVector( globalLoadVector, i, value )
