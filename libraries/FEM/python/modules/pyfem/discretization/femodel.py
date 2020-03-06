@@ -11,11 +11,12 @@ from .element import Element, Element1D
 # Decorators
 def requiresInitialized( function ):
     @functools.wraps( function )
-    def decoratedFunction( *args, **kwargs ):
-        if args[0].stiffness is None or args[0].mass is None or args[0].load is None or args[0].elements is None:
-            raise RuntimeError( "Instance needs to be initialized first" )
+    def decoratedFunction( instance, *args, **kwargs ):
+        for name, value in vars(instance).items():
+            if value is None:
+                raise AttributeError( "Uninitialized member variable when calling a function that requires an initialized object!" )
         else:
-            return function( *args, **kwargs )
+            return function( instance, *args, **kwargs )
     return decoratedFunction
 
 # ---------------------------------------------------------
@@ -32,8 +33,9 @@ class FEModel:
 
         # Initialize matrices
         self.stiffness      = None
-        self.mass           = None
         self.load           = None
+
+        self.boundaries     = []
 
 
     def getDoFs( self ):
@@ -58,15 +60,15 @@ class FEModel:
         DoFs = np.transpose( self.getDoFs(), (1,0) )
 
         # Check if already initialized
-        if self.stiffness is not None or self.mass is not None or self.load is not None:
+        if self.stiffness is not None or self.load is not None:
             raise RuntimeError( "Attempt to initialize existing matrices" )
 
         # Initialize matrices
         self.stiffness  = sparse.csc_matrix(    ( np.zeros( DoFs.shape[1] ), DoFs ), 
                                                 shape=self.shape )
-        self.mass       = sparse.csc_matrix(    ( np.zeros( DoFs.shape[1] ), DoFs ), 
-                                                shape=self.shape )
         self.load       = np.zeros( self.size )
+
+        return DoFs
 
 
     @requiresInitialized
@@ -76,19 +78,33 @@ class FEModel:
         '''
         for element in self.elements:
             element.integrateStiffness( self.stiffness )
-            element.integrateMass( self.mass )
             element.integrateLoad( self.load )
 
 
-    @requiresInitialized
-    def applyDirichletBoundary( self, DoF, value, penaltyValue=1e8 ):
-        self.stiffness[DoF,DoF] += penaltyValue
-        self.load[DoF]          += penaltyValue * value
+    def addBoundaryCondition( self, boundaryCondition ):
+        self.boundaries.append( boundaryCondition )
+        self.applyBoundaryCondition( boundaryCondition )
 
 
     @requiresInitialized
-    def applyNeumannBoundary( self, DoF, value ):
-        self.load[DoF]          = value
+    def applyBoundaryCondition( self, boundaryCondition ):
+        if boundaryCondition.BCType is "dirichlet":
+            self.applyDirichletBoundary( boundaryCondition )
+        elif boundaryCondition.BCType is "neumann":
+            self.applyNeumannBoundary( boundaryCondition )
+        else:
+            raise NotImplementedError( "Unknown boundary condition type" )
+
+
+    @requiresInitialized
+    def applyDirichletBoundary( self, boundaryCondition ):
+        self.stiffness[boundaryCondition.DoF,boundaryCondition.DoF] += boundaryCondition.penaltyValue
+        self.load[boundaryCondition.DoF]                            += boundaryCondition.penaltyValue * boundaryCondition.value
+
+
+    @requiresInitialized
+    def applyNeumannBoundary( self, boundaryCondition ):
+        self.load[boundaryCondition.DoF]                            = boundaryCondition.value
 
 
     @requiresInitialized
@@ -130,3 +146,48 @@ class FEModel:
         for element in self.elements:
             element.load = load
             element.integrateLoad( self.load )
+
+        # Reapply boundary conditions
+        for BC in self.boundaries:
+            self.applyBoundaryCondition( BC )
+
+
+
+
+class TransientFEModel( FEModel ):
+    '''
+    FEModel extended with mass matrix and time-and-space-dependent load function
+    '''
+    def __init__( self, *args, loadFunction=None, **kwargs ):
+        FEModel.__init__( self, *args, **kwargs )
+
+        # Initialize
+        self.mass           = None
+        self._loadFunction  = loadFunction
+        self.time           = 0.0
+
+
+    @property
+    def loadFunction( self ):
+        if self._loadFunction is None:
+            raise AttributeError( "Unset load function!" )
+
+        return self._loadFunction
+
+
+    def allocateZeros( self ):
+        DoFs = FEModel.allocateZeros( self )
+
+        if self.mass is not None:
+            raise RuntimeError( "Attempt to initialize existing matrices" )
+        self.mass   = sparse.csc_matrix((   np.zeros( DoFs.shape[1] ), DoFs ), 
+                                            shape=self.shape )
+        return DoFs
+
+
+    @requiresInitialized
+    def integrate( self ):
+        FEModel.integrate( self )
+        
+        for element in self.elements:
+            element.integrateMass( self.mass )

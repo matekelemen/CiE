@@ -6,29 +6,32 @@ from matplotlib import pyplot as plt
 # --- Internal Imports ---
 from pyfem.discretization import IntegratedHierarchicBasisFunctions
 from pyfem.discretization import LinearHeatElement1D
-from pyfem.discretization import FEModel
+from pyfem.discretization import TransientFEModel
+from pyfem.discretization import DirichletBoundary, NeumannBoundary
 from pyfem.numeric import separableFirstOrderThetaScheme
+from pyfem.postprocessing.graphics import animateTimeSeries
 
 # ---------------------------------------------------------
 # Geometry and material
-length              = 1.0
-capacity            = 1.0
-conductivity        = 1.0
+length                      = 1.0
+capacity                    = 1.0
+conductivity                = 1.0
 
 # Load
-load                = lambda t, x: np.sin(x*np.pi)
+load                        = lambda t, x: 0.0
 
 # Discretization
-time                = np.linspace(0.0, 10.0, 50)
-nElements           = 10
-polynomialOrder     = 3
+time                        = np.linspace(0.0, 1.0, 20)
+nElements                   = 10
+polynomialOrder             = 3
 
 # Integration
-integrationOrder    = 2*polynomialOrder + 1
+integrationOrder            = 2*polynomialOrder + 1
+finiteDifferenceImplicity   = 0.8
 
 # ---------------------------------------------------------
 # Initialize FE model
-model               = FEModel( nElements*polynomialOrder + 1 )
+model               = TransientFEModel( nElements*polynomialOrder + 1, loadFunction=load )
 
 # Create elements
 basisFunctions      = IntegratedHierarchicBasisFunctions( polynomialOrder=polynomialOrder )
@@ -48,25 +51,25 @@ model.integrate( )
 
 # Boundary conditions
 penaltyValue    = 1e3
-model.applyDirichletBoundary(   0, 
-                                0.0, 
-                                penaltyValue=penaltyValue )
+model.addBoundaryCondition( DirichletBoundary(  0, 
+                                                0.0, 
+                                                penaltyValue=penaltyValue   ) )
 
-#model.applyDirichletBoundary(   nElements*polynomialOrder, 
-#                                0.0, 
-#                                penaltyValue=penaltyValue )
-model.applyNeumannBoundary(     nElements*polynomialOrder,
-                                0.0)
+model.addBoundaryCondition( NeumannBoundary(    nElements*polynomialOrder,
+                                                1.0) )
 
 # Solve
 initialSolution     = np.zeros( model.size )
-timeHistory = separableFirstOrderThetaScheme( time, initialSolution, model, load )
+timeSeries          = separableFirstOrderThetaScheme(   time, 
+                                                        initialSolution, 
+                                                        model, 
+                                                        theta=finiteDifferenceImplicity )
 
 # Output
-samples     = np.linspace( 0, length, num=100 )
-
-for solution in timeHistory:
-    values      = model.sample( solution, samples )
-    plt.plot( samples, values, '.-' )
-    
-plt.show()
+samples             = np.linspace( 0, length, num=100 )
+animateTimeSeries(  time, 
+                    samples, 
+                    timeSeries, 
+                    model,
+                    speed=0.05,
+                    ylim=( -0.1, 1.0 ) )

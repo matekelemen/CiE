@@ -6,7 +6,6 @@ import scipy.sparse.linalg as linalg
 def separableFirstOrderThetaScheme( time, 
                                     initialSolution, 
                                     model,
-                                    load,
                                     theta=0.5 ):
     '''
     Implicit theta-scheme. Solves the following problem:
@@ -15,15 +14,14 @@ def separableFirstOrderThetaScheme( time,
     Arguments:
         time            : discretized time domain
         initialSolution : solution at t=0
-        model           : FEModel with mass, stiffness, and load,
-        load            : function of time and space
+        model           : TransientFEModel with mass, stiffness, load, and loadFunction
         theta=0.5       : implicitness
     '''
     # Initialize
-    timeHistory     = np.zeros( (len(time), len(initialSolution)) )
-    timeHistory[0]  = initialSolution
+    timeSeries     = np.zeros( (len(time), len(initialSolution)) )
+    timeSeries[0]  = initialSolution
 
-    model.updateLoad( lambda x: load(time[0], x) )
+    model.updateLoad( lambda x: model.loadFunction(time[0], x) )
     nextLoadVector  = model.load
 
     # Step
@@ -32,13 +30,13 @@ def separableFirstOrderThetaScheme( time,
         dt  = time[k+1] - time[k]
 
         # Get load vectors
-        model.updateLoad( lambda x: load( time[k+1], x ) )
+        model.updateLoad( lambda x: model.loadFunction( time[k+1], x ) )
         currentLoadVector   = nextLoadVector
         nextLoadVector      = model.load
 
         # Step
         sol, info   = linalg.gmres( 1.0/dt*model.mass + theta*model.stiffness,
-                                    ( 1.0/dt*model.mass - (1.0-theta)*model.stiffness).dot(timeHistory[k])  \
+                                    ( 1.0/dt*model.mass - (1.0-theta)*model.stiffness).dot(timeSeries[k])   \
                                         + theta*nextLoadVector                                              \
                                         + (1.0-theta)*currentLoadVector,
                                     x0=np.random.rand(model.size),
@@ -50,6 +48,6 @@ def separableFirstOrderThetaScheme( time,
         elif info>0:
             print( "Solution failed to converge after " + str(info) + " steps (step " + str(k) + ")" )
 
-        timeHistory[k+1] = sol
+        timeSeries[k+1] = sol
 
-    return timeHistory
+    return timeSeries
