@@ -10,10 +10,13 @@ from pyfem.discretization.basisfunctions import BasisFunctions
 
 # ---------------------------------------------------------
 testPolynomial  = lambda t: 1.0 + 2.0*t + 3.0*t*t + 4.0*t*t*t
+testIntegral    = lambda t: t*(1.0 + t*(1.0 + t*(1.0 + t)))
 integrator      = Integrator(3)
 
-value = integrator( testPolynomial, (-1.0, 1.0) )
-if np.abs(value-4.0) < 1e-15:
+domain = (-1.0,1.0)
+testValue   = testIntegral(domain[1]) - testIntegral(domain[0])
+value = integrator( testPolynomial, domain )
+if np.abs(value-testValue) < 1e-15:
     print("PASS")
 else:
     print("FAIL " + str(value))

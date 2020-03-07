@@ -2,6 +2,7 @@
 import numpy as np
 import scipy.sparse as sparse
 import functools
+from copy import copy
 
 # --- Internal Imports ---
 from pyfem.utilities import isNumpyArray, gridPairs
@@ -84,6 +85,17 @@ class FEModel:
     def addBoundaryCondition( self, boundaryCondition ):
         self.boundaries.append( boundaryCondition )
         self.applyBoundaryCondition( boundaryCondition )
+        return len(self.boundaries)-1
+
+
+    def removeBoundaryCondition( self, boundaryID ):
+        boundaryCondition       = self.boundaries.pop( boundaryID )
+        if boundaryCondition.BCType is "dirichlet":
+            self.removeDirichletBoundary( boundaryCondition )
+        elif boundaryCondition.BCType is "neumann":
+            self.removeNeumannBoundary( boundaryCondition )
+        else:
+            raise NotImplementedError( "Unknown boundary condition type" )
 
 
     @requiresInitialized
@@ -98,13 +110,30 @@ class FEModel:
 
     @requiresInitialized
     def applyDirichletBoundary( self, boundaryCondition ):
-        self.stiffness[boundaryCondition.DoF,boundaryCondition.DoF] += boundaryCondition.penaltyValue
-        self.load[boundaryCondition.DoF]                            += boundaryCondition.penaltyValue * boundaryCondition.value
+        if boundaryCondition.applied is not True:
+            self.stiffness[boundaryCondition.DoF,boundaryCondition.DoF] += boundaryCondition.penaltyValue
+            boundaryCondition.applied = True
+        self.load[boundaryCondition.DoF]    += boundaryCondition.penaltyValue * boundaryCondition.value
+
+
+    @requiresInitialized
+    def removeDirichletBoundary( self, boundaryCondition ):
+        if boundaryCondition.applied is not True:
+            self.stiffness[boundaryCondition.DoF,boundaryCondition.DoF] -= boundaryCondition.penaltyValue
+            boundaryCondition.applied = False
+        self.load[boundaryCondition.DoF]    -= boundaryCondition.penaltyValue * boundaryCondition.value
 
 
     @requiresInitialized
     def applyNeumannBoundary( self, boundaryCondition ):
-        self.load[boundaryCondition.DoF]                            = boundaryCondition.value
+        self.load[boundaryCondition.DoF]    = boundaryCondition.value
+        boundaryCondition.applied           = True
+
+
+    @requiresInitialized
+    def removeNeumannBoundary( self, boundaryCondition ):
+        self.load[boundaryCondition.DoF]    -= boundaryCondition.value
+        boundaryCondition.applied           = False
 
 
     @requiresInitialized
@@ -191,3 +220,32 @@ class TransientFEModel( FEModel ):
         
         for element in self.elements:
             element.integrateMass( self.mass )
+
+
+    @requiresInitialized
+    def updateTime( self, time ):
+        self.time = time
+        self.updateLoad( lambda x: self.loadFunction( time, x ) )
+        for boundaryCondition in self.boundaries:
+            self.applyBoundaryCondition( boundaryCondition )
+
+
+    @requiresInitialized
+    def addBoundaryCondition( self, boundaryCondition ):
+        if callable(boundaryCondition.value) is False:
+            raise AttributeError( "Boundary condition value for a TransientFEModel must be a function of time!" ) 
+        return FEModel.addBoundaryCondition( self, boundaryCondition )
+
+
+    @requiresInitialized
+    def applyBoundaryCondition( self, boundaryCondition ):
+        BC          = copy(boundaryCondition)
+        BC.value    = BC.value( self.time )
+        return FEModel.applyBoundaryCondition( self, BC )
+
+
+    @requiresInitialized
+    def removeBoundaryCondition( self, boundaryCondition ):
+        BC          = copy(boundaryCondition)
+        BC.value    = BC.value( self.time )
+        return FEModel.removeBoundaryCondition( self, BC )

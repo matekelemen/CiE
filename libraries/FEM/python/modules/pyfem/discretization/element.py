@@ -89,10 +89,17 @@ class Element1D( Element ):
         '''
         Given the solution coefficients, sample and sum the basis functions at the given coordinates
         '''
-        values = np.zeros( positions.shape, positions.dtype )
+        # Initialize
+        values = None
+        if isNumpyArray( positions ):
+            values = np.zeros( positions.shape, positions.dtype )
+        else:
+            values = 0.0
+
+        # Compute solution
         for basisID, coefficient in enumerate( coefficients ):
             values += coefficient * self.basisFunctions( basisID, self.toLocalCoordinates(positions) )
-        
+            
         return values
 
 

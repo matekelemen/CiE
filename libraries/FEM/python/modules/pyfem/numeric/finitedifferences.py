@@ -30,7 +30,8 @@ def separableFirstOrderThetaScheme( time,
         dt  = time[k+1] - time[k]
 
         # Get load vectors
-        model.updateLoad( lambda x: model.loadFunction( time[k+1], x ) )
+        #model.updateLoad( lambda x: model.loadFunction( time[k+1], x ) )
+        model.updateTime( time[k+1] )
         currentLoadVector   = nextLoadVector
         nextLoadVector      = model.load
 
