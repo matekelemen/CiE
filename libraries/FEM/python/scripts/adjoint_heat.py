@@ -221,11 +221,14 @@ def call(regValue):
   #noplot graphic.close()
   return functionalValue, finDiffT, finDiffRHS
 
-measurements = []
-for lExp in range(-4, 5) :
-  print( "Regularization is {0}".format(10**lExp) )
-  funVal, fDT, fDR = call(10**lExp)
-  measurements.append([funVal, fDT, fDR])
-  
-for m in measurements:
-  print( str(m) )
+#measurements = []
+#for lExp in range(-4, 5) :
+#  print( "Regularization is {0}".format(10**lExp) )
+#  funVal, fDT, fDR = call(10**lExp)
+#  measurements.append([funVal, fDT, fDR])
+#  
+#for m in measurements:
+#  print( str(m) )
+
+if __name__ == "__main__":
+  funVal, fDT, fDR = call( 10 )

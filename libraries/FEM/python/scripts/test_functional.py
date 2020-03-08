@@ -8,7 +8,7 @@ from pyfem.discretization import IntegratedHierarchicBasisFunctions
 from pyfem.discretization import LinearHeatElement1D
 from pyfem.discretization import TransientFEModel
 from pyfem.discretization import DirichletBoundary, NeumannBoundary
-from pyfem.numeric import separableFirstOrderThetaScheme
+from pyfem.numeric import solveLinearHeat1D
 #from pyfem.postprocessing.graphics import animateTimeSeries
 from pyfem.optcontrol import squaredSolutionErrorFunctional
 
@@ -61,10 +61,10 @@ rightBCID   = model.addBoundaryCondition(   NeumannBoundary(    nElements*polyno
 
 # Solve
 initialSolution     = np.zeros( model.size )
-referenceTimeSeries = separableFirstOrderThetaScheme(   time, 
-                                                        initialSolution, 
-                                                        model, 
-                                                        theta=finiteDifferenceImplicity )
+referenceTimeSeries = solveLinearHeat1D(    time, 
+                                            initialSolution, 
+                                            model, 
+                                            theta=finiteDifferenceImplicity )
 
 # ---------------------------------------------------------
 # Modify boundary conditions
@@ -72,10 +72,10 @@ for neumannBCValue in 1.0 - np.linspace(0.0,1.0,11):
     model.boundaries[rightBCID].value = lambda t: neumannBCValue
 
     # Solve new system
-    timeSeries      = separableFirstOrderThetaScheme(   time, 
-                                                        initialSolution, 
-                                                        model, 
-                                                        theta=finiteDifferenceImplicity )
+    timeSeries      = solveLinearHeat1D(    time, 
+                                            initialSolution, 
+                                            model, 
+                                            theta=finiteDifferenceImplicity )
 
     # Get functional integrated in space
     functionalValue = [ squaredSolutionErrorFunctional( solution,

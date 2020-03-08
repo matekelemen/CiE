@@ -8,10 +8,16 @@ import numpy as np
 
 # ---------------------------------------------------------
 def animateTimeSeries( time, positions, timeSeriesSolution, model, speed=0.1, repeat=True, ylim=(-1.0,1.0) ):
-    # Initialize
-    values      = model.sample( timeSeriesSolution[0], positions )
+    # Pack into list in only one time series is supplied
+    if len( timeSeriesSolution.shape ) < 3:
+        timeSeriesSolution = np.asarray([timeSeriesSolution])
+
+    values      = [model.sample( timeSeries[0], positions ) for timeSeries in timeSeriesSolution]
     fig, ax     = plt.subplots()
-    line,       = ax.plot( positions, values )
+
+    lines       = [ None for i in range(len(timeSeriesSolution)) ]
+    for index, valueSet in enumerate( values ):
+        lines[index], = ax.plot( positions, valueSet )
     timeLabel   = ax.text(  0.01,  
                             0.95, 
                             "t = %.3f" % time[0],
@@ -23,20 +29,22 @@ def animateTimeSeries( time, positions, timeSeriesSolution, model, speed=0.1, re
     # Set callbacks
     def frameGenerator():
         for index, t in enumerate(time):
-            yield ( t, model.sample( timeSeriesSolution[index], positions ) )
+            yield ( t, [model.sample( timeSeries[index], positions ) for timeSeries in timeSeriesSolution] )
 
     def initAnim():
-        line.set_ydata( [np.nan] * len(positions) )
+        for line in lines:
+            line.set_ydata( [np.nan] * len(positions) )
         timeLabel.set_text( "t = %.3f" % time[0] )
-        return line, timeLabel
+        return (*lines, timeLabel)
 
     def stepAnim( args ):
         # Update time
         timeLabel.set_text( "t = %.3f" % args[0] )
 
         # Update plot
-        line.set_ydata( args[1] )
-        return line, timeLabel
+        for index, line in enumerate( lines ):
+            line.set_ydata( args[1][index] )
+        return (*lines, timeLabel)
 
     # Create animation
     animation = anim.FuncAnimation( fig,

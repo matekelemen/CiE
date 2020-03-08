@@ -8,7 +8,7 @@ from pyfem.discretization import IntegratedHierarchicBasisFunctions
 from pyfem.discretization import LinearHeatElement1D
 from pyfem.discretization import TransientFEModel
 from pyfem.discretization import DirichletBoundary, NeumannBoundary
-from pyfem.numeric import separableFirstOrderThetaScheme
+from pyfem.numeric import solveLinearHeat1D
 from pyfem.postprocessing.graphics import animateTimeSeries
 
 # ---------------------------------------------------------
@@ -60,10 +60,10 @@ model.addBoundaryCondition( NeumannBoundary(    nElements*polynomialOrder,
 
 # Solve
 initialSolution     = np.zeros( model.size )
-timeSeries          = separableFirstOrderThetaScheme(   time, 
-                                                        initialSolution, 
-                                                        model, 
-                                                        theta=finiteDifferenceImplicity )
+timeSeries          = solveLinearHeat1D(    time, 
+                                            initialSolution, 
+                                            model, 
+                                            theta=finiteDifferenceImplicity )
 
 # Output
 samples             = np.linspace( 0, length, num=100 )
