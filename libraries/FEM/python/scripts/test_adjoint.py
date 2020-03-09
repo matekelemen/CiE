@@ -71,7 +71,7 @@ leftBCID    = model.addBoundaryCondition(   DirichletBoundary(  0,
                                                                 penaltyValue=penaltyValue   ) )
 
 rightBCID   = model.addBoundaryCondition(   NeumannBoundary(    nElements*polynomialOrder,
-                                                                lambda t: referenceControl) )
+                                                                referenceControl) )
 
 # Solve
 initialSolution     = np.zeros( model.size )
