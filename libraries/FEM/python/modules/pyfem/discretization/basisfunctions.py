@@ -28,13 +28,20 @@ class BasisFunctions:
         if self._functions is None:
             raise AttributeError("Unset basis function!")
 
+        # Define filter
+        def windowedBasis( pos ):
+            if self.domain[0]<=pos and pos<=self.domain[1]:
+                return self.dtype( self._functions[basisID](pos) )
+            else:
+                return self.dtype(0.0)
+
         # Evaluate at a single point (zero if out of bounds)
         if not isNumpyArray(position):
-            return float(self.domain[0]<=position and position<=self.domain[1]) * self.dtype( self._functions[basisID](position) )
+            return windowedBasis(position)
         
         # Evaluate at multiple points (zero if out of bounds)
         else:
-            return np.asarray( [ float(self.domain[0]<=x and x<=self.domain[1]) * self._functions[basisID](x) for x in position], dtype=self.dtype )
+            return np.asarray( [ windowedBasis(x) for x in position], dtype=self.dtype )
 
 
 

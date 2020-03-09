@@ -185,6 +185,8 @@ def call(regValue):
     
     for t in range(0, nTime):
       value = -1.0/l*backwardSols[nDofs*(nTime-t-1)]
+      if nDofs*(nTime-t-1) is 0:
+        print(value)
       if value > upBound:
         value = upBound
       if value < lowBound:
@@ -192,6 +194,7 @@ def call(regValue):
       projections[t] = value
       
     approxRHS[::nDofs] += projections # now add the projections iteratively
+    print( approxRHS[::nDofs] )
     
     approxY = np.zeros(nDofs)
     #noplot graphic.plot(n, p, h, basisFunctions, approxY, locationMaps, 0)

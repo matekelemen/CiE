@@ -6,7 +6,8 @@ import scipy.sparse.linalg as linalg
 def solveLinearHeat1D(  time, 
                         initialSolution, 
                         model,
-                        theta=0.5 ):
+                        theta=0.5,
+                        equidistantTime=False ):
     '''
     Implicit theta-scheme. Solves the following problem:
     coefficient * u{i+1} = 
@@ -24,6 +25,24 @@ def solveLinearHeat1D(  time,
     model.updateLoad( lambda x: model.loadFunction(time[0], x) )
     nextLoadVector  = model.load
 
+    # Define matrices 
+    # (save computation of frequently used matrices if time discretization is equidistant)
+    timeStep    = time[1]-time[0]
+    _LHSMatrix  = 1.0/timeStep*model.mass + theta*model.stiffness
+    _RHSMatrix  = 1.0/timeStep*model.mass - (1.0-theta)*model.stiffness
+
+    def LHSMatrix( DT ):
+        if np.abs(timeStep - DT)<1e-15:
+            return _LHSMatrix
+        else:
+            return 1.0/DT*model.mass + theta*model.stiffness
+
+    def RHSMatrix( DT ):
+        if np.abs(timeStep - DT)<1e-15:
+            return _RHSMatrix
+        else:
+            return 1.0/DT*model.mass - (1.0-theta)*model.stiffness
+
     # Step
     for k in range(len(time)-1):
         # Time step
@@ -35,8 +54,8 @@ def solveLinearHeat1D(  time,
         nextLoadVector      = model.load
 
         # Step
-        sol, info   = linalg.gmres( 1.0/dt*model.mass + theta*model.stiffness,
-                                    ( 1.0/dt*model.mass - (1.0-theta)*model.stiffness).dot(timeSeries[k])   \
+        sol, info   = linalg.gmres( LHSMatrix(dt),
+                                    RHSMatrix(dt).dot(timeSeries[k])   \
                                         + theta*nextLoadVector                                              \
                                         + (1.0-theta)*currentLoadVector,
                                     x0=np.random.rand(model.size),
@@ -57,7 +76,8 @@ def solveLinearHeat1D(  time,
 def solveAdjointLinearHeat1D(   time, 
                                 adjointRHS,
                                 model,
-                                theta=0.5 ):
+                                theta=0.5,
+                                initialAdjointSolution=None ):
     '''
     Implicit theta-scheme. Solves the following problem:
     coefficient * u{i+1} = 
@@ -68,7 +88,28 @@ def solveAdjointLinearHeat1D(   time,
         theta=0.5       : implicitness
     '''
     # Initialize
-    timeSeries          = np.zeros( (len(time), model.size) )
+    timeSeries      = np.zeros( (len(time), model.size) )
+
+    if initialAdjointSolution is not None:
+        timeSeries[-1]  = initialAdjointSolution
+
+    # Define matrices 
+    # (save computation of frequently used matrices if time discretization is equidistant)
+    timeStep    = time[1]-time[0]
+    _LHSMatrix  = 1.0/timeStep*model.mass + theta*model.stiffness
+    _RHSMatrix  = 1.0/timeStep*model.mass - (1.0-theta)*model.stiffness
+
+    def LHSMatrix( DT ):
+        if np.abs(timeStep - DT)<1e-15:
+            return _LHSMatrix
+        else:
+            return 1.0/DT*model.mass + theta*model.stiffness
+
+    def RHSMatrix( DT ):
+        if np.abs(timeStep - DT)<1e-15:
+            return _RHSMatrix
+        else:
+            return 1.0/DT*model.mass - (1.0 - theta) * model.stiffness
 
     # Step
     for k in range( len(time)-1, 0, -1 ):
@@ -76,10 +117,10 @@ def solveAdjointLinearHeat1D(   time,
         dt  = time[k] - time[k-1]
 
         # Step
-        sol, info   = linalg.gmres( 1.0/dt*model.mass + theta*model.stiffness,
-                                    (1.0/dt*model.mass - (1.0 - theta) * model.stiffness).dot( timeSeries[k] )  \
-                                        + theta * adjointRHS[k]                                                 \
-                                        + (1.0-theta) * adjointRHS[k-1],
+        sol, info   = linalg.gmres( LHSMatrix(dt),
+                                    RHSMatrix(dt).dot( timeSeries[k] )  \
+                                        + theta * adjointRHS[k-1]                                                 \
+                                        + (1.0-theta) * adjointRHS[k],
                                     x0=np.random.rand(model.size),
                                     atol=1e-12,
                                     maxiter=np.max((5*model.size,100)) )

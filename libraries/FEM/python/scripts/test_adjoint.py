@@ -34,10 +34,10 @@ finiteDifferenceImplicity   = 0.75
 
 # Adjoint
 numberOfAdjointIterations   = 50
-regularization              = 100
+regularization              = 150
 
 # Postprocessing
-numberOfSamples             = 150
+numberOfSamples             = 100
 
 # ---------------------------------------------------------
 # REFERENCE SOLUTION
@@ -85,7 +85,8 @@ functionalValues    = np.zeros( numberOfAdjointIterations )
 controls            = np.zeros( (numberOfAdjointIterations, len(time)) )
 
 # Set initial control
-u                   = 0.5 * np.ones( len(time) )
+#u                   = np.random.rand( len(time) )
+u                   = 0.5*np.ones( len(time) )
 
 def controlFunction( t, control ):
     index = np.abs( time-t ).argmin()
@@ -114,7 +115,7 @@ for i in range(numberOfAdjointIterations):
     projections         = -1.0/regularization * np.asarray([ 
                                 model.boundaries[rightBCID].value(t) * adjointTimeSeries[tIndex][-1] for tIndex, t in enumerate(time)
                                 ])
-    projections         = np.flip( projections, axis=0 )
+    #projections         = np.asarray([ np.min((0.04,np.max((0.0,projection)))) for projection in projections ])
     u                   += projections
 
     # Get functional integrated in space (for every time step)
@@ -132,9 +133,9 @@ for i in range(numberOfAdjointIterations):
     functionalValues[i] = functionalValue
 
     # Print detauls
-    message     = "Iteration:\t\t%i" % i
-    message     += "\nNorm of control:\t%.3f" % np.linalg.norm( u )
-    message     += "\nFunctional value:\t%.4f" % functionalValue
+    message     = "Iteration\t\t:%i" % i
+    message     += "\nNorm of control\t\t:%.3f" % np.linalg.norm( u )
+    message     += "\nFunctional value\t:%.4f" % functionalValue
     message     += "\n"
     print( message )
 
@@ -147,7 +148,6 @@ for i in range(numberOfAdjointIterations):
 # Find best control
 uIndex  = functionalValues.argmin()
 u       = controls[uIndex]
-print( "\nFinal control:\t" + str(u) + "\nin iteration " + str(uIndex) )
 
 # Compute solution with best control
 model.boundaries[rightBCID].value   = lambda t: controlFunction( t, u )
@@ -158,6 +158,8 @@ timeSeries = solveLinearHeat1D( time,
 
 
 # Output and graphics
+print( "\nFinal control:\t" + str(u) + "\nin iteration " + str(uIndex) )
+
 samples             = np.linspace( 0, length, num=numberOfSamples )
 animateTimeSeries(  time,
                     samples,
@@ -166,7 +168,9 @@ animateTimeSeries(  time,
                     speed=0.05,
                     ylim=(-0.1,1.0) )
 
-plt.plot( functionalValues )
-plt.xlabel( "Iteration" )
+#plt.loglog( functionalValues, ".-" )
+plt.plot( functionalValues, ".-" )
+plt.yscale( "log" )
+plt.xlabel( "# Iteration" )
 plt.ylabel( "Functional value" )
 plt.show()
