@@ -83,9 +83,11 @@ def solveAdjointLinearHeat1D(   time,
     coefficient * u{i+1} = 
 
     Arguments:
-        time            : discretized time domain
-        model           : TransientFEModel with mass, stiffness
-        theta=0.5       : implicitness
+        time                        : discretized time domain
+        adjointRHS                  : FESolution - referenceFESolution
+        model                       : TransientFEModel with mass, stiffness
+        theta=0.5                   : implicitness
+        initialAdjointSolution=None : zeros by default
     '''
     # Initialize
     timeSeries      = np.zeros( (len(time), model.size) )

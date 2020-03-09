@@ -15,6 +15,9 @@ from pyfem.postprocessing.graphics import animateTimeSeries
 # ---------------------------------------------------------
 # SETTINGS
 # ---------------------------------------------------------
+# Reference
+referenceControl            = lambda t: 1.0
+
 # Geometry and material
 length                      = 1.0
 capacity                    = 1.0
@@ -26,7 +29,7 @@ load                        = lambda t, x: 0.0
 # Discretization
 time                        = np.linspace(0.0, 1.0, 50)
 nElements                   = 50
-polynomialOrder             = 1
+polynomialOrder             = 2
 
 # Integration
 integrationOrder            = polynomialOrder + 5
@@ -34,7 +37,7 @@ finiteDifferenceImplicity   = 0.75
 
 # Adjoint
 numberOfAdjointIterations   = 50
-regularization              = 150
+regularization              = 100.0
 
 # Postprocessing
 numberOfSamples             = 100
@@ -68,7 +71,7 @@ leftBCID    = model.addBoundaryCondition(   DirichletBoundary(  0,
                                                                 penaltyValue=penaltyValue   ) )
 
 rightBCID   = model.addBoundaryCondition(   NeumannBoundary(    nElements*polynomialOrder,
-                                                                lambda t: 1.0) )
+                                                                lambda t: referenceControl) )
 
 # Solve
 initialSolution     = np.zeros( model.size )
@@ -85,7 +88,7 @@ functionalValues    = np.zeros( numberOfAdjointIterations )
 controls            = np.zeros( (numberOfAdjointIterations, len(time)) )
 
 # Set initial control
-#u                   = np.random.rand( len(time) )
+#u                   = 0.1*np.random.rand( len(time) )
 u                   = 0.5*np.ones( len(time) )
 
 def controlFunction( t, control ):
@@ -105,11 +108,23 @@ for i in range(numberOfAdjointIterations):
                                         model, 
                                         theta=finiteDifferenceImplicity )
 
+    #########################################################################
+    # Solve the stationary adjoint, and use the solution as the initial one
+    initialAdjointSolution=None
+    sol, info   = linalg.gmres( model.stiffness,
+                                timeSeries[-1] - referenceTimeSeries[-1],
+                                x0=np.random.rand(model.size),
+                                atol=1e-12,
+                                maxiter=np.max((5*model.size,100)) )
+    initialAdjointSolution=sol
+    #########################################################################
+
     # Compute adjoint solution
     adjointTimeSeries   = solveAdjointLinearHeat1D( time,
                                                     timeSeries - referenceTimeSeries,
                                                     model,
-                                                    theta=finiteDifferenceImplicity   )
+                                                    theta=finiteDifferenceImplicity,
+                                                    initialAdjointSolution=initialAdjointSolution   )
 
     # Compute projections and update control
     projections         = -1.0/regularization * np.asarray([ 
