@@ -2,6 +2,7 @@
 #define GLVISUALIZATION_GL_LOGGER
 
 #include <fstream>
+#include <string>
 
 namespace cie {
 namespace gl {

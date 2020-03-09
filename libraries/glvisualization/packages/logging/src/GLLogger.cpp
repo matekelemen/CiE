@@ -1,4 +1,5 @@
 #include "../inc/GLLogger.hpp"
+#include <fstream>
 #include <iostream>
 #include <chrono>
 #include <ctime>

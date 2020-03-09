@@ -1,6 +1,7 @@
 #ifndef GLVISUALIZATION_CALLBACKS_KEYS_HPP
 #define GLVISUALIZATION_CALLBACKS_KEYS_HPP
 
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <functional>
 #include "../../logging/inc/GLLogger.hpp"

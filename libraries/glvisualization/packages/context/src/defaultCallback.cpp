@@ -1,5 +1,6 @@
 #include "../inc/defaultCallback.hpp"
 #include <iostream>
+#include <string>
 
 namespace cie {
 namespace gl {
