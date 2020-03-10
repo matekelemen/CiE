@@ -34,7 +34,7 @@ def temp( t, order=1, coefficients=coefficients ):
 
 testIntegral = lambda t: t*temp(t)
 
-
+# ---------------------------------------------------------
 integrator      = Integrator( polynomialOrder )
 testDomains     = ( (-1.0, 1.0),
                     (0.0, 1.0),

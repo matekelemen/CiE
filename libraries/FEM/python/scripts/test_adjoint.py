@@ -4,6 +4,7 @@ import scipy.sparse.linalg as linalg
 from matplotlib import pyplot as plt
 
 # --- Internal Imports ---
+from pyfem.numeric import solveLinearSystem
 from pyfem.discretization import IntegratedHierarchicBasisFunctions
 from pyfem.discretization import LinearHeatElement1D
 from pyfem.discretization import TransientFEModel
@@ -26,13 +27,16 @@ conductivity                = 1.0
 # Load
 load                        = lambda t, x: 0.0
 
+# Boundaries
+penaltyValue    = 1e3
+
 # Discretization
 time                        = np.linspace(0.0, 1.0, 50)
 nElements                   = 50
 polynomialOrder             = 2
 
 # Integration
-integrationOrder            = polynomialOrder + 5
+integrationOrder            = 2*polynomialOrder + 1
 finiteDifferenceImplicity   = 0.75
 
 # Adjoint
@@ -65,7 +69,6 @@ model.allocateZeros( )
 model.integrate( )
 
 # Boundary conditions
-penaltyValue    = 1e3
 leftBCID    = model.addBoundaryCondition(   DirichletBoundary(  0, 
                                                                 lambda t: 0.0, 
                                                                 penaltyValue=penaltyValue   ) )
@@ -111,11 +114,8 @@ for i in range(numberOfAdjointIterations):
     #########################################################################
     # Solve the stationary adjoint, and use the solution as the initial one
     initialAdjointSolution=None
-    sol, info   = linalg.gmres( model.stiffness,
-                                timeSeries[-1] - referenceTimeSeries[-1],
-                                x0=np.random.rand(model.size),
-                                atol=1e-12,
-                                maxiter=np.max((5*model.size,100)) )
+    sol   = solveLinearSystem(  model.stiffness,
+                                timeSeries[-1] - referenceTimeSeries[-1]    )
     initialAdjointSolution=sol
     #########################################################################
 

@@ -2,12 +2,14 @@
 import numpy as np
 import scipy.sparse.linalg as linalg
 
+# --- Internal Imports ---
+from .solver import solveLinearSystem
+
 # ---------------------------------------------------------
 def solveLinearHeat1D(  time, 
                         initialSolution, 
                         model,
-                        theta=0.5,
-                        equidistantTime=False ):
+                        theta=0.5   ):
     '''
     Implicit theta-scheme. Solves the following problem:
     coefficient * u{i+1} = 
@@ -54,18 +56,10 @@ def solveLinearHeat1D(  time,
         nextLoadVector      = model.load
 
         # Step
-        sol, info   = linalg.gmres( LHSMatrix(dt),
-                                    RHSMatrix(dt).dot(timeSeries[k])   \
-                                        + theta*nextLoadVector                                              \
-                                        + (1.0-theta)*currentLoadVector,
-                                    x0=np.random.rand(model.size),
-                                    atol=1e-12,
-                                    maxiter=np.max((5*model.size,100)) )
-
-        if info < 0:
-            raise RuntimeError( "Linear solver error!" )
-        elif info>0:
-            print( "Solution failed to converge after " + str(info) + " steps (step " + str(k) + ")" )
+        sol = solveLinearSystem(    LHSMatrix(dt),
+                                    RHSMatrix(dt).dot(timeSeries[k])    \
+                                        + theta*nextLoadVector          \
+                                        + (1.0-theta)*currentLoadVector  )
 
         timeSeries[k+1] = sol
 
@@ -119,19 +113,10 @@ def solveAdjointLinearHeat1D(   time,
         dt  = time[k] - time[k-1]
 
         # Step
-        sol, info   = linalg.gmres( LHSMatrix(dt),
+        sol = solveLinearSystem(    LHSMatrix(dt),
                                     RHSMatrix(dt).dot( timeSeries[k] )  \
-                                        + theta * adjointRHS[k-1]                                                 \
-                                        + (1.0-theta) * adjointRHS[k],
-                                    x0=np.random.rand(model.size),
-                                    atol=1e-12,
-                                    maxiter=np.max((5*model.size,100)) )
-
-        # Check convergence
-        if info < 0:
-            raise RuntimeError( "Linear solver error!" )
-        elif info>0:
-            print( "Solution failed to converge after " + str(info) + " steps (step " + str(k) + ")" )
+                                        + theta * adjointRHS[k-1]       \
+                                        + (1.0-theta) * adjointRHS[k]   )
 
         # Update time series
         timeSeries[k-1] = sol

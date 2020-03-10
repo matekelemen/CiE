@@ -9,7 +9,6 @@ from pyfem.discretization import LinearHeatElement1D
 from pyfem.discretization import TransientFEModel
 from pyfem.discretization import DirichletBoundary, NeumannBoundary
 from pyfem.numeric import solveLinearHeat1D
-#from pyfem.postprocessing.graphics import animateTimeSeries
 from pyfem.optcontrol import squaredSolutionErrorFunctional
 
 # ---------------------------------------------------------
@@ -22,8 +21,8 @@ conductivity                = 1.0
 load                        = lambda t, x: 0.0
 
 # Discretization
-time                        = np.linspace(0.0, 1.0, 10)
-nElements                   = 10
+time                        = np.linspace(0.0, 1.0, 25)
+nElements                   = 25
 polynomialOrder             = 3
 
 # Integration
@@ -87,4 +86,4 @@ for neumannBCValue in 1.0 - np.linspace(0.0,1.0,11):
     functionalValue = np.trapz( functionalValue,
                                 x=time  )
 
-    print( ("Load = %.3f" % neumannBCValue) + " :\tFunctional = %.5f" % functionalValue )
+    print( ("Boundary load = %.1f" % neumannBCValue) + ",\tFunctional = %.5f" % functionalValue )

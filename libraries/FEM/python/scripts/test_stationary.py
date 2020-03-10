@@ -7,6 +7,7 @@ from matplotlib import pyplot as plt
 from pyfem.discretization import IntegratedHierarchicBasisFunctions
 from pyfem.discretization import LinearHeatElement1D
 from pyfem.discretization import FEModel
+from pyfem.discretization import DirichletBoundary, NeumannBoundary
 
 # ---------------------------------------------------------
 # Geometry and material
@@ -16,6 +17,9 @@ conductivity        = 1.0
 
 # Load
 load                = lambda x: np.sin(x*np.pi)
+
+# Boundaries
+penaltyValue    = 1e3
 
 # Discretization
 nElements           = 10
@@ -44,16 +48,12 @@ model.allocateZeros( )
 model.integrate( )
 
 # Boundary conditions
-penaltyValue    = 1e3
-model.applyDirichletBoundary(   0, 
-                                0.0, 
-                                penaltyValue=penaltyValue )
+leftBCID    = model.addBoundaryCondition(   DirichletBoundary(  0, 
+                                                                0.0, 
+                                                                penaltyValue=penaltyValue   ) )
 
-#model.applyDirichletBoundary(   nElements*polynomialOrder, 
-#                                0.0, 
-#                                penaltyValue=penaltyValue )
-model.applyNeumannBoundary(     nElements*polynomialOrder,
-                                0.0)
+rightBCID   = model.addBoundaryCondition(   NeumannBoundary(    nElements*polynomialOrder,
+                                                                0.0) )
 
 # Solve
 u       = model.solveStationary()
