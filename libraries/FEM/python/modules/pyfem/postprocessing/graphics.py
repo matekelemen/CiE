@@ -7,24 +7,28 @@ import numpy as np
 
 
 # ---------------------------------------------------------
-def animateTimeSeries( time, positions, timeSeriesSolution, model, speed=0.1, repeat=True, ylim=(-1.0,1.0) ):
+def animateTimeSeries( time, positions, timeSeriesSolution, model, speed=0.1, repeat=True, ylim=(-1.0,1.0), figure=None, axis=None ):
     # Pack into list in only one time series is supplied
     if len( timeSeriesSolution.shape ) < 3:
         timeSeriesSolution = np.asarray([timeSeriesSolution])
 
-    values      = [model.sample( timeSeries[0], positions ) for timeSeries in timeSeriesSolution]
-    fig, ax     = plt.subplots()
+    values  = [model.sample( timeSeries[0], positions ) for timeSeries in timeSeriesSolution]
+    blit    = True
+
+    if figure is None or axis is None:
+        figure, axis    = plt.subplots()
+        blit            = False
 
     lines       = [ None for i in range(len(timeSeriesSolution)) ]
     for index, valueSet in enumerate( values ):
-        lines[index], = ax.plot( positions, valueSet )
-    timeLabel   = ax.text(  0.01,  
-                            0.95, 
-                            "t = %.3f" % time[0],
-                            fontdict={  "family"    : "serif",
-                                        "alpha"     : 0.2,
-                                        "weight"    : "bold"} )
-    plt.ylim(ylim)
+        lines[index], = axis.plot( positions, valueSet )
+    timeLabel   = axis.text(    0.01,  
+                                0.95, 
+                                "t = %.3f" % time[0],
+                                fontdict={  "family"    : "serif",
+                                            "alpha"     : 0.2,
+                                            "weight"    : "bold"} )
+    axis.set_ylim(ylim)
 
     # Set callbacks
     def frameGenerator():
@@ -47,14 +51,12 @@ def animateTimeSeries( time, positions, timeSeriesSolution, model, speed=0.1, re
         return (*lines, timeLabel)
 
     # Create animation
-    animation = anim.FuncAnimation( fig,
+    animation = anim.FuncAnimation( figure,
                                     stepAnim,
                                     init_func=initAnim,
                                     frames=frameGenerator,
                                     interval=1.0/speed,
-                                    blit=True,
+                                    blit=blit,
                                     save_count=50,
                                     repeat_delay=1000,
                                     repeat=repeat)
-
-    plt.show()

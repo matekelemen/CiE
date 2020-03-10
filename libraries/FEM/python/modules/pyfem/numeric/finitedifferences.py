@@ -22,10 +22,10 @@ def solveLinearHeat1D(  time,
     '''
     # Initialize
     timeSeries     = np.zeros( (len(time), len(initialSolution)) )
-    timeSeries[0]  = initialSolution
+    timeSeries[0]  = initialSolution.copy()
 
-    model.updateLoad( lambda x: model.loadFunction(time[0], x) )
-    nextLoadVector  = model.load
+    model.updateTime( time[0] )
+    nextLoadVector  = model.load.copy()
 
     # Define matrices 
     # (save computation of frequently used matrices if time discretization is equidistant)
@@ -52,8 +52,8 @@ def solveLinearHeat1D(  time,
 
         # Get load vectors
         model.updateTime( time[k+1] )
-        currentLoadVector   = nextLoadVector
-        nextLoadVector      = model.load
+        currentLoadVector   = nextLoadVector.copy()
+        nextLoadVector      = model.load.copy()
 
         # Step
         sol = solveLinearSystem(    LHSMatrix(dt),
@@ -87,7 +87,7 @@ def solveAdjointLinearHeat1D(   time,
     timeSeries      = np.zeros( (len(time), model.size) )
 
     if initialAdjointSolution is not None:
-        timeSeries[-1]  = initialAdjointSolution
+        timeSeries[-1]  = initialAdjointSolution.copy()
 
     # Define matrices 
     # (save computation of frequently used matrices if time discretization is equidistant)
@@ -110,13 +110,17 @@ def solveAdjointLinearHeat1D(   time,
     # Step
     for k in range( len(time)-1, 0, -1 ):
         # Time step
-        dt  = time[k] - time[k-1]
+        dt      = time[k] - time[k-1]
 
         # Step
         sol = solveLinearSystem(    LHSMatrix(dt),
                                     RHSMatrix(dt).dot( timeSeries[k] )  \
                                         + theta * adjointRHS[k-1]       \
                                         + (1.0-theta) * adjointRHS[k]   )
+
+        # Neglect transient adjoint system and solve the stationary one at each time step 
+        #sol     = solveLinearSystem(    model.stiffness,
+        #                                adjointRHS[k]    )
 
         # Update time series
         timeSeries[k-1] = sol
