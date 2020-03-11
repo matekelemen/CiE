@@ -70,7 +70,7 @@ void Camera::updateTransformationMatrix()
 void Camera::update()
 {
     setCameraPose(  _cameraPosition,
-                    _cameraPosition );
+                    _cameraDirection );
     setCameraProperties(    _fieldOfView,
                             _nearClippingPlane,
                             _farClippingPlane   );

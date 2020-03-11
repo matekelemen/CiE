@@ -93,15 +93,10 @@ WindowPtr GLContext::openWindow(    size_t width,
 
     // Set basic callbacks
     glfwSetFramebufferSizeCallback( _window, frameBufferResizeCallback );
-
-    // Resize window
-    std::cout << "Requested:\t" << std::to_string(width) << ", " << std::to_string(height) << "\n";
-    //glfwSetWindowSize( _window, width, height );
         
     // Check window dimensions
     int checkWidth, checkHeight;
     glfwGetFramebufferSize( _window, &checkWidth, &checkHeight );
-    std::cout << "Got:\t" << std::to_string(checkWidth) << ", " << std::to_string(checkHeight) << "\n";
     if ( (size_t)checkWidth!=width || (size_t)checkHeight!=height )
         log( "Created window is not of the requested size!", CONTEXT_LOG_TYPE_WARNING );
 

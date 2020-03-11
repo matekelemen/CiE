@@ -40,15 +40,15 @@ void defaultArcballKeyCallback( GLFWwindow* window,
 
 void zoomCamera( Camera& camera, bool zoom )
 {
-    GLfloat modifier = 0.1f;
+    GLfloat modifier = 0.25f;
 
     if (zoom)
         modifier *= -1.0f;
 
     if ( camera.height()>-modifier && camera.width()>-modifier )
     {
+        camera.height() += modifier * camera.height()/camera.width();
         camera.width()  += modifier;
-        camera.height() += modifier;
     }
 
     if ( camera.fieldOfView() > -10*modifier )
@@ -56,7 +56,7 @@ void zoomCamera( Camera& camera, bool zoom )
                                     camera.nearClippingPlane(),
                                     camera.farClippingPlane()   );
 
-    camera.update();
+    camera.updateTransformationMatrix();
 }
 
 
