@@ -15,10 +15,11 @@ def animateTimeSeries( time, positions, timeSeriesSolution, model, speed=0.1, re
     values  = [model.sample( timeSeries[0], positions ) for timeSeries in timeSeriesSolution]
     blit    = True
 
+    # Create figure and axis if not given
     if figure is None or axis is None:
         figure, axis    = plt.subplots()
-        blit            = False
 
+    # Initialize lines
     lines       = [ None for i in range(len(timeSeriesSolution)) ]
     for index, valueSet in enumerate( values ):
         lines[index], = axis.plot( positions, valueSet )
@@ -60,3 +61,4 @@ def animateTimeSeries( time, positions, timeSeriesSolution, model, speed=0.1, re
                                     save_count=50,
                                     repeat_delay=1000,
                                     repeat=repeat)
+    return animation

@@ -50,10 +50,8 @@ model.allocateZeros( )
 model.integrate( )
 
 # Boundary conditions
-penaltyValue    = 1e3
 model.addBoundaryCondition( DirichletBoundary(  0, 
-                                                lambda t: 0.0, 
-                                                penaltyValue=penaltyValue   ) )
+                                                lambda t: 0.0   ) )
 
 model.addBoundaryCondition( NeumannBoundary(    nElements*polynomialOrder,
                                                 lambda t: 1.0) )
@@ -73,3 +71,5 @@ animateTimeSeries(  time,
                     model,
                     speed=0.05,
                     ylim=( -0.1, 1.0 ) )
+
+plt.show()

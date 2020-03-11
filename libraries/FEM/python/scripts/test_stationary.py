@@ -18,9 +18,6 @@ conductivity        = 1.0
 # Load
 load                = lambda x: np.sin(x*np.pi)
 
-# Boundaries
-penaltyValue    = 1e3
-
 # Discretization
 nElements           = 10
 polynomialOrder     = 2
@@ -49,8 +46,7 @@ model.integrate( )
 
 # Boundary conditions
 leftBCID    = model.addBoundaryCondition(   DirichletBoundary(  0, 
-                                                                0.0, 
-                                                                penaltyValue=penaltyValue   ) )
+                                                                0.0 ))
 
 rightBCID   = model.addBoundaryCondition(   NeumannBoundary(    nElements*polynomialOrder,
                                                                 0.0) )

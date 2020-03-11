@@ -17,7 +17,8 @@ from pyfem.postprocessing.graphics import animateTimeSeries
 # SETTINGS
 # ---------------------------------------------------------
 # Reference
-referenceControl            = lambda t: np.cos(t)
+referenceControl            = lambda t: 1.0
+initialControl              = lambda t: 1.0
 
 # Geometry and material
 length                      = 1.0
@@ -27,11 +28,8 @@ conductivity                = 1.0
 # Load
 load                        = lambda t, x: 0.0
 
-# Boundaries
-penaltyValue                = 1e10
-
 # Discretization
-time                        = np.linspace(0.0, 1.0, 100)
+time                        = np.linspace(0.0, 1.0, 15)
 nElements                   = 50
 polynomialOrder             = 1
 
@@ -70,8 +68,7 @@ model.integrate( )
 
 # Boundary conditions
 leftBCID    = model.addBoundaryCondition(   DirichletBoundary(  0, 
-                                                                lambda t: 0.0, 
-                                                                penaltyValue=penaltyValue   ) )
+                                                                lambda t: 0.0   ) )
 
 rightBCID   = model.addBoundaryCondition(   NeumannBoundary(    nElements*polynomialOrder,
                                                                 referenceControl) )
@@ -93,9 +90,7 @@ controls            = np.zeros( (numberOfAdjointIterations, len(time)) )
 referenceControl    = np.asarray( [ model.boundaries[rightBCID].value(t) for t in time ] )
 
 # Set initial control
-#u                   = 0.1*np.random.rand( len(time) )
-#u                   = referenceControl.copy()
-u                   = 0.5*np.ones( len(time) )
+u                   = np.asarray( [initialControl(t) for t in time] )
 
 def controlFunction( t, control ):
     index = np.abs( time-t ).argmin()

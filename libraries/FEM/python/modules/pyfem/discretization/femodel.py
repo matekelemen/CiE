@@ -13,7 +13,7 @@ from .element import Element, Element1D
 def requiresInitialized( function ):
     @functools.wraps( function )
     def decoratedFunction( instance, *args, **kwargs ):
-        for name, value in vars(instance).items():
+        for value in vars(instance).values():
             if value is None:
                 raise AttributeError( "Uninitialized member variable when calling a function that requires an initialized object!" )
         else:
@@ -65,7 +65,7 @@ class FEModel:
             raise RuntimeError( "Attempt to initialize existing matrices" )
 
         # Initialize matrices
-        self.stiffness  = sparse.csc_matrix(    ( np.zeros( DoFs.shape[1] ), DoFs ), 
+        self.stiffness  = sparse.csr_matrix(    ( np.zeros( DoFs.shape[1] ), DoFs ), 
                                                 shape=self.shape )
         self.load       = np.zeros( self.size )
 
@@ -111,6 +111,11 @@ class FEModel:
     @requiresInitialized
     def applyDirichletBoundary( self, boundaryCondition ):
         if boundaryCondition.applied is not True:
+            for index in range(self.size):
+                if np.abs( self.stiffness[boundaryCondition.DoF, index] )>1e-15:
+                    self.stiffness[boundaryCondition.DoF, index] = 0.0
+                if np.abs( self.stiffness[ index, boundaryCondition.DoF] )>1e-15:
+                    self.stiffness[ index, boundaryCondition.DoF ] = 0.0
             self.stiffness[boundaryCondition.DoF,boundaryCondition.DoF] += boundaryCondition.penaltyValue
             boundaryCondition.applied = True
         self.load[boundaryCondition.DoF]    += boundaryCondition.penaltyValue * boundaryCondition.value
@@ -209,7 +214,7 @@ class TransientFEModel( FEModel ):
 
         if self.mass is not None:
             raise RuntimeError( "Attempt to initialize existing matrices" )
-        self.mass   = sparse.csc_matrix((   np.zeros( DoFs.shape[1] ), DoFs ), 
+        self.mass   = sparse.csr_matrix((   np.zeros( DoFs.shape[1] ), DoFs ), 
                                             shape=self.shape )
         return DoFs
 
