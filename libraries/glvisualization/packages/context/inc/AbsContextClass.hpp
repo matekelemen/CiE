@@ -12,6 +12,7 @@ class AbsContextClass
 {
 public:
     void terminate();
+    virtual void contextStateChangeSignal();
 
 protected:
     void log(   const std::string& message,

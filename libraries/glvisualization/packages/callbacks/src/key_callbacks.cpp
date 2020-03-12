@@ -22,7 +22,7 @@ void defaultArcballKeyCallback( GLFWwindow* window,
 {
     DrawManager* drawManager = static_cast<DrawManager*>(glfwGetWindowUserPointer( window ));
 
-    if ( action == GLFW_PRESS )
+    if ( action == GLFW_PRESS || action==GLFW_REPEAT )
             switch (key)
             {
                 case GLFW_KEY_KP_ADD:
@@ -38,25 +38,25 @@ void defaultArcballKeyCallback( GLFWwindow* window,
 }
 
 
-void zoomCamera( Camera& camera, bool zoom )
+void zoomCamera( CameraPtr camera, bool zoom )
 {
     GLfloat modifier = 0.25f;
 
     if (zoom)
         modifier *= -1.0f;
 
-    if ( camera.height()>-modifier && camera.width()>-modifier )
+    if ( camera->height()>-modifier && camera->width()>-modifier )
     {
-        camera.height() += modifier * camera.height()/camera.width();
-        camera.width()  += modifier;
+        camera->height() += modifier * camera->height()/camera->width();
+        camera->width()  += modifier;
     }
 
-    if ( camera.fieldOfView() > -10*modifier )
-        camera.setCameraProperties( camera.fieldOfView() + 10*modifier,
-                                    camera.nearClippingPlane(),
-                                    camera.farClippingPlane()   );
+    if ( camera->fieldOfView() > -10*modifier )
+        camera->setCameraProperties( camera->fieldOfView() + 10*modifier,
+                                    camera->nearClippingPlane(),
+                                    camera->farClippingPlane()   );
 
-    camera.updateTransformationMatrix();
+    camera->updateTransformationMatrix();
 }
 
 

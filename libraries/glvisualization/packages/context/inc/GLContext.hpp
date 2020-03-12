@@ -29,6 +29,10 @@ using DrawFunctionFactory   = std::function<DrawFunction(GLContext&)>;
 DrawFunction makeEmptyDrawFunction( GLContext& );
 
 
+class AbsContextClass;
+using AbsContextClassPtr = std::shared_ptr<AbsContextClass>;
+
+
 
 // GL context and window manager
 class GLContext
@@ -47,8 +51,10 @@ public:
                             GLFWwindow* sharedWindow        = nullptr );
     void closeWindow();
     void makeContextCurrent();
-    void startEventLoop(    DrawFunctionFactory eventLoopGenerator = makeEmptyDrawFunction,
-                            KeyCallbackFunction keyCallback             = callback_keyExit );
+    void startEventLoop(    DrawFunctionFactory eventLoopGenerator  = makeEmptyDrawFunction,
+                            KeyCallbackFunction keyCallback         = callback_keyExit,
+                            CursorCallbackFunction cursorCallback   = defaultCursorCallbackFunction,
+                            MouseCallbackFunction mouseCallback     = defaultMouseCallbackFunction );
 
     void log(   const std::string& message,
                 GLuint messageType = CONTEXT_LOG_TYPE_REPORT );
@@ -58,13 +64,15 @@ public:
     const WindowPtr window() const;
 
 private:
-    WindowPtr           _window;
-    GLLogger            _logger;
-    DrawFunction        _drawFunction;
+    WindowPtr                       _window;
+    GLLogger                        _logger;
+    DrawFunction                    _drawFunction;
+
+    std::vector<AbsContextClassPtr> _observers;
     
-    static bool         _initialized;
-    static bool         _active;
-    static bool         _current;
+    static bool                     _initialized;
+    static bool                     _active;
+    static bool                     _current;
 };
 
 

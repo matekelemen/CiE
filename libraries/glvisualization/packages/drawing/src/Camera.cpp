@@ -14,6 +14,7 @@ Camera::Camera( GLContext& context ) :
     _nearClippingPlane( 0.1f ),
     _farClippingPlane( 100.0f ),
     _viewMatrix( 1.0f ),
+    _projectionMatrix( 1.0f ),
     _transformationMatrix( 1.0f )
 {
     setCameraPose<glm::vec3>(   _cameraPosition,
@@ -25,6 +26,45 @@ Camera::Camera( GLContext& context ) :
 
     updateTransformationMatrix();
     log( "Create Camera" );
+}
+
+
+Camera::Camera( const Camera& camera ) :
+    AbsContextClass( *camera._context, "Camera" ),
+    _cameraPosition( camera._cameraPosition ),
+    _cameraDirection( camera._cameraDirection ),
+    _fieldOfView( camera._fieldOfView ),
+    _width( camera._width ),
+    _height( camera._height ),
+    _nearClippingPlane( camera._nearClippingPlane ),
+    _farClippingPlane( camera._farClippingPlane ),
+    _viewMatrix( camera._viewMatrix ),
+    _projectionMatrix( camera._projectionMatrix ),
+    _transformationMatrix( camera._transformationMatrix )
+{
+}
+
+
+Camera& Camera::operator=( const Camera& camera )
+{
+    _cameraPosition         = camera._cameraPosition;
+    _cameraDirection        = camera._cameraDirection;
+    _fieldOfView            = camera._fieldOfView;
+    _width                  = camera._width;
+    _height                 = camera._height;
+    _nearClippingPlane      = camera._nearClippingPlane;
+    _farClippingPlane       = camera._farClippingPlane;
+    _viewMatrix             = camera._viewMatrix;
+    _projectionMatrix       = camera._projectionMatrix;
+    _transformationMatrix   = camera._transformationMatrix;
+
+    return *this;
+}
+
+
+Camera::~Camera()
+{
+    log( "Destroy Camera" );
 }
 
 
@@ -135,6 +175,36 @@ GLfloat Camera::nearClippingPlane() const
 GLfloat Camera::farClippingPlane() const
 {
     return _farClippingPlane;
+}
+
+
+
+ArcballCamera::ArcballCamera( GLContext& context ) :
+    Camera( context ),
+    _mousePressPosition( {0.0,0.0} )
+{
+    std::cout << "ArcballCamera default constructor\n";
+}
+
+
+ArcballCamera::ArcballCamera( const ArcballCamera& camera ):
+    Camera( camera ),
+    _mousePressPosition( camera._mousePressPosition )
+{
+    std::cout << "ArcballCamera copy constructor\n";
+}
+
+
+void ArcballCamera::setMousePressPosition( double x, double y )
+{
+    _mousePressPosition[0] = x;
+    _mousePressPosition[1] = y;
+}
+
+
+const std::array<double, 2>& ArcballCamera::mousePressPosition( ) const
+{
+    return _mousePressPosition;
 }
 
 

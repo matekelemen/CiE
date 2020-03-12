@@ -152,7 +152,9 @@ void GLContext::makeContextCurrent()
 
 
 void GLContext::startEventLoop( DrawFunctionFactory eventLoopGenerator,
-                                KeyCallbackFunction keyCallback )
+                                KeyCallbackFunction keyCallback,
+                                CursorCallbackFunction cursorCallback,
+                                MouseCallbackFunction mouseCallback )
 {
     // Bind loop
     _drawFunction = eventLoopGenerator( *this );
@@ -161,6 +163,8 @@ void GLContext::startEventLoop( DrawFunctionFactory eventLoopGenerator,
     if (_window != nullptr)
     {
         glfwSetKeyCallback( _window, keyCallback );
+        glfwSetCursorPosCallback( _window, cursorCallback );
+        glfwSetMouseButtonCallback( _window, mouseCallback );
         log("Start event loop");
     }
     else 

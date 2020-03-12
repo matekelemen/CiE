@@ -7,9 +7,16 @@ namespace gl {
 DrawManager::DrawManager( GLContext& context ) :
     ProgramManager( context, "DrawManager" ),
     _shaderManager( context ),
-    _camera( context )
+    _camera( new Camera(context) )
 {
     _buffers.setDrawMode( GL_DYNAMIC_DRAW );
+    log( "Create DrawManager" );
+}
+
+
+DrawManager::~DrawManager()
+{
+    log( "Destroy DrawManager" );
 }
 
 
@@ -40,7 +47,7 @@ void DrawManager::initialize()
             glUniformMatrix4fv( id, 
                                 1, 
                                 GL_FALSE, 
-                                glm::value_ptr(_camera.transformationMatrix()) );
+                                glm::value_ptr(_camera->transformationMatrix()) );
 
         //for (size_t i=0; i<4; ++i)
         //{
@@ -115,7 +122,7 @@ void DrawManager::draw()
             glUniformMatrix4fv( id, 
                                 1, 
                                 GL_FALSE, 
-                                glm::value_ptr(_camera.transformationMatrix()) );
+                                glm::value_ptr(_camera->transformationMatrix()) );
     }
 
     // Get number of elements to draw
@@ -227,13 +234,13 @@ const ShaderManager& DrawManager::shaderManager() const
 }
 
 
-Camera& DrawManager::camera()
+CameraPtr DrawManager::camera()
 {
     return _camera;
 }
 
 
-const Camera& DrawManager::camera() const
+const CameraPtr DrawManager::camera() const
 {
     return _camera;
 }

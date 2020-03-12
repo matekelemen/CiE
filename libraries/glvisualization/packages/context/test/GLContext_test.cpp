@@ -3,6 +3,7 @@
 #include "../../drawing/inc/Camera.hpp"
 #include "../inc/DrawManager.hpp"
 #include "../../callbacks/inc/key_callbacks.hpp"
+#include "../../callbacks/inc/mouse_callbacks.hpp"
 #include <iostream>
 
 
@@ -56,18 +57,29 @@ TEST_CASE( "DrawManager" )
     
     // Create draw manager
     DrawManager drawManager( context_global );
-    REQUIRE_NOTHROW(drawManager.makeProgram());
-    REQUIRE_NOTHROW(drawManager.initialize());
+    REQUIRE_NOTHROW( drawManager.makeProgram() );
+    REQUIRE_NOTHROW( drawManager.initialize() );
 
+    // Set DrawManager members
+    ArcballCamera camera( context_global ); 
+    REQUIRE_NOTHROW( drawManager.camera() = std::make_shared<ArcballCamera>(camera) );
 
     // Bind callbacks
-    KeyCallbackFunction keyCallback = makeKeyCallbackFunction(  defaultArcballKeyCallback,
-                                                                context_global, 
-                                                                drawManager );
+    KeyCallbackFunction keyCallback         = makeKeyCallbackFunction(  defaultArcballKeyCallback,
+                                                                        context_global, 
+                                                                        drawManager );
+    CursorCallbackFunction cursorCallback   = makeCursorCallbackFunction(   defaultCursorCallbackFunction,
+                                                                            context_global,
+                                                                            drawManager );
+    MouseCallbackFunction mouseCallback     = makeMouseCallbackFunction(    arcballMouseCallback,
+                                                                            context_global,
+                                                                            drawManager );
 
     // Start the event loop
     REQUIRE_NOTHROW(context_global.startEventLoop(  std::bind(&DrawManager::makeDrawFunction, &drawManager, std::placeholders::_1),
-                                                    keyCallback     ));
+                                                    keyCallback,
+                                                    cursorCallback,
+                                                    mouseCallback     ));
 }
 
 

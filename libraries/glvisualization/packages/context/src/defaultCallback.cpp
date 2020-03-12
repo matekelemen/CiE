@@ -16,6 +16,27 @@ void callback_keyExit(      GLFWwindow* window,
 }
 
 
+void defaultCursorCallbackFunction(  GLFWwindow* window,
+                                    double x,
+                                    double y)
+{
+}
+
+
+void defaultMouseCallbackFunction(  GLFWwindow* window,
+                                    int button,
+                                    int action,
+                                    int mods)
+{
+    if (button==GLFW_MOUSE_BUTTON_1 && action==GLFW_PRESS && mods==GLFW_MOD_SHIFT)
+    {
+        double x, y;
+        glfwGetCursorPos( window, &x, &y );
+        std::cout << x << ", " << y << "\n";
+    }
+}
+
+
 void GLAPIENTRY messageCallback(    GLenum source,
                                     GLenum type,
                                     GLuint id,

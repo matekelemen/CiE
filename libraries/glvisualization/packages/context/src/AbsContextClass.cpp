@@ -26,5 +26,10 @@ void AbsContextClass::terminate( )
 }
 
 
+void AbsContextClass::contextStateChangeSignal()
+{
+}
+
+
 }
 }

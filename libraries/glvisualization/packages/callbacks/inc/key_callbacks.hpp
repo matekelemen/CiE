@@ -18,7 +18,7 @@ void defaultArcballKeyCallback( GLFWwindow* window,
                                 int action,
                                 int mods    );
 
-void zoomCamera( Camera& camera, bool zoom );
+void zoomCamera( CameraPtr camera, bool zoom );
 void closeWindow( DrawManager& drawManager );
 
 }

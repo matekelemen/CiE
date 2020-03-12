@@ -9,7 +9,9 @@ namespace cie {
 namespace gl {
 
 
-using KeyCallbackFunction = GLFWkeyfun;
+using KeyCallbackFunction       = GLFWkeyfun;
+using CursorCallbackFunction    = GLFWcursorposfun;
+using MouseCallbackFunction     = GLFWmousebuttonfun;
 
 
 void callback_keyExit(      GLFWwindow* window, 
@@ -17,6 +19,15 @@ void callback_keyExit(      GLFWwindow* window,
                             int scancode, 
                             int action, 
                             int mods );
+
+void defaultCursorCallbackFunction( GLFWwindow* window,
+                                    double x,
+                                    double y);
+
+void defaultMouseCallbackFunction(  GLFWwindow* window,
+                                    int button,
+                                    int action,
+                                    int mods);
 
 void GLAPIENTRY messageCallback(    GLenum source,
                                     GLenum type,

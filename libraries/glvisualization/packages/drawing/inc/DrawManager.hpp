@@ -14,6 +14,7 @@ class DrawManager : public ProgramManager
 {
 public:
     DrawManager( GLContext& context );
+    ~DrawManager();
 
     void initialize() override;
     void compileShaders() override;
@@ -24,12 +25,12 @@ public:
 
     ShaderManager& shaderManager();
     const ShaderManager& shaderManager() const;
-    Camera& camera();
-    const Camera& camera() const;
+    CameraPtr camera();
+    const CameraPtr camera() const;
 
 protected:
     ShaderManager   _shaderManager;
-    Camera          _camera;
+    CameraPtr       _camera;
 
 private:
     std::vector<GLint> _uniformIDs;
