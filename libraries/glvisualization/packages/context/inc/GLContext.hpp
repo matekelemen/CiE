@@ -14,24 +14,19 @@ namespace cie {
 namespace gl {
 
 
+// Logger flags
 const GLuint CONTEXT_LOG_TYPE_REPORT    = 0;
 const GLuint CONTEXT_LOG_TYPE_WARNING   = 1;
 const GLuint CONTEXT_LOG_TYPE_ERROR     = 2;
 
-
+// Define type aliases
 class GLContext;
 using WindowPtr             = GLFWwindow*;
 using DrawFunction          = std::function<void()>;
 using DrawFunctionFactory   = std::function<DrawFunction(GLContext&)>;
 
-
-
+// Define default functions and variables
 DrawFunction makeEmptyDrawFunction( GLContext& );
-
-
-class AbsContextClass;
-using AbsContextClassPtr = std::shared_ptr<AbsContextClass>;
-
 
 
 // GL context and window manager
@@ -67,8 +62,6 @@ private:
     WindowPtr                       _window;
     GLLogger                        _logger;
     DrawFunction                    _drawFunction;
-
-    std::vector<AbsContextClassPtr> _observers;
     
     static bool                     _initialized;
     static bool                     _active;
