@@ -18,6 +18,9 @@ std::vector<std::string> FileManager::_paths = {};
 FileManager::FileManager( const std::string& path ) :
     _path( path )
 {
+    if (_path.size() == 0)
+        _path = INSTALL_PATH + "/output";
+
     if ( !detail::isDirectory(_path) )
         std::filesystem::create_directory( _path );
 

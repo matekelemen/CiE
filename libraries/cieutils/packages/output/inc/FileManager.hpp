@@ -33,7 +33,7 @@ private:
     std::string filePath( const std::string& fileName );
 
     std::vector<FilePtr>                _files;
-    const std::string                   _path;
+    std::string                         _path;
     static std::vector<std::string>     _paths;
 };
 
