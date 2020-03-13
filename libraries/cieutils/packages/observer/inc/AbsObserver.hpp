@@ -19,6 +19,8 @@ class AbsObserver : public std::enable_shared_from_this<AbsObserver>
 public:
     AbsObserver();
     AbsObserver( AbsSubjectPtr subject );
+    AbsObserver( const AbsObserverPtr& copy );
+    AbsObserverPtr operator=( const AbsObserverPtr& copy );
     ~AbsObserver();
 
     virtual void onSubjectChange() = 0;

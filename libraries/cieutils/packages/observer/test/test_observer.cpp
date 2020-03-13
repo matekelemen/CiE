@@ -7,6 +7,7 @@
 
 // --- STD Imports ---
 #include <iostream>
+#include <typeinfo>
 
 namespace cie {
 namespace utils {
@@ -91,6 +92,10 @@ TEST_CASE( "AbsObserver" )
         CHECK_NOTHROW( subject->detachObserver( observer2 ) );
         CHECK( subject->observerID( observer2 ) == -1 );
         CHECK( subject->observerID( observer1 ) == -1 );
+
+        // Check casting
+        auto absSubject = subject->as<AbsSubject>();
+        CHECK( typeid(*absSubject) == typeid(*std::make_shared<AbsSubject>()) );
     }
 
     // Check final state of wrappers

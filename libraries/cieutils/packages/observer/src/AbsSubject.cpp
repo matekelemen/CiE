@@ -10,6 +10,17 @@ namespace cie {
 namespace utils{
 
 
+AbsSubject::AbsSubject( const AbsSubjectPtr& copy )
+{
+}
+
+
+AbsSubjectPtr AbsSubject::operator=( const AbsSubjectPtr& copy )
+{
+    return shared_from_this();
+}
+
+
 AbsSubject::~AbsSubject()
 {
     for (auto it=_observers.begin(); it!=_observers.end(); ++it)

@@ -11,10 +11,15 @@ ENDMACRO()
 
 
 MACRO( INSTALL_LIBRARY target )
+
+  file( GLOB export_header ${CMAKE_CURRENT_BINARY_DIR}/*.hpp )
+
   if( WIN32 )
     install( TARGETS ${target} RUNTIME DESTINATION ${INSTALL_LIBRARY_PREFIX} )
+    install( FILES ${export_header} DESTINATION ${INSTALL_LIBRARY_PREFIX} )
   else( )
     install( TARGETS ${target} LIBRARY DESTINATION ${INSTALL_LIBRARY_PREFIX} )
+    install( FILES ${export_header} DESTINATION ${INSTALL_LIBRARY_PREFIX} )
   endif( )
 ENDMACRO()
 

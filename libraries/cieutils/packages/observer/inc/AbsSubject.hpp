@@ -13,9 +13,12 @@ namespace cie {
 namespace utils {
 
 
-class AbsSubject
+class AbsSubject : public std::enable_shared_from_this<AbsSubject>
 {
 public:
+    AbsSubject() = default;
+    AbsSubject( const AbsSubjectPtr& copy );
+    AbsSubjectPtr operator=( const AbsSubjectPtr& copy );
     ~AbsSubject();
 
     void notifyObservers();

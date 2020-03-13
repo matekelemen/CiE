@@ -24,6 +24,10 @@ endforeach()
 
 include_directories( ${CIEUTILS_INCLUDE_DIRECTORIES} )
 
+# Copy CMAKE variables in header
+configure_file( inc/cmake_variables.hpp.in ${CMAKE_BINARY_DIR}/generated/cmake_variables.hpp )
+include_directories( ${CMAKE_BINARY_DIR}/generated )
+
 # ---------------------------------------------------------
 # LIBRARIES AND EXECUTABLES
 # ---------------------------------------------------------
@@ -31,13 +35,16 @@ include_directories( ${CIEUTILS_INCLUDE_DIRECTORIES} )
 ADD_SHARED_LIBRARY( cieutils ${CIEUTILS_SOURCE_FILES} ${CIEUTILS_HEADER_FILES} )
 TARGET_LINK_LIBRARIES_INSTALL( cieutils linalg )
 
+
+
+
 # Add an executable and link to the library
 add_executable( cieutils_testrunner ${CIEUTILS_TEST_FILES} )
 TARGET_LINK_LIBRARIES_INSTALL( cieutils_testrunner cieutils )
-TARGET_LINK_GRAPHICS_INSTALL( cieutils_testrunner )
 
 # ---------------------------------------------------------
 # INSTALL
 # ---------------------------------------------------------
 INSTALL_LIBRARY( cieutils )
 INSTALL_TEST( cieutils_testrunner )
+install( FILES ${CMAKE_BINARY_DIR}/generated/cmake_variables.hpp DESTINATION ${INSTALL_LIBRARY_PREFIX} )

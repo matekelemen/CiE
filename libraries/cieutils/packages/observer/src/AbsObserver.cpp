@@ -18,6 +18,19 @@ AbsObserver::AbsObserver( AbsSubjectPtr subject ) :
 }
 
 
+AbsObserver::AbsObserver( const AbsObserverPtr& copy ) :
+    _subject( copy->_subject )
+{
+}
+
+
+AbsObserverPtr AbsObserver::operator=( const AbsObserverPtr& copy )
+{
+    _subject = copy->_subject;
+    return shared_from_this();
+}
+
+
 AbsObserver::~AbsObserver()
 {
     _subject.reset();

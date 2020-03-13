@@ -8,7 +8,7 @@ namespace utils{
 template <class DerivedSubject>
 std::shared_ptr<DerivedSubject> AbsSubject::as()
 {
-    return std::dynamic_pointer_cast<DerivedSubject>(this);
+    return std::dynamic_pointer_cast<DerivedSubject>( shared_from_this() );
 }
 
 

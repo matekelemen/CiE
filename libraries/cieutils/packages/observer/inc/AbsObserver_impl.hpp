@@ -5,10 +5,10 @@ namespace cie {
 namespace utils {
 
 
-template <class DerivedObject>
-std::shared_ptr<DerivedObject> AbsObserver::as()
+template <class DerivedObserver>
+std::shared_ptr<DerivedObserver> AbsObserver::as()
 {
-    return std::dynamic_pointer_cast<DerivedObject>(this);
+    return std::dynamic_pointer_cast<DerivedObserver>( shared_from_this() );
 }
 
 
