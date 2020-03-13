@@ -28,7 +28,7 @@ void AbsObserver::detach()
 {
     if (_subject.lock() != nullptr && !_subject.expired())
     {
-        _subject.lock()->detachObserver( AbsObserverPtr(this) );
+        _subject.lock()->detachObserver( shared_from_this() );
         _subject.lock().reset();
     }
 }

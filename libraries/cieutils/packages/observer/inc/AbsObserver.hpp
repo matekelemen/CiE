@@ -14,7 +14,7 @@ using AbsObserverPtr    = std::shared_ptr<AbsObserver>;
 using AbsSubjectPtr     = std::shared_ptr<AbsSubject>;
 
 
-class AbsObserver
+class AbsObserver : public std::enable_shared_from_this<AbsObserver>
 {
 public:
     AbsObserver();

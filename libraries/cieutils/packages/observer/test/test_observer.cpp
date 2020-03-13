@@ -12,44 +12,90 @@ namespace cie {
 namespace utils {
 
 
+// Observer wrapper
 struct Observer : public AbsObserver
 {
+    Observer(int* counter) : AbsObserver(), _counter(counter) {++(*_counter);}
+    ~Observer() {--(*_counter);}
     void onSubjectChange( ) override {}
+
+    int* _counter;
 };
 using ObserverPtr = std::shared_ptr<Observer>;
 
 
+// Subject wrapper
+struct Subject : public AbsSubject
+{
+    Subject(int* counter) : AbsSubject(), _counter(counter) {++(*_counter);}
+    ~Subject() {--(*_counter);}
+
+    int* _counter;
+};
+using SubjectPtr = std::shared_ptr<Subject>;
+
+
+
 TEST_CASE( "AbsObserver" )
 {
-    // Create subject
-    AbsSubjectPtr subject   = std::make_shared<AbsSubject>();
+    // Create counters
+    int numberOfSubjects    = 0;
+    int numberOfObservers   = 0;
 
-    // Create Observers
-    ObserverPtr observer1   = std::make_shared<Observer>();
-    ObserverPtr observer2   = std::make_shared<Observer>();
+    {
+        // Create subject
+        SubjectPtr subject      = std::make_shared<Subject>(&numberOfSubjects);
 
-    REQUIRE( observer1->subject().get() == nullptr );
-    REQUIRE_NOTHROW( observer1->onSubjectChange( ) );
-    
-    REQUIRE_NOTHROW( observer1->setSubject(subject) );
-    REQUIRE( observer1->subject().get() == subject.get() );
-    REQUIRE_NOTHROW( observer1->onSubjectChange( ) );
+        // Create Observers
+        ObserverPtr observer1   = std::make_shared<Observer>(&numberOfObservers);
+        ObserverPtr observer2   = std::make_shared<Observer>(&numberOfObservers);
 
-    // Check attaching a new observer
-    int observerID = -1;
-    REQUIRE_NOTHROW( observerID = subject->attachObserver( observer1 ) );
-    REQUIRE( observerID == 0 );
-    REQUIRE_NOTHROW( observerID = subject->attachObserver( observer2 ) );
-    REQUIRE( observerID == 1 );
+        // Check initial state of wrappers
+        REQUIRE( numberOfSubjects   == 1 );
+        REQUIRE( numberOfObservers  == 2 );
 
-    // Check attaching an existing observer
-    REQUIRE_NOTHROW( observerID = subject->attachObserver( observer1 ) );
-    REQUIRE_NOTHROW( observerID = subject->observerID( observer1 ) );
-    REQUIRE( observerID == 0 );
+        CHECK( observer1->subject().get() == nullptr );
+        CHECK_NOTHROW( observer1->onSubjectChange( ) );
+        
+        CHECK_NOTHROW( observer1->setSubject(subject) );
+        CHECK( observer1->subject().get() == subject.get() );
+        CHECK_NOTHROW( observer1->onSubjectChange( ) );
 
-    REQUIRE_NOTHROW( observerID = subject->attachObserver( observer2 ) );
-    REQUIRE_NOTHROW( observerID = subject->observerID( observer2 ) );
-    REQUIRE( observerID == 1 );
+        // Check attaching a new observer
+        int observerID = -1;
+        CHECK_NOTHROW( observerID = subject->attachObserver( observer1 ) );
+        CHECK( observerID == 0 );
+        CHECK_NOTHROW( observerID = subject->attachObserver( observer2 ) );
+        CHECK( observerID == 1 );
+
+        // Check attaching an existing observer
+        CHECK_NOTHROW( observerID = subject->attachObserver( observer1 ) );
+        CHECK_NOTHROW( observerID = subject->observerID( observer1 ) );
+        CHECK( observerID == 0 );
+
+        CHECK_NOTHROW( observerID = subject->attachObserver( observer2 ) );
+        CHECK_NOTHROW( observerID = subject->observerID( observer2 ) );
+        CHECK( observerID == 1 );
+
+        // Check detaching existing observer
+        CHECK_NOTHROW( observer1->detach() );
+        CHECK( subject->observerID( observer1 ) == -1 );
+        CHECK( subject->observerID( observer2 ) == 0 );
+
+        // Check detaching non-existent observer
+        CHECK_NOTHROW( observer1->detach() );
+        CHECK( subject->observerID( observer1 ) == -1 );
+        CHECK( subject->observerID( observer2 ) == 0 );
+
+        // Check detaching observer from subject
+        CHECK_NOTHROW( subject->detachObserver( observer2 ) );
+        CHECK( subject->observerID( observer2 ) == -1 );
+        CHECK( subject->observerID( observer1 ) == -1 );
+    }
+
+    // Check final state of wrappers
+    REQUIRE( numberOfSubjects   == 0 );
+    REQUIRE( numberOfObservers  == 0 );
 }
 
 
