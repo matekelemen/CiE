@@ -1,22 +1,25 @@
+// --- Internal Includes ---
 #include "../inc/defaultCallback.hpp"
+
+// --- STD Includes ---
 #include <iostream>
 
 namespace cie {
 namespace gl {
 
 
-void callback_keyExit(      GLFWwindow* window, 
-                            int key, 
-                            int scancode, 
-                            int action, 
-                            int mods )
+void callback_keyExit(  GLFWwindow* window, 
+                        int key, 
+                        int scancode, 
+                        int action, 
+                        int mods )
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
 
-void defaultCursorCallbackFunction(  GLFWwindow* window,
+void defaultCursorCallbackFunction( GLFWwindow* window,
                                     double x,
                                     double y)
 {

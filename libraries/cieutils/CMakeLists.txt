@@ -24,10 +24,6 @@ endforeach()
 
 include_directories( ${CIEUTILS_INCLUDE_DIRECTORIES} )
 
-# Copy CMAKE variables in header
-configure_file( inc/cmake_variables.hpp.in ${CMAKE_BINARY_DIR}/generated/cmake_variables.hpp )
-include_directories( ${CMAKE_BINARY_DIR}/generated )
-
 # ---------------------------------------------------------
 # LIBRARIES AND EXECUTABLES
 # ---------------------------------------------------------

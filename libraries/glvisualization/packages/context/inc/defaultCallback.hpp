@@ -1,9 +1,11 @@
 #ifndef GLVISUALIZATION_CALLBACKS_KEYS_HPP
 #define GLVISUALIZATION_CALLBACKS_KEYS_HPP
 
+// --- External Includes ---
 #include <GLFW/glfw3.h>
+
+// --- STD Includes ---
 #include <functional>
-#include "../../logging/inc/GLLogger.hpp"
 
 namespace cie {
 namespace gl {

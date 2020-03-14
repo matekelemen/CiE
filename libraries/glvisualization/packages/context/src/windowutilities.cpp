@@ -1,6 +1,8 @@
-#include "../inc/windowutilities.hpp"
-
+// --- External Includes ---
 #include <GLFW/glfw3.h>
+
+// --- Internal Includes ---
+#include "../inc/windowutilities.hpp"
 
 namespace cie {
 namespace gl {

@@ -25,7 +25,6 @@ Camera::Camera( GLContext& context ) :
                             _farClippingPlane );
 
     updateTransformationMatrix();
-    log( "Create Camera" );
 }
 
 
@@ -64,7 +63,6 @@ Camera& Camera::operator=( const Camera& camera )
 
 Camera::~Camera()
 {
-    log( "Destroy Camera" );
 }
 
 

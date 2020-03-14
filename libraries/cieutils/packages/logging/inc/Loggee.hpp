@@ -8,7 +8,7 @@
 #include <string>
 
 
-// Define message types
+// Logger message flags
 namespace cie {
 const size_t LOG_TYPE_MESSAGE   = 0;
 const size_t LOG_TYPE_WARNING   = 1;

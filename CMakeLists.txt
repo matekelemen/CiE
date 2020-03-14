@@ -21,6 +21,10 @@ endif( )
 SET( CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}:$ORIGIN" )
 #SET( BUILD_RPATH_USE_ORIGIN TRUE )
 
+# Copy CMAKE variables in global header
+configure_file( cmake/cmake_variables.hpp.in ${CMAKE_BINARY_DIR}/generated/cmake_variables.hpp )
+include_directories( ${CMAKE_BINARY_DIR}/generated )
+
 # ---------------------------------------------------------
 # WINDOWS
 # ---------------------------------------------------------

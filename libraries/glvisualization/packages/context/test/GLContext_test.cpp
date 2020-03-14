@@ -1,9 +1,14 @@
+// --- External Includes ---
 #include "catch.hpp"
+
+// --- Internal Includes ---
 #include "../inc/GLContext.hpp"
 #include "../../drawing/inc/Camera.hpp"
 #include "../inc/DrawManager.hpp"
 #include "../../callbacks/inc/key_callbacks.hpp"
 #include "../../callbacks/inc/mouse_callbacks.hpp"
+
+// --- STD Includes ---
 #include <iostream>
 
 

@@ -10,13 +10,11 @@ DrawManager::DrawManager( GLContext& context ) :
     _camera( new Camera(context) )
 {
     _buffers.setDrawMode( GL_DYNAMIC_DRAW );
-    log( "Create DrawManager" );
 }
 
 
 DrawManager::~DrawManager()
 {
-    log( "Destroy DrawManager" );
 }
 
 
@@ -60,7 +58,7 @@ void DrawManager::initialize()
         if( error!=0 )
             logID(  "Initializing uniform \"" + uniform + "\" failed!",
                     error,
-                    CONTEXT_LOG_TYPE_ERROR );
+                    LOG_TYPE_ERROR );
     }
 
     std::vector<float> vertices = {
@@ -90,7 +88,7 @@ void DrawManager::initialize()
     if( error!=0 )
         logID( "Default draw function initialization failed!",
                 error,
-                CONTEXT_LOG_TYPE_ERROR );
+                LOG_TYPE_ERROR );
 }
 
 
@@ -218,7 +216,7 @@ void DrawManager::makeProgram()
 
     // Check error
     if (glGetError()!=0)
-        logID( "Failed to make program", _programID, CONTEXT_LOG_TYPE_ERROR );
+        logID( "Failed to make program", _programID, LOG_TYPE_ERROR );
 }
 
 

@@ -50,7 +50,7 @@ void ProgramManager::compileShaders( )
             glGetShaderInfoLog( id, 512, NULL, buffer );
             log(    "Shader compilation failed | ID_" + std::to_string(id) + "\n" + 
                     std::string(buffer), 
-                    CONTEXT_LOG_TYPE_ERROR );
+                    LOG_TYPE_ERROR );
         }
         else
             logID("Shader compilation successful!", id );
@@ -75,7 +75,7 @@ void ProgramManager::makeProgram( )
         char buffer[512];
         glGetProgramInfoLog( _programID, 512, NULL, buffer );
         log("Program linking failed!\n" + std::string(buffer),
-            CONTEXT_LOG_TYPE_ERROR );
+            LOG_TYPE_ERROR );
     }
     else
         logID( "Program linked successfully", _programID );

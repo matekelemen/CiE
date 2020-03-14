@@ -15,13 +15,13 @@ Loggee::Loggee( Logger& logger,
     _name( instanceName ),
     _timerID( logger.startTimer() )
 {
-    logger.logElapsed( "Create " + _name + " at log time:", 0 );
+    logger.logElapsed( "[" + _name + "] Create at log time:", 0 );
 }
 
 
 Loggee::~Loggee()
 {
-    _logger->logElapsed( "Destroy " + _name + ", ran for", _timerID );
+    _logger->logElapsed( "[" + _name + "] Destroy, ran for", _timerID );
 }
 
 

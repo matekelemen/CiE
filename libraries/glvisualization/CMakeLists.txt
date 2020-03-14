@@ -2,6 +2,7 @@ project( glvisualization CXX )
 
 include_directories( ../../external/glfw/include )
 include_directories( ../../external/glm )
+include_directories( ../cieutils/inc )
 
 # ---------------------------------------------------------
 # GATHER FILES AND INCLUDE DIRECTORIES
@@ -32,7 +33,7 @@ include_directories( ${GLVISUALIZATION_INCLUDE_DIRECTORIES} )
 # ---------------------------------------------------------
 # Add library from the collected source files. The headers are given so visual studio displays them
 ADD_SHARED_LIBRARY( glvisualization ${GLVISUALIZATION_SOURCE_FILES} ${GLVISUALIZATION_HEADER_FILES} )
-TARGET_LINK_LIBRARIES_INSTALL( glvisualization linalg )
+TARGET_LINK_LIBRARIES_INSTALL( glvisualization linalg cieutils )
 TARGET_LINK_GRAPHICS_INSTALL( glvisualization )
 
 # Add an executable and link to the library

@@ -63,7 +63,7 @@ void BufferHandler::setDrawMode( GLuint drawMode )
             log( "Set GL_STREAM_DRAW");
             break;
         default:
-            log( "Attempt to set invalid draw mode: " + std::to_string(drawMode), CONTEXT_LOG_TYPE_ERROR );
+            log( "Attempt to set invalid draw mode: " + std::to_string(drawMode), LOG_TYPE_ERROR );
             break;
 
     }
