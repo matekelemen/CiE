@@ -16,6 +16,17 @@ ProgramManager::ProgramManager( GLContext& context, const std::string& className
 
 ProgramManager::~ProgramManager()
 {
+}
+
+
+void ProgramManager::initialize()
+{
+    log( "Attempt to initialize ProgramManager", LOG_TYPE_WARNING );
+}
+
+
+void ProgramManager::terminate()
+{
     logID( "Delete program", _programID );
     glDeleteProgram( _programID );
 
@@ -27,12 +38,9 @@ ProgramManager::~ProgramManager()
 
     logID( "Delete VAO", _vaoID );
     glDeleteVertexArrays( 1, &_vaoID );
-}
 
-
-void ProgramManager::initialize()
-{
-    log( "Attempt to initialize ProgramManager" );
+    // Forward the termination call
+    AbsContextClass::terminate();
 }
 
 

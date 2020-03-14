@@ -12,11 +12,11 @@ KeyCallbackFunction makeKeyCallbackFunction(    KeyCallbackFunction function,
                                                 GLContext& context,
                                                 DrawManager& drawManager );
 
-void defaultArcballKeyCallback( GLFWwindow* window,
-                                int key,
-                                int scanCode,
-                                int action,
-                                int mods    );
+void arcballKeyCallback(    GLFWwindow* window,
+                            int key,
+                            int scanCode,
+                            int action,
+                            int mods    );
 
 void zoomCamera( CameraPtr camera, bool zoom );
 void closeWindow( DrawManager& drawManager );

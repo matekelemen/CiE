@@ -66,11 +66,10 @@ TEST_CASE( "DrawManager" )
     REQUIRE_NOTHROW( drawManager.initialize() );
 
     // Set DrawManager members
-    ArcballCamera camera( context_global ); 
-    REQUIRE_NOTHROW( drawManager.camera() = std::make_shared<ArcballCamera>(camera) );
+    REQUIRE_NOTHROW( drawManager.camera() = std::make_shared<ArcballCamera>(context_global) );
 
     // Bind callbacks
-    KeyCallbackFunction keyCallback         = makeKeyCallbackFunction(  defaultArcballKeyCallback,
+    KeyCallbackFunction keyCallback         = makeKeyCallbackFunction(  arcballKeyCallback,
                                                                         context_global, 
                                                                         drawManager );
     CursorCallbackFunction cursorCallback   = makeCursorCallbackFunction(   defaultCursorCallbackFunction,

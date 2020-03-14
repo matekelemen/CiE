@@ -16,7 +16,7 @@ AbsContextClass::AbsContextClass(   GLContext& context,
 
 void AbsContextClass::terminate( )
 {
-    log( "Request termination" );
+    log( "Request context termination" );
     _context->terminate();
 }
 

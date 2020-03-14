@@ -181,7 +181,6 @@ ArcballCamera::ArcballCamera( GLContext& context ) :
     Camera( context ),
     _mousePressPosition( {0.0,0.0} )
 {
-    std::cout << "ArcballCamera default constructor\n";
 }
 
 
@@ -189,7 +188,7 @@ ArcballCamera::ArcballCamera( const ArcballCamera& camera ):
     Camera( camera ),
     _mousePressPosition( camera._mousePressPosition )
 {
-    std::cout << "ArcballCamera copy constructor\n";
+    std::cout << "Arcball copy " << _mousePressPosition[0] << "\n";
 }
 
 

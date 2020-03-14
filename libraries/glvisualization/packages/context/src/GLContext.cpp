@@ -208,7 +208,6 @@ void GLContext::startEventLoop( DrawFunctionFactory eventLoopGenerator,
 
 void GLContext::terminate()
 {
-    glfwSetWindowShouldClose( _window, GL_TRUE );
     closeWindow();
     glfwTerminate();
     log( "Terminate context" );

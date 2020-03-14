@@ -1,3 +1,4 @@
+// --- Internal Includes ---
 #include "../inc/key_callbacks.hpp"
 
 namespace cie {
@@ -14,11 +15,11 @@ KeyCallbackFunction makeKeyCallbackFunction(    KeyCallbackFunction function,
 }
 
 
-void defaultArcballKeyCallback( GLFWwindow* window,
-                                int key,
-                                int scanCode,
-                                int action,
-                                int mods    )
+void arcballKeyCallback(    WindowPtr window,
+                            int key,
+                            int scanCode,
+                            int action,
+                            int mods    )
 {
     DrawManager* drawManager = static_cast<DrawManager*>(glfwGetWindowUserPointer( window ));
 
@@ -32,7 +33,9 @@ void defaultArcballKeyCallback( GLFWwindow* window,
                     zoomCamera( drawManager->camera(), false );
                     break;
                 case GLFW_KEY_ESCAPE:
-                    drawManager->terminate();
+                    glfwSetWindowShouldClose( window, GL_TRUE );
+                    break;
+                default:
                     break;
             }
 }

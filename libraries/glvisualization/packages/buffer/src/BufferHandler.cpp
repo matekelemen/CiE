@@ -15,11 +15,18 @@ BufferHandler::BufferHandler(   GLContext& context,
 
 BufferHandler::~BufferHandler()
 {
+    terminate();
+}
+
+
+void BufferHandler::terminate()
+{
     for (auto bufferID : _buffers)
     {
         logID( "Delete buffer", bufferID );
         glDeleteBuffers(1, &bufferID);
     }
+    _buffers = {};
 }
 
 

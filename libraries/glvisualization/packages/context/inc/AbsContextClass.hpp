@@ -15,7 +15,7 @@ namespace gl {
 class AbsContextClass : public utils::Loggee
 {
 public:
-    void terminate();
+    virtual void terminate();
 
 protected:
     AbsContextClass(    GLContext& context,

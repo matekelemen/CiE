@@ -232,13 +232,13 @@ const ShaderManager& DrawManager::shaderManager() const
 }
 
 
-CameraPtr DrawManager::camera()
+CameraPtr& DrawManager::camera()
 {
     return _camera;
 }
 
 
-const CameraPtr DrawManager::camera() const
+const CameraPtr& DrawManager::camera() const
 {
     return _camera;
 }

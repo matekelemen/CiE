@@ -25,8 +25,8 @@ public:
 
     ShaderManager& shaderManager();
     const ShaderManager& shaderManager() const;
-    CameraPtr camera();
-    const CameraPtr camera() const;
+    CameraPtr& camera();
+    const CameraPtr& camera() const;
 
 protected:
     ShaderManager   _shaderManager;
