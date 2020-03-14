@@ -18,15 +18,19 @@ Logger::Logger( const std::string& fileName ) :
     _forceFlush( true )
 {
     // Create log file
-    addStream( StreamPtr(&_manager.newFile(fileName)) );
+    File& logFile = _manager.newFile(fileName);
+    addStream( _manager.filePtr(logFile) );
 
     // Log time
-    log( "Log file created at " + detail::getDate() );
+    logDate( "Log file created on" );
 }
 
 
 Logger::~Logger()
 {
+    noIndent();
+    logElapsed( "\nLogger ran for", 0, false );
+    logDate( "Log file closed on" );
     flush();
 }
 
@@ -85,19 +89,20 @@ void Logger::log( const std::string& message )
 
 void Logger::warn( const std::string& message )
 {
-    log( "WARNING:\t" + message );
+    log( "WARNING: " + message );
 }
 
 
 void Logger::error( const std::string& message )
 {
-    log( "ERROR:\t" + message );
+    log( "ERROR: " + message );
+    throw std::runtime_error( message );
 }
 
 
-void Logger::logDate()
+void Logger::logDate( const std::string& message )
 {
-    log( detail::getDate() );
+    log( message + " " + detail::getDate() );
 }
 
 
@@ -107,7 +112,7 @@ size_t Logger::startTimer()
     size_t slotID = std::distance(  _timeLog.begin(),
                                     std::find(  _timeLog.begin()+1,
                                                 _timeLog.end(),
-                                                _timeLog[0]         ) ) + 1;
+                                                _timeLog[0]         ) );
     if (slotID == _timeLog.size())
     {
         _timeLog.push_back( _timeLog[0] );
@@ -122,11 +127,27 @@ size_t Logger::startTimer()
 
 size_t Logger::elapsed( size_t slotID, bool reset )
 {
+
+    // Check if valid slot
+    if ( slotID >= _timeLog.size() )
+        error( "Invalid timerID " + std::to_string(slotID) );
+
+    // Compute elapsed time
     size_t t = (size_t)std::chrono::duration_cast<std::chrono::milliseconds>(detail::getTime() - _timeLog[slotID]).count();
+
+    // Reset timer if requested
     if (reset)
         _timeLog[slotID] = _timeLog[0];
 
     return t;
+}
+
+
+void Logger::logElapsed(    const std::string& message,
+                            size_t timeID,
+                            bool reset )
+{
+    log( message + " " + std::to_string( elapsed(timeID, reset) ) + " [ms]" );
 }
 
 
@@ -153,6 +174,12 @@ void Logger::noIndent()
 {
     while( _prefix.back() == '\t' )
         _prefix.pop_back();
+}
+
+
+FileManager& Logger::fileManager()
+{
+    return _manager;
 }
 
 

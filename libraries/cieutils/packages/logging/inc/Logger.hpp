@@ -15,16 +15,6 @@
 #include <ctime>
 
 
-// Define message types
-namespace cie {
-
-const size_t LOG_TYPE_MESSAGE   = 0;
-const size_t LOG_TYPE_WARNING   = 1;
-const size_t LOG_TYPE_ERROR     = 2;
-
-}
-
-
 namespace cie {
 namespace utils {
 
@@ -46,11 +36,6 @@ auto getDate = []()
 // Type aliases
 using Stream        = std::ostream;
 using StreamPtr     = std::shared_ptr<Stream>;
-struct Cout
-{
-    static Stream& cout;
-};
-Stream& Cout::cout = std::cout;
 
 
 class Logger
@@ -70,16 +55,21 @@ public:
     void warn(  const std::string& message );
     void error( const std::string& message );
 
-    void logDate();
-    size_t startTimer();
+    void logDate( const std::string& message );
+    [[nodiscard]] size_t startTimer();
     size_t elapsed( size_t timeID, 
                     bool reset=true );
+    void logElapsed(    const std::string& message, 
+                        size_t timeID,
+                        bool reset=true );
 
     void separate();
 
     void increaseIndent();
     void decreaseIndent();
     void noIndent();
+
+    FileManager& fileManager();
 
 protected:
     void flush();

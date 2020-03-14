@@ -84,6 +84,19 @@ File& FileManager::open( const std::string& fileName )
 }
 
 
+FilePtr FileManager::filePtr( const File& file )
+{
+    int index = -1;
+    for (auto it=_files.begin(); it!=_files.end(); ++it)
+        if (it->get() == &file)
+        {
+            index = std::distance( _files.begin(), it );
+            break;
+        }
+    return _files[index];
+}
+
+
 void FileManager::closeAll()
 {
     for ( auto it=_files.begin(); it!=_files.end(); ++it )

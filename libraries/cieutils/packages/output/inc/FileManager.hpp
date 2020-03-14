@@ -24,6 +24,8 @@ public:
     File& newFile( const std::string& fileName );
     File& open( const std::string& fileName );
 
+    FilePtr filePtr( const File& file );
+
     void deleteFile( const std::string& fileName );
     void closeAll();
 
