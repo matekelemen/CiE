@@ -115,8 +115,6 @@ void GLContext::closeWindow()
         glfwSetWindowShouldClose( _window, 1 );
         log( "Close window" );
     }
-    else
-        warn( "Attempt to close non-existent window!" );
 
     _window = nullptr;
 }
@@ -208,9 +206,9 @@ void GLContext::startEventLoop( DrawFunctionFactory eventLoopGenerator,
 
 void GLContext::terminate()
 {
+    log( "Terminate context" );
     closeWindow();
     glfwTerminate();
-    log( "Terminate context" );
 }
 
 

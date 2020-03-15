@@ -17,9 +17,9 @@ namespace gl {
 
 
 class Camera;
-class ArcballCamera;
-using CameraPtr         = std::shared_ptr<Camera>;
-using ArcballCameraPtr  = std::shared_ptr<ArcballCamera>;
+class InteractiveCamera;
+using CameraPtr             = std::shared_ptr<Camera>;
+using InteractiveCameraPtr  = std::shared_ptr<InteractiveCamera>;
 
 
 
@@ -31,13 +31,19 @@ public:
     Camera& operator=( const Camera& camera );
     ~Camera();
 
-    template <class ContainerType>
-    void setCameraPose( const ContainerType& position,
-                        const ContainerType& direction );
+    virtual void zoom( GLfloat modifier );
+    virtual void translate( const glm::vec3& translation );
+    virtual void rotate(    GLfloat degrees,
+                            const glm::vec3& axis );
 
-    void setCameraProperties(   float fieldOfView,
-                                float nearClippingPlane,
-                                float farClippingPlane );
+    template <class ContainerType>
+    void setPose(   const ContainerType& position,
+                    const ContainerType& direction );
+
+    void setProperties( GLfloat fieldOfView,
+                        GLfloat nearClippingPlane ,
+                        GLfloat farClippingPlane );
+    void setProperties( GLfloat fieldOfView );
 
     void updateTransformationMatrix();
     void update();
@@ -63,7 +69,6 @@ protected:
     GLfloat     _nearClippingPlane;
     GLfloat     _farClippingPlane;
 
-private:
     glm::mat4   _viewMatrix;
     glm::mat4   _projectionMatrix;
     glm::mat4   _transformationMatrix;
@@ -71,18 +76,35 @@ private:
 
 
 
-class ArcballCamera : public Camera
+
+
+//class Camera2D : public Camera
+//{
+//public:
+//    Camera2D( GLContext& context );
+//    Camera2D( const Camera2D& copy );
+//    Camera2D& operator=( const Camera2D& copy ) = default;
+//
+//protected:
+//    glm::vec3   _normal;
+//};
+
+
+
+class InteractiveCamera : public Camera
 {
 public:
-    ArcballCamera( GLContext& context );
-    ArcballCamera( const ArcballCamera& camera );
-    ArcballCamera& operator=( const ArcballCamera& camera ) = default;
+    InteractiveCamera( GLContext& context );
+    InteractiveCamera( const InteractiveCamera& copy );
+    InteractiveCamera& operator=( const InteractiveCamera& copy ) = default;
 
+    glm::vec3 screenToWorld( double x, double y ) const;
     void setMousePressPosition( double x, double y );
-    const std::array<double, 2>& mousePressPosition( ) const;
+    void setMousePressPosition( const glm::vec3& mousePos );
+    const glm::vec3& mousePressPosition( ) const;
 
 protected:
-    std::array<double, 2>   _mousePressPosition;
+    glm::vec3   _mousePressPosition;
 };
 
 
