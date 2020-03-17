@@ -30,12 +30,12 @@ INSTALL_TEST( splinekernel_testrunner )
 # ---------------------------------------------------------
 # To be able to debug in Windows we have to copy the linalg library to the splinekernel debug folder.
 # This adds a post build command that after building splinekernel_testrunner copies linalg.dll over.
-#if( MSVC )
-#    add_custom_command(TARGET splinekernel_testrunner POST_BUILD        	
-#        COMMAND ${CMAKE_COMMAND} -E copy 					
-#            $<TARGET_FILE_DIR:linalg>/linalg.dll  
-#            $<TARGET_FILE_DIR:splinekernel_testrunner>)
-#endif( )
+if( MSVC )
+    add_custom_command(TARGET splinekernel_testrunner POST_BUILD        	
+        COMMAND ${CMAKE_COMMAND} -E copy 					
+            $<TARGET_FILE_DIR:linalg>/linalg.dll  
+            $<TARGET_FILE_DIR:splinekernel_testrunner>)
+endif( )
 
 # ---------------------------------------------------------
 # PYTHON

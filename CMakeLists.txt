@@ -62,6 +62,9 @@ set(PYBIND11_CPP_STANDARD -std=c++17)
 add_subdirectory( external/pybind11 )
 
 if( CIE_USE_CPP_GRAPHICS )
+    # Always build shared libraries
+    set( BUILD_SHARED_LIBS ON "This options should always be ticked" )
+
     find_package( OpenGL REQUIRED )
     add_subdirectory( external/glfw )
     add_subdirectory( external/glm )

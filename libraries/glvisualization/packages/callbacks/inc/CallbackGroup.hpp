@@ -13,7 +13,6 @@ namespace gl {
 
 template <class CallbackType>
 CallbackType makeCallback(  CallbackType callback,
-                            GLContext& context,
                             DrawManager* drawManager );
 
 

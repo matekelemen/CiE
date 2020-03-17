@@ -70,13 +70,10 @@ TEST_CASE( "DrawManager" )
 
     // Bind callbacks
     KeyCallbackFunction keyCallback         = makeCallback( CallbackGroup::keyCallback,
-                                                            &context_global, 
                                                             &drawManager );
     CursorCallbackFunction cursorCallback   = makeCallback( CallbackGroup::cursorCallback,
-                                                            &context_global,
                                                             &drawManager );
     MouseCallbackFunction mouseCallback     = makeCallback( CallbackGroup::mouseCallback,
-                                                            &context_global,
                                                             &drawManager );
 
     // Start the event loop
