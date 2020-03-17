@@ -1,4 +1,4 @@
-project( glad CXX )
+project( glad C )
 
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/include" )
 
