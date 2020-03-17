@@ -12,6 +12,9 @@ template <size_t N>
 using DoubleArray = std::array<double, N>;
 
 template <size_t N>
+using FloatArray = std::array<float, N>;
+
+template <size_t N>
 using IntArray = std::array<int, N>;
 
 template <size_t N>

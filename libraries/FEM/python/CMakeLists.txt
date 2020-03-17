@@ -2,7 +2,7 @@
 # SET UP BINDINGS
 # --------------------------------------------------
 # Include headers
-include_directories( ../inc )
+include_directories( "${PROJECT_SOURCE_DIR}/inc" )
 
 # Collect python library files
 file( GLOB PYTHON_FEM_CPP_FILES bindings/*.cpp )
@@ -17,5 +17,10 @@ TARGET_LINK_PYTHON_BINDINGS( pyfem fem )
 # INSTALL
 # ---------------------------------------------------------
 INSTALL_PYTHON_BINDINGS( pyfem "pyfem" )
-INSTALL_PYTHON_MODULE( modules/pyfem )
+
+SUBDIRLIST( moduleNames "${CMAKE_CURRENT_SOURCE_DIR}/modules" )
+foreach( module ${moduleNames} )
+    INSTALL_PYTHON_MODULE( "${CMAKE_CURRENT_SOURCE_DIR}/modules/${module}" )
+endforeach()
+
 INSTALL_PYTHON_SCRIPTS( scripts )

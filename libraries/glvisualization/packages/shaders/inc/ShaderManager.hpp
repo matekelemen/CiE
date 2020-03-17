@@ -1,10 +1,15 @@
 #ifndef GLVISUALIZATION_SHADER_ASSEMBLER_HPP
 #define GLVISUALIZATION_SHADER_ASSEMBLER_HPP
 
+// --- External Includes ---
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+// --- Internal Includes ---
 #include "shaders.hpp"
 #include "../../context/inc/AbsContextClass.hpp"
+
+// --- STD Includes ---
 #include <string>
 #include <vector>
 
@@ -33,6 +38,11 @@ public:
     const std::vector<GLuint>& attributeStrides() const;
     const std::vector<GLuint>& attributeOffsets() const;
     const std::vector<std::string>& fragOutputNames() const;
+    const std::vector<std::string>& uniforms() const;
+
+    const ShaderStruct vertexShader() const;
+    const ShaderStruct geometryShader() const;
+    const ShaderStruct fragmentShader() const;
 
 protected:
     ShaderStruct    _vertexShader;

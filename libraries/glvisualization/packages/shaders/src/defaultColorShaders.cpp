@@ -15,16 +15,18 @@ in vec3 position;
 in vec3 vertexColor;
 out vec3 vColor;
 
+uniform mat4 transformation;
+
 void main()
 {
     vColor      = vertexColor;
-    gl_Position = vec4( position, 1.0 );
+    gl_Position = transformation * vec4( position, 1.0 );
 }
 
 )glsl",
 
 {"position", "vertexColor"}, {3,3},{6,6},{0,3},
-{""} );
+{"transformation"}, {} );
 
 
 ShaderStruct defaultColorGeometryShader(
@@ -58,7 +60,7 @@ void main()
 )glsl",
 
 {}, {}, {}, {},
-{});
+{}, {} );
 
 
 ShaderStruct defaultColorFragmentShader(R"glsl(
@@ -76,7 +78,7 @@ void main()
 )glsl",
 
 {"color"}, {4}, {0}, {0},
-{""});
+{}, {} );
 
 
 }

@@ -1,0 +1,13 @@
+#ifndef CIEUTILS_CMAKE_VARIABLES_HPP
+#define CIEUTILS_CMAKE_VARIABLES_HPP
+
+#include <string>
+
+namespace cie {
+
+const std::string INSTALL_PATH  =  "@CMAKE_INSTALL_PREFIX@";
+const std::string BINARY_PATH   =  "@CMAKE_BINARY_DIR@";
+
+}
+
+#endif

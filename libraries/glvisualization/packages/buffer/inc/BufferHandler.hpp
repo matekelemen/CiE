@@ -17,8 +17,10 @@ class BufferHandler : AbsContextClass
 {
 public:
     BufferHandler(  GLContext& context,
-                    GLuint drawMode,
-                    GLuint numberOfBuffers=2 );
+                    GLuint drawMode );
+    virtual ~BufferHandler();
+    virtual void terminate() override;
+
     [[nodiscard]] GLuint createBuffer();
 
     void bindVertexBuffer( GLuint bufferID );
@@ -30,8 +32,10 @@ public:
 
     void setDrawMode( GLuint drawMode );
 
-private:
+protected:
     std::vector<GLuint>     _buffers;
+
+private:
     GLuint                  _drawMode;
 };
 

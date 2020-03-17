@@ -7,8 +7,7 @@
 #include <array>
 
 namespace cie {
-namespace linalg
-{
+namespace linalg {
 
 class Matrix
 {

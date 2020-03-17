@@ -25,7 +25,7 @@ void main()
 )glsl",
 
 {}, {}, {}, {},
-{});
+{}, {} );
 
 
 ShaderStruct wireframeColorGeometryShader(
@@ -54,7 +54,7 @@ void main()
 )glsl",
 
 {}, {}, {}, {},
-{});
+{}, {} );
 
 
 }

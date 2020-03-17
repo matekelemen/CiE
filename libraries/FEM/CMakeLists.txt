@@ -3,7 +3,7 @@ project( FEM CXX )
 # ---------------------------------------------------------
 # GATHER FILES AND INCLUDE DIRECTORIES
 # ---------------------------------------------------------
-include_directories( inc )
+include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/inc" )
 
 file( GLOB FEM_SOURCE_FILES src/*.cpp)
 file( GLOB FEM_TEST_FILES test/*.cpp)

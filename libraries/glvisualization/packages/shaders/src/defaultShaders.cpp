@@ -21,7 +21,7 @@ void main()
 )glsl",
 
 {"position"}, {3},{0},{0},
-{""} );
+{}, {} );
 
 
 ShaderStruct defaultGeometryShader(
@@ -49,7 +49,7 @@ void main()
 )glsl",
 
 {}, {}, {}, {},
-{});
+{}, {} );
 
 
 ShaderStruct defaultFragmentShader(R"glsl(
@@ -66,7 +66,7 @@ void main()
 )glsl",
 
 {"color"}, {4}, {0}, {0},
-{""});
+{}, {} );
 
 
 }

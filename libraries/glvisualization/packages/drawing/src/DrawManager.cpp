@@ -5,31 +5,90 @@ namespace gl {
 
 
 DrawManager::DrawManager( GLContext& context ) :
-    AbsContextClass( context, "DrawManager" ),
-    _buffers( context, GL_STREAM_DRAW ),
-    _shaderCode( context ),
-    _shaders( ),
-    _programID(0)
+    ProgramManager( context, "DrawManager" ),
+    _shaderManager( context ),
+    _camera( new Camera(context) )
+{
+    _buffers.setDrawMode( GL_DYNAMIC_DRAW );
+}
+
+
+DrawManager::~DrawManager()
 {
 }
 
 
 void DrawManager::initialize()
 {
+    log( "Run default draw function initialization" );
+    float cLen = 0.9f;
+
+    // Initialize uniforms
+    for (auto uniform : _shaderManager.uniforms())
+    {
+        GLint id = glGetUniformLocation( _programID, &uniform[0] );
+        _uniformIDs.push_back( id );
+
+        GLsizei     length;
+        GLsizei     size;
+        GLenum      type;
+        GLchar      name;
+        glGetActiveUniform( _programID,
+                            id,
+                            0,
+                            &length,
+                            &size,
+                            &type,
+                            &name);
+        
+        if (type == GL_FLOAT_MAT4)
+            glUniformMatrix4fv( id, 
+                                1, 
+                                GL_FALSE, 
+                                glm::value_ptr(_camera->transformationMatrix()) );
+
+        //for (size_t i=0; i<4; ++i)
+        //{
+        //    for (size_t j=0; j<4; ++j)
+        //        std::cout << std::to_string( _camera.transformationMatrix()[i][j] ) + ", ";
+        //    std::cout << "\n";
+        //}
+
+        GLuint error = glGetError();
+        if( error!=0 )
+            logID(  "Initializing uniform \"" + uniform + "\" failed!",
+                    error,
+                    LOG_TYPE_ERROR );
+    }
+
     std::vector<float> vertices = {
-        -0.9f, -0.9f, 0.0f,     1.0f,0.0f,0.0f,
-        0.9f, -0.9f, 0.0f,      0.0f,1.0f,0.0f,
-        0.9f, 0.9f, 0.0f,       0.0f,0.0f,1.0f,
-        -0.9f, 0.9f, 0.0f,      1.0f,1.0f,1.0f
+        0.0f, 0.0, 0.0f,        1.0f, 0.0f, 0.0f,
+        cLen, 0.0f, 0.0f,       0.0f, 1.0f, 0.0f,
+        cLen, cLen, 0.0f,       0.0f, 0.0f, 1.0f,
+        0.0f, cLen, 0.0f,       1.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, cLen,       1.0f, 0.0f, 1.0f,
+        cLen, 0.0f, cLen,       0.0f, 1.0f, 1.0f,
+        0.0f, cLen, cLen,       1.0f, 1.0f, 1.0f
+
     };
 
     std::vector<GLuint> triangles = {
         0,1,2,
-        0,2,3
+        0,2,3,
+        0,3,6,
+        0,6,4,
+        0,4,5,
+        0,5,1
     };
 
     _buffers.writeToActiveBuffer(GL_ARRAY_BUFFER, vertices);
     _buffers.writeToActiveBuffer(GL_ELEMENT_ARRAY_BUFFER, triangles);
+
+    GLuint error = glGetError();
+    if( error!=0 )
+        logID( "Default draw function initialization failed!",
+                error,
+                LOG_TYPE_ERROR );
 }
 
 
@@ -38,6 +97,31 @@ void DrawManager::draw()
     // Set background and clear
     glClearColor( 0.2f, 0.2f, 0.2f, 1.0f );
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+    // Set transformation
+    for (auto uniform : _shaderManager.uniforms())
+    {
+        GLint id = glGetUniformLocation( _programID, &uniform[0] );
+        _uniformIDs.push_back( id );
+
+        GLsizei     length;
+        GLsizei     size;
+        GLenum      type;
+        GLchar      name;
+        glGetActiveUniform( _programID,
+                            id,
+                            0,
+                            &length,
+                            &size,
+                            &type,
+                            &name);
+        
+        if (type == GL_FLOAT_MAT4)
+            glUniformMatrix4fv( id, 
+                                1, 
+                                GL_FALSE, 
+                                glm::value_ptr(_camera->transformationMatrix()) );
+    }
 
     // Get number of elements to draw
     GLint64 numberOfElements;
@@ -49,46 +133,47 @@ void DrawManager::draw()
 }
 
 
+DrawFunction DrawManager::makeDrawFunction( GLContext& context )
+{
+    log( "Create callable draw function factory" );
+    return [&context, this]()->void
+        {
+            this->draw();
+        };
+}
+
+
 
 void DrawManager::compileShaders()
 {
+    // Compile and store shaders in the following order:
+    // 1) Vertex shader
+    // 2) Geometry shader
+    // 3) Fragment shader
+
     // Load vertex shader source
     GLuint vertexID     = glCreateShader( GL_VERTEX_SHADER );
-    ShaderPtr shaderPtr = _shaderCode.getVertexShader();
+    ShaderPtr shaderPtr = _shaderManager.getVertexShader();
     glShaderSource( vertexID, 1, &shaderPtr, NULL );
     _shaders.push_back( vertexID );
     logID( "Load vertex shader", vertexID );
 
     // Load geometry shader source
     GLuint geometryID   = glCreateShader( GL_GEOMETRY_SHADER );
-    shaderPtr           = _shaderCode.getGeometryShader();
+    shaderPtr           = _shaderManager.getGeometryShader();
     glShaderSource( geometryID, 1, &shaderPtr, NULL );
     _shaders.push_back( geometryID );
     logID( "Load geometry shader", geometryID );
     
-
     // Load fragment shader source
     GLuint fragmentID   = glCreateShader( GL_FRAGMENT_SHADER );
-    shaderPtr           = _shaderCode.getFragmentShader();
+    shaderPtr           = _shaderManager.getFragmentShader();
     glShaderSource( fragmentID, 1, &shaderPtr, NULL );
     _shaders.push_back( fragmentID );
     logID( "Load fragment shader", fragmentID );
 
     // Compile shaders
-    for ( GLuint id : _shaders )
-    {
-        glCompileShader( id );
-        GLint compileStatus;
-        glGetShaderiv( id, GL_COMPILE_STATUS, &compileStatus );
-        if (compileStatus != GL_TRUE)
-        {
-            char buffer[512];
-            glGetShaderInfoLog( id, 512, NULL, buffer );
-            logID("Shader compilation failed", id, CONTEXT_LOG_TYPE_ERROR );
-        }
-        else
-            logID("Shader compilation successful!", id );
-    }
+    ProgramManager::compileShaders();
 }
 
 
@@ -101,37 +186,8 @@ void DrawManager::makeProgram()
     // Finalize shaders
     compileShaders();
 
-    // Combine shaders into a program
-    _programID = glCreateProgram();
-    for (auto shaderID : _shaders)
-        glAttachShader( _programID, shaderID );
-    logID( "Create program", _programID );
-
-    // Bind fragment shader output
-    glBindFragDataLocation( _programID, 0, _shaderCode.fragOutputNames()[0].c_str() );
-
-    // Link program
-    glLinkProgram( _programID );
-    GLint linkStatus;
-    glGetProgramiv(_programID, GL_LINK_STATUS, &linkStatus);
-    if (linkStatus != GL_TRUE)
-    {
-        char buffer[512];
-        glGetProgramInfoLog( _programID, 512, NULL, buffer );
-        log("Program linking failed!\n" + std::string(buffer),
-            CONTEXT_LOG_TYPE_ERROR );
-    }
-    else
-        logID( "Program linked successfully", _programID );
-    
-    // Activate program
-    glUseProgram( _programID );
-    logID( "Set active program", _programID );
-
-    // VAO
-    GLuint vertexArrayObject;
-    glGenVertexArrays( 1, &vertexArrayObject );
-    glBindVertexArray( vertexArrayObject );
+    // Create program, attach shaders, activate program, and create VAO
+    ProgramManager::makeProgram();
 
     // Generate and bind buffers
     GLuint vertexBufferID   = _buffers.createBuffer();
@@ -139,44 +195,52 @@ void DrawManager::makeProgram()
     _buffers.bindVertexBuffer( vertexBufferID );
     _buffers.bindElementBuffer( elementBufferID );
 
-    // Enable vertex shader attributes
-    for (size_t i=0; i<_shaderCode.attributes().size(); ++i)
+    // Enable shader attributes
+    for (size_t i=0; i<_shaderManager.attributes().size(); ++i)
     {
         GLint attributeID = glGetAttribLocation(    _programID, 
-                                                    _shaderCode.attributes()[i].c_str() );
+                                                    _shaderManager.attributes()[i].c_str() );
 
         glVertexAttribPointer(  attributeID,
-                                _shaderCode.attributeSizes()[i],
+                                _shaderManager.attributeSizes()[i],
                                 GL_FLOAT,
                                 GL_FALSE,
-                                _shaderCode.attributeStrides()[i] * sizeof(float),
-                                (void*)(_shaderCode.attributeOffsets()[i]*sizeof(float)) );
+                                _shaderManager.attributeStrides()[i] * sizeof(float),
+                                (void*)(_shaderManager.attributeOffsets()[i]*sizeof(float)) );
 
         glEnableVertexAttribArray( attributeID );
     }
     
+    // Bind fragment shader output
+    glBindFragDataLocation( _programID, 0, _shaderManager.fragOutputNames()[0].c_str() );
 
     // Check error
     if (glGetError()!=0)
-        logID( "Failed to make program", _programID, CONTEXT_LOG_TYPE_ERROR );
+        logID( "Failed to make program", _programID, LOG_TYPE_ERROR );
 }
 
 
-BufferHandler& DrawManager::buffers()
+ShaderManager& DrawManager::shaderManager()
 {
-    return _buffers;
+    return _shaderManager;
 }
 
 
-ShaderManager& DrawManager::shaderCode()
+const ShaderManager& DrawManager::shaderManager() const
 {
-    return _shaderCode;
+    return _shaderManager;
 }
 
 
-const std::vector<GLuint>& DrawManager::shaders() const
+CameraPtr& DrawManager::camera()
 {
-    return _shaders;
+    return _camera;
+}
+
+
+const CameraPtr& DrawManager::camera() const
+{
+    return _camera;
 }
 
 

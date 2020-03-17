@@ -1,6 +1,7 @@
+// --- Internal Includes ---
 #include "../inc/windowutilities.hpp"
 
-#include <GLFW/glfw3.h>
+// --- STD Includes ---
 #include <utility>
 
 namespace cie {

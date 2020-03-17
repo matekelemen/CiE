@@ -1,16 +1,20 @@
 #ifndef GLVISUALIZATION_CALLBACKS_KEYS_HPP
 #define GLVISUALIZATION_CALLBACKS_KEYS_HPP
 
+// --- External Includes ---
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+// --- STD Includes ---
 #include <functional>
-#include "../../logging/inc/GLLogger.hpp"
 
 namespace cie {
 namespace gl {
 
 
-using KeyCallbackFunction = GLFWkeyfun;
+using KeyCallbackFunction       = GLFWkeyfun;
+using CursorCallbackFunction    = GLFWcursorposfun;
+using MouseCallbackFunction     = GLFWmousebuttonfun;
 
 
 void callback_keyExit(      GLFWwindow* window, 
@@ -18,6 +22,15 @@ void callback_keyExit(      GLFWwindow* window,
                             int scancode, 
                             int action, 
                             int mods );
+
+void defaultCursorCallbackFunction( GLFWwindow* window,
+                                    double x,
+                                    double y);
+
+void defaultMouseCallbackFunction(  GLFWwindow* window,
+                                    int button,
+                                    int action,
+                                    int mods);
 
 void GLAPIENTRY messageCallback(    GLenum source,
                                     GLenum type,
@@ -28,6 +41,10 @@ void GLAPIENTRY messageCallback(    GLenum source,
                                     const void* logger );
                             
 void callback_errorPrint(int error, const char* description);
+
+void frameBufferResizeCallback( GLFWwindow* window,
+                                int width,
+                                int height  );
 
 
 }

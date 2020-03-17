@@ -1,7 +1,11 @@
 #ifndef GLVISUALIZATION_WINDOW_UTILITIES_HPP
 #define GLVISUALIZATION_WINDOW_UTILITIES_HPP
 
+// --- External Includes ---
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+// --- STD Includes ---
 #include <utility>
 #include <cstddef>
 
