@@ -41,16 +41,23 @@ void CallbackGroup::mouseCallback(  WindowPtr window,
     double x, y;
     glfwGetCursorPos( window, &x, &y );
 
+    // Flip y
+    int w, h;
+    glfwGetFramebufferSize( window, &w, &h );
+    y = (double)h - y;
+
     // Get DrawManager and InteractiveCamera
     DrawManager* drawManager    = static_cast<DrawManager*>(glfwGetWindowUserPointer( window ));
-    InteractiveCameraPtr camera     = std::static_pointer_cast<InteractiveCamera>(drawManager->camera());
+    InteractiveCameraPtr camera = std::static_pointer_cast<InteractiveCamera>(drawManager->camera());
 
     // Set press position if pressed
-    if (action == GLFW_PRESS)
+    if (action == GLFW_PRESS && action != GLFW_REPEAT)
     {
-        if ( button==GLFW_MOUSE_BUTTON_1 || button==GLFW_MOUSE_BUTTON_2 )
+        if ( button==GLFW_MOUSE_BUTTON_1 || button==GLFW_MOUSE_BUTTON_2 || button==GLFW_MOUSE_BUTTON_3 )
         {
-            camera->setMousePressPosition( x, y );
+            auto worldPos = camera->screenToWorld(x, y);
+            camera->setMousePressPosition( worldPos );
+            camera->setCursorPosition( worldPos );
         }
     }
 }
@@ -60,29 +67,63 @@ void CallbackGroup::cursorCallback( WindowPtr window,
                                     double x,
                                     double y   )
 {
+    // Flip y
+    int w, h;
+    glfwGetFramebufferSize( window, &w, &h );
+    y = (double)h - y;
+
+    // Cast pointers
     DrawManager* manager = static_cast<DrawManager*>(glfwGetWindowUserPointer(window));
     InteractiveCamera* camera = static_cast<InteractiveCamera*>( manager->camera().get() );
+
 
     // STRAFE
     if ( glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS )
     {
-        auto currentPosition    = camera->screenToWorld( x, y );
-        camera->translate( camera->mousePressPosition() - currentPosition );
-        camera->setMousePressPosition( currentPosition );
+        // Project the picked point onto the plane defined by
+        // the camera direction as normal, and the previous point,
+        // then compute the difference of the projection and the previous point
+        auto currentPosition    = camera->screenToWorld(x, y);
+        glm::vec3 dx            = camera->mousePressPosition()
+                                    - currentPosition
+                                    - glm::dot( camera->cameraDirection(), camera->mousePressPosition() - currentPosition )
+                                        / glm::dot( camera->cameraDirection(), currentPosition - camera->cameraPosition() )
+                                        * ( currentPosition - camera->cameraPosition() );
+        camera->translate( dx );
     }
 
     // ADVANCE
-    if ( glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_2) == GLFW_PRESS )
+    else if ( glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_2) == GLFW_PRESS )
     {
-        glm::vec3 currentPosition   = camera->screenToWorld( x, y );
-        glm::vec3 dx                = camera->mousePressPosition() - currentPosition;
-        GLfloat dz                  = glm::abs(dx[0])*dx[0] + glm::abs(dx[1])*dx[1];
-        camera->setMousePressPosition( currentPosition );
+        glm::vec3 normalProjection  = camera->screenToWorld( w/2.0, h/2.0 ) - camera->cameraPosition();
+        GLfloat multiplier          = 0.01;
+        if ((GLfloat)y - camera->cursorPosition()[1] < 0.0f)
+            multiplier *= -1.0f;
 
-        camera->translate(  glm::vec3(  0.0, 
-                                        0.0, 
-                                        glm::sign(dz) * glm::sqrt(glm::abs(dz)) ) 
-                            );
+        camera->translate( multiplier * glm::length(normalProjection) * camera->cameraDirection() );
+        
+        camera->setCursorPosition( glm::vec3((GLfloat)x, (GLfloat)y, 0.0f) );
+    }
+
+    // ROTATE
+    else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_3) == GLFW_PRESS)
+    {
+        GLfloat radius  = glm::length( camera->cameraPosition() - camera->mousePressPosition() );
+        
+        // Project cursor onto the sphere defined by the click position (and the camera position as center)
+        auto currentPosition    = camera->screenToWorld(x, y);
+        currentPosition         = camera->cameraPosition()
+                                    + glm::normalize(currentPosition - camera->cameraPosition()) 
+                                        * radius;
+
+        glm::vec3 axis  = glm::cross( currentPosition-camera->cameraPosition(), camera->mousePressPosition()-camera->cameraPosition() );
+        GLfloat angle   = -2.0*glm::asin( glm::length(currentPosition-camera->cursorPosition())/2.0 / radius );
+
+        camera->rotate( angle, 
+                        axis,
+                        camera->mousePressPosition() );
+
+        camera->setCursorPosition( currentPosition );
     }
 }
 

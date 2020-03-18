@@ -33,15 +33,19 @@ public:
 
     virtual void zoom( GLfloat modifier );
     virtual void translate( const glm::vec3& translation );
-    virtual void rotate(    GLfloat degrees,
-                            const glm::vec3& axis );
+    virtual void rotate(    GLfloat radians,
+                            const glm::vec3& axis,
+                            const glm::vec3& center );
 
-    template <class ContainerType>
-    void setPose(   const ContainerType& position,
-                    const ContainerType& direction );
+    void setPose(   const glm::vec3& position,
+                    const glm::vec3& direction,
+                    const glm::vec3& cameraUp );
+
+    void setPose(   const glm::vec3& position,
+                    const glm::vec3& direction );
 
     void setProperties( GLfloat fieldOfView,
-                        GLfloat nearClippingPlane ,
+                        GLfloat nearClippingPlane,
                         GLfloat farClippingPlane );
     void setProperties( GLfloat fieldOfView );
 
@@ -51,9 +55,11 @@ public:
     const glm::mat4& viewMatrix() const;
     const glm::mat4& projectionMatrix() const;
     const glm::mat4& transformationMatrix() const;
+    glm::vec3 screenToWorld( double x, double y ) const;
 
     const glm::vec3& cameraPosition() const;
     const glm::vec3& cameraDirection() const;
+    const glm::vec3& cameraUp() const;
     GLfloat fieldOfView() const;
     GLfloat& width();
     GLfloat& height();
@@ -63,6 +69,7 @@ public:
 protected:
     glm::vec3   _cameraPosition;
     glm::vec3   _cameraDirection;
+    glm::vec3   _cameraUp;
     GLfloat     _fieldOfView;
     GLfloat     _width;
     GLfloat     _height;
@@ -76,21 +83,6 @@ protected:
 
 
 
-
-
-//class Camera2D : public Camera
-//{
-//public:
-//    Camera2D( GLContext& context );
-//    Camera2D( const Camera2D& copy );
-//    Camera2D& operator=( const Camera2D& copy ) = default;
-//
-//protected:
-//    glm::vec3   _normal;
-//};
-
-
-
 class InteractiveCamera : public Camera
 {
 public:
@@ -98,19 +90,22 @@ public:
     InteractiveCamera( const InteractiveCamera& copy );
     InteractiveCamera& operator=( const InteractiveCamera& copy ) = default;
 
-    glm::vec3 screenToWorld( double x, double y ) const;
     void setMousePressPosition( double x, double y );
-    void setMousePressPosition( const glm::vec3& mousePos );
-    const glm::vec3& mousePressPosition( ) const;
+    void setMousePressPosition( const glm::vec3& pos );
+
+    void setCursorPosition( double x, double y );
+    void setCursorPosition( const glm::vec3& pos );
+
+    const glm::vec3& mousePressPosition() const;
+    const glm::vec3& cursorPosition() const;
 
 protected:
     glm::vec3   _mousePressPosition;
+    glm::vec3   _cursorPosition;
 };
 
 
 }
 }
-
-#include "Camera_impl.hpp"
 
 #endif
