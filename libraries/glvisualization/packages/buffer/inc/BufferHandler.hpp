@@ -19,6 +19,7 @@ public:
     BufferHandler(  GLContext& context,
                     GLuint drawMode );
     virtual ~BufferHandler();
+    virtual void terminate() override;
 
     [[nodiscard]] GLuint createBuffer();
 

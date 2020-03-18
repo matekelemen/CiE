@@ -2,7 +2,7 @@
 # SET UP BINDINGS
 # --------------------------------------------------
 # Include headers
-include_directories( ../inc )
+include_directories( "${PROJECT_SOURCE_DIR}/inc" )
 
 # Collect python library files
 file( GLOB PYTHON_MESHKERNEL_CPP_FILES bindings/*meshkernel*.cpp )

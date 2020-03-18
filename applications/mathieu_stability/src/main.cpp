@@ -16,7 +16,7 @@ const double OMEGA          = 1.0;
 //const double OMEGACRITICAL  = 0.0;
 const size_t N              = 5;
 
-auto targetFunction = [&](const cie::DoubleArray<dimension>& parameters)
+auto targetFunction = [](const cie::DoubleArray<dimension>& parameters)
 {   
     cie::mathieu::Complex determinant = cie::mathieu::hilbertDeterminant( 
                                             parameters[0],

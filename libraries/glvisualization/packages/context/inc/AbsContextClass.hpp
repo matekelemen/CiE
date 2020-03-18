@@ -1,31 +1,25 @@
 #ifndef GLVISUALIZATION_ABS_CONTEXT_CLASS_HPP
 #define GLVISUALIZATION_ABS_CONTEXT_CLASS_HPP
 
+// --- Internal Includes ---
 #include "GLContext.hpp"
+
+// --- STD Includes ---
 #include <string>
+
 
 namespace cie{
 namespace gl {
 
 
-class AbsContextClass
+class AbsContextClass : public utils::Loggee
 {
 public:
-    void terminate();
+    virtual void terminate();
 
 protected:
-    void log(   const std::string& message,
-                GLuint messageType = CONTEXT_LOG_TYPE_REPORT );
-    
-    template <class T>
-    void logID( const std::string& message,
-                T id,
-                GLuint messageType = CONTEXT_LOG_TYPE_REPORT );
-
     AbsContextClass(    GLContext& context,
                         const std::string& className );
-
-
 
     std::string     _className;
     GLContext*      _context;

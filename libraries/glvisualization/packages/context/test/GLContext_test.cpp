@@ -1,8 +1,13 @@
+// --- External Includes ---
 #include "catch.hpp"
+
+// --- Internal Includes ---
 #include "../inc/GLContext.hpp"
 #include "../../drawing/inc/Camera.hpp"
 #include "../inc/DrawManager.hpp"
-#include "../../callbacks/inc/key_callbacks.hpp"
+#include "../../callbacks/inc/CallbackGroup.hpp"
+
+// --- STD Includes ---
 #include <iostream>
 
 
@@ -56,18 +61,29 @@ TEST_CASE( "DrawManager" )
     
     // Create draw manager
     DrawManager drawManager( context_global );
-    REQUIRE_NOTHROW(drawManager.makeProgram());
-    REQUIRE_NOTHROW(drawManager.initialize());
+    REQUIRE_NOTHROW( drawManager.makeProgram() );
+    REQUIRE_NOTHROW( drawManager.initialize() );
 
+    // Set DrawManager members
+    REQUIRE_NOTHROW( drawManager.camera() = std::make_shared<InteractiveCamera>(context_global) );
+    //CHECK_NOTHROW( drawManager.camera()->setProperties( 0 ) );
 
     // Bind callbacks
-    KeyCallbackFunction keyCallback = makeKeyCallbackFunction(  defaultArcballKeyCallback,
-                                                                context_global, 
-                                                                drawManager );
+    KeyCallbackFunction keyCallback         = makeCallback( CallbackGroup::keyCallback,
+                                                            &context_global, 
+                                                            &drawManager );
+    CursorCallbackFunction cursorCallback   = makeCallback( CallbackGroup::cursorCallback,
+                                                            &context_global,
+                                                            &drawManager );
+    MouseCallbackFunction mouseCallback     = makeCallback( CallbackGroup::mouseCallback,
+                                                            &context_global,
+                                                            &drawManager );
 
     // Start the event loop
     REQUIRE_NOTHROW(context_global.startEventLoop(  std::bind(&DrawManager::makeDrawFunction, &drawManager, std::placeholders::_1),
-                                                    keyCallback     ));
+                                                    keyCallback,
+                                                    cursorCallback,
+                                                    mouseCallback     ));
 }
 
 

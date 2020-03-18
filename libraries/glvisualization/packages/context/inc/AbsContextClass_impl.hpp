@@ -5,13 +5,13 @@ namespace cie {
 namespace gl {
 
 
-template <class T>
-void AbsContextClass::logID(  const std::string& message,
-                            T id,
-                            GLuint messageType )
-{
-    log( message + " | ID_" + std::to_string(id), messageType );
-}
+//template <class T>
+//void AbsContextClass::logID(  const std::string& message,
+//                            T id,
+//                            GLuint messageType )
+//{
+//    log( message + " | ID_" + std::to_string(id), messageType );
+//}
 
 
 }
