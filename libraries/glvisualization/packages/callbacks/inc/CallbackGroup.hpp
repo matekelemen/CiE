@@ -34,6 +34,22 @@ struct CallbackGroup
     static void cursorCallback( WindowPtr window,
                                 double x,
                                 double y   );
+
+    template <class CameraType>
+    static CameraType* getCameraPtr( WindowPtr window );
+};
+
+
+struct ArcballCallbacks : CallbackGroup
+{
+    static void mouseCallback(  WindowPtr window,
+                                int button,
+                                int action,
+                                int mods    );
+
+    static void cursorCallback( WindowPtr window,
+                                double x,
+                                double y   ); 
 };
 
 

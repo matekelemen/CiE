@@ -13,7 +13,8 @@ namespace gl {
 class DrawManager : public ProgramManager
 {
 public:
-    DrawManager( GLContext& context );
+    DrawManager(    GLContext& context,
+                    const std::string& className = "DrawManager" );
     ~DrawManager();
 
     void initialize() override;
@@ -22,6 +23,8 @@ public:
 
     virtual void draw();
     DrawFunction makeDrawFunction( GLContext& context );
+
+    void checkGLErrors( const std::string& errorMessage = "" );
 
     ShaderManager& shaderManager();
     const ShaderManager& shaderManager() const;
@@ -33,7 +36,8 @@ protected:
     CameraPtr       _camera;
 
 private:
-    std::vector<GLint> _uniformIDs;
+    std::vector<GLint>  _uniformIDs;
+    GLint               _transformationID;
 };
 
 

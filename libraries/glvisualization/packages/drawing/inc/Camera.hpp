@@ -26,7 +26,8 @@ using InteractiveCameraPtr  = std::shared_ptr<InteractiveCamera>;
 class Camera : public AbsContextClass
 {
 public:
-    Camera( GLContext& context );
+    Camera( GLContext& context,
+            const std::string& className = "Camera" );
     Camera( const Camera& camera );
     Camera& operator=( const Camera& camera );
     ~Camera();
@@ -86,7 +87,8 @@ protected:
 class InteractiveCamera : public Camera
 {
 public:
-    InteractiveCamera( GLContext& context );
+    InteractiveCamera(  GLContext& context,
+                        const std::string& className = "InteractiveCamera" );
     InteractiveCamera( const InteractiveCamera& copy );
     InteractiveCamera& operator=( const InteractiveCamera& copy ) = default;
 
@@ -102,6 +104,25 @@ public:
 protected:
     glm::vec3   _mousePressPosition;
     glm::vec3   _cursorPosition;
+};
+
+
+class ArcballCamera : public InteractiveCamera
+{
+public:
+    ArcballCamera(  GLContext& context,
+                    const std::string& className = "ArcballCamera" );
+
+    void translate( const glm::vec3& translation ) override;
+    void rotate(    GLfloat radians,
+                    const glm::vec3& axis,
+                    const glm::vec3& centerPoint = glm::vec3(0.0f,0.0f,0.0f) ) override;
+
+    void setCenter( const glm::vec3& point );
+    const glm::vec3& center() const;
+
+protected:
+    glm::vec3   _center;
 };
 
 

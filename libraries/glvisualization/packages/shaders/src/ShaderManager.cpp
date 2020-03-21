@@ -22,11 +22,11 @@ ShaderManager::ShaderManager( GLContext& context ) :
 ShaderManager::~ShaderManager()
 {
     if (_vertexPtr != nullptr)
-        delete _vertexPtr;
+        delete[] _vertexPtr;
     if (_geometryPtr != nullptr)
-        delete _geometryPtr;
+        delete[] _geometryPtr;
     if (_fragmentPtr != nullptr)
-        delete _fragmentPtr;
+        delete[] _fragmentPtr;
 }
 
 

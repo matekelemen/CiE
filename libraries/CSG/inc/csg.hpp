@@ -1,8 +1,15 @@
-#ifndef CSG_HEADER
-#define CSG_HEADER
+#ifndef CSG_EXTERNAL_HEADER
+#define CSG_EXTERNAL_HEADER
 
-#include "csgoperator.hpp"
-#include "box.hpp"
-#include "sphere.hpp"
+// CSG primitives
+#include "../primitives/inc/csgobject.hpp"
+#include "../primitives/inc/rectangle.hpp"
+
+// Clustering
+#include "../clustering/inc/minimumdisc.hpp"
+
+// Trees
+#include "../trees/inc/spacetreenode.hpp"
+#include "../trees/inc/spacetreeutils.hpp"
 
 #endif

@@ -11,8 +11,8 @@ namespace cie {
 namespace gl {
 
 
-Camera::Camera( GLContext& context ) :
-    AbsContextClass( context, "Camera" ),
+Camera::Camera( GLContext& context, const std::string& className ) :
+    AbsContextClass( context, className ),
     _cameraPosition( 0.0f, 0.0f, 1.0f ),
     _cameraDirection( 0.0f, 0.0f, -1.0f ),
     _cameraUp( 0.0f, 1.0f, 0.0f ),
@@ -161,7 +161,7 @@ void Camera::setPose(   const glm::vec3& position,
     cameraUp            = glm::rotate(  cameraUp,
                                         -theta,
                                         yRotated    );
-
+                                        
     setPose( position, direction, cameraUp );
 }
 
@@ -307,8 +307,8 @@ GLfloat Camera::farClippingPlane() const
 
 
 
-InteractiveCamera::InteractiveCamera( GLContext& context ) :
-    Camera( context ),
+InteractiveCamera::InteractiveCamera( GLContext& context, const std::string& className ) :
+    Camera( context, className ),
     _mousePressPosition( 0.0f, 0.0f, 0.0f ),
     _cursorPosition( 0.0f, 0.0f, 0.0f )
 {
@@ -356,6 +356,41 @@ const glm::vec3& InteractiveCamera::mousePressPosition( ) const
 const glm::vec3& InteractiveCamera::cursorPosition( ) const
 {
     return _cursorPosition;
+}
+
+
+ArcballCamera::ArcballCamera(   GLContext& context,
+                                const std::string& className ) :
+    InteractiveCamera( context, className ),
+    _center( 0.0f, 0.0f, 0.0f )
+{
+}
+
+
+void ArcballCamera::translate( const glm::vec3& translation )
+{
+}
+
+
+void ArcballCamera::rotate( GLfloat radians,
+                            const glm::vec3& axis,
+                            const glm::vec3& centerPoint )
+{
+    InteractiveCamera::rotate( radians, axis, _center );
+}
+
+
+void ArcballCamera::setCenter( const glm::vec3& point )
+{
+    _center = point;
+    setPose(    _cameraPosition, 
+                glm::normalize(_center - _cameraPosition) );
+}
+
+
+const glm::vec3& ArcballCamera::center() const
+{
+    return _center;
 }
 
 

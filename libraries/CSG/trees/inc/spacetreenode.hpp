@@ -1,10 +1,12 @@
 #ifndef CSG_NTREENODE_HPP
 #define CSG_NTREENODE_HPP
 
+// --- Internal Includes ---
 #include "indexconverter.hpp"
 #include "spacetreeutils.hpp"
 #include "linalgtypes.hpp"
 
+// --- STD Includes ---
 #include <stdint.h>
 #include <memory>
 

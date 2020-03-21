@@ -47,8 +47,7 @@ void CallbackGroup::mouseCallback(  WindowPtr window,
     y = (double)h - y;
 
     // Get DrawManager and InteractiveCamera
-    DrawManager* drawManager    = static_cast<DrawManager*>(glfwGetWindowUserPointer( window ));
-    InteractiveCameraPtr camera = std::static_pointer_cast<InteractiveCamera>(drawManager->camera());
+    auto camera =  getCameraPtr<InteractiveCamera>( window );
 
     // Set press position if pressed
     if (action == GLFW_PRESS && action != GLFW_REPEAT)
@@ -73,9 +72,7 @@ void CallbackGroup::cursorCallback( WindowPtr window,
     y = (double)h - y;
 
     // Cast pointers
-    DrawManager* manager = static_cast<DrawManager*>(glfwGetWindowUserPointer(window));
-    InteractiveCamera* camera = static_cast<InteractiveCamera*>( manager->camera().get() );
-
+    auto camera =  getCameraPtr<InteractiveCamera>( window );
 
     // STRAFE
     if ( glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS )
@@ -124,6 +121,69 @@ void CallbackGroup::cursorCallback( WindowPtr window,
                         camera->mousePressPosition() );
 
         camera->setCursorPosition( currentPosition );
+    }
+}
+
+
+void ArcballCallbacks::mouseCallback(   WindowPtr window,
+                                        int button,
+                                        int action,
+                                        int mods    )
+{
+    // Get cursor position
+    double x, y;
+    glfwGetCursorPos( window, &x, &y );
+
+    // Flip y
+    int w, h;
+    glfwGetFramebufferSize( window, &w, &h );
+    y = (double)h - y;
+
+    // Get DrawManager and InteractiveCamera
+    auto camera =  getCameraPtr<ArcballCamera>( window );
+
+    // Set press position if pressed
+    if (action == GLFW_PRESS && action != GLFW_REPEAT)
+    {
+        if ( button==GLFW_MOUSE_BUTTON_1 )
+        {
+            camera->setMousePressPosition( glm::vec3( (GLfloat)x, (GLfloat)y, 0.0f) );
+            camera->setCursorPosition( glm::vec3( (GLfloat)x, (GLfloat)y, 0.0f) );
+        }
+    }
+}
+
+
+
+void ArcballCallbacks::cursorCallback(  WindowPtr window,
+                                        double x,
+                                        double y   )
+{
+    // Flip y
+    int w, h;
+    glfwGetFramebufferSize( window, &w, &h );
+    y = (double)h - y;
+
+    // Cast pointers
+    auto camera =  getCameraPtr<ArcballCamera>( window );
+
+    // Rotate
+    if ( glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS )
+    {
+        glm::vec4 dxAxis( glm::vec3(x,y,0.0f) - camera->mousePressPosition(), 1.0f );
+        glm::vec3 dxAngle( glm::vec3(x,y,0.0f) - camera->cursorPosition() );
+        dxAxis[0]       /= (GLfloat)w;
+        dxAxis[1]       /= (GLfloat)h;
+        dxAngle[0]      /= (GLfloat)w;
+        dxAngle[1]      /= (GLfloat)h;
+        GLfloat angle   = -2.0 * glm::pi<GLfloat>() * glm::length(dxAngle);
+
+        dxAxis          = glm::inverse(camera->transformationMatrix()) * dxAxis;
+        glm::vec3 axis  = glm::normalize(  glm::cross( glm::vec3(dxAxis), camera->cameraDirection() )  );
+
+        //std::cout << axis[0] << "\t" << axis[1] << "\t" << axis[2] << "\n";
+        camera->rotate( angle, axis );
+        camera->setCursorPosition( glm::vec3(x, y, 0.0f) );
     }
 }
 
