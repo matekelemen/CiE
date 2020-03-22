@@ -16,6 +16,7 @@ class AbsContextClass : public utils::Loggee
 {
 public:
     virtual void terminate();
+    const GLContext* context() const;
 
 protected:
     AbsContextClass(    GLContext& context,

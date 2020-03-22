@@ -1,8 +1,8 @@
 project( glvisualization CXX )
 
-include_directories( ../../external/glfw/include )
-include_directories( ../../external/glm )
-include_directories( ../cieutils/inc )
+include_directories( "../../external/glfw/include" )
+include_directories( "../../external/glm" )
+include_directories( "../linalg/inc" )
 
 # ---------------------------------------------------------
 # GATHER FILES AND INCLUDE DIRECTORIES
@@ -12,15 +12,15 @@ file( GLOB_RECURSE GLVISUALIZATION_TEST_FILES test/*.cpp )
 
 file( GLOB GLVISUALIZATION_SOURCE_FILES src/*.cpp)
 file( GLOB GLVISUALIZATION_HEADER_FILES inc/*.h* )
-file( GLOB GLVISUALIZATION_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/inc )
+file( GLOB GLVISUALIZATION_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/inc" )
 
-SUBDIRLIST( subdirs ${CMAKE_CURRENT_SOURCE_DIR}/packages )
+SUBDIRLIST( subdirs "${CMAKE_CURRENT_SOURCE_DIR}/packages" )
 foreach( subdirectory ${subdirs} )
-    set( subdirectory ${CMAKE_CURRENT_SOURCE_DIR}/packages/${subdirectory} )
+    set( subdirectory "${CMAKE_CURRENT_SOURCE_DIR}/packages/${subdirectory}" )
     file( GLOB headers ${subdirectory}/inc/*.h* )
     file( GLOB sources ${subdirectory}/src/*.cpp )
     file( GLOB tests ${subdirectory}/test/*.cpp )
-    list( APPEND GLVISUALIZATION_INCLUDE_DIRECTORIES ${subdirectory}/inc )
+    list( APPEND GLVISUALIZATION_INCLUDE_DIRECTORIES "${subdirectory}/inc" )
     list( APPEND GLVISUALIZATION_HEADER_FILES ${headers} )
     list( APPEND GLVISUALIZATION_SOURCE_FILES ${sources} )
     list( APPEND GLVISUALIZATION_TEST_FILES ${tests} )

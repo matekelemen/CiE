@@ -22,13 +22,13 @@ namespace utils {
 // Clock definition
 namespace detail
 {
-using Time = std::chrono::system_clock::time_point;
+using Time = std::chrono::steady_clock::time_point;
 
 auto getTime = []() ->Time 
-    { return std::chrono::high_resolution_clock::now(); };
+    { return std::chrono::steady_clock::now(); };
 
 auto getDate = []()
-    {   auto t = std::chrono::system_clock::to_time_t(getTime());
+    {   auto t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
         return std::string(std::ctime(&t)); };
 }
 

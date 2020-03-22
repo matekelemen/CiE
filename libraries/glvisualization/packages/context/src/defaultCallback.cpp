@@ -3,6 +3,7 @@
 
 // --- STD Includes ---
 #include <iostream>
+#include <string>
 
 namespace cie {
 namespace gl {

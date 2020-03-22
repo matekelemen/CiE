@@ -10,11 +10,10 @@ namespace gl {
 
 template <class CallbackType>
 CallbackType makeCallback(  CallbackType callback,
-                            GLContext* context,
                             DrawManager* drawManager )
 {
-    if ( glfwGetWindowUserPointer(context->window()) == nullptr )
-        glfwSetWindowUserPointer( context->window(), drawManager );
+    if ( glfwGetWindowUserPointer( drawManager->context()->window()) == nullptr )
+        glfwSetWindowUserPointer( drawManager->context()->window(), static_cast<void*>(drawManager) );
     return callback;
 }
 

@@ -2,6 +2,7 @@
 #define GLVISUALIZATION_CALLBACKS_KEYS_HPP
 
 // --- External Includes ---
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 // --- STD Includes ---

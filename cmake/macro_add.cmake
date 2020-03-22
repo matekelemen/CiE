@@ -8,5 +8,5 @@ FUNCTION( ADD_SHARED_LIBRARY target )
             EXPORT_FILE_NAME "${target}_EXPORT.hpp"
             STATIC_DEFINE "${target}_BUILT_AS_STATIC" )
 
-    target_include_directories( ${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inc )
+    target_include_directories( ${target} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/inc" )
 ENDFUNCTION( )

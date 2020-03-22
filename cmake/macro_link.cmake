@@ -12,8 +12,8 @@ FUNCTION( TARGET_LINK_PYTHON_BINDINGS target )
     foreach( library ${ARGV} )
         add_custom_command(TARGET ${target} POST_BUILD        	
         COMMAND ${CMAKE_COMMAND} -E copy 					
-            $<TARGET_FILE_DIR:${library}>/${library}.dll
-            ${INSTALL_PYTHON_MODULES_PREFIX}/py${projectName})
+            "$<TARGET_FILE_DIR:${library}>/${library}.dll"
+            "${INSTALL_PYTHON_MODULES_PREFIX}/py${projectName}" )
     endforeach(  )
   endif()
 
@@ -26,7 +26,7 @@ FUNCTION( TARGET_LINK_LIBRARIES_INSTALL target )
   LIST( REMOVE_ITEM ARGV ${target} )
   # Stackoverflow magic
   set_target_properties( ${target} PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE )
-  target_link_libraries( ${target} ${ARGV} )
+  target_link_libraries( ${target} PUBLIC ${ARGV} )
   
   if(UNIX AND NOT APPLE)
     set_target_properties( ${target} PROPERTIES INSTALL_RPATH ${INSTALL_LIBRARY_PREFIX} )
@@ -37,5 +37,5 @@ ENDFUNCTION()
 
 
 MACRO( TARGET_LINK_GRAPHICS_INSTALL target )
-  TARGET_LINK_LIBRARIES_INSTALL( ${target} glfw OpenGL::GL glm glad )
+  TARGET_LINK_LIBRARIES_INSTALL( ${target} glad glfw OpenGL::GL glm )
 ENDMACRO()

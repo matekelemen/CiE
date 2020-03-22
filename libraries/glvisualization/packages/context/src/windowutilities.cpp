@@ -1,8 +1,8 @@
-// --- External Includes ---
-#include <GLFW/glfw3.h>
-
 // --- Internal Includes ---
 #include "../inc/windowutilities.hpp"
+
+// --- STD Includes ---
+#include <utility>
 
 namespace cie {
 namespace gl {
@@ -11,14 +11,14 @@ namespace gl {
 std::pair<size_t, size_t> getMonitorResolution( GLFWmonitor* monitor )
 {
     const GLFWvidmode* mode = glfwGetVideoMode( monitor );
-    return std::make_pair<size_t, size_t>( mode->width, mode->height );
+    return std::make_pair<size_t, size_t>(size_t(mode->width), size_t(mode->height));
 }
 
 
 std::pair<size_t, size_t> getPrimaryMonitorResolution()
 {
     const GLFWvidmode* mode = glfwGetVideoMode( glfwGetPrimaryMonitor() );
-    return std::make_pair<size_t, size_t>( mode->width, mode->height );
+    return std::make_pair<size_t, size_t>( size_t(mode->width), size_t(mode->height) );
 }
 
 

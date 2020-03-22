@@ -8,21 +8,21 @@ file( GLOB_RECURSE CIEUTILS_TEST_FILES test/*.cpp )
 
 file( GLOB CIEUTILS_SOURCE_FILES src/*.cpp)
 file( GLOB CIEUTILS_HEADER_FILES inc/*.h* )
-file( GLOB CIEUTILS_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/inc )
+file( GLOB CIEUTILS_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/inc" )
 
-SUBDIRLIST( subdirs ${CMAKE_CURRENT_SOURCE_DIR}/packages )
+SUBDIRLIST( subdirs "${CMAKE_CURRENT_SOURCE_DIR}/packages" )
 foreach( subdirectory ${subdirs} )
-    set( subdirectory ${CMAKE_CURRENT_SOURCE_DIR}/packages/${subdirectory} )
+    set( subdirectory "${CMAKE_CURRENT_SOURCE_DIR}/packages/${subdirectory}" )
     file( GLOB headers ${subdirectory}/inc/*.h* )
     file( GLOB sources ${subdirectory}/src/*.cpp )
     file( GLOB tests ${subdirectory}/test/*.cpp )
-    list( APPEND CIEUTILS_INCLUDE_DIRECTORIES ${subdirectory}/inc )
+    list( APPEND CIEUTILS_INCLUDE_DIRECTORIES "${subdirectory}/inc" )
     list( APPEND CIEUTILS_HEADER_FILES ${headers} )
     list( APPEND CIEUTILS_SOURCE_FILES ${sources} )
     list( APPEND CIEUTILS_TEST_FILES ${tests} )
 endforeach()
 
-include_directories( ${CIEUTILS_INCLUDE_DIRECTORIES} )
+include_directories( "${CIEUTILS_INCLUDE_DIRECTORIES}" )
 
 # ---------------------------------------------------------
 # LIBRARIES AND EXECUTABLES
@@ -43,4 +43,4 @@ TARGET_LINK_LIBRARIES_INSTALL( cieutils_testrunner cieutils )
 # ---------------------------------------------------------
 INSTALL_LIBRARY( cieutils )
 INSTALL_TEST( cieutils_testrunner )
-install( FILES ${CMAKE_BINARY_DIR}/generated/cmake_variables.hpp DESTINATION ${INSTALL_LIBRARY_PREFIX} )
+install( FILES "${CMAKE_BINARY_DIR}/generated/cmake_variables.hpp" DESTINATION "${INSTALL_LIBRARY_PREFIX}" )
