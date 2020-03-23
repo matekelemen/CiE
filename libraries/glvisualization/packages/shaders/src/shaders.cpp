@@ -1,6 +1,11 @@
+#ifndef GLVISUALIZATION_SHADERS_IMPL_HPP
+#define GLVISUALIZATION_SHADERS_IMPL_HPP
+
+// --- Utility Includes ---
+#include "file.hpp"
+
 // --- Internal Includes ---
 #include "../inc/shaders.hpp"
-#include "file.hpp"
 
 // --- STD Includes ---
 #include <string>
@@ -28,16 +33,92 @@ ShaderStruct::ShaderStruct( const ShaderCode& source,
 }
 
 
-ShaderStruct::ShaderStruct( const std::string& shaderFileName )
+ShaderStruct::ShaderStruct( const std::string& fileName )
 {
-    // Open shader file
-    FileManager manager( SHADER_PATH );
-    auto file = manager.open( shaderFileName );
+    utils::FileManager manager( SHADER_PATH );
+    auto& file = manager.open( fileName );
 
-    // Read contents
+    // Parsing rules
+    const std::string nameBegin     = "// "; 
+    const std::string valueBegin    = ": ";
+
+    // Parse header
+    std::string line, name, value, values;
+    size_t nameIndex, valueIndex;
+    std::vector<std::string>* textContainer = nullptr;
+    std::vector<GLuint>* numericContainer = nullptr;
+    while( !file.eof() )
+    {
+        // Read new line
+        std::getline( file, line );
+        nameIndex = line.find( nameBegin );
+
+        // Check termination
+        if ( nameIndex == std::string::npos )
+            break;
+        else
+            nameIndex += nameBegin.size();
+        
+        // Parse
+        valueIndex  = line.find( valueBegin );
+        name        = line.substr( nameIndex, valueIndex-nameIndex );
+        values      = line.substr( valueIndex + valueBegin.size() );
+
+        if ( name == "attributes" )
+        {
+            textContainer       = &_attributes;
+            numericContainer    = nullptr;
+        }
+        else if ( name == "sizes" )
+        {
+            textContainer       = nullptr;
+            numericContainer    = &_sizes;
+        }
+        else if ( name == "strides" )
+        {
+            textContainer       = nullptr;
+            numericContainer    = &_strides;
+        }
+        else if ( name == "offsets" )
+        {
+            textContainer       = nullptr;
+            numericContainer    = &_offsets;
+        }
+        else if ( name == "uniforms" )
+        {
+            textContainer       = &_uniforms;
+            numericContainer    = nullptr;
+        }
+        else if ( name == "textures" )
+        {
+            textContainer       = &_textures;
+            numericContainer    = nullptr;
+        }
+        else
+            throw std::runtime_error( "Unrecognized shader property: " + name );
+
+        // Convert to stream and parse
+        std::istringstream stringStream(values);
+        while( std::getline(stringStream, value, ',') )
+        {
+            if ( !value.empty() )
+            {
+                if (textContainer != nullptr)
+                    textContainer->push_back( value );
+                else if (numericContainer != nullptr)
+                    numericContainer->push_back( std::atoi(value.c_str()) );
+                else
+                    throw std::runtime_error( "Unset container pointer!" );
+            }
+
+        }
+        
+    }
+
+    // Get shader source
     std::stringstream stream;
     stream << file.rdbuf();
-    // TODO
+    _source =  stream.str();
 }
 
 
@@ -71,6 +152,48 @@ ShaderStruct::ShaderStruct()
 }
 
 
+void ShaderStruct::print( std::ostream& stream ) const
+{
+    stream << "Attributes: ";
+    for ( auto& item : _attributes )
+        stream << item << ", ";
+    stream << "\n";
+
+    stream << "Sizes: ";
+    for ( auto& item : _sizes )
+        stream << item << ", ";
+    stream << "\n";
+
+    stream << "Strides: ";
+    for ( auto& item : _strides )
+        stream << item << ", ";
+    stream << "\n";
+
+    stream << "Offsets: ";
+    for ( auto& item : _offsets )
+        stream << item << ", ";
+    stream << "\n";
+
+    stream << "Uniforms: ";
+    for ( auto& item : _uniforms )
+        stream << item << ", ";
+    stream << "\n";
+
+    stream << "Textures: ";
+    for ( auto& item : _textures )
+        stream << item << ", ";
+    stream << "\n";
+
+    stream << "Code:\n";
+    stream << _source << "\n";
+
+    std::flush(stream);
+}
+
+
 
 }
 }
+
+
+#endif

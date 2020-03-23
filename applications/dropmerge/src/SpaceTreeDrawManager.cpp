@@ -11,9 +11,9 @@ SpaceTreeDrawManager::SpaceTreeDrawManager( SpaceTreeNode<3,M>& root,
     _root( &root ),
     _drawFunction( nullptr )
 {
-    _shaderManager.setVertexShader( gl::SpaceTreeVertexShader );
-    _shaderManager.setGeometryShader( gl::SpaceTreeGeometryShader );
-    _shaderManager.setFragmentShader( gl::SpaceTreeFragmentShader );
+    _shaderManager.setVertexShader( "spacetreeVertexShader.glsl" );
+    _shaderManager.setGeometryShader( "spacetreeGeometryShader.glsl" );
+    _shaderManager.setFragmentShader( "spacetreeFragmentShader.glsl" );
     makeProgram();
 }
 

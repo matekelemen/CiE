@@ -21,9 +21,6 @@ endif( )
 SET( CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}:$ORIGIN" )
 #SET( BUILD_RPATH_USE_ORIGIN TRUE )
 
-# Copy CMAKE variables in global header
-configure_file( cmake/cmake_variables.hpp.in ${CMAKE_BINARY_DIR}/generated/cmake_variables.hpp )
-include_directories( ${CMAKE_BINARY_DIR}/generated )
 
 # ---------------------------------------------------------
 # WINDOWS
@@ -47,6 +44,10 @@ include( cmake/macro_install.cmake )
 include( cmake/macro_link.cmake )
 include( cmake/macro_add.cmake )
 
+# Copy CMAKE variables in global header
+configure_file( cmake/cmake_variables.hpp.in ${CMAKE_BINARY_DIR}/generated/cmake_variables.hpp )
+include_directories( ${CMAKE_BINARY_DIR}/generated )
+
 # ---------------------------------------------------------
 # COMPILER FLAGS
 # ---------------------------------------------------------
@@ -62,13 +63,18 @@ set(PYBIND11_CPP_STANDARD -std=c++17)
 add_subdirectory( external/pybind11 )
 
 if( CIE_USE_CPP_GRAPHICS )
-    # Always build shared libraries
-    set( BUILD_SHARED_LIBS ON "This options should always be ticked" )
+    if( WIN32 )
+        set( BUILD_SHARED_LIBS ON )
+    endif()
 
     find_package( OpenGL REQUIRED )
     add_subdirectory( external/glfw )
     add_subdirectory( external/glm )
     add_subdirectory( external/glad )
+
+    if( NOT WIN32 )
+        set( BUILD_SHARED_LIBS ON "Always build shared libraries" CACHE BOOL "Always build shared libraries" FORCE )
+    endif()
 endif(  )
 
 # ---------------------------------------------------------

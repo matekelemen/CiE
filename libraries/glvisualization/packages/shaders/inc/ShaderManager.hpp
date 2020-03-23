@@ -33,6 +33,10 @@ public:
     void setGeometryShader( const ShaderStruct& shader );
     void setFragmentShader( const ShaderStruct& shader );
 
+    void setVertexShader( const std::string& fileName );
+    void setGeometryShader( const std::string& fileName );
+    void setFragmentShader( const std::string& fileName );
+
     const std::vector<std::string>& attributes() const;
     const std::vector<GLuint>& attributeSizes() const;
     const std::vector<GLuint>& attributeStrides() const;
