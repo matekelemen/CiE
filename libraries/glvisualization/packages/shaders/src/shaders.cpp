@@ -1,7 +1,10 @@
-#ifndef GLVISUALIZATION_SHADERS_IMPL_HPP
-#define GLVISUALIZATION_SHADERS_IMPL_HPP
-
+// --- Internal Includes ---
 #include "../inc/shaders.hpp"
+#include "file.hpp"
+
+// --- STD Includes ---
+#include <string>
+#include <sstream>
 
 namespace cie {
 namespace gl {
@@ -22,6 +25,19 @@ ShaderStruct::ShaderStruct( const ShaderCode& source,
     _uniforms(uniforms),
     _textures(textures)
 {
+}
+
+
+ShaderStruct::ShaderStruct( const std::string& shaderFileName )
+{
+    // Open shader file
+    FileManager manager( SHADER_PATH );
+    auto file = manager.open( shaderFileName );
+
+    // Read contents
+    std::stringstream stream;
+    stream << file.rdbuf();
+    // TODO
 }
 
 
@@ -58,6 +74,3 @@ ShaderStruct::ShaderStruct()
 
 }
 }
-
-
-#endif

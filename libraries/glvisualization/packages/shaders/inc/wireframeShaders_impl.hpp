@@ -1,9 +1,10 @@
-#include "../inc/shaders.hpp"
+#ifndef GLVISUALIZATION_WIREFRAME_SHADERS_IMPL_HPP
+#define GLVISUALIZATION_WIREFRAME_SHADERS_IMPL_HPP
 
 namespace cie {
 namespace gl {
 
-ShaderStruct wireframeGeometryShader(
+const ShaderStruct wireframeGeometryShader(
 R"glsl(
 
 #version 450 core
@@ -28,7 +29,7 @@ void main()
 {}, {} );
 
 
-ShaderStruct wireframeColorGeometryShader(
+const ShaderStruct wireframeColorGeometryShader(
 R"glsl(
 
 #version 450 core
@@ -59,3 +60,5 @@ void main()
 
 }
 }
+
+#endif

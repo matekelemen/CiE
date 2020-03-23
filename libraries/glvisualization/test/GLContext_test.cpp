@@ -123,13 +123,10 @@ TEST_CASE( "DrawManager" )
 
     // Bind callbacks
     KeyCallbackFunction keyCallback         = makeCallback( ArcballCallbacks::keyCallback,
-                                                            &context_global, 
                                                             &drawManager );
     CursorCallbackFunction cursorCallback   = makeCallback( ArcballCallbacks::cursorCallback,
-                                                            &context_global,
                                                             &drawManager );
     MouseCallbackFunction mouseCallback     = makeCallback( ArcballCallbacks::mouseCallback,
-                                                            &context_global,
                                                             &drawManager );
 
     // Start the event loop

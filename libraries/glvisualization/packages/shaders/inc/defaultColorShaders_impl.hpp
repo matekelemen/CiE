@@ -1,12 +1,10 @@
-#ifndef GLVISUALIZATION_DEFAULT_SHADERS
-#define GLVISUALIZATION_DEFAULT_SHADERS
-
-#include "../inc/shaders.hpp"
+#ifndef GLVISUALIZATION_DEFAULT_COLOR_SHADERS_IMPL_HPP
+#define GLVISUALIZATION_DEFAULT_COLOR_SHADERS_IMPL_HPP
 
 namespace cie {
 namespace gl {
 
-ShaderStruct defaultColorVertexShader(
+const ShaderStruct defaultColorVertexShader(
 R"glsl(
 
 #version 450 core
@@ -29,7 +27,7 @@ void main()
 {"transformation"}, {} );
 
 
-ShaderStruct defaultColorGeometryShader(
+const ShaderStruct defaultColorGeometryShader(
 R"glsl(
 
 #version 450 core
@@ -63,7 +61,7 @@ void main()
 {}, {} );
 
 
-ShaderStruct defaultColorFragmentShader(R"glsl(
+const ShaderStruct defaultColorFragmentShader(R"glsl(
 
 #version 450 core
 

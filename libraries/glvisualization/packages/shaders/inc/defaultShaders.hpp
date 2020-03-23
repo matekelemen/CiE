@@ -4,13 +4,14 @@
 namespace cie {
 namespace gl {
 
-extern ShaderStruct defaultVertexShader;
-extern ShaderStruct defaultGeometryShader;
-extern ShaderStruct defaultFragmentShader;
+extern const ShaderStruct defaultVertexShader;
+extern const ShaderStruct defaultGeometryShader;
+extern const ShaderStruct defaultFragmentShader;
 
 
 }
 }
 
+#include "defaultShaders_impl.hpp"
 
 #endif

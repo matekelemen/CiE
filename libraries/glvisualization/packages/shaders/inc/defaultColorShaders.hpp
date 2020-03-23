@@ -6,12 +6,13 @@
 namespace cie {
 namespace gl {
 
-extern ShaderStruct defaultColorVertexShader;
-extern ShaderStruct defaultColorGeometryShader;
-extern ShaderStruct defaultColorFragmentShader;
+extern const ShaderStruct defaultColorVertexShader;
+extern const ShaderStruct defaultColorGeometryShader;
+extern const ShaderStruct defaultColorFragmentShader;
 
 }
 }
 
+#include "defaultColorShaders_impl.hpp"
 
 #endif

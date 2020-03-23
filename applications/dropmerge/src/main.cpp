@@ -62,13 +62,10 @@ int main(std::function<double(const DoubleArray<3>&)> target, double offset = 0.
 
     // Bind callbacks
     gl::KeyCallbackFunction keyCallback         = makeCallback( gl::ArcballCallbacks::keyCallback,
-                                                                &context, 
                                                                 &manager );
     gl::CursorCallbackFunction cursorCallback   = makeCallback( gl::ArcballCallbacks::cursorCallback,
-                                                                &context,
                                                                 &manager );
     gl::MouseCallbackFunction mouseCallback     = makeCallback( gl::ArcballCallbacks::mouseCallback,
-                                                                &context,
                                                                 &manager );
 
     // Start event loop

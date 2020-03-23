@@ -1,14 +1,11 @@
-#ifndef GLVISUALIZATION_SPACETREE_SHADERS_CPP
-#define GLVISUALIZATION_SPACETREE_SHADERS_CPP
-
-#include "../inc/shaders.hpp"
-
+#ifndef GLVISUALIZATION_SPACETREE_SHADERS_IMPL_HPP
+#define GLVISUALIZATION_SPACETREE_SHADERS_IMPL_HPP
 
 namespace cie {
 namespace gl {
 
 
-ShaderStruct SpaceTreeVertexShader(
+const ShaderStruct SpaceTreeVertexShader(
 R"glsl(
 
 #version 450 core
@@ -36,7 +33,7 @@ void main()
 {"transformation"}, {} );
 
 
-ShaderStruct SpaceTreeGeometryShader(
+const ShaderStruct SpaceTreeGeometryShader(
 R"glsl(
 
 #version 450 core
@@ -73,7 +70,7 @@ void main()
 {}, {} );
 
 
-ShaderStruct SpaceTreeFragmentShader(R"glsl(
+const ShaderStruct SpaceTreeFragmentShader(R"glsl(
 
 #version 450 core
 
@@ -90,7 +87,7 @@ void main()
 {}, {} );
 
 
-ShaderStruct SpaceTreeColorVertexShader(
+const ShaderStruct SpaceTreeColorVertexShader(
 R"glsl(
 
 #version 450 core
@@ -113,7 +110,7 @@ void main()
 {"transformation"}, {} );
 
 
-ShaderStruct SpaceTreeColorGeometryShader(
+const ShaderStruct SpaceTreeColorGeometryShader(
 R"glsl(
 
 #version 450 core
@@ -147,7 +144,7 @@ void main()
 {}, {} );
 
 
-ShaderStruct SpaceTreeColorFragmentShader(R"glsl(
+const ShaderStruct SpaceTreeColorFragmentShader(R"glsl(
 
 #version 450 core
 

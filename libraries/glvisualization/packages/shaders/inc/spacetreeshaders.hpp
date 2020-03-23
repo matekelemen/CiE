@@ -1,21 +1,20 @@
 #ifndef GLVISUALIZATION_SPACETREE_SHADERS_HPP
 #define GLVISUALIZATION_SPACETREE_SHADERS_HPP
 
-#include "shaders.hpp"
-
 namespace cie {
 namespace gl {
 
-extern ShaderStruct SpaceTreeVertexShader;
-extern ShaderStruct SpaceTreeGeometryShader;
-extern ShaderStruct SpaceTreeFragmentShader;
+extern const ShaderStruct SpaceTreeVertexShader;
+extern const ShaderStruct SpaceTreeGeometryShader;
+extern const ShaderStruct SpaceTreeFragmentShader;
 
-extern ShaderStruct SpaceTreeColorVertexShader;
-extern ShaderStruct SpaceTreeColorGeometryShader;
-extern ShaderStruct SpaceTreeColorFragmentShader;
+extern const ShaderStruct SpaceTreeColorVertexShader;
+extern const ShaderStruct SpaceTreeColorGeometryShader;
+extern const ShaderStruct SpaceTreeColorFragmentShader;
 
 }
 }
 
+#include "spacetreeshaders_impl.hpp"
 
 #endif

@@ -1,8 +1,14 @@
 #ifndef GLVISUALIZATION_SHADERS_HPP
 #define GLVISUALIZATION_SHADERS_HPP
 
+// --- External Includes ---
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+// --- Internal Includes ---
+#include "cmake_variables.hpp"
+
+// --- STD Includes ---
 #include <string>
 #include <vector>
 
@@ -10,7 +16,8 @@ namespace cie {
 namespace gl {
 
 
-using ShaderCode = std::string;
+using ShaderCode                = std::string;
+const std::string SHADER_PATH   = DATA_PATH + "/glvisualization/shaders";
 
 
 struct ShaderStruct
@@ -22,6 +29,7 @@ struct ShaderStruct
                     const std::vector<GLuint>& offsets,
                     const std::vector<std::string>& uniforms,
                     const std::vector<std::string>& textures );
+    ShaderStruct( const std::string& shaderFileName );
     ShaderStruct( const ShaderStruct& copy );
     ShaderStruct operator=( const ShaderStruct& copy );
     ShaderStruct( );
