@@ -1,11 +1,10 @@
-
 project( splinekernel CXX )
 
 # ---------------------------------------------------------
 # GATHER FILES AND INCLUDE DIRECTORIES
 # ---------------------------------------------------------
-include_directories( inc )
-include_directories( ../linalg/inc )
+include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/inc" )
+include_directories( "../linalg/inc" )
 
 file( GLOB SPLINEKERNEL_SOURCE_FILES src/*.cpp)
 file( GLOB SPLINEKERNEL_TEST_FILES test/*.cpp)
@@ -18,7 +17,7 @@ ADD_SHARED_LIBRARY( splinekernel ${SPLINEKERNEL_SOURCE_FILES} ${SPLINEKERNEL_HEA
 TARGET_LINK_LIBRARIES_INSTALL( splinekernel linalg )
 
 add_executable( splinekernel_testrunner ${SPLINEKERNEL_TEST_FILES} )
-TARGET_LINK_LIBRARIES_INSTALL( splinekernel_testrunner splinekernel )
+TARGET_LINK_LIBRARIES_INSTALL( splinekernel_testrunner splinekernel linalg )
 
 # ---------------------------------------------------------
 # INSTALL

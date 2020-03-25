@@ -16,6 +16,17 @@ ProgramManager::ProgramManager( GLContext& context, const std::string& className
 
 ProgramManager::~ProgramManager()
 {
+}
+
+
+void ProgramManager::initialize()
+{
+    log( "Attempt to initialize ProgramManager", LOG_TYPE_WARNING );
+}
+
+
+void ProgramManager::terminate()
+{
     logID( "Delete program", _programID );
     glDeleteProgram( _programID );
 
@@ -27,12 +38,9 @@ ProgramManager::~ProgramManager()
 
     logID( "Delete VAO", _vaoID );
     glDeleteVertexArrays( 1, &_vaoID );
-}
 
-
-void ProgramManager::initialize()
-{
-    log( "Attempt to initialize ProgramManager" );
+    // Forward the termination call
+    AbsContextClass::terminate();
 }
 
 
@@ -50,7 +58,7 @@ void ProgramManager::compileShaders( )
             glGetShaderInfoLog( id, 512, NULL, buffer );
             log(    "Shader compilation failed | ID_" + std::to_string(id) + "\n" + 
                     std::string(buffer), 
-                    CONTEXT_LOG_TYPE_ERROR );
+                    LOG_TYPE_ERROR );
         }
         else
             logID("Shader compilation successful!", id );
@@ -75,7 +83,7 @@ void ProgramManager::makeProgram( )
         char buffer[512];
         glGetProgramInfoLog( _programID, 512, NULL, buffer );
         log("Program linking failed!\n" + std::string(buffer),
-            CONTEXT_LOG_TYPE_ERROR );
+            LOG_TYPE_ERROR );
     }
     else
         logID( "Program linked successfully", _programID );

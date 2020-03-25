@@ -27,8 +27,6 @@ ShaderManager::~ShaderManager()
         delete _geometryPtr;
     if (_fragmentPtr != nullptr)
         delete _fragmentPtr;
-
-    log( "Destroy ShaderManager" );
 }
 
 

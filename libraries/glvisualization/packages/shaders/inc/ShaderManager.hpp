@@ -1,10 +1,15 @@
 #ifndef GLVISUALIZATION_SHADER_ASSEMBLER_HPP
 #define GLVISUALIZATION_SHADER_ASSEMBLER_HPP
 
+// --- External Includes ---
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+// --- Internal Includes ---
 #include "shaders.hpp"
 #include "../../context/inc/AbsContextClass.hpp"
+
+// --- STD Includes ---
 #include <string>
 #include <vector>
 

@@ -7,9 +7,14 @@ namespace gl {
 DrawManager::DrawManager( GLContext& context ) :
     ProgramManager( context, "DrawManager" ),
     _shaderManager( context ),
-    _camera( context )
+    _camera( new Camera(context) )
 {
     _buffers.setDrawMode( GL_DYNAMIC_DRAW );
+}
+
+
+DrawManager::~DrawManager()
+{
 }
 
 
@@ -40,7 +45,7 @@ void DrawManager::initialize()
             glUniformMatrix4fv( id, 
                                 1, 
                                 GL_FALSE, 
-                                glm::value_ptr(_camera.transformationMatrix()) );
+                                glm::value_ptr(_camera->transformationMatrix()) );
 
         //for (size_t i=0; i<4; ++i)
         //{
@@ -53,7 +58,7 @@ void DrawManager::initialize()
         if( error!=0 )
             logID(  "Initializing uniform \"" + uniform + "\" failed!",
                     error,
-                    CONTEXT_LOG_TYPE_ERROR );
+                    LOG_TYPE_ERROR );
     }
 
     std::vector<float> vertices = {
@@ -83,7 +88,7 @@ void DrawManager::initialize()
     if( error!=0 )
         logID( "Default draw function initialization failed!",
                 error,
-                CONTEXT_LOG_TYPE_ERROR );
+                LOG_TYPE_ERROR );
 }
 
 
@@ -115,7 +120,7 @@ void DrawManager::draw()
             glUniformMatrix4fv( id, 
                                 1, 
                                 GL_FALSE, 
-                                glm::value_ptr(_camera.transformationMatrix()) );
+                                glm::value_ptr(_camera->transformationMatrix()) );
     }
 
     // Get number of elements to draw
@@ -211,7 +216,7 @@ void DrawManager::makeProgram()
 
     // Check error
     if (glGetError()!=0)
-        logID( "Failed to make program", _programID, CONTEXT_LOG_TYPE_ERROR );
+        logID( "Failed to make program", _programID, LOG_TYPE_ERROR );
 }
 
 
@@ -227,13 +232,13 @@ const ShaderManager& DrawManager::shaderManager() const
 }
 
 
-Camera& DrawManager::camera()
+CameraPtr& DrawManager::camera()
 {
     return _camera;
 }
 
 
-const Camera& DrawManager::camera() const
+const CameraPtr& DrawManager::camera() const
 {
     return _camera;
 }

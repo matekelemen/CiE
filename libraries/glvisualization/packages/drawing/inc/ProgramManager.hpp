@@ -24,6 +24,7 @@ public:
     virtual ~ProgramManager();
 
     virtual void initialize();
+    virtual void terminate() override;
 
     virtual void compileShaders();
     virtual void makeProgram();
