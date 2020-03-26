@@ -61,9 +61,11 @@ int main(std::function<double(const DoubleArray<3>&)> target, double offset = 0.
     // Camera setup
     auto camera         = std::make_shared<gl::ArcballCamera>(context);
     manager.camera()    = camera;
-    camera->setProperties(0.0f, 0.1f, 100.0f);
-    camera->setPose( glm::vec3( 0.0f, 0.0f, 1.0f), glm::vec3( 0.0f, 0.0f, -1.0f ) );
-    camera->setCenter( glm::vec3( 0.0f, 0.0f, 0.0f ) );
+    camera->setProperties(60.0, 0.1, 100.0);
+    camera->setPose(    glm::dvec3( 0.0, 0.0, 1.0 ), 
+                        glm::dvec3( 0.0, 0.0, -1.0 ), 
+                        glm::dvec3( 0.0, 1.0, 0.0 ) );
+    camera->setCenter( glm::dvec3( 0.0, 0.0, 0.0 ) );
     camera->updateTransformationMatrix();
 
     // Bind callbacks

@@ -13,15 +13,13 @@ namespace gl {
 
 Camera::Camera( GLContext& context, const std::string& className ) :
     AbsContextClass( context, className ),
-    _cameraPosition( 0.0f, 0.0f, 1.0f ),
-    _cameraDirection( 0.0f, 0.0f, -1.0f ),
-    _cameraUp( 0.0f, 1.0f, 0.0f ),
-    _fieldOfView( 90.0f ),
-    _nearClippingPlane( 0.1f ),
-    _farClippingPlane( 10.0f ),
-    _viewMatrix( 1.0f ),
-    _projectionMatrix( 1.0f ),
-    _transformationMatrix( 1.0f )
+    RigidBody(),
+    _fieldOfView( 90.0 ),
+    _nearClippingPlane( 0.1 ),
+    _farClippingPlane( 10.0 ),
+    _viewMatrix( 1.0 ),
+    _projectionMatrix( 1.0 ),
+    _transformationMatrix( 1.0 )
 {
     // Update width and height (orthographic mode)
     int w, h;
@@ -45,9 +43,7 @@ Camera::Camera( GLContext& context, const std::string& className ) :
 
 Camera::Camera( const Camera& copy ) :
     AbsContextClass( *copy._context, "Camera" ),
-    _cameraPosition( copy._cameraPosition ),
-    _cameraDirection( copy._cameraDirection ),
-    _cameraUp( copy._cameraUp ),
+    RigidBody( copy._position, copy._direction, copy._up ),
     _fieldOfView( copy._fieldOfView ),
     _width( copy._width ),
     _height( copy._height ),
@@ -63,9 +59,9 @@ Camera::Camera( const Camera& copy ) :
 
 Camera& Camera::operator=( const Camera& copy )
 {
-    _cameraPosition         = copy._cameraPosition;
-    _cameraDirection        = copy._cameraDirection;
-    _cameraUp               = copy._cameraUp;
+    _position               = copy._position;
+    _direction              = copy._direction;
+    _up                     = copy._up;
     _fieldOfView            = copy._fieldOfView;
     _width                  = copy._width;
     _height                 = copy._height;
@@ -85,7 +81,7 @@ Camera::~Camera()
 }
 
 
-void Camera::zoom( GLfloat modifier )
+void Camera::zoom( double modifier )
 {
     _height /= (1.0 + modifier/10.0);
     _width  /= (1.0 + modifier/10.0);
@@ -103,76 +99,36 @@ void Camera::zoom( GLfloat modifier )
 }
 
 
-void Camera::translate( const glm::vec3& translation )
+void Camera::translate( const glm::dvec3& translation )
 {
-    setPose(    _cameraPosition + translation,
-                _cameraDirection,
-                _cameraUp );
+    RigidBody::translate(translation);
+    updateViewMatrix();
     updateTransformationMatrix();
 }
 
 
-void Camera::rotate(    GLfloat radians,
-                        const glm::vec3& axis,
-                        const glm::vec3& center )
+void Camera::rotate(    double angles,
+                        const glm::dvec3& axis,
+                        const glm::dvec3& center )
 {
-    auto transform      = glm::translate(center) * glm::rotate(radians, axis) * glm::translate(-center);
-    auto pos            = transform * glm::vec4( _cameraPosition, 1.0f );
-    auto dir            = transform * glm::vec4( _cameraDirection, 1.0f );
-    //auto up             = transform * glm::vec4( _cameraUp, 1.0f );
-    
-    setPose( glm::vec3(pos), glm::vec3(dir) );
+    RigidBody::rotate( angles, axis, center );
+    updateViewMatrix();
     updateTransformationMatrix();
 }
 
 
-void Camera::setPose(   const glm::vec3& position,
-                        const glm::vec3& direction,
-                        const glm::vec3& cameraUp )
+void Camera::setPose(   const glm::dvec3& position,
+                        const glm::dvec3& direction,
+                        const glm::dvec3& up  )
 {
-    _cameraPosition     = position;
-    _cameraDirection    = glm::normalize(direction);
-    _cameraUp           = glm::normalize(cameraUp);
-
-    // Compute view tensor
-    _viewMatrix = glm::lookAt(  _cameraPosition,
-                                _cameraPosition + _cameraDirection,
-                                _cameraUp );
+    RigidBody::setPose( position, direction, up );
+    updateViewMatrix();
 }
 
 
-
-void Camera::setPose(   const glm::vec3& position,
-                        const glm::vec3& direction )
-{
-    // Assumed initial state: 
-    //  _cameraDirection    : [-1,0,0]
-    //  _cameraUp           : [0,0,1]
-    glm::vec3 dir   = glm::normalize( direction );
-    glm::vec3 initDir( -1.0f, 0.0f, 0.0f );
-
-    // Check if valid rotation
-    if ( glm::abs(1.0 - glm::dot(initDir, dir)) < 1e-6 )
-    {
-        log( "Matching directions!" );
-        return;
-    }
-
-    // Compute quaternion that rotates initDir to dir through the shortest arc
-    glm::quat quaternion(   1.0 + glm::dot( initDir, dir ),
-                            glm::cross( initDir, dir ) );
-    quaternion      = glm::normalize(quaternion);
-
-    // Rotate the assumed initial cameraUp
-    glm::vec4 up    = glm::mat4_cast(quaternion) * glm::vec4( 0.0f, 0.0f, 1.0f, 1.0f );
-                                        
-    setPose( position, direction, glm::vec3(up) );
-}
-
-
-void Camera::setProperties( GLfloat fieldOfView,
-                            GLfloat nearClippingPlane,
-                            GLfloat farClippingPlane )
+void Camera::setProperties( double fieldOfView,
+                            double nearClippingPlane,
+                            double farClippingPlane )
 {
     _fieldOfView        = fieldOfView;
     _nearClippingPlane  = nearClippingPlane;
@@ -180,24 +136,32 @@ void Camera::setProperties( GLfloat fieldOfView,
 
     if ( _fieldOfView != 0.0 )
         _projectionMatrix = glm::perspective(   glm::radians(_fieldOfView),
-                                                (GLfloat)_width / (GLfloat)_height,
+                                                (double)_width / (double)_height,
                                                 _nearClippingPlane,
                                                 _farClippingPlane );
     else
-        _projectionMatrix = glm::ortho( -_width/2.0f,
-                                        _width/2.0f,
-                                        -_height/2.0f,
-                                        _height/2.0f,
+        _projectionMatrix = glm::ortho( -_width/2.0,
+                                        _width/2.0,
+                                        -_height/2.0,
+                                        _height/2.0,
                                         _nearClippingPlane,
                                         _farClippingPlane   );
 }
 
 
-void Camera::setProperties( GLfloat fieldOfView )
+void Camera::setProperties( double fieldOfView )
 {
     setProperties(  fieldOfView,
                     _nearClippingPlane,
                     _farClippingPlane   );
+}
+
+
+void Camera::updateViewMatrix()
+{
+    _viewMatrix = glm::lookAt(  _position,
+                                _position + _direction,
+                                _up );
 }
 
 
@@ -209,9 +173,9 @@ void Camera::updateTransformationMatrix()
 
 void Camera::update()
 {
-    setPose(    _cameraPosition,
-                _cameraDirection,
-                _cameraUp );
+    setPose(    _position,
+                _direction,
+                _up );
     setProperties(  _fieldOfView,
                     _nearClippingPlane,
                     _farClippingPlane   );
@@ -237,14 +201,14 @@ const glm::mat4& Camera::transformationMatrix() const
 }
 
 
-glm::vec3 Camera::screenToWorld( double x, double y ) const
+glm::dvec3 Camera::screenToWorld( double x, double y ) const
 {
     // Get window size
     int w, h;
     glfwGetFramebufferSize( _context->window(), &w, &h );
 
     // Get depth buffer value
-    GLfloat z = 0.0f;
+    double z = 0.0;
     glReadPixels(   x,y,
                     1,1,
                     GL_DEPTH_COMPONENT,
@@ -257,54 +221,36 @@ glm::vec3 Camera::screenToWorld( double x, double y ) const
     z                   = 2.0 * z - 1.0;
 
     // Transform to world
-    glm::vec4 world     = glm::inverse(_transformationMatrix) * glm::vec4( x, y, (GLfloat)z, 1.0f );        
-    return glm::vec3(world) / world[3];
+    glm::dvec4 world     = glm::inverse(_transformationMatrix) * glm::dvec4( x, y, (double)z, 1.0 );        
+    return glm::dvec3(world) / world[3];
 }
 
 
-GLfloat& Camera::width()
+double& Camera::width()
 {
     return _width;
 }
 
 
-GLfloat& Camera::height()
+double& Camera::height()
 {
     return _height;
 }
 
 
-const glm::vec3& Camera::cameraPosition() const
-{
-    return _cameraPosition;
-}
-
-
-const glm::vec3& Camera::cameraDirection() const
-{
-    return _cameraDirection;
-}
-
-
-const glm::vec3& Camera::cameraUp() const
-{
-    return _cameraUp;
-}
-
-
-GLfloat Camera::fieldOfView() const
+double Camera::fieldOfView() const
 {
     return _fieldOfView;
 }
 
 
-GLfloat Camera::nearClippingPlane() const
+double Camera::nearClippingPlane() const
 {
     return _nearClippingPlane;
 }
 
 
-GLfloat Camera::farClippingPlane() const
+double Camera::farClippingPlane() const
 {
     return _farClippingPlane;
 }
@@ -313,8 +259,8 @@ GLfloat Camera::farClippingPlane() const
 
 InteractiveCamera::InteractiveCamera( GLContext& context, const std::string& className ) :
     Camera( context, className ),
-    _mousePressPosition( 0.0f, 0.0f, 0.0f ),
-    _cursorPosition( 0.0f, 0.0f, 0.0f )
+    _mousePressPosition( 0.0, 0.0, 0.0 ),
+    _cursorPosition( 0.0, 0.0, 0.0 )
 {
 }
 
@@ -333,7 +279,7 @@ void InteractiveCamera::setMousePressPosition( double x, double y )
 }
 
 
-void InteractiveCamera::setMousePressPosition( const glm::vec3& pos )
+void InteractiveCamera::setMousePressPosition( const glm::dvec3& pos )
 {
     _mousePressPosition = pos;
 }
@@ -345,19 +291,19 @@ void InteractiveCamera::setCursorPosition( double x, double y )
 }
 
 
-void InteractiveCamera::setCursorPosition( const glm::vec3& pos )
+void InteractiveCamera::setCursorPosition( const glm::dvec3& pos )
 {
     _cursorPosition = pos;
 }
 
 
-const glm::vec3& InteractiveCamera::mousePressPosition( ) const
+const glm::dvec3& InteractiveCamera::mousePressPosition( ) const
 {
     return _mousePressPosition;
 }
 
 
-const glm::vec3& InteractiveCamera::cursorPosition( ) const
+const glm::dvec3& InteractiveCamera::cursorPosition( ) const
 {
     return _cursorPosition;
 }
@@ -366,33 +312,29 @@ const glm::vec3& InteractiveCamera::cursorPosition( ) const
 ArcballCamera::ArcballCamera(   GLContext& context,
                                 const std::string& className ) :
     InteractiveCamera( context, className ),
-    _center( 0.0f, 0.0f, 0.0f )
+    _center( 0.0, 0.0, 0.0 )
 {
 }
 
 
-void ArcballCamera::translate( const glm::vec3& translation )
-{
-}
-
-
-void ArcballCamera::rotate( GLfloat radians,
-                            const glm::vec3& axis,
-                            const glm::vec3& centerPoint )
+void ArcballCamera::rotate( double radians,
+                            const glm::dvec3& axis,
+                            const glm::dvec3& centerPoint )
 {
     InteractiveCamera::rotate( radians, axis, _center );
 }
 
 
-void ArcballCamera::setCenter( const glm::vec3& point )
+void ArcballCamera::setCenter( const glm::dvec3& point )
 {
     _center = point;
-    setPose(    _cameraPosition, 
-                glm::normalize(_center - _cameraPosition) );
+    setPose(    _position, 
+                glm::normalize(_center - _position),
+                _up );
 }
 
 
-const glm::vec3& ArcballCamera::center() const
+const glm::dvec3& ArcballCamera::center() const
 {
     return _center;
 }

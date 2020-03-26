@@ -3,6 +3,7 @@
 
 // --- Internal Imports ---
 #include "../../context/inc/AbsContextClass.hpp"
+#include "../../rigidbody/inc/RigidBody.hpp"
 
 // --- External Imports ---
 #include <glm/glm.hpp>
@@ -23,7 +24,7 @@ using InteractiveCameraPtr  = std::shared_ptr<InteractiveCamera>;
 
 
 
-class Camera : public AbsContextClass
+class Camera : public AbsContextClass, public RigidBody
 {
 public:
     Camera( GLContext& context,
@@ -32,51 +33,41 @@ public:
     Camera& operator=( const Camera& camera );
     ~Camera();
 
-    virtual void zoom( GLfloat modifier );
-    virtual void translate( const glm::vec3& translation );
-    virtual void rotate(    GLfloat radians,
-                            const glm::vec3& axis,
-                            const glm::vec3& center );
+    virtual void zoom( double modifier );
+    virtual void translate( const glm::dvec3& translation ) override;
+    virtual void rotate(    double angles,
+                            const glm::dvec3& axis,
+                            const glm::dvec3& center ) override;
 
-    void setPose(   const glm::vec3& position,
-                    const glm::vec3& direction,
-                    const glm::vec3& cameraUp );
+    void setPose(   const glm::dvec3& position,
+                    const glm::dvec3& direction,
+                    const glm::dvec3& up    ) override;
+    void setProperties( double fieldOfView,
+                        double nearClippingPlane,
+                        double farClippingPlane );
+    void setProperties( double fieldOfView );
 
-    void setPose(   const glm::vec3& position,
-                    const glm::vec3& direction );
-
-    void setProperties( GLfloat fieldOfView,
-                        GLfloat nearClippingPlane,
-                        GLfloat farClippingPlane );
-    void setProperties( GLfloat fieldOfView );
-
+    void updateViewMatrix();
     void updateTransformationMatrix();
     void update();
 
     const glm::mat4& viewMatrix() const;
     const glm::mat4& projectionMatrix() const;
     const glm::mat4& transformationMatrix() const;
-    glm::vec3 screenToWorld( double x, double y ) const;
+    glm::dvec3 screenToWorld( double x, double y ) const;
 
-    const glm::vec3& cameraPosition() const;
-    const glm::vec3& cameraDirection() const;
-    const glm::vec3& cameraUp() const;
-    GLfloat fieldOfView() const;
-    GLfloat& width();
-    GLfloat& height();
-    GLfloat nearClippingPlane() const;
-    GLfloat farClippingPlane() const;
+    double fieldOfView() const;
+    double& width();
+    double& height();
+    double nearClippingPlane() const;
+    double farClippingPlane() const;
 
 protected:
-    glm::vec3   _cameraPosition;
-    glm::vec3   _cameraDirection;
-    glm::vec3   _cameraUp;
-    
-    GLfloat     _fieldOfView;
-    GLfloat     _width;
-    GLfloat     _height;
-    GLfloat     _nearClippingPlane;
-    GLfloat     _farClippingPlane;
+    double      _fieldOfView;
+    double      _width;
+    double      _height;
+    double      _nearClippingPlane;
+    double      _farClippingPlane;
 
     glm::mat4   _viewMatrix;
     glm::mat4   _projectionMatrix;
@@ -94,17 +85,17 @@ public:
     InteractiveCamera& operator=( const InteractiveCamera& copy ) = default;
 
     void setMousePressPosition( double x, double y );
-    void setMousePressPosition( const glm::vec3& pos );
+    void setMousePressPosition( const glm::dvec3& pos );
 
     void setCursorPosition( double x, double y );
-    void setCursorPosition( const glm::vec3& pos );
+    void setCursorPosition( const glm::dvec3& pos );
 
-    const glm::vec3& mousePressPosition() const;
-    const glm::vec3& cursorPosition() const;
+    const glm::dvec3& mousePressPosition() const;
+    const glm::dvec3& cursorPosition() const;
 
 protected:
-    glm::vec3   _mousePressPosition;
-    glm::vec3   _cursorPosition;
+    glm::dvec3   _mousePressPosition;
+    glm::dvec3   _cursorPosition;
 };
 
 
@@ -114,16 +105,15 @@ public:
     ArcballCamera(  GLContext& context,
                     const std::string& className = "ArcballCamera" );
 
-    void translate( const glm::vec3& translation ) override;
-    void rotate(    GLfloat radians,
-                    const glm::vec3& axis,
-                    const glm::vec3& centerPoint = glm::vec3(0.0f,0.0f,0.0f) ) override;
+    void rotate(    double radians,
+                    const glm::dvec3& axis,
+                    const glm::dvec3& centerPoint = glm::dvec3(0.0,0.0,0.0) ) override;
 
-    void setCenter( const glm::vec3& point );
-    const glm::vec3& center() const;
+    void setCenter( const glm::dvec3& point );
+    const glm::dvec3& center() const;
 
 protected:
-    glm::vec3   _center;
+    glm::dvec3   _center;
 };
 
 
