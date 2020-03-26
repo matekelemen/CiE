@@ -71,6 +71,7 @@ protected:
     glm::vec3   _cameraPosition;
     glm::vec3   _cameraDirection;
     glm::vec3   _cameraUp;
+    
     GLfloat     _fieldOfView;
     GLfloat     _width;
     GLfloat     _height;

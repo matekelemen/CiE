@@ -49,13 +49,19 @@ int main(std::function<double(const DoubleArray<3>&)> target, double offset = 0.
     // Draw manager setup
     SpaceTreeDrawManager manager(root,context);
     manager.setDrawFunction( [&manager]()
-        { manager.camera()->rotate(0.001f,glm::vec3(1.5f,0.0f,0.0f),glm::vec3(0.0f,0.0f,0.0f)); } );
+        { 
+            if (glfwGetTime() > 1.0f/144.0)
+            {
+                //manager.camera()->rotate(0.01f,glm::vec3(1.0f,0.0f,0.0f),glm::vec3(0.0f,0.0f,0.0f)); 
+                glfwSetTime( 0.0 );
+            }
+        } );
     manager.initialize();
 
     // Camera setup
     auto camera         = std::make_shared<gl::ArcballCamera>(context);
     manager.camera()    = camera;
-    camera->setProperties(90.0f, 0.1f, 10.0f);
+    camera->setProperties(0.0f, 0.1f, 100.0f);
     camera->setPose( glm::vec3( 0.0f, 0.0f, 1.0f), glm::vec3( 0.0f, 0.0f, -1.0f ) );
     camera->setCenter( glm::vec3( 0.0f, 0.0f, 0.0f ) );
     camera->updateTransformationMatrix();
@@ -69,7 +75,7 @@ int main(std::function<double(const DoubleArray<3>&)> target, double offset = 0.
                                                                 &manager );
 
     // Start event loop
-    context.startEventLoop( std::bind(&gl::DrawManager::makeDrawFunction, &manager, std::placeholders::_1),
+    context.startEventLoop( std::bind(&SpaceTreeDrawManager::makeDrawFunction, &manager, std::placeholders::_1),
                             keyCallback,
                             cursorCallback,
                             mouseCallback     );

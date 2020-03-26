@@ -43,37 +43,37 @@ Camera::Camera( GLContext& context, const std::string& className ) :
 }
 
 
-Camera::Camera( const Camera& camera ) :
-    AbsContextClass( *camera._context, "Camera" ),
-    _cameraPosition( camera._cameraPosition ),
-    _cameraDirection( camera._cameraDirection ),
-    _cameraUp( camera._cameraUp ),
-    _fieldOfView( camera._fieldOfView ),
-    _width( camera._width ),
-    _height( camera._height ),
-    _nearClippingPlane( camera._nearClippingPlane ),
-    _farClippingPlane( camera._farClippingPlane ),
-    _viewMatrix( camera._viewMatrix ),
-    _projectionMatrix( camera._projectionMatrix ),
-    _transformationMatrix( camera._transformationMatrix )
+Camera::Camera( const Camera& copy ) :
+    AbsContextClass( *copy._context, "Camera" ),
+    _cameraPosition( copy._cameraPosition ),
+    _cameraDirection( copy._cameraDirection ),
+    _cameraUp( copy._cameraUp ),
+    _fieldOfView( copy._fieldOfView ),
+    _width( copy._width ),
+    _height( copy._height ),
+    _nearClippingPlane( copy._nearClippingPlane ),
+    _farClippingPlane( copy._farClippingPlane ),
+    _viewMatrix( copy._viewMatrix ),
+    _projectionMatrix( copy._projectionMatrix ),
+    _transformationMatrix( copy._transformationMatrix )
 {
     update();
 }
 
 
-Camera& Camera::operator=( const Camera& camera )
+Camera& Camera::operator=( const Camera& copy )
 {
-    _cameraPosition         = camera._cameraPosition;
-    _cameraDirection        = camera._cameraDirection;
-    _cameraUp               = camera._cameraUp;
-    _fieldOfView            = camera._fieldOfView;
-    _width                  = camera._width;
-    _height                 = camera._height;
-    _nearClippingPlane      = camera._nearClippingPlane;
-    _farClippingPlane       = camera._farClippingPlane;
-    _viewMatrix             = camera._viewMatrix;
-    _projectionMatrix       = camera._projectionMatrix;
-    _transformationMatrix   = camera._transformationMatrix;
+    _cameraPosition         = copy._cameraPosition;
+    _cameraDirection        = copy._cameraDirection;
+    _cameraUp               = copy._cameraUp;
+    _fieldOfView            = copy._fieldOfView;
+    _width                  = copy._width;
+    _height                 = copy._height;
+    _nearClippingPlane      = copy._nearClippingPlane;
+    _farClippingPlane       = copy._farClippingPlane;
+    _viewMatrix             = copy._viewMatrix;
+    _projectionMatrix       = copy._projectionMatrix;
+    _transformationMatrix   = copy._transformationMatrix;
     update();
 
     return *this;
@@ -119,9 +119,9 @@ void Camera::rotate(    GLfloat radians,
     auto transform      = glm::translate(center) * glm::rotate(radians, axis) * glm::translate(-center);
     auto pos            = transform * glm::vec4( _cameraPosition, 1.0f );
     auto dir            = transform * glm::vec4( _cameraDirection, 1.0f );
-    auto up             = transform * glm::vec4( _cameraUp, 1.0f );
+    //auto up             = transform * glm::vec4( _cameraUp, 1.0f );
     
-    setPose( glm::vec3(pos), glm::vec3(dir), glm::vec3(up) );
+    setPose( glm::vec3(pos), glm::vec3(dir) );
     updateTransformationMatrix();
 }
 
@@ -145,24 +145,28 @@ void Camera::setPose(   const glm::vec3& position,
 void Camera::setPose(   const glm::vec3& position,
                         const glm::vec3& direction )
 {
-    glm::vec3 dir = glm::normalize(direction);
+    // Assumed initial state: 
+    //  _cameraDirection    : [-1,0,0]
+    //  _cameraUp           : [0,0,1]
+    glm::vec3 dir   = glm::normalize( direction );
+    glm::vec3 initDir( -1.0f, 0.0f, 0.0f );
 
-    // Compute Euler angles
-    //  phi     : rotation around the original z axis
-    //  theta   : rotation around the modified y axis
-    GLfloat theta   = glm::acos( dir[2] );
-    GLfloat phi     = (GLfloat)std::atan2( dir[1], dir[0] );
+    // Check if valid rotation
+    if ( glm::abs(1.0 - glm::dot(initDir, dir)) < 1e-6 )
+    {
+        log( "Matching directions!" );
+        return;
+    }
 
-    // Compute camera up vector
-    glm::vec3 yRotated  = glm::rotate(  glm::vec3( 0.0f, 1.0f, 0.0f ),
-                                        phi,
-                                        glm::vec3( 0.0f, 0.0f, 1.0f )   );
-    glm::vec3 cameraUp  = glm::vec3( 0.0f, 0.0f, 1.0f );
-    cameraUp            = glm::rotate(  cameraUp,
-                                        -theta,
-                                        yRotated    );
+    // Compute quaternion that rotates initDir to dir through the shortest arc
+    glm::quat quaternion(   1.0 + glm::dot( initDir, dir ),
+                            glm::cross( initDir, dir ) );
+    quaternion      = glm::normalize(quaternion);
+
+    // Rotate the assumed initial cameraUp
+    glm::vec4 up    = glm::mat4_cast(quaternion) * glm::vec4( 0.0f, 0.0f, 1.0f, 1.0f );
                                         
-    setPose( position, direction, cameraUp );
+    setPose( position, direction, glm::vec3(up) );
 }
 
 

@@ -170,18 +170,15 @@ void ArcballCallbacks::cursorCallback(  WindowPtr window,
     // Rotate
     if ( glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS )
     {
-        glm::vec4 dxAxis( glm::vec3(x,y,0.0f) - camera->mousePressPosition(), 1.0f );
-        glm::vec3 dxAngle( glm::vec3(x,y,0.0f) - camera->cursorPosition() );
-        dxAxis[0]       /= (GLfloat)w;
-        dxAxis[1]       /= (GLfloat)h;
-        dxAngle[0]      /= (GLfloat)w;
-        dxAngle[1]      /= (GLfloat)h;
-        GLfloat angle   = -2.0 * glm::pi<GLfloat>() * glm::length(dxAngle);
+        GLfloat dx      = ( x - camera->cursorPosition()[0] ) / w;
+        GLfloat dy      = ( y - camera->cursorPosition()[1] ) / h;
+        GLfloat angle   = -2.0 * glm::pi<GLfloat>() * glm::sqrt(dx*dx + dy*dy);
 
-        dxAxis          = glm::inverse(camera->transformationMatrix()) * dxAxis;
-        glm::vec3 axis  = glm::normalize(  glm::cross( glm::vec3(dxAxis), camera->cameraDirection() )  );
+        glm::vec3 axis  =   dy/glm::abs(dx+dy) * glm::cross( camera->cameraUp(), camera->cameraDirection() )
+                            + dx/glm::abs(dx+dy) * camera->cameraUp();
 
-        //std::cout << axis[0] << "\t" << axis[1] << "\t" << axis[2] << "\n";
+        std::cout << camera->cameraUp()[0] << "\t" << camera->cameraUp()[1] << "\t" << camera->cameraUp()[2] << "\n";
+        std::cout << camera->cameraDirection()[0] << "\t" << camera->cameraDirection()[1] << "\t" << camera->cameraDirection()[2] << "\n\n";
         camera->rotate( angle, axis );
         camera->setCursorPosition( glm::vec3(x, y, 0.0f) );
     }
