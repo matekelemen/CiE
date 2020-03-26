@@ -21,7 +21,7 @@ public:
     void compileShaders() override;
     void makeProgram() override;
 
-    virtual void draw();
+    virtual bool draw();
     DrawFunction makeDrawFunction( GLContext& context );
 
     void checkGLErrors( const std::string& errorMessage = "" );

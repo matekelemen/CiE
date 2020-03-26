@@ -54,7 +54,7 @@ struct TestDrawManager : public DrawManager
         checkGLErrors();
     }
 
-    void draw() override
+    bool draw() override
     {
         //_camera->rotate( 0.01f, glm::vec3(1.0f,-1.0f,1.0f), glm::vec3(0.0f,0.0f,0.0f) );
         DrawManager::draw();
@@ -66,6 +66,7 @@ struct TestDrawManager : public DrawManager
 
         // Draw buffer
         glDrawElements( GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0 );
+        return true;
     }
 };
 

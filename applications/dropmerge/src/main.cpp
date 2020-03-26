@@ -14,7 +14,7 @@ namespace csg {
 // Problem settings
 //const size_t dimension     = 3;
 //const size_t subdivision   = 5;
-const size_t depth         = 7;
+const size_t depth         = 6;
 
 //int main(std::function<double(const DoubleArray<dimension>&)> target, double offset = 0.0)
 //{
@@ -32,8 +32,11 @@ const size_t depth         = 7;
 //    return 0;
 //}
 
-int main(std::function<double(const DoubleArray<3>&)> target, double offset = 0.0)
+int main(std::function<double(const DoubleArray<3>&, double)> targetFunction, double speed = 1.0)
 {
+    // Initialize target function
+    auto target = [&](const DoubleArray<3>& point) -> double { return targetFunction(point, 0.0); };
+
     // Build tree
     SpaceTreeNode<3,M> root( {0.0,0.0,0.0}, 4.0 );
     root.evaluate(target);
@@ -48,13 +51,27 @@ int main(std::function<double(const DoubleArray<3>&)> target, double offset = 0.
 
     // Draw manager setup
     SpaceTreeDrawManager manager(root,context);
-    manager.setDrawFunction( [&manager]()
+    double time = glfwGetTime();
+
+    manager.setDrawFunction( [&manager, &root, &time, targetFunction, speed]()
         { 
-            if (glfwGetTime() > 1.0f/144.0)
+            if (glfwGetTime()-time > 1.0/144.0)
             {
-                //manager.camera()->rotate(0.01f,glm::vec3(1.0f,0.0f,0.0f),glm::vec3(0.0f,0.0f,0.0f)); 
-                glfwSetTime( 0.0 );
+                auto offset = 2.5 - speed/2.0*glfwGetTime();
+                if (offset < 0.0)
+                    return false;
+
+                auto target = [&](const DoubleArray<3>& point) -> double 
+                    { return targetFunction(point, offset); };
+
+                auto timerID = manager.tic();
+                root.wipe();
+                root.evaluate(target);
+                root.divide(target, depth);
+                manager.toc( "Dividing took", timerID );
+                manager.collectNodesToBuffer();
             }
+            return true;
         } );
     manager.initialize();
 
@@ -62,9 +79,9 @@ int main(std::function<double(const DoubleArray<3>&)> target, double offset = 0.
     auto camera         = std::make_shared<gl::ArcballCamera>(context);
     manager.camera()    = camera;
     camera->setProperties(60.0, 0.1, 100.0);
-    camera->setPose(    glm::dvec3( 0.0, 0.0, 1.0 ), 
-                        glm::dvec3( 0.0, 0.0, -1.0 ), 
-                        glm::dvec3( 0.0, 1.0, 0.0 ) );
+    camera->setPose(    glm::dvec3( 2.0, 2.0, 2.0 ), 
+                        glm::dvec3( -1.0, -1.0, -1.0 ), 
+                        glm::dvec3( 0.0, 0.0, 1.0 ) );
     camera->setCenter( glm::dvec3( 0.0, 0.0, 0.0 ) );
     camera->updateTransformationMatrix();
 
@@ -92,14 +109,14 @@ int main(std::function<double(const DoubleArray<3>&)> target, double offset = 0.
 
 int main(int argc, char *argv[])
 {
-    // Parse argument
-    double offset = 0.0;
+    // Parse argument (animation speed)
+    double speed = 1.0;
     if (argc>1)
-        offset = std::atof(argv[1]);
+        speed = std::atof(argv[1]);
 
-    auto target =  [=](const cie::DoubleArray<3>& point) 
+    auto targetFunction =  [](const cie::DoubleArray<3>& point, double offset) 
         {return cie::csg::exponentialMergeFunction<3>(point,offset);};
 
 
-    return cie::csg::main(target, offset);
+    return cie::csg::main(targetFunction, speed);
 }

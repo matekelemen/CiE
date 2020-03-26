@@ -20,14 +20,15 @@ public:
     SpaceTreeDrawManager(   SpaceTreeNode<3,M>& root,
                             gl::GLContext& context  );
 
+    void collectNodesToBuffer();
     void initialize() override;
-    void draw() override;
+    bool draw() override;
 
-    void setDrawFunction( const std::function<void()>& function );
+    void setDrawFunction( const std::function<bool()>& function );
 
 private:
     SpaceTreeNode<3,M>*   _root;
-    std::function<void()> _drawFunction;
+    std::function<bool()> _drawFunction;
 };
 
 

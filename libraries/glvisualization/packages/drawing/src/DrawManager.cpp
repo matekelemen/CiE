@@ -55,7 +55,7 @@ void DrawManager::initialize()
 }
 
 
-void DrawManager::draw()
+bool DrawManager::draw()
 {
     // Set background and clear
     glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
@@ -69,15 +69,17 @@ void DrawManager::draw()
                             glm::value_ptr(_camera->transformationMatrix()) );
     else
         logID( "Unset transformation matrix ID!", _transformationID, LOG_TYPE_ERROR );
+
+    return true;
 }
 
 
 DrawFunction DrawManager::makeDrawFunction( GLContext& context )
 {
     log( "Create callable draw function factory" );
-    return [&context, this]()->void
+    return [&context, this]() -> bool
         {
-            this->draw();
+            return this->draw();
         };
 }
 

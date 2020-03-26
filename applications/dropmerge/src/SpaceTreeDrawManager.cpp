@@ -18,11 +18,8 @@ SpaceTreeDrawManager::SpaceTreeDrawManager( SpaceTreeNode<3,M>& root,
 }
 
 
-void SpaceTreeDrawManager::initialize()
+void SpaceTreeDrawManager::collectNodesToBuffer()
 {
-    DrawManager::initialize();
-    log( "Run SpaceTreeDrawManager initialization" );
-
     std::vector<GLfloat> vertexData;
 
     // Define recursive node collecting function
@@ -53,24 +50,28 @@ void SpaceTreeDrawManager::initialize()
         }
     };
 
-    // Collect nodes
-    log( "Collecting nodes..." );
-    auto timerID = tic();
+    // Collect nodes and write to buffer
     collectNodes( *_root, vertexData );
-    toc( "Collecting nodes took", timerID );
-
-    log( "Write initial data to buffer" );
     _buffers.writeToActiveBuffer( GL_ARRAY_BUFFER, vertexData );
     checkGLErrors();
 }
 
 
-void SpaceTreeDrawManager::draw()
+void SpaceTreeDrawManager::initialize()
+{
+    DrawManager::initialize();
+    log( "Run SpaceTreeDrawManager initialization" );
+    collectNodesToBuffer();
+}
+
+
+bool SpaceTreeDrawManager::draw()
 {
     DrawManager::draw();
 
+    bool result = false;
     if (_drawFunction != nullptr)
-        _drawFunction();
+        result = _drawFunction();
     else
         log( "Call to unset draw function!", LOG_TYPE_ERROR );
 
@@ -79,11 +80,13 @@ void SpaceTreeDrawManager::draw()
     glGetBufferParameteri64v( GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &numberOfVertices );
     numberOfVertices /= 4*sizeof(GLfloat);
     glDrawArrays( GL_POINTS, 0, numberOfVertices );
+
     checkGLErrors();
+    return result;
 }
 
 
-void SpaceTreeDrawManager::setDrawFunction( const std::function<void()>& function )
+void SpaceTreeDrawManager::setDrawFunction( const std::function<bool()>& function )
 {
     _drawFunction = function;
 }
