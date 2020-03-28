@@ -34,7 +34,7 @@ CameraType* CallbackGroup::getCameraPtr( WindowPtr window )
 
     // Reinterpret as DrawManager and get camera
     DrawManager* manager    = static_cast<DrawManager*>(glfwGetWindowUserPointer(window));
-    CameraType* camera;
+    CameraType* camera      = nullptr;
 
     // Try casting the camera to the requested type
     try
