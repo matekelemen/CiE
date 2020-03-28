@@ -1,9 +1,8 @@
 // --- CiE Includes ---
-#include "glvisualization.hpp"
+#include "csgvisualization.hpp"
 
 // --- Internal Includes ---
 #include "mergefunction.hpp"
-#include "SpaceTreeDrawManager.hpp"
 
 // --- STD Includes ---
 #include <stdlib.h>
@@ -14,7 +13,8 @@ namespace csg {
 // Problem settings
 //const size_t dimension     = 3;
 //const size_t subdivision   = 5;
-const size_t depth         = 6;
+const size_t depth  = 6;
+const size_t M      = 5;
 
 //int main(std::function<double(const DoubleArray<dimension>&)> target, double offset = 0.0)
 //{
@@ -50,7 +50,7 @@ int main(std::function<double(const DoubleArray<3>&, double)> targetFunction, do
     context.makeContextCurrent();
 
     // Draw manager setup
-    SpaceTreeDrawManager manager(root,context);
+    gl::SpaceTreeDrawManager<5> manager(root,context);
     double time = glfwGetTime();
 
     manager.setDrawFunction( [&manager, &root, &time, targetFunction, speed]()
@@ -94,7 +94,7 @@ int main(std::function<double(const DoubleArray<3>&, double)> targetFunction, do
                                                                 &manager );
 
     // Start event loop
-    context.startEventLoop( std::bind(&SpaceTreeDrawManager::makeDrawFunction, &manager, std::placeholders::_1),
+    context.startEventLoop( std::bind(&gl::SpaceTreeDrawManager<5>::makeDrawFunction, &manager, std::placeholders::_1),
                             keyCallback,
                             cursorCallback,
                             mouseCallback     );

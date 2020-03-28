@@ -2,12 +2,13 @@
 
 
 namespace cie {
-namespace csg {
+namespace gl {
 
 
-SpaceTreeDrawManager::SpaceTreeDrawManager( SpaceTreeNode<3,M>& root,
-                                            gl::GLContext& context  ) :
-    gl::DrawManager(context, "SpaceTreeDrawManager"),
+template <size_t M>
+SpaceTreeDrawManager<M>::SpaceTreeDrawManager(  csg::SpaceTreeNode<3,M>& root,
+                                                GLContext& context  ) :
+    DrawManager(context, "SpaceTreeDrawManager"),
     _root( &root ),
     _drawFunction( nullptr )
 {
@@ -18,12 +19,13 @@ SpaceTreeDrawManager::SpaceTreeDrawManager( SpaceTreeNode<3,M>& root,
 }
 
 
-void SpaceTreeDrawManager::collectNodesToBuffer()
+template <size_t M>
+void SpaceTreeDrawManager<M>::collectNodesToBuffer()
 {
     std::vector<GLfloat> vertexData;
 
     // Define recursive node collecting function
-    std::function<void(const SpaceTreeNode<3,M>&, std::vector<GLfloat>&)> collectNodes = [&collectNodes]( const SpaceTreeNode<3,M>& root, std::vector<GLfloat>& nodes )
+    std::function<void(const csg::SpaceTreeNode<3,M>&, std::vector<GLfloat>&)> collectNodes = [&collectNodes]( const csg::SpaceTreeNode<3,M>& root, std::vector<GLfloat>& nodes )
     {
         if (root.children()[0] != nullptr )
         {
@@ -57,7 +59,8 @@ void SpaceTreeDrawManager::collectNodesToBuffer()
 }
 
 
-void SpaceTreeDrawManager::initialize()
+template <size_t M>
+void SpaceTreeDrawManager<M>::initialize()
 {
     DrawManager::initialize();
     log( "Run SpaceTreeDrawManager initialization" );
@@ -65,7 +68,8 @@ void SpaceTreeDrawManager::initialize()
 }
 
 
-bool SpaceTreeDrawManager::draw()
+template <size_t M>
+bool SpaceTreeDrawManager<M>::draw()
 {
     DrawManager::draw();
 
@@ -86,7 +90,8 @@ bool SpaceTreeDrawManager::draw()
 }
 
 
-void SpaceTreeDrawManager::setDrawFunction( const std::function<bool()>& function )
+template <size_t M>
+void SpaceTreeDrawManager<M>::setDrawFunction( const std::function<bool()>& function )
 {
     _drawFunction = function;
 }

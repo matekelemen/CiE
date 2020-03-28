@@ -1,23 +1,25 @@
 #ifndef DROPMERGE_SPACE_TREE_DRAW_MANAGER_HPP
 #define DROPMERGE_SPACE_TREE_DRAW_MANAGER_HPP
 
-// --- CiE Includes ---
-#include "glvisualization.hpp"
+// --- CSG Includes ---
 #include "csg.hpp"
+
+// --- Internal Includes ---
+#include "DrawManager.hpp"
 
 // --- STD Includes ---
 #include <functional>
 
 
 namespace cie {
-namespace csg {
+namespace gl {
 
-const size_t M = 5;
 
+template <size_t M>
 class SpaceTreeDrawManager final : public gl::DrawManager
 {
 public:
-    SpaceTreeDrawManager(   SpaceTreeNode<3,M>& root,
+    SpaceTreeDrawManager(   csg::SpaceTreeNode<3,M>& root,
                             gl::GLContext& context  );
 
     void collectNodesToBuffer();
@@ -27,12 +29,13 @@ public:
     void setDrawFunction( const std::function<bool()>& function );
 
 private:
-    SpaceTreeNode<3,M>*   _root;
-    std::function<bool()> _drawFunction;
+    csg::SpaceTreeNode<3,M>*    _root;
+    std::function<bool()>       _drawFunction;
 };
 
+}
+}
 
-}
-}
+#include "SpaceTreeDrawManager_impl.hpp"
 
 #endif

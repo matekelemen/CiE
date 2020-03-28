@@ -1,6 +1,7 @@
 #ifndef MATHIEU_STABILITY_HILBERT_DETERMINANT_HPP
 #define MATHIEU_STABILITY_HILBERT_DETERMINANT_HPP
 
+// --- Internal Includes ---
 #include "../inc/complex.hpp"
 
 namespace cie {

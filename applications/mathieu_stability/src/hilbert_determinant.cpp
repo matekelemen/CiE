@@ -1,3 +1,4 @@
+// --- Internal Includes ---
 #include "../inc/hilbert_determinant.hpp"
 
 namespace cie {
@@ -23,6 +24,7 @@ Complex hilbertDeterminant( double delta,
     Complex swap;
     
     // Recursively compute the determinant of a tridiagonal matrix
+    //#pragma omp parallel for
     for (int k = -1*(int)(N-2); k <= (int)N; ++k)
     {
         temp    = k*omega + omegaCritical;
