@@ -55,10 +55,10 @@ protected:
     
     DoubleArray<N>                              _center;
     DoubleVector                                _data;
-    std::vector<SpaceTreeNodePtr<N,M>>              _children;
+    std::vector<SpaceTreeNodePtr<N,M>>          _children;
     double                                      _edgeLength;
-    static SpaceTreeIndexConverter<N,M>             _dataIndex;
-    static SpaceTreeIndexConverter<N,2>             _centerIndex;
+    static SpaceTreeIndexConverter<N,M>         _dataIndex;
+    static SpaceTreeIndexConverter<N,2>         _centerIndex;
 };
 
 

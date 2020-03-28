@@ -65,7 +65,7 @@ int main(std::function<double(const DoubleArray<3>&, double)> targetFunction, do
                     { return targetFunction(point, offset); };
 
                 auto timerID = manager.tic();
-                root.wipe();
+                //root.wipe();
                 root.evaluate(target);
                 root.divide(target, depth);
                 manager.toc( "Dividing took", timerID );

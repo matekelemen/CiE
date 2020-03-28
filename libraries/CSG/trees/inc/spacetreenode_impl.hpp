@@ -137,11 +137,15 @@ bool SpaceTreeNode<N, M>::divideRecursive(const GeometryFunction<N>& geometry, s
         for (auto it = _children.begin(); it != _children.end(); ++it)
         {
             *it = std::make_unique<SpaceTreeNode>(  *this,
-                                                std::distance(_children.begin(),it),
-                                                geometry);
+                                                    std::distance(_children.begin(),it),
+                                                    geometry);
             if (level>1) (*it)->divideRecursive(geometry, level-1);
         }
     }
+
+    // Reset children if not boundary
+    else
+        wipe();
 
     return boundary;
 }
@@ -153,9 +157,9 @@ template <size_t N, size_t M>
 void SpaceTreeNode<N,M>::write(std::ostream& file) const
 {
     writeSpaceTree<N,M>(*this,file);
-    for (auto it=_children.begin(); it!=_children.end(); ++it)
-        if (*it!=nullptr) 
-            (**it).write(file);
+    for (auto& child : _children)
+        if (child != nullptr) 
+            child->write(file);
 }
 
 
@@ -163,13 +167,13 @@ void SpaceTreeNode<N,M>::write(std::ostream& file) const
 template <size_t N, size_t M>
 void SpaceTreeNode<N,M>::wipe()
 {
-    #pragma omp parallel for
-    for (auto it=_children.begin(); it!=_children.end(); ++it)
+    #pragma omp task shared(_children)
+    for (auto& child : _children)
     {
-        if (*it != nullptr)
+        if (child != nullptr)
         {
-            (*it)->wipe();
-            it->reset();
+            child->wipe();
+            child.reset();
         }
     }
 }
