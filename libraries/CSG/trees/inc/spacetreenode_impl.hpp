@@ -1,5 +1,10 @@
 #ifndef CSG_NTREENODE_IMPL_HPP
 #define CSG_NTREENODE_IMPL_HPP
+
+// --- Internal Imports ---
+#include "cmake_variables.hpp"
+
+// --- STD Includes ---
 #include <string>
 #include <iostream>
 #include <cmath>
@@ -115,6 +120,7 @@ bool SpaceTreeNode<N, M>::divide(const GeometryFunction<N>& geometry, size_t lev
     // Divide if boundary
     if (boundary)
     {
+        #pragma omp parallel for if(USE_OPENMP)
         for (auto it = _children.begin(); it != _children.end(); ++it)
         {
             *it = std::make_unique<SpaceTreeNode>(  *this,
@@ -144,6 +150,7 @@ void SpaceTreeNode<N,M>::write(std::ostream& file) const
 template <size_t N, size_t M>
 void SpaceTreeNode<N,M>::wipe()
 {
+    #pragma omp parallel for
     for (auto it=_children.begin(); it!=_children.end(); ++it)
     {
         if (*it != nullptr)
