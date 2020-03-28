@@ -1,3 +1,4 @@
+// --- Internal Includes ---
 #include "../inc/SpaceTreeDrawManager.hpp"
 
 
@@ -12,9 +13,9 @@ SpaceTreeDrawManager<M>::SpaceTreeDrawManager(  csg::SpaceTreeNode<3,M>& root,
     _root( &root ),
     _drawFunction( nullptr )
 {
-    _shaderManager.setVertexShader( "spacetreeVertexShader.glsl" );
-    _shaderManager.setGeometryShader( "spacetreeGeometryShader.glsl" );
-    _shaderManager.setFragmentShader( "spacetreeFragmentShader.glsl" );
+    _shaderManager.setVertexShader( "pointVertexShader.glsl" );
+    _shaderManager.setGeometryShader( "pointGeometryShader.glsl" );
+    _shaderManager.setFragmentShader( "pointFragmentShader.glsl" );
     makeProgram();
 }
 
@@ -29,6 +30,7 @@ void SpaceTreeDrawManager<M>::collectNodesToBuffer()
     {
         if (root.children()[0] != nullptr )
         {
+            #pragma omp task shared(root,nodes)
             for( const auto& child : root.children() )
                 if (child != nullptr)
                     collectNodes( *child, nodes );
@@ -46,14 +48,19 @@ void SpaceTreeDrawManager<M>::collectNodesToBuffer()
 
             if (boundary)
             {
+                #pragma omp critical(SpaceTreeDrawManager_collectNodes)
                 nodes.insert( nodes.end(), root.center().begin(), root.center().end() );
-                nodes.push_back( (GLfloat)root.edgeLength() );
+                // Uncomment for complete cell representation (needs matching spacetree shaders)
+                //nodes.push_back( (GLfloat)root.edgeLength() );
             }
         }
     };
 
     // Collect nodes and write to buffer
+    #pragma omp parallel
+    #pragma omp single
     collectNodes( *_root, vertexData );
+
     _buffers.writeToActiveBuffer( GL_ARRAY_BUFFER, vertexData );
     checkGLErrors();
 }
@@ -82,7 +89,8 @@ bool SpaceTreeDrawManager<M>::draw()
     // Draw
     GLint64 numberOfVertices;
     glGetBufferParameteri64v( GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &numberOfVertices );
-    numberOfVertices /= 4*sizeof(GLfloat);
+    //numberOfVertices /= 4*sizeof(GLfloat);
+    numberOfVertices /= 3*sizeof(GLfloat);
     glDrawArrays( GL_POINTS, 0, numberOfVertices );
 
     checkGLErrors();

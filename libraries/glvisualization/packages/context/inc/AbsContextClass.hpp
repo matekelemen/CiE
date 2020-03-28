@@ -21,6 +21,7 @@ public:
 protected:
     AbsContextClass(    GLContext& context,
                         const std::string& className );
+    void checkGLErrors( const std::string& errorMessage = "" );
 
     std::string     _className;
     GLContext*      _context;

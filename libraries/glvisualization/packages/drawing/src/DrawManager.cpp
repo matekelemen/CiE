@@ -84,22 +84,6 @@ DrawFunction DrawManager::makeDrawFunction( GLContext& context )
 }
 
 
-void DrawManager::checkGLErrors( const std::string& errorMessage )
-{
-
-    std::string message = errorMessage;
-    if ( message.empty() )
-        message = "GL Error";
-
-    GLuint err = glGetError();
-    if( err!=0 )
-        logID(  message,
-                err,
-                LOG_TYPE_ERROR );
-}
-
-
-
 void DrawManager::compileShaders()
 {
     // Compile and store shaders in the following order:

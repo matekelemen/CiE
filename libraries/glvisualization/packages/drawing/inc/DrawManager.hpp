@@ -24,8 +24,6 @@ public:
     virtual bool draw();
     DrawFunction makeDrawFunction( GLContext& context );
 
-    void checkGLErrors( const std::string& errorMessage = "" );
-
     ShaderManager& shaderManager();
     const ShaderManager& shaderManager() const;
     CameraPtr& camera();
