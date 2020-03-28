@@ -51,6 +51,7 @@ public:
 
 protected:
     void check() const;
+    bool divideRecursive(const GeometryFunction<N>& geometry, size_t level);
     
     DoubleArray<N>                              _center;
     DoubleVector                                _data;

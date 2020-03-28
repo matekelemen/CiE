@@ -103,14 +103,27 @@ SpaceTreeNode<N, M>::SpaceTreeNode(         const SpaceTreeNode<N, M>& parent,
 template <size_t N, size_t M>
 bool SpaceTreeNode<N, M>::divide(const GeometryFunction<N>& geometry, size_t level)
 {
+    bool result;
+
+    #pragma omp parallel
+    #pragma omp single
+    result = divideRecursive( geometry, level );
+
+    return result;
+}
+
+
+template <size_t N, size_t M>
+bool SpaceTreeNode<N, M>::divideRecursive(const GeometryFunction<N>& geometry, size_t level)
+{
     bool boundary   = false;
     bool value      = false;
     if (_data[0] > 0.0) value = true;
 
     // Check if boundary node
-    for (auto it = _data.begin(); it != _data.end(); ++it)
+    for (const auto& data : _data)
     {
-        if ( (*it>0.0) != value )
+        if ( (data>0.0) != value )
         {
             boundary = true;
             break;
@@ -120,13 +133,13 @@ bool SpaceTreeNode<N, M>::divide(const GeometryFunction<N>& geometry, size_t lev
     // Divide if boundary
     if (boundary)
     {
-        #pragma omp parallel for if(USE_OPENMP)
+        #pragma omp task shared(_children, geometry, level)
         for (auto it = _children.begin(); it != _children.end(); ++it)
         {
             *it = std::make_unique<SpaceTreeNode>(  *this,
                                                 std::distance(_children.begin(),it),
                                                 geometry);
-            if (level>1) (*it)->divide(geometry, level-1);
+            if (level>1) (*it)->divideRecursive(geometry, level-1);
         }
     }
 
