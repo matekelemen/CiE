@@ -11,26 +11,9 @@ namespace cie {
 namespace csg {
 
 // Problem settings
-//const size_t dimension     = 3;
-//const size_t subdivision   = 5;
-const size_t depth  = 6;
+const size_t depth  = 7;
 const size_t M      = 5;
 
-//int main(std::function<double(const DoubleArray<dimension>&)> target, double offset = 0.0)
-//{
-//    SpaceTreeNode<dimension,subdivision> root( {0.0,0.0}, 4.0 );
-//    root.evaluate(target);
-//    root.divide(target,depth);
-//
-//    writeSpaceTree<dimension,subdivision>(root, "dropmerge.csv");
-//
-//    std::string filename    = "install/applications/dropmerge/dropmerge_csv.py";
-//    std::string command     = "python3 ";
-//    command                 += filename;
-//    system(command.c_str());
-//
-//    return 0;
-//}
 
 int main(std::function<double(const DoubleArray<3>&, double)> targetFunction, double speed = 1.0)
 {

@@ -145,15 +145,14 @@ std::array<std::vector<double>, 2> evaluate2DCurveDeBoor( const std::vector<doub
     std::vector<double> curveX( numberOfSamples, 0.0 );
     std::vector<double> curveY( numberOfSamples, 0.0 );
 
+    #pragma omp parallel for collapse(2)
     for( size_t i = 0; i < numberOfSamples; ++i )
     {
-        double t = tCoordinates[i];
-
         for( size_t j = 0; j < numberOfPoints; ++j )
         {
-            size_t s = findKnotSpan( t, numberOfPoints, knotVector );
+            size_t s = findKnotSpan( tCoordinates[i], numberOfPoints, knotVector );
 
-            std::array<double, 2> Point = deBoor( t, s, p, knotVector, xCoordinates, yCoordinates );
+            std::array<double, 2> Point = deBoorOptimized( tCoordinates[i], s, p, knotVector, xCoordinates, yCoordinates );
 
             curveX[i] = Point[0];
             curveY[i] = Point[1];
