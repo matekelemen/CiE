@@ -21,5 +21,11 @@ void AbsContextClass::terminate( )
 }
 
 
+const GLContext* AbsContextClass::context() const
+{
+    return _context;
+}
+
+
 }
 }
