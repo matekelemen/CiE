@@ -68,7 +68,8 @@ model.integrate( )
 
 # Boundary conditions
 leftBCID    = model.addBoundaryCondition(   DirichletBoundary(  0, 
-                                                                lambda t: 0.0   ) )
+                                                                lambda t: 0.0,
+                                                                penaltyValue=1e10   ) )
 
 rightBCID   = model.addBoundaryCondition(   NeumannBoundary(    nElements*polynomialOrder,
                                                                 referenceControl) )

@@ -47,7 +47,7 @@ def stationaryLoadControl(  model,
 
     # ---------------------------------------------------------
     # Increment loop
-    for incrementIndex, control in enumerate(np.linspace( 0.0, 1.0, num=maxIncrements+1 )):
+    for incrementIndex, control in enumerate(np.linspace( 0.0, 1.0, num=maxIncrements )):
         # Wipe model
         model.resetMatrices()
 
@@ -67,18 +67,12 @@ def stationaryLoadControl(  model,
         # Check if first run (initialization)
         if previousLoad is None:
             previousLoad = model.load
-            continue
 
         if verbose:
             print( "Increment# " + str(incrementIndex) + " " + "-"*(35-11-len(str(incrementIndex))-1) )
 
         # Predict
         u           += solveLinearSystem( model.stiffness, model.load - previousLoad )
-        np.set_printoptions(precision=1, floatmode="fixed")
-        print(model.stiffness.todense())
-        print(model.load)
-        print(u)
-        np.set_printoptions()
 
         # Compute prediction residual
         residual    = model.stiffness.dot(u) -  model.load

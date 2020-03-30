@@ -17,11 +17,11 @@ capacity            = lambda u: 1.0
 conductivity        = lambda u: 1.0 + 9.0 * np.exp( -(u-0.5)**2 / 0.005 )
 
 # Load
-load                = lambda x: 0.0
+load                = lambda x: 15.0 * np.sin(np.pi/length*x)
 boundaryTemperature = 2.0
 
 # Discretization
-nElements           = 10
+nElements           = 15
 polynomialOrder     = 2
 
 # Integration
@@ -64,10 +64,8 @@ rightBCID   = model.addBoundaryCondition(   DirichletBoundary(  nElements*polyno
                                                                 0.0) )
 
 # Set functionals
-loadFunctional      = lambda controlParameter: lambda x: 0.0
-
-def boundaryManipulator( controlParameter ):
-    model.boundaries[rightBCID].value = controlParameter*boundaryTemperature
+loadFunctional      = lambda controlParameter: lambda x: controlParameter*load(x)
+boundaryManipulator = lambda controlParameter: None
 
 # Solve
 u = stationaryLoadControl(  model,

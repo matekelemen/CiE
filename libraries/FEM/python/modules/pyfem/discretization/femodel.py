@@ -120,17 +120,19 @@ class FEModel:
 
     @requiresInitialized
     def applyDirichletBoundary( self, boundaryCondition ):
-        if boundaryCondition.applied is not True:
-            for index in range(self.size):
-                if np.abs( self.stiffness[boundaryCondition.DoF, index] )>1e-15:
-                    self.stiffness[boundaryCondition.DoF, index] = 0.0
-                if np.abs( self.stiffness[ index, boundaryCondition.DoF] )>1e-15:
-                    self.stiffness[ index, boundaryCondition.DoF ] = 0.0
-            #self.stiffness[boundaryCondition.DoF,boundaryCondition.DoF] += boundaryCondition.penaltyValue
-            self.stiffness[boundaryCondition.DoF,boundaryCondition.DoF] = 1.0
-            boundaryCondition.applied = True
-        #self.load[boundaryCondition.DoF]    += boundaryCondition.penaltyValue * boundaryCondition.value
-        self.load[boundaryCondition.DoF] = boundaryCondition.value
+        #if boundaryCondition.applied is not True:
+        #    for index in range(self.size):
+        #        if np.abs( self.stiffness[boundaryCondition.DoF, index] )>1e-15:
+        #            self.stiffness[boundaryCondition.DoF, index] = 0.0
+        #        if np.abs( self.stiffness[ index, boundaryCondition.DoF] )>1e-15:
+        #            self.stiffness[ index, boundaryCondition.DoF ] = 0.0
+        #    #self.stiffness[boundaryCondition.DoF,boundaryCondition.DoF] += boundaryCondition.penaltyValue
+        #    self.stiffness[boundaryCondition.DoF,boundaryCondition.DoF] = 1.0
+        #    boundaryCondition.applied = True
+        ##self.load[boundaryCondition.DoF]    += boundaryCondition.penaltyValue * boundaryCondition.value
+        #self.load[boundaryCondition.DoF] = boundaryCondition.value
+        self.stiffness[boundaryCondition.DoF, boundaryCondition.DoF] += boundaryCondition.penaltyValue
+        self.load[boundaryCondition.DoF] += boundaryCondition.penaltyValue * boundaryCondition.value
 
 
     @requiresInitialized
