@@ -9,18 +9,20 @@ from pyfem.discretization import NonlinearHeatElement1D
 from pyfem.discretization import FEModel
 from pyfem.discretization import DirichletBoundary
 from pyfem.numeric import stationaryLoadControl
+from pyfem.postprocessing import ConvergencePlot
 
 '''
-Standard stationary setup with zero Dirichlet conditions on both ends. One twist 
-is that the material is nonlinear (sharp gaussian hump in capacity centered at u=0.5).
-The bar is subject to a half sine wave shaped source load. The other twist is that 
-the calculation is carried out twice. 
+Standard stationary setup with zero Dirichlet conditions on both ends. The bar is 
+loaded with a half sine wave shaped source. One twist is that the material is 
+nonlinear (sharp gaussian hump in capacity centered at u=0.5). The other twist is 
+that the calculation is carried out twice:
 
-First, incrementing is broken down into two parts: 
-increment to half load, then use the result and increment from half load to full load.
+    1)  incrementing is broken down into two parts: 
+        increment to half load, then use the result and increment from half to full load.
 
-Second, increment from naught to full load in one function call.
+    2)  increment from naught to full load in one function call.
 
+Both cases use the same number of increments (unless numberOfIncrements is odd).
 Obviously, the results should be identical (with minor numerical inaccuracies).
 '''
 
@@ -34,17 +36,17 @@ conductivity        = lambda u: 1.0 + 9.0 * np.exp( -(u-0.5)**2 / 0.005 )
 load                = lambda x: 20.0 * np.sin(np.pi/length*x)
 
 # Discretization
-nElements           = 10
-polynomialOrder     = 2
+nElements           = 15
+polynomialOrder     = 3
 penaltyValue        = 1e10
 
 # Integration
 integrationOrder    = 2 * (2*polynomialOrder + 1)
 
 # Iteration
-numberOfIncrements  = 12
-numberOfCorrections = 5
-tolerance           = 1e-12
+numberOfIncrements  = 10
+numberOfCorrections = 30
+tolerance           = 1e-5
 
 # ---------------------------------------------------------
 # General initialization
@@ -70,7 +72,7 @@ model.elements      = [ NonlinearHeatElement1D( capacity,
 
 model.allocateZeros( )
 
-# Boundary conditions (right BC is the load)
+# Boundary conditions
 leftBCID    = model.addBoundaryCondition(   DirichletBoundary(  0, 
                                                                 0.0,
                                                                 penaltyValue=penaltyValue ))
@@ -86,15 +88,17 @@ loadFunctional      = lambda controlParameter: lambda x: 0.5*controlParameter*lo
 boundaryManipulator = lambda controlParameter: None
 
 # Solve
+convergencePlot = ConvergencePlot()
 u = stationaryLoadControl(  model,
                             np.zeros(model.size),
                             loadFunctional=loadFunctional,
                             boundaryFunctional=boundaryManipulator,
                             maxIncrements=int(numberOfIncrements/2),
                             maxCorrections=numberOfCorrections,
-                            tolerance=1e-8,
+                            tolerance=tolerance,
                             verbose=True,
-                            axes=None   )
+                            axes=None,
+                            convergencePlot=convergencePlot   )
 
 # Solve in 2 increment iterations, round 2
 # Set functionals
@@ -107,9 +111,11 @@ u = stationaryLoadControl(  model,
                             boundaryFunctional=boundaryManipulator,
                             maxIncrements=int(numberOfIncrements/2),
                             maxCorrections=numberOfCorrections,
-                            tolerance=1e-8,
+                            tolerance=tolerance,
                             verbose=True,
-                            axes=None   )
+                            axes=None,
+                            convergencePlot=convergencePlot   )
+convergencePlot.reset()
 
 u2 = u
 # ---------------------------------------------------------
@@ -118,15 +124,17 @@ u2 = u
 loadFunctional      = lambda controlParameter: lambda x: controlParameter * load(x)
 
 # Solve
+convergencePlot.reset()
 u = stationaryLoadControl(  model,
                             np.zeros(model.size),
                             loadFunctional=loadFunctional,
                             boundaryFunctional=boundaryManipulator,
                             maxIncrements=numberOfIncrements,
                             maxCorrections=numberOfCorrections,
-                            tolerance=1e-8,
+                            tolerance=tolerance,
                             verbose=True,
-                            axes=None   )
+                            axes=None,
+                            convergencePlot=convergencePlot   )
 # ---------------------------------------------------------
 # Print solution difference
 print( "Norm of solution difference\t: %.3E" % np.linalg.norm(u-u2) )
@@ -148,4 +156,5 @@ axes[1].set_ylabel( "T [C]" )
 axes[1].set_title( "Temperature Field" )
 
 plt.tight_layout()
-plt.show()
+fig.canvas.draw()
+plt.show( block=True )

@@ -10,6 +10,7 @@ from pyfem.discretization import NonlinearHeatElement1D
 from pyfem.discretization import FEModel
 from pyfem.discretization import DirichletBoundary, NeumannBoundary
 from pyfem.numeric import stationaryLoadControl
+from pyfem.postprocessing import ConvergencePlot
 
 # ---------------------------------------------------------
 # Geometry and material
@@ -29,9 +30,9 @@ polynomialOrder     = 2
 integrationOrder    = 2 * (2*polynomialOrder + 1)
 
 # Iteration
-numberOfIncrements  = 10
-numberOfCorrections = 5
-tolerance           = 1e-12
+numberOfIncrements  = 3
+numberOfCorrections = 50
+tolerance           = 1e-5
 
 # ---------------------------------------------------------
 # General initialization
@@ -77,15 +78,17 @@ u = stationaryLoadControl(  model,
                             boundaryFunctional=boundaryManipulator,
                             maxIncrements=numberOfIncrements,
                             maxCorrections=numberOfCorrections,
-                            tolerance=1e-8,
+                            tolerance=tolerance,
                             verbose=True,
-                            axes=axes[1]   )
-
+                            axes=axes[1],
+                            convergencePlot=ConvergencePlot()   )
 
 # Plot conductivity
 samples = np.linspace( 0.0, np.max(model.sample( u, samples )), num=len(samples) )
 axes[0].plot( samples, [conductivity(temp) for temp in samples] )
 axes[0].set_xlabel( "T [C]" )
 axes[0].set_ylabel( r'$\kappa$' + " [W/K]" )
+axes[0].set_title( "Conductivity(temperature)" )
 
+plt.tight_layout()
 plt.show()

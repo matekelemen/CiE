@@ -10,10 +10,11 @@ def stationaryLoadControl(  model,
                             loadFunctional=None,
                             boundaryFunctional=None,
                             maxIncrements=5,
-                            maxCorrections=5,
-                            tolerance=1e-8,
+                            maxCorrections=10,
+                            tolerance=1e-5,
                             verbose=True,
-                            axes=None ):
+                            axes=None,
+                            convergencePlot=None ):
     '''
     Solves a nonlinear FEModel using a load controlled predictor and a constant load corrector
     
@@ -46,39 +47,53 @@ def stationaryLoadControl(  model,
     previousLoad    = None
     u               = initialSolution
 
-    # ---------------------------------------------------------
-    # Increment loop
-    for incrementIndex, control in enumerate(np.linspace( 0.0, 1.0, num=maxIncrements+1 )):
-        # Wipe model
+    if convergencePlot is not None:
+        convergencePlot.start()
+
+    # Define function that does all the necessary operations
+    # for updating the model to the current control parameter and solution
+    def reintegrate( controlParameter, solution ):
+        # Set to zero
         model.resetMatrices()
 
         # Set load function
         for element in model.elements:
-            element.load = loadFunctional(control)
+            element.load = loadFunctional(controlParameter)
 
         # Initialize structural matrices
-        model.integrate( lambda x: model.sample(u, x) )
+        model.integrate( lambda x: model.sample(solution, x) )
 
         # Apply boundaries
-        boundaryFunctional(control)
+        boundaryFunctional(controlParameter)
         for boundary in model.boundaries:
             model.applyBoundaryCondition( boundary )
+
+    # ---------------------------------------------------------
+    # Increment loop
+    for incrementIndex, control in enumerate(np.linspace( 0.0, 1.0, num=maxIncrements+1 )):
+        if verbose:
+            print( "Increment# " + str(incrementIndex) + " " + "-"*(35-11-len(str(incrementIndex))-1) )
+        
+        # Update with new control
+        reintegrate( control, u )
 
         # Check if first run (initialization)
         if previousLoad is None:
             previousLoad = model.load
             continue
 
-        if verbose:
-            print( "Increment# " + str(incrementIndex) + " " + "-"*(35-11-len(str(incrementIndex))-1) )
-
         # Predict
-        u           += solveLinearSystem( model.stiffness, model.load - previousLoad )
+        uIncrement  = solveLinearSystem( model.stiffness, model.load - previousLoad )
+        u           += uIncrement
 
         # Compute prediction residual
+        reintegrate( control, u )
         residual    = model.stiffness.dot(u) -  model.load
+        resNorm     = np.linalg.norm( residual )
         if verbose:
-            print( "Prediction residual\t: %.3E" % np.linalg.norm( residual ) )
+            print( "Prediction residual\t: %.3E" % resNorm )
+        if convergencePlot is not None:
+            convergencePlot( resNorm )
 
         # Correction loop
         for correctionIndex in range(maxCorrections):
@@ -86,19 +101,24 @@ def stationaryLoadControl(  model,
             u           += solveLinearSystem( model.stiffness, -residual )
 
             # Update residual and check termination criterion
+            reintegrate( control, u )
             residual    = model.stiffness.dot(u) - model.load
             resNorm     = np.linalg.norm(residual)
             if verbose:
                 print( "Corrected residual\t: %.3E" % resNorm )
+            if convergencePlot is not None:
+                convergencePlot( resNorm )
             if resNorm < tolerance:
                 break
+            elif correctionIndex == maxCorrections-1:
+                print( "Warning: corrector failed to converge within the specified tolerance" )
 
         # Update load
         previousLoad = model.load
 
         # Plot if requested
         if axes is not None:
-            axes.plot( np.linspace( 0, 1, num=100 ), model.sample( u, np.linspace( 0, 1, num=100 ) ), '.-' )
+            axes.plot( np.linspace( 0, 1, num=100 ), model.sample( u, np.linspace( 0, 1, num=100 ) ) )
 
     # Decorate plot if requested
     if axes is not None:
@@ -106,5 +126,9 @@ def stationaryLoadControl(  model,
         axes.legend( [ "Control parameter = %.2f" % l for l in controls[1:] ] )
         axes.set_xlabel( "x [m]" )
         axes.set_ylabel( "T [C]" )
+        axes.set_title( "Temperature Field" )
+
+    if convergencePlot is not None:
+        convergencePlot.finish()
     
     return u

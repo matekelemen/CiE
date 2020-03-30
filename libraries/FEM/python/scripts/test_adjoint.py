@@ -11,14 +11,14 @@ from pyfem.discretization import TransientFEModel
 from pyfem.discretization import DirichletBoundary, NeumannBoundary
 from pyfem.numeric import solveLinearHeat1D, solveAdjointLinearHeat1D
 from pyfem.optcontrol import squaredSolutionErrorFunctional
-from pyfem.postprocessing.graphics import animateTimeSeries
+from pyfem.postprocessing import animateTimeSeries, ConvergencePlot
 
 # ---------------------------------------------------------
 # SETTINGS
 # ---------------------------------------------------------
 # Reference
 referenceControl            = lambda t: 1.0
-initialControl              = lambda t: 1.0
+initialControl              = lambda t: 0.0
 
 # Geometry and material
 length                      = 1.0
@@ -43,6 +43,7 @@ regularization              = 50.0
 
 # Postprocessing
 numberOfSamples             = 100
+convergencePlot             = ConvergencePlot()
 
 # ---------------------------------------------------------
 # REFERENCE SOLUTION
@@ -140,6 +141,7 @@ for i in range(numberOfAdjointIterations):
     # Integrate functional in time
     functionalValue = np.trapz( functionalValue,
                                 x=time  )
+    convergencePlot( functionalValue )
 
     # Save intermediate results
     controls[i]         = u.copy()
@@ -210,4 +212,5 @@ axes[2].set_ylabel( "Control error" )
 #plt.ylabel( "Functional value" )
 #plt.grid( b=True )
 
-plt.show()
+fig.canvas.draw()
+plt.show( block=True )

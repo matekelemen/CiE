@@ -62,3 +62,73 @@ def animateTimeSeries( time, positions, timeSeriesSolution, model, speed=0.1, re
                                     repeat_delay=1000,
                                     repeat=repeat)
     return animation
+
+
+
+
+class ConvergencePlot:
+    '''
+    Convergence plot that can be updated dynamically
+    '''
+    def __init__( self, figure=None, axes=None, yLabel="value [-]" ):
+        if figure is None and axes is None:
+            figure  = plt.figure()
+            axes    = figure.add_subplot( 1,1,1 )
+        elif (figure is None) is not (axes is None):
+            raise RuntimeError( "Either BOTH figure AND axes must be given, or NEITHER" )
+
+        self.reset()
+
+        self.figure     = figure
+        self.axes       = axes
+        self.line,      = plt.plot( self._x, self._y, "--." )
+
+        self.figure.canvas.set_window_title( "Convergence Plot" )
+        self.axes.set_yscale( "log" )
+        self.axes.set_xlabel( "iteration#" )
+        self.axes.set_ylabel( yLabel )
+
+        self.start()
+
+
+    def reset( self ):
+        self._x         = []
+        self._y         = []
+        self._yMax      = 0
+        self._yMin      = None
+        self._counter   = 0
+
+    
+    def add( self, value ):
+        self._counter += 1
+        if self._yMax < value:
+            self._yMax = value
+
+        if self._yMin is None or self._yMin > value:
+            self._yMin = value
+
+        self._x.append( self._counter )
+        self._y.append( value )
+        
+
+    
+    def __call__( self, value ):
+        self.add( value )
+        self.line.set_xdata( self._x )
+        self.line.set_ydata( self._y )
+        self.axes.set_xlim( 0, self._counter )
+        self.axes.set_ylim( self._yMin, self._yMax )
+        self.figure.canvas.draw()
+        plt.pause(1e-3)
+
+
+    def start( self ):
+        plt.ion()
+
+    def finish( self ):
+        plt.ioff()
+
+    
+    def close( self ):
+        self.finish()
+        plt.close( self.figure )
