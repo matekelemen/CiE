@@ -132,3 +132,39 @@ class LinearHeatElement1D( Element1D ):
         for i, function in enumerate(self.basisFunctions):
             value = self._jacobian * self.integrator( lambda x: function(x) * self.load(self.toGlobalCoordinates(x)), self.basisFunctions.domain )
             self.updateGlobalVector( globalLoadVector, i, value )
+
+
+
+class NonlinearHeatElement1D( Element1D ):
+    '''
+    Basic heat element with temperature-dependent coefficients
+    '''
+    def __init__( self, capacity, conductivity, *args, **kwargs ):
+        Element1D.__init__( self, *args, **kwargs )
+        if not callable(capacity) or not callable(conductivity):
+            raise AttributeError( "The coefficients of NonlinearHeatElement1D must be callable (functions of temperature)" )
+
+        self.capacity       = capacity
+        self.conductivity   = conductivity
+
+
+    def integrateStiffness( self, globalStiffnessMatrix, temperatureFunction ):
+        for i, function in enumerate(self.basisDerivatives):
+            for j in range( i, len(self.basisDerivatives) ):
+                value = self._invJacobian * self.integrator(    lambda x: self.conductivity(temperatureFunction(self.toGlobalCoordinates(x))) * function(x)*self.basisDerivatives[j](x), 
+                                                                self.basisDerivatives.domain )
+                self.updateGlobalMatrix( globalStiffnessMatrix, i, j, value )
+
+
+    def integrateMass( self, globalMassMatrix, temperatureFunction ):
+        for i, function in enumerate(self.basisFunctions):
+            for j in range( i, len(self.basisFunctions) ):
+                value = self._jacobian * self.integrator(   lambda x: self.capacity(temperatureFunction(self.toGlobalCoordinates(x))) * function(x)*self.basisFunctions[j](x), 
+                                                            self.basisFunctions.domain )
+                self.updateGlobalMatrix( globalMassMatrix, i, j, value )
+
+
+    def integrateLoad( self, globalLoadVector, temperatureFunction ):
+        for i, function in enumerate(self.basisFunctions):
+            value = self._jacobian * self.integrator( lambda x: function(x) * self.load(self.toGlobalCoordinates(x)), self.basisFunctions.domain )
+            self.updateGlobalVector( globalLoadVector, i, value )

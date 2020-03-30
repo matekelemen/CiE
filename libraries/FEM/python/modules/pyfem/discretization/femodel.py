@@ -39,6 +39,16 @@ class FEModel:
         self.boundaries     = []
 
 
+    def resetMatrices( self ):
+        # Reset structural matrices
+        self.stiffness.data = np.zeros( self.stiffness.data.shape, dtype=self.stiffness.data.dtype )
+        self.load           = np.zeros( self.load.shape, dtype=self.load.dtype )
+
+        # Reset boundaries
+        for boundary in self.boundaries:
+            boundary.applied = False
+
+
     def getDoFs( self ):
         '''
         Get a unique set of DoF pairs that indicate nonzero entries in matrices
@@ -73,13 +83,13 @@ class FEModel:
 
 
     @requiresInitialized
-    def integrate( self ):
+    def integrate( self, *args, **kwargs ):
         '''
         Loop through elements and integrate their matrices
         '''
         for element in self.elements:
-            element.integrateStiffness( self.stiffness )
-            element.integrateLoad( self.load )
+            element.integrateStiffness( self.stiffness, *args, **kwargs )
+            element.integrateLoad( self.load, *args, **kwargs )
 
 
     def addBoundaryCondition( self, boundaryCondition ):
@@ -142,24 +152,6 @@ class FEModel:
 
 
     @requiresInitialized
-    def solveStationary( self ):
-        '''
-        Solve current system.
-        '''
-        x, info = sparse.linalg.gmres(  self.stiffness, 
-                                        self.load,
-                                        x0=np.random.rand(self.size),
-                                        atol=1e-12,
-                                        maxiter=np.max((5*self.size,100)) )
-        if info<0:
-            raise RuntimeError( "Error solving the system" )
-        elif info>0:
-            print( "Solution has not converged after " +str(info) + " iterations" )
-        
-        return x
-
-
-    @requiresInitialized
     def sample( self, solution, samples ):
         values = np.zeros( samples.shape )
         for element in self.elements:
@@ -201,6 +193,11 @@ class TransientFEModel( FEModel ):
         self.time           = 0.0
 
 
+    def resetMatrices( self ):
+        FEModel.resetMatrices(self)
+        self.mass.data      = np.zeros( self.mass.data.shape, dtype=self.mass.data.dtype )
+
+
     @property
     def loadFunction( self ):
         if self._loadFunction is None:
@@ -220,11 +217,11 @@ class TransientFEModel( FEModel ):
 
 
     @requiresInitialized
-    def integrate( self ):
-        FEModel.integrate( self )
+    def integrate( self, *args, **kwargs ):
+        FEModel.integrate( self, *args, **kwargs )
         
         for element in self.elements:
-            element.integrateMass( self.mass )
+            element.integrateMass( self.mass, *args, **kwargs )
 
 
     @requiresInitialized
