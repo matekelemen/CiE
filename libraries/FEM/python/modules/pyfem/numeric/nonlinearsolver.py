@@ -43,11 +43,12 @@ def stationaryLoadControl(  model,
     if boundaryFunctional is None:
         boundaryFunctional = lambda controlParameter: None
 
-    previousLoad = None
+    previousLoad    = None
+    u               = initialSolution
 
     # ---------------------------------------------------------
     # Increment loop
-    for incrementIndex, control in enumerate(np.linspace( 0.0, 1.0, num=maxIncrements )):
+    for incrementIndex, control in enumerate(np.linspace( 0.0, 1.0, num=maxIncrements+1 )):
         # Wipe model
         model.resetMatrices()
 
@@ -56,7 +57,6 @@ def stationaryLoadControl(  model,
             element.load = loadFunctional(control)
 
         # Initialize structural matrices
-        u = initialSolution
         model.integrate( lambda x: model.sample(u, x) )
 
         # Apply boundaries
@@ -67,6 +67,7 @@ def stationaryLoadControl(  model,
         # Check if first run (initialization)
         if previousLoad is None:
             previousLoad = model.load
+            continue
 
         if verbose:
             print( "Increment# " + str(incrementIndex) + " " + "-"*(35-11-len(str(incrementIndex))-1) )
@@ -101,7 +102,8 @@ def stationaryLoadControl(  model,
 
     # Decorate plot if requested
     if axes is not None:
-        axes.legend( [ "Control parameter = %.2f" % l for l in np.linspace( 0.0, 1.0, num=maxIncrements ) ] )
+        controls = np.linspace( 0.0, 1.0, num=maxIncrements+1 )
+        axes.legend( [ "Control parameter = %.2f" % l for l in controls[1:] ] )
         axes.set_xlabel( "x [m]" )
         axes.set_ylabel( "T [C]" )
     
