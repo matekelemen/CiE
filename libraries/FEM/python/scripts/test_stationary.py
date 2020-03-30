@@ -8,6 +8,7 @@ from pyfem.discretization import IntegratedHierarchicBasisFunctions
 from pyfem.discretization import LinearHeatElement1D
 from pyfem.discretization import FEModel
 from pyfem.discretization import DirichletBoundary, NeumannBoundary
+from pyfem.numeric import solveLinearSystem
 
 # ---------------------------------------------------------
 # Geometry and material
@@ -16,11 +17,12 @@ capacity            = 1.0
 conductivity        = 1.0
 
 # Load
-load                = lambda x: np.sin(x*np.pi)
+#load                = lambda x: np.sin(x*np.pi)
+load                = lambda x: 0.0
 
 # Discretization
-nElements           = 10
-polynomialOrder     = 2
+nElements           = 5
+polynomialOrder     = 1
 
 # Integration
 integrationOrder    = 2*polynomialOrder + 1
@@ -48,13 +50,16 @@ model.integrate( )
 leftBCID    = model.addBoundaryCondition(   DirichletBoundary(  0, 
                                                                 0.0 ))
 
-rightBCID   = model.addBoundaryCondition(   NeumannBoundary(    nElements*polynomialOrder,
-                                                                0.0) )
+rightBCID   = model.addBoundaryCondition(   DirichletBoundary(  nElements*polynomialOrder,
+                                                                1.0) )
 
 # Solve
-u       = model.solveStationary()
+u       = solveLinearSystem( model.stiffness, model.load )
 
 # Output
+print( model.stiffness.todense() )
+print( "Solution: " + str(u) )
+
 samples = np.linspace( 0, length, num=100 )
 values  = model.sample( u, samples )
 plt.plot( samples, values, '.-' )

@@ -1,14 +1,13 @@
 # --- Python Imports ---
 import numpy as np
 import scipy.sparse.linalg as linalg
-import scipy
 from matplotlib import pyplot as plt
 
 # --- Internal Imports ---
 from pyfem.discretization import IntegratedHierarchicBasisFunctions
 from pyfem.discretization import NonlinearHeatElement1D
 from pyfem.discretization import FEModel
-from pyfem.discretization import DirichletBoundary, NeumannBoundary
+from pyfem.discretization import DirichletBoundary
 from pyfem.numeric import stationaryLoadControl
 
 # ---------------------------------------------------------
@@ -19,17 +18,17 @@ conductivity        = lambda u: 1.0 + 9.0 * np.exp( -(u-0.5)**2 / 0.005 )
 
 # Load
 load                = lambda x: 0.0
-boundaryFlux        = 2.0
+boundaryTemperature = 1.0
 
 # Discretization
-nElements           = 10
-polynomialOrder     = 2
+nElements           = 5
+polynomialOrder     = 1
 
 # Integration
 integrationOrder    = 2 * (2*polynomialOrder + 1)
 
 # Iteration
-numberOfIncrements  = 10
+numberOfIncrements  = 6
 numberOfCorrections = 5
 tolerance           = 1e-12
 
@@ -61,14 +60,14 @@ model.allocateZeros( )
 leftBCID    = model.addBoundaryCondition(   DirichletBoundary(  0, 
                                                                 0.0 ))
 
-rightBCID   = model.addBoundaryCondition(   NeumannBoundary(    nElements*polynomialOrder,
+rightBCID   = model.addBoundaryCondition(   DirichletBoundary(  nElements*polynomialOrder,
                                                                 0.0) )
 
 # Set functionals
 loadFunctional      = lambda controlParameter: lambda x: 0.0
 
 def boundaryManipulator( controlParameter ):
-    model.boundaries[rightBCID].value = controlParameter*boundaryFlux
+    model.boundaries[rightBCID].value = controlParameter*boundaryTemperature
 
 # Solve
 u = stationaryLoadControl(  model,

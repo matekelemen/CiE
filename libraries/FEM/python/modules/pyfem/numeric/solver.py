@@ -14,15 +14,15 @@ def solveLinearSystem( A, b, *args, x0=None, **kwargs ):
     info = 0
 
     # Iterative solver
-    sol, info   = linalg.gmres( A,
-                                b,
-                                x0=x0,
-                                atol=1e-12,
-                                maxiter=np.max((5*len(b),100)) )
+    #sol, info   = linalg.gmres( A,
+    #                            b,
+    #                            x0=x0,
+    #                            atol=1e-12,
+    #                            maxiter=np.max((5*len(b),100)) )
 
     # Direct solver
-    #sol     = linalg.spsolve(   A,
-    #                            b )
+    sol     = linalg.spsolve(   A,
+                                b )
 
     if info < 0:
         raise RuntimeError( "Linear solver error!" )

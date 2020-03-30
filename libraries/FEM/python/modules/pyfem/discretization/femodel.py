@@ -126,9 +126,11 @@ class FEModel:
                     self.stiffness[boundaryCondition.DoF, index] = 0.0
                 if np.abs( self.stiffness[ index, boundaryCondition.DoF] )>1e-15:
                     self.stiffness[ index, boundaryCondition.DoF ] = 0.0
-            self.stiffness[boundaryCondition.DoF,boundaryCondition.DoF] += boundaryCondition.penaltyValue
+            #self.stiffness[boundaryCondition.DoF,boundaryCondition.DoF] += boundaryCondition.penaltyValue
+            self.stiffness[boundaryCondition.DoF,boundaryCondition.DoF] = 1.0
             boundaryCondition.applied = True
-        self.load[boundaryCondition.DoF]    += boundaryCondition.penaltyValue * boundaryCondition.value
+        #self.load[boundaryCondition.DoF]    += boundaryCondition.penaltyValue * boundaryCondition.value
+        self.load[boundaryCondition.DoF] = boundaryCondition.value
 
 
     @requiresInitialized
