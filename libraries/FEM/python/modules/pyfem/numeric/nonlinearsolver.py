@@ -50,12 +50,17 @@ def stationaryLoadControl(  model,
         # Set to zero
         model.resetMatrices()
 
-        # Initialize structural matrices
-        model.integrate( lambda x: model.sample(solution, x) )
+        # Compute structural matrices
+        model.integrate( lambda x: model.sample(solution, x), solution )
 
         # Apply boundaries
         for boundary in model.boundaries:
             model.applyBoundaryCondition( boundary )
+
+        #np.set_printoptions( precision=2, suppress=True )
+        #print(dModel.stiffness.todense())
+        #print(   np.linalg.det(   dModel.stiffness.todense()   )   )
+        #np.set_printoptions()
     
     
     # ---------------------------------------------------------
@@ -71,10 +76,10 @@ def stationaryLoadControl(  model,
 
         # Predict
         controlIncrement    = control-loadFactors[incrementIndex-1]
-        #u                   += solveLinearSystem( model.stiffness, controlIncrement * model.load )
-        uMid                = 0.5 * solveLinearSystem( model.stiffness, controlIncrement * model.load )
-        reintegrate( control, uMid )
         u                   += solveLinearSystem( model.stiffness, controlIncrement * model.load )
+        #uMid                = 0.5 * solveLinearSystem( model.stiffness, controlIncrement * model.load )
+        #reintegrate( control, uMid )
+        #u                   += solveLinearSystem( model.stiffness, controlIncrement * model.load )
 
         # Compute prediction residual
         reintegrate( control, u )

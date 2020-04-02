@@ -83,18 +83,18 @@ class FEModel:
 
 
     @requiresInitialized
-    def integrate( self, *args, **kwargs ):
+    def integrate( self ):
         '''
         Loop through elements and integrate their matrices
         '''
         for element in self.elements:
-            element.integrateStiffness( self.stiffness, *args, **kwargs )
-            element.integrateLoad( self.load, *args, **kwargs )
+            element.integrateStiffness( self.stiffness )
+            element.integrateLoad( self.load )
 
 
-    def addBoundaryCondition( self, boundaryCondition ):
+    def addBoundaryCondition( self, boundaryCondition, *args, **kwargs ):
         self.boundaries.append( boundaryCondition )
-        self.applyBoundaryCondition( boundaryCondition )
+        self.applyBoundaryCondition( boundaryCondition, *args, **kwargs )
         return len(self.boundaries)-1
 
 
@@ -109,11 +109,11 @@ class FEModel:
 
 
     @requiresInitialized
-    def applyBoundaryCondition( self, boundaryCondition ):
+    def applyBoundaryCondition( self, boundaryCondition, *args, **kwargs ):
         if boundaryCondition.BCType is "dirichlet":
-            self.applyDirichletBoundary( boundaryCondition )
+            self.applyDirichletBoundary( boundaryCondition, *args, **kwargs )
         elif boundaryCondition.BCType is "neumann":
-            self.applyNeumannBoundary( boundaryCondition )
+            self.applyNeumannBoundary( boundaryCondition, *args, **kwargs )
         else:
             raise NotImplementedError( "Unknown boundary condition type" )
 
@@ -255,3 +255,42 @@ class TransientFEModel( FEModel ):
         BC          = copy(boundaryCondition)
         BC.value    = BC.value( self.time )
         return FEModel.removeBoundaryCondition( self, BC )
+
+
+
+
+class NonlinearFEModel( FEModel ):
+    '''
+    FEModel with material nonlinearities
+    '''
+    def __init__( self, *args, **kwargs ):
+        FEModel.__init__( self, *args, **kwargs )
+        self.geometricStiffness = None
+
+    
+    def resetMatrices( self ):
+        FEModel.resetMatrices(self)
+        self.geometricStiffness.data = np.zeros(    self.geometricStiffness.data.shape,
+                                                    self.geometricStiffness.data.dtype )
+
+
+    def allocateZeros( self ):
+        DoFs                    = FEModel.allocateZeros( self )
+        self.geometricStiffness = self.stiffness.copy()
+        return DoFs
+
+
+    @requiresInitialized
+    def integrate( self, *args, **kwargs ):
+        for element in self.elements:
+            element.integrateStiffness( self.stiffness, *args, **kwargs )
+            element.integrateLoad( self.load, *args, **kwargs )
+            element.integrateGeometricStiffness( self.geometricStiffness, *args, **kwargs )
+
+
+    #@requiresInitialized
+    #def applyNeumannBoundary( self, boundaryCondition, fieldValue ):
+    #    # TODO
+    #    FEModel.applyNeumannBoundary( self, boundaryCondition )
+
+

@@ -29,7 +29,7 @@ class Element:
 
     def updateGlobalMatrix( self, matrix, index1, index2, value ):
         matrix[self.DoFs[index1], self.DoFs[index2]] += value
-        if index1 is not index2:
+        if index1 != index2:
             matrix[self.DoFs[index2], self.DoFs[index1]] += value
 
 
@@ -60,8 +60,8 @@ class Element1D( Element ):
         if self.domain[1] <= self.domain[0]:
             self.domain = np.flip( self.domain )
 
-        # Jacobian
-        self._jacobian = (self.domain[1]-self.domain[0])/2.0
+        # Jacobian ( dx/dxi )
+        self._jacobian      = (self.domain[1]-self.domain[0])/2.0
         self._invJacobian   = 1.0/self._jacobian
 
 
@@ -139,32 +139,51 @@ class NonlinearHeatElement1D( Element1D ):
     '''
     Basic heat element with temperature-dependent coefficients
     '''
-    def __init__( self, capacity, conductivity, *args, **kwargs ):
+    def __init__( self, capacity, capacityDerivative, conductivity, conductivityDerivative, *args, **kwargs ):
         Element1D.__init__( self, *args, **kwargs )
         if not callable(capacity) or not callable(conductivity):
             raise AttributeError( "The coefficients of NonlinearHeatElement1D must be callable (functions of temperature)" )
 
-        self.capacity       = capacity
-        self.conductivity   = conductivity
+        self.capacity               = capacity
+        self.capacityDerivative     = capacityDerivative
+        self.conductivity           = conductivity
+        self.conductivityDerivative = conductivityDerivative
 
 
-    def integrateStiffness( self, globalStiffnessMatrix, temperatureFunction ):
-        for i, function in enumerate(self.basisDerivatives):
+    def integrateStiffness( self, globalStiffnessMatrix, temperatureFunction, solution ):
+        for i in range(len(self.basisDerivatives)):
+            dNi      = self.basisDerivatives[i]
             for j in range( i, len(self.basisDerivatives) ):
-                value = self._invJacobian * self.integrator(    lambda x: self.conductivity(temperatureFunction(self.toGlobalCoordinates(x))) * function(x)*self.basisDerivatives[j](x), 
+                dNj     = self.basisDerivatives[j]
+                value   = self._invJacobian * self.integrator(  lambda x: self.conductivity(temperatureFunction(self.toGlobalCoordinates(x))) * dNi(x)*dNj(x), 
                                                                 self.basisDerivatives.domain )
                 self.updateGlobalMatrix( globalStiffnessMatrix, i, j, value )
 
 
-    def integrateMass( self, globalMassMatrix, temperatureFunction ):
-        for i, function in enumerate(self.basisFunctions):
+    def integrateMass( self, globalMassMatrix, temperatureFunction, solution ):
+        for i in range(len(self.basisFunctions)):
+            Ni      = self.basisFunctions[i]
             for j in range( i, len(self.basisFunctions) ):
-                value = self._jacobian * self.integrator(   lambda x: self.capacity(temperatureFunction(self.toGlobalCoordinates(x))) * function(x)*self.basisFunctions[j](x), 
+                Nj      = self.basisFunctions[j]
+                value   = self._jacobian * self.integrator(   lambda x: self.capacity(temperatureFunction(self.toGlobalCoordinates(x))) * Ni(x)*Nj(x), 
                                                             self.basisFunctions.domain )
                 self.updateGlobalMatrix( globalMassMatrix, i, j, value )
 
 
-    def integrateLoad( self, globalLoadVector, temperatureFunction ):
-        for i, function in enumerate(self.basisFunctions):
-            value = self._jacobian * self.integrator( lambda x: function(x) * self.load(self.toGlobalCoordinates(x)), self.basisFunctions.domain )
+    def integrateLoad( self, globalLoadVector, temperatureFunction, solution ):
+        for i in range(len(self.basisFunctions)):
+            Ni      = self.basisFunctions[i]
+            value   = self._jacobian * self.integrator( lambda x: Ni(x) * self.load(self.toGlobalCoordinates(x)), self.basisFunctions.domain )
             self.updateGlobalVector( globalLoadVector, i, value )
+
+
+    def integrateGeometricStiffness( self, matrix, temperatureFunction, solution ):
+        for i in range(len( self.basisDerivatives )):
+            dNi         = self.basisDerivatives[i]
+            Ni          = self.basisFunctions[i]
+            for j in range(len( self.basisDerivatives )):
+                dNj     = self.basisDerivatives[j]
+                value   = self._invJacobian * self.integrator(  lambda x: self.conductivityDerivative(self.toGlobalCoordinates(x)) * dNi(x)*dNj(x)*Ni(x),
+                                                                self.basisFunctions.domain )
+                matrix[ self.DoFs[i], self.DoFs[j] ] += solution[self.DoFs[i]] * value
+                

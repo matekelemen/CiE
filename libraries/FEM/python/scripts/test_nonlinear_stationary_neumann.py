@@ -7,7 +7,7 @@ from matplotlib import pyplot as plt
 # --- Internal Imports ---
 from pyfem.discretization import IntegratedHierarchicBasisFunctions
 from pyfem.discretization import NonlinearHeatElement1D
-from pyfem.discretization import FEModel
+from pyfem.discretization import NonlinearFEModel
 from pyfem.discretization import DirichletBoundary, NeumannBoundary
 from pyfem.numeric import stationaryLoadControl
 from pyfem.postprocessing import ConvergencePlot
@@ -16,7 +16,11 @@ from pyfem.postprocessing import ConvergencePlot
 # Geometry and material
 length              = 1.0
 capacity            = lambda u: 1.0
-conductivity        = lambda u: 1.0 + 9.0 * np.exp( -(u-0.5)**2 / 0.005 )
+dCapacity           = lambda u: 0.0
+#conductivity        = lambda u: 1.0
+#dConductivity       = lambda u: 0.0
+conductivity        = lambda u: 1.0 + 1.0 * np.exp( -(u-0.5)**2 / 0.005 )
+dConductivity       = lambda u: 1.0 * np.exp( -(u-0.5)**2 / 0.005 ) * (2.0/0.005)*(0.5-u)
 
 # Load
 load                = lambda x: 0.0
@@ -43,12 +47,14 @@ axes            = ( fig.add_subplot( 2,1,1 ),
 
 # ---------------------------------------------------------
 # Initialize FE model
-model               = FEModel( nElements*polynomialOrder + 1 )
+model               = NonlinearFEModel( nElements*polynomialOrder + 1 )
 
 # Create elements
 basisFunctions      = IntegratedHierarchicBasisFunctions( polynomialOrder=polynomialOrder )
 model.elements      = [ NonlinearHeatElement1D( capacity,
+                                                dCapacity,
                                                 conductivity,
+                                                dConductivity,
                                                 (i*length/nElements, (i+1)*length/nElements),
                                                 np.asarray( range(i*polynomialOrder, (i+1)*polynomialOrder+1) ),
                                                 load,
