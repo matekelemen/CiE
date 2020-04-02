@@ -22,11 +22,8 @@ endif( CMAKE_COMPILER_IS_GNUCXX )
 
 
 # OpenMP
-option( CIE_OPENMP ON )
-if( ${CIE_OPENMP} )
-    if( CMAKE_COMPILER_IS_GNUCXX )
-        set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp" )
-    elseif( MSVC )
-        set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /openmp" )
-    endif()
+if( CMAKE_COMPILER_IS_GNUCXX )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp" )
+elseif( MSVC )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /openmp" )
 endif()
