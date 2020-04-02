@@ -22,7 +22,7 @@ load                = lambda x: 0.0
 boundaryTemperature = 2.0
 
 # Discretization
-nElements           = 10
+nElements           = 7
 polynomialOrder     = 3
 
 # Integration
@@ -30,7 +30,7 @@ integrationOrder    = 2 * (2*polynomialOrder + 1)
 
 # Iteration
 numberOfIncrements  = 3
-numberOfCorrections = 50
+numberOfCorrections = 30
 tolerance           = 1e-5
 
 # ---------------------------------------------------------
@@ -64,20 +64,12 @@ leftBCID    = model.addBoundaryCondition(   DirichletBoundary(  0,
                                                                 0.0 ))
 
 rightBCID   = model.addBoundaryCondition(   DirichletBoundary(  nElements*polynomialOrder,
-                                                                0.0) )
-
-# Set functionals
-loadFunctional      = lambda controlParameter: lambda x: 0.0
-
-def boundaryManipulator( controlParameter ):
-    model.boundaries[rightBCID].value = controlParameter*boundaryTemperature
+                                                                boundaryTemperature) )
 
 # Solve
 u = stationaryLoadControl(  model,
                             np.zeros(model.size),
-                            loadFunctional=loadFunctional,
-                            boundaryFunctional=boundaryManipulator,
-                            maxIncrements=numberOfIncrements,
+                            loadFactors=np.linspace(0.0, 1.0, num=numberOfIncrements+1),
                             maxCorrections=numberOfCorrections,
                             tolerance=tolerance,
                             verbose=True,

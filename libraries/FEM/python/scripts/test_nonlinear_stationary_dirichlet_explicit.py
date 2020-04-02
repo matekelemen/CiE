@@ -1,14 +1,13 @@
 # --- Python Imports ---
 import numpy as np
 import scipy.sparse.linalg as linalg
-import scipy
 from matplotlib import pyplot as plt
 
 # --- Internal Imports ---
 from pyfem.discretization import IntegratedHierarchicBasisFunctions
 from pyfem.discretization import NonlinearHeatElement1D
 from pyfem.discretization import FEModel
-from pyfem.discretization import DirichletBoundary, NeumannBoundary
+from pyfem.discretization import DirichletBoundary
 from pyfem.numeric import stationaryLoadControl
 from pyfem.postprocessing import ConvergencePlot
 
@@ -20,18 +19,18 @@ conductivity        = lambda u: 1.0 + 9.0 * np.exp( -(u-0.5)**2 / 0.005 )
 
 # Load
 load                = lambda x: 0.0
-boundaryFlux        = 2.0
+boundaryTemperature = 2.0
 
 # Discretization
 nElements           = 10
-polynomialOrder     = 2
+polynomialOrder     = 3
 
 # Integration
 integrationOrder    = 2 * (2*polynomialOrder + 1)
 
 # Iteration
-numberOfIncrements  = 3
-numberOfCorrections = 50
+numberOfIncrements  = 50
+numberOfCorrections = 0
 tolerance           = 1e-5
 
 # ---------------------------------------------------------
@@ -40,6 +39,8 @@ samples         = np.linspace( 0, length, num=100 )
 fig             = plt.figure( )
 axes            = ( fig.add_subplot( 2,1,1 ),
                     fig.add_subplot( 2,1,2 ))
+
+convergencePlot = ConvergencePlot()
 
 # ---------------------------------------------------------
 # Initialize FE model
@@ -62,8 +63,8 @@ model.allocateZeros( )
 leftBCID    = model.addBoundaryCondition(   DirichletBoundary(  0, 
                                                                 0.0 ))
 
-rightBCID   = model.addBoundaryCondition(   NeumannBoundary(    nElements*polynomialOrder,
-                                                                boundaryFlux) )
+rightBCID   = model.addBoundaryCondition(   DirichletBoundary(  nElements*polynomialOrder,
+                                                                boundaryTemperature) )
 
 # Solve
 u = stationaryLoadControl(  model,
@@ -73,14 +74,14 @@ u = stationaryLoadControl(  model,
                             tolerance=tolerance,
                             verbose=True,
                             axes=axes[1],
-                            convergencePlot=ConvergencePlot()   )
+                            convergencePlot=convergencePlot   )
 
 # Plot conductivity
 samples = np.linspace( 0.0, np.max(model.sample( u, samples )), num=len(samples) )
 axes[0].plot( samples, [conductivity(temp) for temp in samples] )
 axes[0].set_xlabel( "T [C]" )
 axes[0].set_ylabel( r'$\kappa$' + " [W/K]" )
-axes[0].set_title( "Conductivity(temperature)" )
+axes[0].set_title( "Conduction(temperature)" )
 
 plt.tight_layout()
 plt.show()

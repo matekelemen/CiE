@@ -44,7 +44,7 @@ penaltyValue        = 1e10
 integrationOrder    = 2 * (2*polynomialOrder + 1)
 
 # Iteration
-numberOfIncrements  = 10
+numberOfIncrements  = 4
 numberOfCorrections = 30
 tolerance           = 1e-5
 
@@ -83,17 +83,13 @@ rightBCID   = model.addBoundaryCondition(   DirichletBoundary(  nElements*polyno
 
 # ---------------------------------------------------------
 # Solve in 2 increment iterations, round 1
-# Set functionals
-loadFunctional      = lambda controlParameter: lambda x: 0.5*controlParameter*load(x)
-boundaryManipulator = lambda controlParameter: None
+loadFactors     = np.linspace( 0.0, 0.5, num=int(numberOfIncrements/2)+1 )
 
 # Solve
 convergencePlot = ConvergencePlot()
 u = stationaryLoadControl(  model,
                             np.zeros(model.size),
-                            loadFunctional=loadFunctional,
-                            boundaryFunctional=boundaryManipulator,
-                            maxIncrements=int(numberOfIncrements/2),
+                            loadFactors=loadFactors,
                             maxCorrections=numberOfCorrections,
                             tolerance=tolerance,
                             verbose=True,
@@ -101,15 +97,12 @@ u = stationaryLoadControl(  model,
                             convergencePlot=convergencePlot   )
 
 # Solve in 2 increment iterations, round 2
-# Set functionals
-loadFunctional      = lambda controlParameter: lambda x: (0.5+0.5*controlParameter)*load(x)
+loadFactors     = np.linspace( 0.5, 1.0, num=int(numberOfIncrements/2)+1 )
 
 # Solve
 u = stationaryLoadControl(  model,
                             u,
-                            loadFunctional=loadFunctional,
-                            boundaryFunctional=boundaryManipulator,
-                            maxIncrements=int(numberOfIncrements/2),
+                            loadFactors=loadFactors,
                             maxCorrections=numberOfCorrections,
                             tolerance=tolerance,
                             verbose=True,
@@ -117,19 +110,16 @@ u = stationaryLoadControl(  model,
                             convergencePlot=convergencePlot   )
 convergencePlot.reset()
 
-u2 = u
+u2 = u.copy()
 # ---------------------------------------------------------
 # Solve in 1 increment iteration
-# Set functionals
-loadFunctional      = lambda controlParameter: lambda x: controlParameter * load(x)
+loadFactors     = np.linspace( 0.0, 1.0, num=numberOfIncrements+1 )
 
 # Solve
 convergencePlot.reset()
 u = stationaryLoadControl(  model,
                             np.zeros(model.size),
-                            loadFunctional=loadFunctional,
-                            boundaryFunctional=boundaryManipulator,
-                            maxIncrements=numberOfIncrements,
+                            loadFactors=loadFactors,
                             maxCorrections=numberOfCorrections,
                             tolerance=tolerance,
                             verbose=True,
@@ -137,7 +127,7 @@ u = stationaryLoadControl(  model,
                             convergencePlot=convergencePlot   )
 # ---------------------------------------------------------
 # Print solution difference
-print( "Norm of solution difference\t: %.3E" % np.linalg.norm(u-u2) )
+print( "\nNorm of solution difference\t: %.3E" % np.linalg.norm(u-u2) )
 
 # Plot conductivity
 samples = np.linspace( 0.0, np.max(model.sample( u, samples )), num=len(samples) )

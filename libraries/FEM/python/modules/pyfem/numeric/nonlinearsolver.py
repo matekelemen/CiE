@@ -7,9 +7,7 @@ import numpy as np
 # ---------------------------------------------------------
 def stationaryLoadControl(  model,
                             initialSolution,
-                            loadFunctional=None,
-                            boundaryFunctional=None,
-                            maxIncrements=5,
+                            loadFactors=None,
                             maxCorrections=10,
                             tolerance=1e-5,
                             verbose=True,
@@ -38,14 +36,10 @@ def stationaryLoadControl(  model,
     '''
     # ---------------------------------------------------------
     # Initialize arguments
-    if loadFunctional is None:
-        loadFunctional = lambda controlParameter: lambda x: 0.0
-
-    if boundaryFunctional is None:
-        boundaryFunctional = lambda controlParameter: None
-
-    previousLoad    = None
     u               = initialSolution
+
+    if loadFactors is None:
+        loadFactors     = np.linspace( 0.0, 1.0, num=5+1 )
 
     if convergencePlot is not None:
         convergencePlot.start()
@@ -56,39 +50,35 @@ def stationaryLoadControl(  model,
         # Set to zero
         model.resetMatrices()
 
-        # Set load function
-        for element in model.elements:
-            element.load = loadFunctional(controlParameter)
-
         # Initialize structural matrices
         model.integrate( lambda x: model.sample(solution, x) )
 
         # Apply boundaries
-        boundaryFunctional(controlParameter)
         for boundary in model.boundaries:
             model.applyBoundaryCondition( boundary )
-
+    
+    
     # ---------------------------------------------------------
     # Increment loop
-    for incrementIndex, control in enumerate(np.linspace( 0.0, 1.0, num=maxIncrements+1 )):
+    for incrementIndex, control in enumerate(loadFactors):
         if verbose:
-            print( "Increment# " + str(incrementIndex) + " " + "-"*(35-11-len(str(incrementIndex))-1) )
-        
-        # Update with new control
-        reintegrate( control, u )
+            print( "\nIncrement# " + str(incrementIndex) + " " + "-"*(35-11-len(str(incrementIndex))-1) )
 
         # Check if first run (initialization)
-        if previousLoad is None:
-            previousLoad = model.load
+        if incrementIndex == 0:
+            reintegrate( loadFactors[0], u )
             continue
 
         # Predict
-        uIncrement  = solveLinearSystem( model.stiffness, model.load - previousLoad )
-        u           += uIncrement
+        controlIncrement    = control-loadFactors[incrementIndex-1]
+        #u                   += solveLinearSystem( model.stiffness, controlIncrement * model.load )
+        uMid                = 0.5 * solveLinearSystem( model.stiffness, controlIncrement * model.load )
+        reintegrate( control, uMid )
+        u                   += solveLinearSystem( model.stiffness, controlIncrement * model.load )
 
         # Compute prediction residual
         reintegrate( control, u )
-        residual    = model.stiffness.dot(u) -  model.load
+        residual    = model.stiffness.dot(u) -  control*model.load
         resNorm     = np.linalg.norm( residual )
         if verbose:
             print( "Prediction residual\t: %.3E" % resNorm )
@@ -102,7 +92,7 @@ def stationaryLoadControl(  model,
 
             # Update residual and check termination criterion
             reintegrate( control, u )
-            residual    = model.stiffness.dot(u) - model.load
+            residual    = model.stiffness.dot(u) - control*model.load
             resNorm     = np.linalg.norm(residual)
             if verbose:
                 print( "Corrected residual\t: %.3E" % resNorm )
@@ -113,17 +103,16 @@ def stationaryLoadControl(  model,
             elif correctionIndex == maxCorrections-1:
                 print( "Warning: corrector failed to converge within the specified tolerance" )
 
-        # Update load
-        previousLoad = model.load
-
         # Plot if requested
         if axes is not None:
             axes.plot( np.linspace( 0, 1, num=100 ), model.sample( u, np.linspace( 0, 1, num=100 ) ) )
 
+
+
+    # ---------------------------------------------------------
     # Decorate plot if requested
     if axes is not None:
-        controls = np.linspace( 0.0, 1.0, num=maxIncrements+1 )
-        axes.legend( [ "Control parameter = %.2f" % l for l in controls[1:] ] )
+        axes.legend( [ "Control parameter = %.2f" % l for l in loadFactors[1:] ] )
         axes.set_xlabel( "x [m]" )
         axes.set_ylabel( "T [C]" )
         axes.set_title( "Temperature Field" )
