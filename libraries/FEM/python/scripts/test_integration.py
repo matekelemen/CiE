@@ -6,14 +6,23 @@ from pyfem.numeric import *
 
 # ---------------------------------------------------------
 def test( function, primitiveFunction, integrator, domain ):
-    value       = integrator( function, domain )
+    # Test integration
+    value       = integrator( function, domain )    
     testValue   = primitiveFunction(domain[1]) - primitiveFunction(domain[0])
     error       = np.abs( value-testValue )
+    
     if error < 1e-15:
         print("PASS")
     else:
         print("FAIL " + str(error))
 
+    # Test cached integration
+    cache       = integrator.createCache( function, domain )
+    cachedValue = integrator.integrateCached( lambda x: 1.0, cache, domain )
+    error       = np.abs( value-cachedValue )
+
+    if error > 1e-16:
+        print( "Cached integration failed! " + str(error) )
 
 polynomialOrder = 3
 
