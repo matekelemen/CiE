@@ -35,11 +35,11 @@ class BasisFunctions:
             else:
                 return self.dtype(0.0)
 
-        # Evaluate at a single point (zero if out of bounds)
+        # Evaluate at a single point
         if not isNumpyArray(position):
             return windowedBasis(position)
         
-        # Evaluate at multiple points (zero if out of bounds)
+        # Evaluate at multiple points
         else:
             return np.asarray( [ windowedBasis(x) for x in position], dtype=self.dtype )
 

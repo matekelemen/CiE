@@ -5,6 +5,41 @@ from .solver import solveLinearSystem
 import numpy as np
 
 # ---------------------------------------------------------
+def reintegrate(    model, 
+                    loadFactor, 
+                    solution,
+                    stiffness=True,
+                    load=True,
+                    mass=True,
+                    geometricStiffness=True ):
+    '''
+    Function that does all the necessary operations for updating 
+    the model to the current load factor and solution
+    '''
+    # Wipe matrices and set solution function
+    model.resetMatrices()
+    solutionFunction = lambda x: model.sample(solution, x)
+
+    # Compute structural matrices
+    for element in model.elements:
+        if stiffness:
+            element.integrateStiffness( model.stiffness, solutionFunction, solution )
+
+        if load:
+            element.integrateLoad( model.load, solutionFunction, solution )
+
+        if mass:
+            element.integrateMass( model.mass, solutionFunction, solution )
+
+        if geometricStiffness:
+            element.integrateGeometricStiffness( model.geometricStiffness, solutionFunction, solution )
+
+    # Apply boundaries
+    for boundary in model.boundaries:
+        model.applyBoundaryCondition( boundary )
+
+
+
 def stationaryLoadControl(  model,
                             initialSolution,
                             loadFactors=None,
@@ -15,16 +50,6 @@ def stationaryLoadControl(  model,
                             convergencePlot=None ):
     '''
     Solves a nonlinear FEModel using a load controlled predictor and a constant load corrector
-    
-    The structural matrices (and load vector) have to be reset at every load increment,
-    so functions that set the load and boundaries at corresponing load increments must
-    be provided. Load increments are defined as differences between subsequent control
-    parameters (lambda). Control parameters always range from 0 in the initial state 
-    to 1 in the final state.
-
-    Arguments:
-        model               : allocated FEModel with boundaries and a valid initial state
-        initialSolution     : initial solution to begin incrementing from
     '''
     # ---------------------------------------------------------
     # Initialize arguments
@@ -35,41 +60,38 @@ def stationaryLoadControl(  model,
 
     if convergencePlot is not None:
         convergencePlot.start()
-
-    # Define function that does all the necessary operations
-    # for updating the model to the current control parameter and solution
-    def reintegrate( controlParameter, solution ):
-        # Set to zero
-        model.resetMatrices()
-
-        # Compute structural matrices
-        model.integrate( lambda x: model.sample(solution, x), solution )
-
-        # Apply boundaries
-        for boundary in model.boundaries:
-            model.applyBoundaryCondition( boundary )
-
     
     # ---------------------------------------------------------
     # Increment loop
     for incrementIndex, control in enumerate(loadFactors):
+
+        # Print iteration header
         if verbose:
             print( "\nIncrement# " + str(incrementIndex) + " " + "-"*(35-11-len(str(incrementIndex))-1) )
 
         # Check if first run (initialization)
         if incrementIndex == 0:
-            reintegrate( loadFactors[0], u )
+            reintegrate(    model, 
+                            loadFactors[0], 
+                            u,
+                            mass=False )
             continue
 
         # Predict
         controlIncrement    = control-loadFactors[incrementIndex-1]
         #u                   += solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
         uMid                = u + 0.5 * solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
-        reintegrate( control, uMid )
+        reintegrate(    model, 
+                        control, 
+                        uMid,
+                        mass=False )
         u                   += solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
 
         # Compute prediction residual
-        reintegrate( control, u )
+        reintegrate(    model, 
+                        control, 
+                        u,
+                        mass=False )
         residual    = model.stiffness.dot(u) -  control*model.load
         resNorm     = np.linalg.norm( residual )
         if verbose:
@@ -83,7 +105,10 @@ def stationaryLoadControl(  model,
             u           += solveLinearSystem( model.stiffness + model.geometricStiffness, -residual )
 
             # Update residual and check termination criterion
-            reintegrate( control, u )
+            reintegrate(    model, 
+                            control, 
+                            u,
+                            mass=False )
             residual    = model.stiffness.dot(u) - control*model.load
             resNorm     = np.linalg.norm(residual)
             if verbose:
@@ -99,7 +124,85 @@ def stationaryLoadControl(  model,
         if axes is not None:
             axes.plot( np.linspace( 0, 1, num=100 ), model.sample( u, np.linspace( 0, 1, num=100 ) ) )
 
+    # ---------------------------------------------------------
+    # Decorate plot if requested
+    if axes is not None:
+        axes.legend( [ "Control parameter = %.2f" % l for l in loadFactors[1:] ] )
+        axes.set_xlabel( "x [m]" )
+        axes.set_ylabel( "T [C]" )
+        axes.set_title( "Temperature Field" )
 
+    if convergencePlot is not None:
+        convergencePlot.finish()
+    
+    return u
+
+
+
+
+def stationaryFixedPointIteration(  model,
+                                    initialSolution,
+                                    loadFactors=None,
+                                    maxCorrections=10,
+                                    tolerance=1e-5,
+                                    verbose=True,
+                                    axes=None,
+                                    convergencePlot=None ):
+    '''
+    Solves a nonlinear FEModel using fixed point iterations
+    '''
+    # ---------------------------------------------------------
+    # Initialize arguments
+    u               = initialSolution
+
+    if loadFactors is None:
+        loadFactors     = np.linspace( 0.0, 1.0, num=5+1 )
+
+    if convergencePlot is not None:
+        convergencePlot.start()
+    
+    # ---------------------------------------------------------
+    # Increment loop
+    for incrementIndex, control in enumerate(loadFactors):
+
+        # Print iteration header
+        if verbose:
+            print( "\nIncrement# " + str(incrementIndex) + " " + "-"*(35-11-len(str(incrementIndex))-1) )
+
+        # Check if first run (initialization)
+        if incrementIndex == 0:
+            reintegrate(    model, 
+                            loadFactors[0], 
+                            u,
+                            mass=False,
+                            geometricStiffness=False )
+            continue
+
+        # Correction loop
+        for correctionIndex in range(maxCorrections):
+            # Correct
+            u           = solveLinearSystem( model.stiffness, control * model.load )
+
+            # Update residual and check termination criterion
+            reintegrate(    model, 
+                            control, 
+                            u,
+                            mass=False,
+                            geometricStiffness=False )
+            residual    = model.stiffness.dot(u) - control*model.load
+            resNorm     = np.linalg.norm(residual)
+            if verbose:
+                print( "Current residual\t: %.3E" % resNorm )
+            if convergencePlot is not None:
+                convergencePlot( resNorm )
+            if resNorm < tolerance:
+                break
+            elif correctionIndex == maxCorrections-1:
+                print( "Warning: corrector failed to converge within the specified tolerance" )
+
+        # Plot if requested
+        if axes is not None:
+            axes.plot( np.linspace( 0, 1, num=100 ), model.sample( u, np.linspace( 0, 1, num=100 ) ) )
 
     # ---------------------------------------------------------
     # Decorate plot if requested

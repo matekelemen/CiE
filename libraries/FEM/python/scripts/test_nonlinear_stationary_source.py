@@ -8,7 +8,7 @@ from pyfem.discretization import IntegratedHierarchicBasisFunctions
 from pyfem.discretization import NonlinearHeatElement1D
 from pyfem.discretization import NonlinearFEModel
 from pyfem.discretization import DirichletBoundary
-from pyfem.numeric import stationaryLoadControl
+from pyfem.numeric import stationaryFixedPointIteration as nonlinearSolver
 from pyfem.postprocessing import ConvergencePlot
 
 '''
@@ -93,27 +93,27 @@ loadFactors     = np.linspace( 0.0, 0.5, num=int(numberOfIncrements/2)+1 )
 
 # Solve
 convergencePlot = ConvergencePlot()
-u = stationaryLoadControl(  model,
-                            np.zeros(model.size),
-                            loadFactors=loadFactors,
-                            maxCorrections=numberOfCorrections,
-                            tolerance=tolerance,
-                            verbose=True,
-                            axes=None,
-                            convergencePlot=convergencePlot   )
+u = nonlinearSolver(    model,
+                        np.zeros(model.size),
+                        loadFactors=loadFactors,
+                        maxCorrections=numberOfCorrections,
+                        tolerance=tolerance,
+                        verbose=True,
+                        axes=None,
+                        convergencePlot=convergencePlot   )
 
 # Solve in 2 increment iterations, round 2
 loadFactors     = np.linspace( 0.5, 1.0, num=int(numberOfIncrements/2)+1 )
 
 # Solve
-u = stationaryLoadControl(  model,
-                            u,
-                            loadFactors=loadFactors,
-                            maxCorrections=numberOfCorrections,
-                            tolerance=tolerance,
-                            verbose=True,
-                            axes=None,
-                            convergencePlot=convergencePlot   )
+u = nonlinearSolver(    model,
+                        u,
+                        loadFactors=loadFactors,
+                        maxCorrections=numberOfCorrections,
+                        tolerance=tolerance,
+                        verbose=True,
+                        axes=None,
+                        convergencePlot=convergencePlot   )
 convergencePlot.reset()
 
 u2 = u.copy()
@@ -123,14 +123,14 @@ loadFactors     = np.linspace( 0.0, 1.0, num=numberOfIncrements+1 )
 
 # Solve
 convergencePlot.reset()
-u = stationaryLoadControl(  model,
-                            np.zeros(model.size),
-                            loadFactors=loadFactors,
-                            maxCorrections=numberOfCorrections,
-                            tolerance=tolerance,
-                            verbose=True,
-                            axes=None,
-                            convergencePlot=convergencePlot   )
+u = nonlinearSolver(    model,
+                        np.zeros(model.size),
+                        loadFactors=loadFactors,
+                        maxCorrections=numberOfCorrections,
+                        tolerance=tolerance,
+                        verbose=True,
+                        axes=None,
+                        convergencePlot=convergencePlot   )
 # ---------------------------------------------------------
 # Print solution difference
 print( "\nNorm of solution difference\t: %.3E" % np.linalg.norm(u-u2) )

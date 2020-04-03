@@ -9,7 +9,7 @@ from pyfem.discretization import IntegratedHierarchicBasisFunctions
 from pyfem.discretization import NonlinearHeatElement1D
 from pyfem.discretization import NonlinearFEModel
 from pyfem.discretization import DirichletBoundary, NeumannBoundary
-from pyfem.numeric import stationaryLoadControl
+from pyfem.numeric import stationaryFixedPointIteration as nonlinearSolver
 from pyfem.postprocessing import ConvergencePlot
 
 # ---------------------------------------------------------
@@ -72,14 +72,14 @@ rightBCID   = model.addBoundaryCondition(   NeumannBoundary(    nElements*polyno
                                                                 boundaryFlux) )
 
 # Solve
-u = stationaryLoadControl(  model,
-                            np.zeros(model.size),
-                            loadFactors=np.linspace(0.0, 1.0, num=numberOfIncrements+1),
-                            maxCorrections=numberOfCorrections,
-                            tolerance=tolerance,
-                            verbose=True,
-                            axes=axes[1],
-                            convergencePlot=ConvergencePlot()   )
+u = nonlinearSolver(    model,
+                        np.zeros(model.size),
+                        loadFactors=np.linspace(0.0, 1.0, num=numberOfIncrements+1),
+                        maxCorrections=numberOfCorrections,
+                        tolerance=tolerance,
+                        verbose=True,
+                        axes=axes[1],
+                        convergencePlot=ConvergencePlot()   )
 
 # Plot conductivity
 samples = np.linspace( 0.0, np.max(model.sample( u, samples )), num=len(samples) )
