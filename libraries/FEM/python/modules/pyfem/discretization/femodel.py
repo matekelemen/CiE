@@ -294,3 +294,29 @@ class NonlinearFEModel( FEModel ):
     #    FEModel.applyNeumannBoundary( self, boundaryCondition )
 
 
+
+class NonlinearTransientFEModel( TransientFEModel ):
+    def __init__( self, *args, **kwargs ):
+        TransientFEModel.__init__( self, *args, **kwargs )
+        self.geometricStiffness = None
+
+
+    def resetMatrices( self ):
+        TransientFEModel.resetMatrices(self)
+        self.geometricStiffness.data = np.zeros(    self.geometricStiffness.data.shape,
+                                                    self.geometricStiffness.data.dtype )
+
+
+    def allocateZeros( self ):
+        DoFs                    = TransientFEModel.allocateZeros( self )
+        self.geometricStiffness = self.stiffness.copy()
+        return DoFs
+
+
+    @requiresInitialized
+    def integrate( self, *args, **kwargs ):
+        for element in self.elements:
+            element.integrateStiffness( self.stiffness, *args, **kwargs )
+            element.integrateLoad( self.load, *args, **kwargs )
+            element.integrateMass( self.mass, *args, **kwargs )
+            element.integrateGeometricStiffness( self.geometricStiffness, *args, **kwargs )

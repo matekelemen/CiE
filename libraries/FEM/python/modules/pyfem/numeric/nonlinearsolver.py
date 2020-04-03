@@ -3,6 +3,7 @@ from .solver import solveLinearSystem
 
 # --- Python Imports ---
 import numpy as np
+import scipy.sparse as sparse
 
 # ---------------------------------------------------------
 def reintegrate(    model, 
@@ -188,6 +189,95 @@ def stationaryFixedPointIteration(  model,
                             control, 
                             u,
                             mass=False,
+                            geometricStiffness=False )
+            residual    = model.stiffness.dot(u) - control*model.load
+            resNorm     = np.linalg.norm(residual)
+            if verbose:
+                print( "Current residual\t: %.3E" % resNorm )
+            if convergencePlot is not None:
+                convergencePlot( resNorm )
+            if resNorm < tolerance:
+                break
+            elif correctionIndex == maxCorrections-1:
+                print( "Warning: corrector failed to converge within the specified tolerance" )
+
+        # Plot if requested
+        if axes is not None:
+            axes.plot( np.linspace( 0, 1, num=100 ), model.sample( u, np.linspace( 0, 1, num=100 ) ) )
+
+    # ---------------------------------------------------------
+    # Decorate plot if requested
+    if axes is not None:
+        axes.legend( [ "Control parameter = %.2f" % l for l in loadFactors[1:] ] )
+        axes.set_xlabel( "x [m]" )
+        axes.set_ylabel( "T [C]" )
+        axes.set_title( "Temperature Field" )
+
+    if convergencePlot is not None:
+        convergencePlot.finish()
+    
+    return u
+
+
+
+
+def transientFixedPointIteration(   model,
+                                    initialSolution,
+                                    dt,
+                                    loadFactors=None,
+                                    maxCorrections=10,
+                                    tolerance=1e-5,
+                                    theta=0.5,
+                                    verbose=True,
+                                    axes=None,
+                                    convergencePlot=None ):
+    '''
+    Solves a nonlinear FEModel using fixed point iterations
+    '''
+    # ---------------------------------------------------------
+    # Initialize arguments
+    u                   = initialSolution.copy()
+    previousState       = None
+    massInverse         = None
+    dt                  = 1.0/dt * sparse.eye(model.size)
+
+    if loadFactors is None:
+        loadFactors     = np.linspace( 0.0, 1.0, num=5+1 )
+
+    if convergencePlot is not None:
+        convergencePlot.start()
+    
+    # ---------------------------------------------------------
+    # Increment loop
+    for incrementIndex, control in enumerate(loadFactors):
+
+        # Print iteration header
+        if verbose:
+            print( "\nIncrement# " + str(incrementIndex) + " " + "-"*(35-11-len(str(incrementIndex))-1) )
+
+        # Check if first run (initialization)
+        if incrementIndex == 0:
+            reintegrate(    model, 
+                            loadFactors[0], 
+                            u,
+                            geometricStiffness=False )
+            previousState   =   (1.0-theta) * sparse.linalg.inv(model.mass).dot( model.stiffness.dot(u) - model.load ) \
+                                - dt.dot(u)
+            continue
+
+        # Correction loop
+        for correctionIndex in range(maxCorrections):
+            # Precompute components
+            massInverse = sparse.linalg.inv(model.mass)
+
+            # Correct
+            u           = solveLinearSystem(    theta*massInverse*model.stiffness + dt,
+                                                previousState - theta * massInverse.dot(model.load)     )
+
+            # Update residual and check termination criterion
+            reintegrate(    model, 
+                            control, 
+                            u,
                             geometricStiffness=False )
             residual    = model.stiffness.dot(u) - control*model.load
             resNorm     = np.linalg.norm(residual)

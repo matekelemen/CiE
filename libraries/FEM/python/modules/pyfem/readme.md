@@ -11,7 +11,8 @@ Let's start with a 1D stationary nonlinear heat conduction with Neumann boundari
 ```math
 \frac{d}{dx}( \kappa \frac{du}{dx} ) = \lambda f                \\
 \frac{du}{dx}\bigg\rvert_{x_0} = \lambda \Phi_0                 \\
-\frac{du}{dx}\bigg\rvert_{x_1} = \lambda \Phi_1                 \tag{1}
+\frac{du}{dx}\bigg\rvert_{x_1} = \lambda \Phi_1                 
+\tag{1}
 ```
 * $`u = u(x)`$ temperature field
 * $`\kappa = \kappa (u(x))`$ conductivity
@@ -37,7 +38,7 @@ Choose an appropriate function space $`V`$ and assume that the solution $`u = \s
 ```math
 \int_\Omega v \frac{d\kappa}{du} (\frac{du}{dx})^2 d\Omega + \int_\Omega \kappa v \frac{d^2u}{dx^2} d\Omega 
 - \int_\Omega \lambda v f d\Omega
-= 0         \tag{5}
+= 0         \tag{4}
 ```
 
 To sneak in the boundaries and get rid of the second derivatives, the second term on the LHS of $`(5)`$ has to be partially integrated (a threeway partial integration):
@@ -47,31 +48,31 @@ To sneak in the boundaries and get rid of the second derivatives, the second ter
 - \int_\Omega v \frac{d\kappa}{du} (\frac{du}{dx})^2 d\Omega
 - \int_\Omega \kappa \frac{dv}{dx} \frac{du}{dx}d\Omega
 - \lambda \int_\Omega v f d\Omega
-= 0         \tag{6}
+= 0         \tag{5}
 ```
 
 ```math
 \int_\Omega \kappa \frac{dv}{dx} \frac{du}{dx}d\Omega
 - \lambda (\kappa_1 v_1 \Phi_1 - \kappa_0 v_0 \Phi_0)
 + \lambda \int_\Omega v f d\Omega
-= 0         \tag{7}
+= 0         \tag{6}
 ```
 
 * $`\kappa_0=\kappa(u(x_0))`$
 * $`\kappa_1=\kappa(u(x_1))`$
 
-The solutions at the boundaries $`u_0, u_1`$ are of course still unknown. Substituting the discrete counterparts of $`u`$ and $`v`$  in $`(7)`$ yields:
+The solutions at the boundaries $`u_0, u_1`$ are of course still unknown. Substituting the discrete counterparts of $`u`$ and $`v`$  in $`(6)`$ yields:
 
 ```math
 \int_\Omega \kappa \frac{dN_i}{dx} \frac{dN_j}{dx} d\Omega \hat{u}_i
 - \lambda (\kappa_1 N_i(x_1) \Phi_1 - \kappa_0 N_i(x_0) \Phi_0)
 + \lambda \int_\Omega f N_i
-= 0         \tag{8}
+= 0         \tag{7}
 ```
 
 At this point, the stiffness matrix and the load vector could be computed if $`\kappa`$ was constant, and the system could be solved. However, we're focusing on the nonlinear system and have to proceed with some nonlinear theory.
 
-From now on, the LHS in $`(8)`$ will be referred to as the residual $`r=r(u,\lambda)`$, and will be the basis of the analysis. The problem boils down to finding the roots of this residual for specified load factors, which is done by a combination of explicit ODE integration (predictor) and some variation of the Newton method (corrector). Unfortunately, we'll need the derivatives for the Newton method.
+From now on, the LHS in $`(7)`$ will be referred to as the residual $`r=r(u,\lambda)`$, and will be the basis of the analysis. The problem boils down to finding the roots of this residual for specified load factors, which is done by a combination of explicit ODE integration (predictor) and some variation of the Newton method (corrector). Unfortunately, we'll need the derivatives for the Newton method.
 
 The partial derivatives of the residual form the tangent stiffness matrix $`K`$ and load vector $`q`$:
 
@@ -81,21 +82,21 @@ The partial derivatives of the residual form the tangent stiffness matrix $`K`$ 
 \int_\Omega \kappa \frac{dN_i}{dx}\frac{dN_j}{dx}d\Omega
 + \int_\Omega \frac{d\kappa}{du}N_j\frac{dN_i}{dx}\frac{dN_k}{dx}d\Omega \hat{u}_k 
 + \lambda \int_\Omega \frac{\partial f}{\partial u}N_i N_j d\Omega
-\tag{9}
+\tag{8}
 ```
 
 ```math
 q_i = -\frac{\partial r_i}{\partial \lambda}
 =
 \int_\Omega f N_i d\Omega - (\kappa_1 N_i(x_1) \Phi_1 - \kappa_0 N_i(x_0) \Phi_0)
-\tag{10}
+\tag{9}
 ```
 
 For the sake if simplicity, the load $`f`$ will be assumed to be independent of $`u`$. Then, the **tangent stiffness matrix $`\bar{K}`$** can be broken down into two components: the **stiffness matrix $`K`$** and the **geometric stiffness matrix $`K_g`$**.
 
 ```math
 \bar{K} = K + K_g
-\tag{11}
+\tag{10}
 ```
 
 * $`K       = \int_\Omega \kappa \frac{dN_i}{dx}\frac{dN_j}{dx}d\Omega`$
@@ -113,7 +114,7 @@ Since the Newton method comes with a lot of extra computational burdens while no
 \Phi(\hat u)
 =
 K(\hat u)\hat u - f(\hat u) 
-= 0     \tag{12}
+= 0     \tag{11}
 ```
 
 Of course it might not converge either, but at least we don't have to compute the geometric stiffness $`K_g`$ for example. Also, the iteration might converge to a different solution, but we can detect most of those cases by keeping an eye on the residual, which is supposed to approach $`0`$.
@@ -121,9 +122,9 @@ Of course it might not converge either, but at least we don't have to compute th
 The most scary situation would be converging to a solution that **is** in equilibrium ($`r=0`$), but on a different equilibrium path, which would indicate bifurcations or very tricky nonlinearities. Thankfully, we don't have to worry about bifurcations for heat problems (to the extent of my knowledge).
 
 
-## Instationary Heat Conduction
+## Transient Heat Conduction
 
-The formulation of the instationary 1D nonlinear heat conduction will be mostly identical to the stationary case, but with the added time derivative term:
+The formulation of the transient 1D nonlinear heat conduction will be mostly identical to the stationary case, but with the added time derivative term:
 
 ```math
 c \frac{\partial u}{\partial t} + \frac{\partial }{\partial x}(\kappa \frac{\partial u}{\partial x}) - \lambda f 
@@ -132,14 +133,17 @@ c \frac{\partial u}{\partial t} + \frac{\partial }{\partial x}(\kappa \frac{\par
 \frac{\partial u}{\partial x} \bigg \rvert_{x_0} = \lambda \Phi_0(t)
 \\
 \frac{\partial u}{\partial x} \bigg \rvert_{x_1} = \lambda \Phi_1(t)
-\tag{13}
+\tag{12}
 ```
 
 * $`u = u(x, t)`$
 * $`c = c(u)`$
 * $`\kappa = \kappa(u)`$
 
+Expand the derivatives:
+```math
 
+```
 
 
 
