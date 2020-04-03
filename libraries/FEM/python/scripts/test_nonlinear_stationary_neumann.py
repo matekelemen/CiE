@@ -28,14 +28,14 @@ boundaryFlux        = 2.0
 
 # Discretization
 nElements           = 10
-polynomialOrder     = 2
+polynomialOrder     = 3
 
 # Integration
-integrationOrder    = 2 * (2*polynomialOrder + 1)
+integrationOrder    = 3 * (2*polynomialOrder + 1)
 
 # Iteration
-numberOfIncrements  = 3
-numberOfCorrections = 50
+numberOfIncrements  = 5
+numberOfCorrections = 30
 tolerance           = 1e-5
 
 # ---------------------------------------------------------

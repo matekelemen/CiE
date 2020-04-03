@@ -45,7 +45,7 @@ Choose an appropriate function space $`V`$ and assume that the solution $`u = \s
 = 0         \tag{5}
 ```
 
-To sneak in the boundaries and get rid of the second derivatives, the second term on the LHS has to be partially integrated (a threeway partial integration):
+To sneak in the boundaries and get rid of the second derivatives, the second term on the LHS of $`(5)`$ has to be partially integrated (a threeway partial integration):
 ```math
 \int_\Omega v \frac{d\kappa}{du} d\Omega
 + [\kappa v \frac{du}{dx}]\bigg\rvert_{x_0}^{x_1}
@@ -74,7 +74,7 @@ The solutions at the boundaries $`u_0, u_1`$ are of course still unknown. Substi
 = 0         \tag{8}
 ```
 
-At this point, the stiffness matrix and the load vector could be computed if $`\kappa`$ was linear, and the system could be solved. However, we're focusing on the nonlinear system and have to proceed with some nonlinear theory.
+At this point, the stiffness matrix and the load vector could be computed if $`\kappa`$ was constant, and the system could be solved. However, we're focusing on the nonlinear system and have to proceed with some nonlinear theory.
 
 From now on, the LHS in $`(8)`$ will be referred to as the residual $`r=r(u,\lambda)`$, and will be the basis of the analysis. The problem boils down to finding the roots of this residual for specified load factors, which is done by a combination of explicit ODE integration (predictor) and some variation of the Newton method (corrector). Unfortunately, we'll need the derivatives for the Newton method.
 
@@ -124,8 +124,3 @@ In most cases, I tried to create an object-oriented structure but you might find
 
 
 This concludes the basic structure of classes for the FE framework, which might be expanded in the future.
-
-
-## Time Integration
-
-For now, time integration is performed specifically for the linear poisson equation, using a linear combination of explicit and implicit stepping.

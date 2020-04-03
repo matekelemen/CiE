@@ -25,14 +25,6 @@ def stationaryLoadControl(  model,
     Arguments:
         model               : allocated FEModel with boundaries and a valid initial state
         initialSolution     : initial solution to begin incrementing from
-        loadFunctional      : a function of the control parameter (lambda) that returns a load function
-                                (source). If None, 0 source is assumed everywhere.
-                                The load function gets applied to the FEModel before integration.
-        boundaryFunctional  : a function of the control parameter (lambda) that manipulates the FEModel
-                                by adjusting boundary condition values to match the desired boundary load.
-                                If None, the existing boundaries in the FEModel will remain untouched.
-                                This function gets called after integration.
-        maxIncrements       : maximum number of increments to the control parameter
     '''
     # ---------------------------------------------------------
     # Initialize arguments
@@ -57,11 +49,6 @@ def stationaryLoadControl(  model,
         for boundary in model.boundaries:
             model.applyBoundaryCondition( boundary )
 
-        #np.set_printoptions( precision=2, suppress=True )
-        #print(dModel.stiffness.todense())
-        #print(   np.linalg.det(   dModel.stiffness.todense()   )   )
-        #np.set_printoptions()
-    
     
     # ---------------------------------------------------------
     # Increment loop
@@ -76,10 +63,10 @@ def stationaryLoadControl(  model,
 
         # Predict
         controlIncrement    = control-loadFactors[incrementIndex-1]
-        u                   += solveLinearSystem( model.stiffness, controlIncrement * model.load )
-        #uMid                = 0.5 * solveLinearSystem( model.stiffness, controlIncrement * model.load )
-        #reintegrate( control, uMid )
-        #u                   += solveLinearSystem( model.stiffness, controlIncrement * model.load )
+        #u                   += solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
+        uMid                = u + 0.5 * solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
+        reintegrate( control, uMid )
+        u                   += solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
 
         # Compute prediction residual
         reintegrate( control, u )
@@ -93,7 +80,7 @@ def stationaryLoadControl(  model,
         # Correction loop
         for correctionIndex in range(maxCorrections):
             # Correct
-            u           += solveLinearSystem( model.stiffness, -residual )
+            u           += solveLinearSystem( model.stiffness + model.geometricStiffness, -residual )
 
             # Update residual and check termination criterion
             reintegrate( control, u )

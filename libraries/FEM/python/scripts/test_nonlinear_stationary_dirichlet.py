@@ -27,15 +27,15 @@ load                = lambda x: 0.0
 boundaryTemperature = 2.0
 
 # Discretization
-nElements           = 50
-polynomialOrder     = 1
+nElements           = 10
+polynomialOrder     = 3
 
 # Integration
 integrationOrder    = 2 * (2*polynomialOrder + 1)
 
 # Iteration
-numberOfIncrements  = 10
-numberOfCorrections = 5
+numberOfIncrements  = 3
+numberOfCorrections = 30
 tolerance           = 1e-5
 
 # ---------------------------------------------------------

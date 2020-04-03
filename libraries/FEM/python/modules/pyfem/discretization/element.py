@@ -180,10 +180,13 @@ class NonlinearHeatElement1D( Element1D ):
     def integrateGeometricStiffness( self, matrix, temperatureFunction, solution ):
         for i in range(len( self.basisDerivatives )):
             dNi         = self.basisDerivatives[i]
-            Ni          = self.basisFunctions[i]
-            for j in range(len( self.basisDerivatives )):
-                dNj     = self.basisDerivatives[j]
-                value   = self._invJacobian * self.integrator(  lambda x: self.conductivityDerivative(self.toGlobalCoordinates(x)) * dNi(x)*dNj(x)*Ni(x),
-                                                                self.basisFunctions.domain )
-                matrix[ self.DoFs[i], self.DoFs[j] ] += solution[self.DoFs[i]] * value
+            for j in range(len( self.basisFunctions )):
+                Nj     = self.basisFunctions[j]
+                value   = 0.0
+                for k in range(len( self.basisDerivatives )):
+                    dNk     = self.basisDerivatives[k]
+                    value   +=  self._invJacobian * self.integrator(  lambda x: self.conductivityDerivative(self.toGlobalCoordinates(x)) * dNi(x)*dNk(x)*Nj(x),
+                                                                self.basisFunctions.domain )    \
+                                * solution[self.DoFs[k]]
+                matrix[ self.DoFs[i], self.DoFs[j] ] += value
                 
