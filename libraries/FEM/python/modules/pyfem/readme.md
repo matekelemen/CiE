@@ -229,7 +229,7 @@ To sort out this mess, we need to separate the unknown terms ($`\square^{k+1}`$)
 ```
 
 *Several things to note here:*
-*First of all, it might seem weird to carry the load factors ($`\kappa`$) through the time steps but if we don't want to impose extra constraints on the nonlinear iteration later, we have to keep using them. The other painful thing is that the mass matrices ($`M`$) have to be inverted at every time step and every nonlinear iteration step. This is a huge difference compared to the solution of the linear system, where the mass matrix is constant, and can just premultiply the affected terms without ever having to invert it. As reference, here's how $`(19)`$ looks like in the linear case:*
+*First of all, it might seem weird to carry the load factors ($`\lambda`$) through the time steps but if we don't want to impose extra constraints on the nonlinear iteration later, we have to keep using them. The other painful thing is that the mass matrix ($`M`$) has to be inverted at every time step and every nonlinear iteration step. This is a huge difference compared to the solution of the linear system, where the mass matrix is constant, and can just premultiply the affected terms without ever having to invert it. As reference, here's how $`(19)`$ looks like in the linear case (premultiplied by $`M`$):*
 ```math
 \bigg[
     \bigg( \theta K + \frac{1}{\Delta t}M \bigg) \hat u^{k+1}
