@@ -44,7 +44,7 @@ Choose an appropriate function space $`V`$ and assume that the solution $`u = \s
 To sneak in the boundaries and get rid of the second derivatives, the second term on the LHS of $`(5)`$ has to be partially integrated (a threeway partial integration):
 ```math
 \int_\Omega v \frac{d\kappa}{du} (\frac{du}{dx})^2 d\Omega
-+ [\kappa v \frac{du}{dx}]\bigg\rvert_{x_0}^{x_1}
++ \bigg[\kappa v \frac{du}{dx} \bigg]_{x_0}^{x_1}
 - \int_\Omega v \frac{d\kappa}{du} (\frac{du}{dx})^2 d\Omega
 - \int_\Omega \kappa \frac{dv}{dx} \frac{du}{dx}d\Omega
 - \lambda \int_\Omega v f d\Omega
@@ -74,7 +74,7 @@ At this point, the stiffness matrix and the load vector could be computed if $`\
 
 From now on, the LHS in $`(7)`$ will be referred to as the residual $`r=r(u,\lambda)`$, and will be the basis of the analysis. The problem boils down to finding the roots of this residual for specified load factors, which is done by a combination of explicit ODE integration (predictor) and some variation of the Newton method (corrector). Unfortunately, we'll need the derivatives for the Newton method.
 
-The partial derivatives of the residual form the tangent stiffness matrix $`K`$ and load vector $`q`$:
+The partial derivatives of the residual form the tangent stiffness matrix $`\bar K`$ and load vector $`q`$:
 
 ```math
 \bar{K}_{ij} = \frac{\partial r_i}{\partial \hat{u}_j}
@@ -127,12 +127,14 @@ The most scary situation would be converging to a solution that **is** in equili
 The formulation of the transient 1D nonlinear heat conduction will be mostly identical to the stationary case, but with the added time derivative term:
 
 ```math
-c \frac{\partial u}{\partial t} + \frac{\partial }{\partial x}(\kappa \frac{\partial u}{\partial x}) - \lambda f 
+-c \frac{\partial u}{\partial t} + \frac{\partial }{\partial x}(\kappa \frac{\partial u}{\partial x}) - \lambda f 
 = 0     
 \\
 \frac{\partial u}{\partial x} \bigg \rvert_{x_0} = \lambda \Phi_0(t)
 \\
 \frac{\partial u}{\partial x} \bigg \rvert_{x_1} = \lambda \Phi_1(t)
+\\
+u(x,0) = u_0(x)
 \tag{12}
 ```
 
@@ -140,12 +142,110 @@ c \frac{\partial u}{\partial t} + \frac{\partial }{\partial x}(\kappa \frac{\par
 * $`c = c(u)`$
 * $`\kappa = \kappa(u)`$
 
+To reduce clutter, the following notation is intruduced:
+* $`\dot \square    := \frac{\partial \square}{\partial t}`$
+* $`\square'        := \frac{\partial \square}{\partial x}`$
+
 Expand the derivatives:
 ```math
-
+-c \dot u + \frac{d\kappa}{du} (u')^2 + \kappa u'' - \lambda f
+= 0
+\tag{13}
 ```
 
+Multiply with the test function $`v`$ and integrate over the space domain:
+```math
+-\int_\Omega c v \dot u d\Omega
++ \int_\Omega \frac{d\kappa}{du} v (u')^2 d\Omega
++ \int_\Omega \kappa v u'' d\Omega
+- \lambda \int_\Omega f v d\Omega
+= 0
+\tag{14}
+```
 
+Integrate by parts:
+```math
+-\int_\Omega c v \dot u d\Omega
++ \bigg[ \kappa v u' \bigg]_{x_0}^{x_1}
+- \int_\Omega \kappa v' u' d\Omega
+- \lambda \int_\Omega f v d\Omega
+= 0
+\tag{15}
+```
+
+Substituting the discrete counterparts of $`u`$ and $`v`$ works the same way as in the stationary case, except the coefficients are now time-dependent $`\hat u_i = \hat u_i (t)`$.
+```math
+\int_\Omega c N_i N_j d\Omega \dot{\hat u}_i
++ \int_\Omega \kappa N_i' N_j' d\Omega \hat u_i
+- \lambda \bigg( \kappa_1N_i(x_1)\Phi_1 - \kappa_0 N_i(x_0) \Phi_0 \bigg)
++ \lambda \int_\Omega f N_i d\Omega
+= 0
+\tag{16}
+```
+
+Before formulating the residual $`r(u,\lambda)`$, we have to discretize in time as well. However, the current notation is a bit hard to work with so from this point, I'm just going to use the universal notation for "structural" matrices and the load vector:
+* $`M   := \int_\Omega c N_i N_j d\Omega`$
+* $`K   := \int_\Omega \kappa N_i' N_j' d\Omega`$
+* $`q   := - \bigg( \kappa_1N_i(x_1)\Phi_1 - \kappa_0 N_i(x_0) \Phi_0 \bigg) + \int_\Omega f N_i d\Omega`$
+
+Keep in mind that these entities are not truly derived from the residuals yet. For example, the "stiffness matrix" $`K_{ij}`$ is obviously not equal to $`\frac{\partial r_i}{\partial \hat u_j}`$ due to the non-constant material properties $`c(u)`$ and $`\kappa(u)`$, but we'll use them for the time being to keep things readable.
+
+Now we can discretize in time as well, which we'll do using a mixed explicit-implicit finite difference scheme. The basic idea is as follows:
+```math
+\frac{dF(t)}{dt} = G(t,F(t)) 
+\rightarrow
+\frac{F^{k+1} - F^{k} }{ \Delta t } 
+\approx
+\theta G(t^{k+1}, F^{k+1}) + (1-\theta) G(t^k, F^k)
+\tag{17}
+```
+
+* $`\Delta t := t^{k+1} - t^k`$
+* $`\square^k := \square(t^k)`$
+* $`\theta \in [0,1]`$
+
+
+Apply $`(17)`$ to $`(16)`$:
+```math
+\frac{\hat u^{k+1} - \hat u^k}{\Delta t}
++ \theta (M^{k+1})^{^{-1}} \bigg( K^{k+1} \hat u^{k+1} - \lambda^{k+1} q^{k+1} \bigg)
++ (1-\theta)M^{k^{-1}} \bigg( K^k \hat u^k - \lambda^k q^k  \bigg)
+= 0
+\tag{18}
+```
+
+To sort out this mess, we need to separate the unknown terms ($`\square^{k+1}`$) from the terms that we already computed ($`\square^k`$):
+```math
+\bigg[
+    \bigg( \theta (M^{k+1})^{^{-1}} K^{k+1} + \frac{1}{\Delta t} I \bigg) \hat u^{k+1} - \theta (M^{k+1})^{^{-1}} \bigg( \lambda^{k+1} q^{k+1} \bigg)
+\bigg]
++
+\bigg[
+    (1-\theta) M^{k^{-1}} \bigg( K^k \hat u^k - \lambda^k q^k \bigg)
+    - \frac{1}{\Delta t} \hat u^k
+\bigg]
+= 0
+\tag{19}
+```
+
+*Several things to note here:*
+*First of all, it might seem weird to carry the load factors ($`\kappa`$) through the time steps but if we don't want to impose extra constraints on the nonlinear iteration later, we have to keep using them. The other painful thing is that the mass matrices ($`M`$) have to be inverted at every time step and every nonlinear iteration step. This is a huge difference compared to the solution of the linear system, where the mass matrix is constant, and can just premultiply the affected terms without ever having to invert it. As reference, here's how $`(19)`$ looks like in the linear case:*
+```math
+\bigg[
+    \bigg( \theta K + \frac{1}{\Delta t}M \bigg) \hat u^{k+1}
+\bigg]
++
+\bigg[
+    \bigg( (1-\theta) K - \frac{1}{\Delta t} M \bigg)
+    \hat u^k
+    - (1-\theta) q^k
+    - \theta q^{k+1}
+\bigg]
+= 0
+\tag{20}
+```
+
+This is where my knowledge currently ends. I'm working on implementing a fixed point iteration to solve the nonlinear transient model, but that's still in progress. I'll update this section once I have useful results.
 
 # Module
 

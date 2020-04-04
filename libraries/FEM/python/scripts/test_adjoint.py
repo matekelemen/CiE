@@ -32,6 +32,7 @@ load                        = lambda t, x: 0.0
 time                        = np.linspace(0.0, 1.0, 15)
 nElements                   = 50
 polynomialOrder             = 1
+penaltyValue                = 1e10
 
 # Integration
 integrationOrder            = 2*polynomialOrder + 1
@@ -39,7 +40,7 @@ finiteDifferenceImplicity   = 0.5
 
 # Adjoint
 numberOfAdjointIterations   = 50
-regularization              = 50.0
+regularization              = 8.0
 
 # Postprocessing
 numberOfSamples             = 100
@@ -70,7 +71,7 @@ model.integrate( )
 # Boundary conditions
 leftBCID    = model.addBoundaryCondition(   DirichletBoundary(  0, 
                                                                 lambda t: 0.0,
-                                                                penaltyValue=1e10   ) )
+                                                                penaltyValue=penaltyValue   ) )
 
 rightBCID   = model.addBoundaryCondition(   NeumannBoundary(    nElements*polynomialOrder,
                                                                 referenceControl) )

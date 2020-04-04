@@ -223,6 +223,9 @@ def stationaryFixedPointIteration(  model,
 
 def transientFixedPointIteration(   model,
                                     initialSolution,
+                                    initialStiffness,
+                                    initialMass,
+                                    initialLoad,
                                     dt,
                                     loadFactors=None,
                                     maxCorrections=10,
@@ -232,13 +235,16 @@ def transientFixedPointIteration(   model,
                                     axes=None,
                                     convergencePlot=None ):
     '''
-    Solves a nonlinear FEModel using fixed point iterations
+    Solves a transient nonlinear FEModel using fixed point iterations
+    ( Arguments are copied internally )
     '''
     # ---------------------------------------------------------
     # Initialize arguments
     u                   = initialSolution.copy()
-    previousState       = None
+    initialState        = None
     massInverse         = None
+    currentState        = None
+    currentLoad         = None
     dt                  = 1.0/dt * sparse.eye(model.size)
 
     if loadFactors is None:
@@ -261,26 +267,33 @@ def transientFixedPointIteration(   model,
                             loadFactors[0], 
                             u,
                             geometricStiffness=False )
-            previousState   =   (1.0-theta) * sparse.linalg.inv(model.mass).dot( model.stiffness.dot(u) - model.load ) \
+            initialState    =   (1.0-theta) * sparse.linalg.inv(initialMass).dot( initialStiffness.dot(u) - initialLoad ) \
                                 - dt.dot(u)
+            massInverse     = sparse.linalg.inv(model.mass)
+            currentState    = theta*massInverse*model.stiffness + dt
+            currentLoad     = initialState - theta * massInverse.dot(control * model.load)
             continue
 
         # Correction loop
         for correctionIndex in range(maxCorrections):
-            # Precompute components
-            massInverse = sparse.linalg.inv(model.mass)
-
             # Correct
-            u           = solveLinearSystem(    theta*massInverse*model.stiffness + dt,
-                                                previousState - theta * massInverse.dot(model.load)     )
+            u           = solveLinearSystem(    currentState,
+                                                currentLoad )
 
-            # Update residual and check termination criterion
+            # Update residual
             reintegrate(    model, 
                             control, 
                             u,
                             geometricStiffness=False )
-            residual    = model.stiffness.dot(u) - control*model.load
-            resNorm     = np.linalg.norm(residual)
+
+            massInverse     = sparse.linalg.inv(model.mass)
+            currentState    = theta*massInverse*model.stiffness + dt
+            currentLoad     = initialState - theta * massInverse.dot(control * model.load)
+            
+            residual        = model.stiffness.dot(u) - control*model.load
+            resNorm         = np.linalg.norm(residual)
+            
+            # Check termination criterion and update output streams
             if verbose:
                 print( "Current residual\t: %.3E" % resNorm )
             if convergencePlot is not None:

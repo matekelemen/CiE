@@ -11,9 +11,6 @@ def solveLinearHeat1D(  time,
                         model,
                         theta=0.5   ):
     '''
-    Implicit theta-scheme. Solves the following problem:
-    coefficient * u{i+1} = 
-
     Arguments:
         time            : discretized time domain
         initialSolution : solution at t=0
@@ -28,7 +25,7 @@ def solveLinearHeat1D(  time,
     nextLoadVector  = model.load.copy()
 
     # Define matrices 
-    # (save computation of frequently used matrices if time discretization is equidistant)
+    # (save computation of frequently used matrices if time discretization is uniform)
     timeStep    = time[1]-time[0]
     _LHSMatrix  = 1.0/timeStep*model.mass + theta*model.stiffness
     _RHSMatrix  = 1.0/timeStep*model.mass - (1.0-theta)*model.stiffness
@@ -73,9 +70,6 @@ def solveAdjointLinearHeat1D(   time,
                                 theta=0.5,
                                 initialAdjointSolution=None ):
     '''
-    Implicit theta-scheme. Solves the following problem:
-    coefficient * u{i+1} = 
-
     Arguments:
         time                        : discretized time domain
         adjointRHS                  : FESolution - referenceFESolution
@@ -126,3 +120,24 @@ def solveAdjointLinearHeat1D(   time,
         timeSeries[k-1] = sol
 
     return timeSeries
+
+
+
+def solveNonlinearHeat1D(   time,
+                            initialSolution,
+                            model,
+                            theta=0.5   ):
+    '''
+    Arguments:
+        time            : discretized time domain
+        initialSolution : solution at t=0
+        model           : TransientFEModel with mass, stiffness, load, and loadFunction
+        theta=0.5       : implicitness
+    '''
+    # Initialize
+    timeSeries      = np.zeros( (len(time), len(initialSolution)) )
+    timeSeries[0]   = initialSolution.copy()
+    model.updateTime( time[0] )
+
+    for k in range(len(time)-1):
+        pass # TODO

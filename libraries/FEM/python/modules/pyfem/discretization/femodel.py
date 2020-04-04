@@ -177,10 +177,6 @@ class FEModel:
             element.load = load
             element.integrateLoad( self.load )
 
-        # Reapply boundary conditions
-        for BC in self.boundaries:
-            self.applyBoundaryCondition( BC )
-
 
 
 
