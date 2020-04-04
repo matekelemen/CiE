@@ -7,7 +7,15 @@ import numpy as np
 
 
 # ---------------------------------------------------------
-def animateTimeSeries( time, positions, timeSeriesSolution, model, speed=0.1, repeat=True, ylim=(-1.0,1.0), figure=None, axis=None ):
+def animateTimeSeries(  time, 
+                        positions, 
+                        timeSeriesSolution, 
+                        model, 
+                        speed=0.1, 
+                        repeat=True, 
+                        ylim=(-1.0,1.0), 
+                        figure=None, 
+                        axis=None ):
     # Pack into list in only one time series is supplied
     if len( timeSeriesSolution.shape ) < 3:
         timeSeriesSolution = np.asarray([timeSeriesSolution])

@@ -23,7 +23,7 @@ load                        = lambda t, x: 0.0
 # Discretization
 time                        = np.linspace(0.0, 1.0, 200)
 nElements                   = 10
-polynomialOrder             = 2
+polynomialOrder             = 3
 
 # Integration
 integrationOrder            = 2*polynomialOrder + 1

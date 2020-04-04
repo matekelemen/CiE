@@ -39,14 +39,23 @@ class FEModel:
         self.boundaries     = []
 
 
-    def resetMatrices( self ):
+    def resetMatrices( self, stiffness=True, load=True ):
+        # Check arguments: stiffness and load must be both True or both False
+        #if stiffness is not load:
+        #    raise RuntimeError( "The stiffness matrix and load vector must be reset together, \
+        #                        otherwise boundary conditions won't be enforced correctly" )
+
         # Reset structural matrices
-        self.stiffness.data = np.zeros( self.stiffness.data.shape, dtype=self.stiffness.data.dtype )
-        self.load           = np.zeros( self.load.shape, dtype=self.load.dtype )
+        if stiffness:
+            self.stiffness.data = np.zeros( self.stiffness.data.shape, dtype=self.stiffness.data.dtype )
+        
+        if load:
+            self.load           = np.zeros( self.load.shape, dtype=self.load.dtype )
 
         # Reset boundaries
-        for boundary in self.boundaries:
-            boundary.applied = False
+        if stiffness or load:
+            for boundary in self.boundaries:
+                boundary.applied = False
 
 
     def getDoFs( self ):
@@ -83,13 +92,15 @@ class FEModel:
 
 
     @requiresInitialized
-    def integrate( self ):
+    def integrate( self, stiffness=True, load=True ):
         '''
         Loop through elements and integrate their matrices
         '''
         for element in self.elements:
-            element.integrateStiffness( self.stiffness )
-            element.integrateLoad( self.load )
+            if stiffness:
+                element.integrateStiffness( self.stiffness )
+            if load:
+                element.integrateLoad( self.load )
 
 
     def addBoundaryCondition( self, boundaryCondition, *args, **kwargs ):
@@ -165,7 +176,7 @@ class FEModel:
 
 
     @requiresInitialized
-    def updateLoad( self, load ):
+    def updateLoad( self, load, *args, **kwargs ):
         '''
         Set load on all elements and reintegrate
         '''
@@ -175,7 +186,7 @@ class FEModel:
         # Set load on all elements and integrate
         for element in self.elements:
             element.load = load
-            element.integrateLoad( self.load )
+            element.integrateLoad( self.load, *args, **kwargs )
 
 
 
@@ -193,9 +204,10 @@ class TransientFEModel( FEModel ):
         self.time           = 0.0
 
 
-    def resetMatrices( self ):
-        FEModel.resetMatrices(self)
-        self.mass.data      = np.zeros( self.mass.data.shape, dtype=self.mass.data.dtype )
+    def resetMatrices( self, mass=True, **kwargs ):
+        FEModel.resetMatrices(self, **kwargs)
+        if mass:
+            self.mass.data      = np.zeros( self.mass.data.shape, dtype=self.mass.data.dtype )
 
 
     @property
@@ -211,17 +223,17 @@ class TransientFEModel( FEModel ):
 
         if self.mass is not None:
             raise RuntimeError( "Attempt to initialize existing matrices" )
-        self.mass   = sparse.csr_matrix((   np.zeros( DoFs.shape[1] ), DoFs ), 
+        self.mass   = sparse.csc_matrix((   np.zeros( DoFs.shape[1] ), DoFs ), 
                                             shape=self.shape )
         return DoFs
 
 
     @requiresInitialized
-    def integrate( self, *args, **kwargs ):
-        FEModel.integrate( self, *args, **kwargs )
-        
-        for element in self.elements:
-            element.integrateMass( self.mass, *args, **kwargs )
+    def integrate( self, *args, stiffness=True, mass=True, load=True, **kwargs ):
+        FEModel.integrate( self, *args, stiffness, mass, **kwargs )
+        if mass:
+            for element in self.elements:
+                    element.integrateMass( self.mass, *args, **kwargs )
 
 
     @requiresInitialized
@@ -264,10 +276,11 @@ class NonlinearFEModel( FEModel ):
         self.geometricStiffness = None
 
     
-    def resetMatrices( self ):
-        FEModel.resetMatrices(self)
-        self.geometricStiffness.data = np.zeros(    self.geometricStiffness.data.shape,
-                                                    self.geometricStiffness.data.dtype )
+    def resetMatrices( self, geometricStiffness=True, **kwargs ):
+        FEModel.resetMatrices(self, **kwargs)
+        if geometricStiffness:
+            self.geometricStiffness.data = np.zeros(    self.geometricStiffness.data.shape,
+                                                        self.geometricStiffness.data.dtype )
 
 
     def allocateZeros( self ):
@@ -277,11 +290,14 @@ class NonlinearFEModel( FEModel ):
 
 
     @requiresInitialized
-    def integrate( self, *args, **kwargs ):
+    def integrate( self, *args, stiffness=True, load=True, geometricStiffness=True, **kwargs ):
         for element in self.elements:
-            element.integrateStiffness( self.stiffness, *args, **kwargs )
-            element.integrateLoad( self.load, *args, **kwargs )
-            element.integrateGeometricStiffness( self.geometricStiffness, *args, **kwargs )
+            if stiffness:
+                element.integrateStiffness( self.stiffness, *args, **kwargs )
+            if load:
+                element.integrateLoad( self.load, *args, **kwargs )
+            if geometricStiffness:
+                element.integrateGeometricStiffness( self.geometricStiffness, *args, **kwargs )
 
 
     #@requiresInitialized
@@ -297,10 +313,11 @@ class NonlinearTransientFEModel( TransientFEModel ):
         self.geometricStiffness = None
 
 
-    def resetMatrices( self ):
-        TransientFEModel.resetMatrices(self)
-        self.geometricStiffness.data = np.zeros(    self.geometricStiffness.data.shape,
-                                                    self.geometricStiffness.data.dtype )
+    def resetMatrices( self, geometricStiffness=True, **kwargs ):
+        TransientFEModel.resetMatrices(self, **kwargs)
+        if geometricStiffness:
+            self.geometricStiffness.data = np.zeros(    self.geometricStiffness.data.shape,
+                                                        self.geometricStiffness.data.dtype )
 
 
     def allocateZeros( self ):
@@ -310,9 +327,49 @@ class NonlinearTransientFEModel( TransientFEModel ):
 
 
     @requiresInitialized
-    def integrate( self, *args, **kwargs ):
+    def integrate( self, *args, stiffness=True, mass=True, load=True, geometricStiffness=True, **kwargs ):
         for element in self.elements:
-            element.integrateStiffness( self.stiffness, *args, **kwargs )
-            element.integrateLoad( self.load, *args, **kwargs )
-            element.integrateMass( self.mass, *args, **kwargs )
-            element.integrateGeometricStiffness( self.geometricStiffness, *args, **kwargs )
+            if stiffness:
+                element.integrateStiffness( self.stiffness, *args, **kwargs )
+            if load:
+                element.integrateLoad( self.load, *args, **kwargs )
+            if mass:
+                element.integrateMass( self.mass, *args, **kwargs )
+            if geometricStiffness:
+                element.integrateGeometricStiffness( self.geometricStiffness, *args, **kwargs )
+
+
+    @requiresInitialized
+    def updateTime( self, time, solution, stiffness=True, mass=True, geometricStiffness=True ):
+        '''
+        Update model time
+        Triggers the following:
+            - the load function gets updated to the current time
+            - boundary conditions get updated to the current time
+            - reintegrates the load function
+            - upon request, reintegrates the stiffness, mass, and geometric stiffness matrices
+        '''
+        # Update time
+        self.time = time
+
+        # Update load function and reintegrate load vector
+        self.updateLoad(    lambda x: self.loadFunction(time, x),
+                            lambda x: self.sample( solution, x ),
+                            solution )
+
+        # Reintegrate structural matrices if requested
+        self.resetMatrices( stiffness=stiffness, 
+                            mass=mass, 
+                            geometricStiffness=geometricStiffness, 
+                            load=False )
+        self.integrate( lambda x: self.sample( solution, x ),
+                        solution,
+                        stiffness=stiffness,
+                        mass=mass,
+                        geometricStiffness=geometricStiffness,
+                        load=False )
+
+        # Apply boundary conditions
+        for boundaryCondition in self.boundaries:
+            self.applyBoundaryCondition( boundaryCondition )
+        

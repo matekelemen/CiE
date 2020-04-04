@@ -224,7 +224,7 @@ class NonlinearHeatElement1D( Element1D ):
         basisDerivativeCache    = [ self.integrator.createCache( self.basisDerivatives[i], self.basisDerivatives.domain ) for i in range(len(self.basisDerivatives)) ]
         basisCache              = [ self.integrator.createCache( self.basisFunctions[i], self.basisFunctions.domain ) for i in range(len(self.basisFunctions)) ]
         dConductivityCache      = self.integrator.createCache( lambda x: self.conductivityDerivative(self.toGlobalCoordinates(x)), self.basisDerivatives.domain )
-
+        
         for i in range(len( self.basisDerivatives )):
             cache0 = basisDerivativeCache[i] * dConductivityCache
             for j in range(len( self.basisFunctions )):
@@ -237,4 +237,3 @@ class NonlinearHeatElement1D( Element1D ):
                                                                                         self.basisFunctions.domain )    \
                                 * solution[self.DoFs[k]]
                 matrix[ self.DoFs[i], self.DoFs[j] ] += value
-                

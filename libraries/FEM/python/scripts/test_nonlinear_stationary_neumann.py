@@ -19,8 +19,8 @@ capacity            = lambda u: 1.0
 dCapacity           = lambda u: 0.0
 #conductivity        = lambda u: 1.0
 #dConductivity       = lambda u: 0.0
-conductivity        = lambda u: 1.0 + 1.0 * np.exp( -(u-0.5)**2 / 0.005 )
-dConductivity       = lambda u: 1.0 * np.exp( -(u-0.5)**2 / 0.005 ) * (2.0/0.005)*(0.5-u)
+conductivity        = lambda u: 1.0 + 9.0 * np.exp( -(u-0.5)**2 / 0.005 )
+dConductivity       = lambda u: 9.0 * np.exp( -(u-0.5)**2 / 0.005 ) * (2.0/0.005)*(0.5-u)
 
 # Load
 load                = lambda x: 0.0
@@ -34,7 +34,7 @@ polynomialOrder     = 3
 integrationOrder    = 3 * (2*polynomialOrder + 1)
 
 # Iteration
-numberOfIncrements  = 5
+numberOfIncrements  = 3
 numberOfCorrections = 30
 tolerance           = 1e-5
 

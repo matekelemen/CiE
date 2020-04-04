@@ -18,13 +18,13 @@ capacity            = lambda u: 1.0
 dCapacity           = lambda u: 0.0
 #conductivity        = lambda u: 1.0
 #dConductivity       = lambda u: 0.0
-conductivity        = lambda u: 1.0 + 1.0 * np.exp( -(u-0.5)**2 / 0.005 )
-dConductivity       = lambda u: 1.0 * np.exp( -(u-0.5)**2 / 0.005 ) * (2.0/0.005)*(0.5-u)
+conductivity        = lambda u: 1.0 + 9.0 * np.exp( -(u-0.5)**2 / 0.005 )
+dConductivity       = lambda u: 9.0 * np.exp( -(u-0.5)**2 / 0.005 ) * (2.0/0.005)*(0.5-u)
 
 
 # Load
 load                = lambda x: 0.0
-boundaryTemperature = 2.0
+boundaryTemperature = 1.0
 
 # Discretization
 nElements           = 10
@@ -73,6 +73,7 @@ leftBCID    = model.addBoundaryCondition(   DirichletBoundary(  0,
 rightBCID   = model.addBoundaryCondition(   DirichletBoundary(  nElements*polynomialOrder,
                                                                 boundaryTemperature) )
 
+# ---------------------------------------------------------
 # Solve
 u = nonlinearSolver(    model,
                         np.zeros(model.size),
@@ -83,14 +84,13 @@ u = nonlinearSolver(    model,
                         axes=axes[1],
                         convergencePlot=convergencePlot   )
 
+# ---------------------------------------------------------
 # Plot conductivity
 samples = np.linspace( 0.0, np.max(model.sample( u, samples )), num=len(samples) )
 axes[0].plot( samples, [conductivity(temp) for temp in samples] )
-axes[0].plot( samples, [dConductivity(temp) for temp in samples] )
 axes[0].set_xlabel( "T [C]" )
 axes[0].set_ylabel( r'$\kappa$' + " [W/K]" )
 axes[0].set_title( "Conduction(temperature)" )
-axes[0].legend( ["conduction", "dConduction"] )
 
 plt.tight_layout()
 plt.show()

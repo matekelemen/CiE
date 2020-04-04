@@ -4,6 +4,7 @@ import scipy.sparse.linalg as linalg
 
 # --- Internal Imports ---
 from .solver import solveLinearSystem
+from .nonlinearsolver import transientFixedPointIteration
 
 # ---------------------------------------------------------
 def solveLinearHeat1D(  time, 
@@ -126,18 +127,50 @@ def solveAdjointLinearHeat1D(   time,
 def solveNonlinearHeat1D(   time,
                             initialSolution,
                             model,
-                            theta=0.5   ):
+                            theta=0.5,
+                            nonlinearSolver=transientFixedPointIteration,
+                            **kwargs   ):
     '''
     Arguments:
         time            : discretized time domain
         initialSolution : solution at t=0
-        model           : TransientFEModel with mass, stiffness, load, and loadFunction
-        theta=0.5       : implicitness
+        model           : NonlinearTransientFEModel with at least mass, stiffness, load, and loadFunction
+        theta           : implicitness
+        nonlinearSolver : either a variant of the Newton method or a fixed point iteration
+        kwargs          : keyword arguments of the nonlinearSolver
     '''
     # Initialize
-    timeSeries      = np.zeros( (len(time), len(initialSolution)) )
-    timeSeries[0]   = initialSolution.copy()
-    model.updateTime( time[0] )
+    timeSeries          = np.zeros( (len(time), len(initialSolution)) )
+    timeSeries[0]       = initialSolution.copy()
 
-    for k in range(len(time)-1):
-        pass # TODO
+    model.updateTime(   time[0],
+                        timeSeries[0],
+                        geometricStiffness=False    )
+    previousStiffness   = None
+    previousMass        = None
+    previousLoad        = None
+
+    # Step through 
+    for k in range(1, len(time)):
+        # Cache previous state
+        previousStiffness   = model.stiffness.copy()
+        previousMass        = model.mass.copy()
+        previousLoad        = model.load.copy()
+
+        # Advance state
+        model.updateTime(   time[k],
+                            timeSeries[k-1],
+                            stiffness=False,
+                            mass=False,
+                            geometricStiffness=False    )
+        
+        # Delegate solving to the nonlinear solver
+        timeSeries[k]       = nonlinearSolver(  model,
+                                                timeSeries[k-1],
+                                                previousStiffness,
+                                                previousMass,
+                                                previousLoad,
+                                                time[k] - time[k-1],
+                                                **kwargs    )
+
+    return timeSeries

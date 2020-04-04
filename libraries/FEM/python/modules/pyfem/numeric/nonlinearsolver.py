@@ -17,23 +17,22 @@ def reintegrate(    model,
     Function that does all the necessary operations for updating 
     the model to the current load factor and solution
     '''
+    # Set up arguments for stationary or transient models
+    keywordArgs = { "stiffness"             : stiffness,
+                    "load"                  : load,
+                    "geometricStiffness"    : geometricStiffness }
+
+    if hasattr( model, "mass" ):
+        keywordArgs["mass"] = mass
+
     # Wipe matrices and set solution function
     model.resetMatrices()
     solutionFunction = lambda x: model.sample(solution, x)
 
     # Compute structural matrices
-    for element in model.elements:
-        if stiffness:
-            element.integrateStiffness( model.stiffness, solutionFunction, solution )
-
-        if load:
-            element.integrateLoad( model.load, solutionFunction, solution )
-
-        if mass:
-            element.integrateMass( model.mass, solutionFunction, solution )
-
-        if geometricStiffness:
-            element.integrateGeometricStiffness( model.geometricStiffness, solutionFunction, solution )
+    model.integrate(    solutionFunction, 
+                        solution, 
+                        **keywordArgs )
 
     # Apply boundaries
     for boundary in model.boundaries:
@@ -263,15 +262,11 @@ def transientFixedPointIteration(   model,
 
         # Check if first run (initialization)
         if incrementIndex == 0:
-            reintegrate(    model, 
-                            loadFactors[0], 
-                            u,
-                            geometricStiffness=False )
             initialState    =   (1.0-theta) * sparse.linalg.inv(initialMass).dot( initialStiffness.dot(u) - initialLoad ) \
                                 - dt.dot(u)
             massInverse     = sparse.linalg.inv(model.mass)
-            currentState    = theta*massInverse*model.stiffness + dt
-            currentLoad     = initialState - theta * massInverse.dot(control * model.load)
+            currentState    = theta*massInverse.dot(model.stiffness) + dt
+            currentLoad     = theta * massInverse.dot(loadFactors[0] * model.load) - initialState
             continue
 
         # Correction loop
@@ -287,10 +282,10 @@ def transientFixedPointIteration(   model,
                             geometricStiffness=False )
 
             massInverse     = sparse.linalg.inv(model.mass)
-            currentState    = theta*massInverse*model.stiffness + dt
-            currentLoad     = initialState - theta * massInverse.dot(control * model.load)
+            currentState    = theta * massInverse.dot(model.stiffness) + dt
+            currentLoad     = theta * massInverse.dot(control * model.load) - initialState
             
-            residual        = model.stiffness.dot(u) - control*model.load
+            residual        = currentState.dot(u) - currentLoad
             resNorm         = np.linalg.norm(residual)
             
             # Check termination criterion and update output streams
