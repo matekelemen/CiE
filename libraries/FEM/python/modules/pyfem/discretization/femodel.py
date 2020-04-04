@@ -144,6 +144,7 @@ class FEModel:
         #self.load[boundaryCondition.DoF] = boundaryCondition.value
         self.stiffness[boundaryCondition.DoF, boundaryCondition.DoF] += boundaryCondition.penaltyValue
         self.load[boundaryCondition.DoF] += boundaryCondition.penaltyValue * boundaryCondition.value
+        boundaryCondition.applied = True
 
 
     @requiresInitialized
@@ -253,15 +254,17 @@ class TransientFEModel( FEModel ):
 
     @requiresInitialized
     def applyBoundaryCondition( self, boundaryCondition ):
-        BC          = copy(boundaryCondition)
-        BC.value    = BC.value( self.time )
+        BC                          = copy(boundaryCondition)
+        BC.value                    = BC.value( self.time )
+        boundaryCondition.applied   = True
         return FEModel.applyBoundaryCondition( self, BC )
 
 
     @requiresInitialized
     def removeBoundaryCondition( self, boundaryCondition ):
-        BC          = copy(boundaryCondition)
-        BC.value    = BC.value( self.time )
+        BC                          = copy(boundaryCondition)
+        BC.value                    = BC.value( self.time )
+        boundaryCondition.applied   = False
         return FEModel.removeBoundaryCondition( self, BC )
 
 

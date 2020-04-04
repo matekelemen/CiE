@@ -15,37 +15,44 @@ from pyfem.postprocessing.graphics import animateTimeSeries
 # ---------------------------------------------------------
 # Geometry and material
 length                      = 1.0
-capacity                    = lambda u: 1.0
-dCapacity                   = lambda u: 0.0
-#capacity                    = lambda u: 1.0 + 9.0 * np.exp( -(u-0.5)**2 / 0.005 )
-#dCapacity                   = lambda u: 9.0 * np.exp( -(u-0.5)**2 / 0.005 ) * (2.0/0.005)*(0.5-u)
-conductivity                = lambda u: 1.0
-dConductivity               = lambda u: 0.0
-#conductivity                = lambda u: 1.0 + 9.0 * np.exp( -(u-0.5)**2 / 0.005 )
-#dConductivity               = lambda u: 9.0 * np.exp( -(u-0.5)**2 / 0.005 ) * (2.0/0.005)*(0.5-u)
+#capacity                    = lambda u: 1.0
+#dCapacity                   = lambda u: 0.0
+capacity                    = lambda u: 1.0 + 9.0 * np.exp( -(u-0.5)**2 / 0.005 )
+dCapacity                   = lambda u: 9.0 * np.exp( -(u-0.5)**2 / 0.005 ) * (2.0/0.005)*(0.5-u)
+#conductivity                = lambda u: 1.0
+#dConductivity               = lambda u: 0.0
+conductivity                = lambda u: 1.0 + 9.0 * np.exp( -(u-0.5)**2 / 0.005 )
+dConductivity               = lambda u: 9.0 * np.exp( -(u-0.5)**2 / 0.005 ) * (2.0/0.005)*(0.5-u)
 
 # Load
 load                        = lambda t, x: 0.0
 boundaryFlux                = lambda t: 1.0
+penaltyValue                = 1e10
 
 # Discretization
-time                        = np.linspace(0.0, 1.0, 25)
+time                        = np.linspace(0.0, 1.0, 60)
 nElements                   = 10
 polynomialOrder             = 3
 
 # Integration
-integrationOrder            = 2 * (2*polynomialOrder + 1)
+integrationOrder            = 1 * (2*polynomialOrder + 1)
 finiteDifferenceImplicity   = 0.5
 
 # Iteration
 numberOfIncrements          = 1
-numberOfCorrections         = 30
+numberOfCorrections         = 50
 tolerance                   = 1e-5
 
 # ---------------------------------------------------------
 # General initialization
 samples         = np.linspace( 0, length, num=100 )
 convergencePlot = ConvergencePlot()
+
+loadFactors     = None
+if numberOfIncrements > 1:
+    loadFactors = np.linspace( 0.0, 1.0, num=numberOfIncrements )
+else:
+    loadFactors = [1.0]
 
 # ---------------------------------------------------------
 # Initialize FE model
@@ -68,7 +75,8 @@ model.allocateZeros( )
 
 # Boundary conditions
 model.addBoundaryCondition( DirichletBoundary(  0, 
-                                                lambda t: 0.0   ) )
+                                                lambda t: 0.0,
+                                                penaltyValue=penaltyValue   ) )
 
 model.addBoundaryCondition( NeumannBoundary(    nElements*polynomialOrder,
                                                 boundaryFlux) )
@@ -118,11 +126,10 @@ timeSeries          = solveNonlinearHeat1D( time,
                                             initialSolution,
                                             model,
                                             theta=finiteDifferenceImplicity,
-                                            loadFactors=np.linspace(0.0, 1.0, num=numberOfIncrements+1),
+                                            loadFactors=loadFactors,
                                             maxCorrections=numberOfCorrections,
                                             tolerance=tolerance,
                                             verbose=True,
-                                            axes=None,
                                             convergencePlot=convergencePlot )
 
 # ---------------------------------------------------------
@@ -134,4 +141,4 @@ animateTimeSeries(  time,
                     speed=0.02,
                     ylim=( -0.1, 1.0 ) )
 plt.tight_layout()
-plt.show()
+plt.show( block=True )

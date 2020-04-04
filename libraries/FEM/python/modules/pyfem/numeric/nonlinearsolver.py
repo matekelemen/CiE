@@ -26,7 +26,7 @@ def reintegrate(    model,
         keywordArgs["mass"] = mass
 
     # Wipe matrices and set solution function
-    model.resetMatrices()
+    model.resetMatrices( **keywordArgs )
     solutionFunction = lambda x: model.sample(solution, x)
 
     # Compute structural matrices
@@ -231,7 +231,6 @@ def transientFixedPointIteration(   model,
                                     tolerance=1e-5,
                                     theta=0.5,
                                     verbose=True,
-                                    axes=None,
                                     convergencePlot=None ):
     '''
     Solves a transient nonlinear FEModel using fixed point iterations
@@ -240,17 +239,18 @@ def transientFixedPointIteration(   model,
     # ---------------------------------------------------------
     # Initialize arguments
     u                   = initialSolution.copy()
-    initialState        = None
-    massInverse         = None
-    currentState        = None
-    currentLoad         = None
-    dt                  = 1.0/dt * sparse.eye(model.size)
+    DT                  = 1.0/dt * sparse.eye(model.size)
+    resNorm             = None
 
     if loadFactors is None:
-        loadFactors     = np.linspace( 0.0, 1.0, num=5+1 )
+        loadFactors     = [1.0]
 
     if convergencePlot is not None:
         convergencePlot.start()
+
+    # Initialize system components
+    initialState        =   (1.0-theta) * sparse.linalg.inv(initialMass).dot( initialLoad - initialStiffness.dot(u) ) \
+                            + DT.dot(u)
     
     # ---------------------------------------------------------
     # Increment loop
@@ -260,21 +260,8 @@ def transientFixedPointIteration(   model,
         if verbose:
             print( "\nIncrement# " + str(incrementIndex) + " " + "-"*(35-11-len(str(incrementIndex))-1) )
 
-        # Check if first run (initialization)
-        if incrementIndex == 0:
-            initialState    =   (1.0-theta) * sparse.linalg.inv(initialMass).dot( initialStiffness.dot(u) - initialLoad ) \
-                                - dt.dot(u)
-            massInverse     = sparse.linalg.inv(model.mass)
-            currentState    = theta*massInverse.dot(model.stiffness) + dt
-            currentLoad     = theta * massInverse.dot(loadFactors[0] * model.load) - initialState
-            continue
-
         # Correction loop
         for correctionIndex in range(maxCorrections):
-            # Correct
-            u           = solveLinearSystem(    currentState,
-                                                currentLoad )
-
             # Update residual
             reintegrate(    model, 
                             control, 
@@ -282,8 +269,8 @@ def transientFixedPointIteration(   model,
                             geometricStiffness=False )
 
             massInverse     = sparse.linalg.inv(model.mass)
-            currentState    = theta * massInverse.dot(model.stiffness) + dt
-            currentLoad     = theta * massInverse.dot(control * model.load) - initialState
+            currentState    = theta * massInverse.dot(model.stiffness) + DT
+            currentLoad     = theta * massInverse.dot(control * model.load) + initialState
             
             residual        = currentState.dot(u) - currentLoad
             resNorm         = np.linalg.norm(residual)
@@ -295,20 +282,36 @@ def transientFixedPointIteration(   model,
                 convergencePlot( resNorm )
             if resNorm < tolerance:
                 break
-            elif correctionIndex == maxCorrections-1:
-                print( "Warning: corrector failed to converge within the specified tolerance" )
 
-        # Plot if requested
-        if axes is not None:
-            axes.plot( np.linspace( 0, 1, num=100 ), model.sample( u, np.linspace( 0, 1, num=100 ) ) )
+            # Correct
+            u           = solveLinearSystem(    currentState,
+                                                currentLoad )
+
+        # Compute final residual
+        if resNorm > tolerance:
+            reintegrate(    model, 
+                            loadFactors[-1], 
+                            u,
+                            geometricStiffness=False )
+            massInverse     = sparse.linalg.inv(model.mass)
+            currentState    = theta * massInverse.dot(model.stiffness) + DT
+            currentLoad     = theta * massInverse.dot(loadFactors[-1] * model.load) + initialState
+            residual        = currentState.dot(u) - currentLoad
+            resNorm         = np.linalg.norm(residual)
+
+            if verbose:
+                print( "Final residual\t\t: %.3E" % resNorm )
+
+        if resNorm > tolerance:
+            print( "Nonlinear solver failed to correct increment" )
 
     # ---------------------------------------------------------
-    # Decorate plot if requested
-    if axes is not None:
-        axes.legend( [ "Control parameter = %.2f" % l for l in loadFactors[1:] ] )
-        axes.set_xlabel( "x [m]" )
-        axes.set_ylabel( "T [C]" )
-        axes.set_title( "Temperature Field" )
+    #uDot    = (u-initialSolution)/dt
+    #eq      = model.mass.dot(uDot) + model.stiffness.dot(u) - model.load
+    #print( "Eq residual\t\t: %.3E" % np.linalg.norm(eq) )
+
+    if resNorm > tolerance:
+        raise RuntimeError( "Nonlinear solver failed to converge" )
 
     if convergencePlot is not None:
         convergencePlot.finish()

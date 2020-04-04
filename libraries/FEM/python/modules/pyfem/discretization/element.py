@@ -18,13 +18,16 @@ class Element:
             raise AttributeError( "Number of degrees of freedom must match" )
 
         # Set members
-        self.basisFunctions     = basisFunctions
-        self.domain             = np.asarray( domain )
-        self.DoFs               = np.asarray( DoFs )
-        self.load               = load
-        self.integrator         = Integrator(integrationOrder)
+        self.basisFunctions         = basisFunctions
+        self.domain                 = np.asarray( domain )
+        self.DoFs                   = np.asarray( DoFs )
+        self.load                   = load
+        self.integrator             = Integrator(integrationOrder)
 
-        self.basisDerivatives   = basisFunctions.derivatives()
+        self.basisDerivatives       = basisFunctions.derivatives()
+
+        self._basisDerivativeCache  = None
+        self._basisCache            = None
 
 
     def updateGlobalMatrix( self, matrix, index1, index2, value ):
@@ -177,15 +180,15 @@ class NonlinearHeatElement1D( Element1D ):
         '''
         Integrate conductivity * dNi * dNj
         '''
+        if self._basisDerivativeCache is None:
+            self._basisDerivativeCache    = [ self.integrator.createCache( self.basisDerivatives[i], self.basisDerivatives.domain ) for i in range(len(self.basisDerivatives)) ]
         conductivityCache       = self.integrator.createCache( lambda x: self.conductivity(temperatureFunction(self.toGlobalCoordinates(x))), self.basisFunctions.domain )
-        basisDerivativeCache    = [ self.integrator.createCache( self.basisDerivatives[i], self.basisDerivatives.domain ) for i in range(len(self.basisDerivatives)) ]
         
         for i in range(len(self.basisDerivatives)):
-            cache   = np.multiply( conductivityCache, basisDerivativeCache[i] )
+            cache   = conductivityCache * self._basisDerivativeCache[i]
             for j in range( i, len(self.basisDerivatives) ):
-                dNj     = self.basisDerivatives[j]
-                value   = self._invJacobian * self.integrator.integrateCached(  lambda x: dNj(x), 
-                                                                                cache,
+                value   = self._invJacobian * self.integrator.integrateCached(  lambda x: 1.0, 
+                                                                                cache * self._basisDerivativeCache[j],
                                                                                 self.basisDerivatives.domain )
                 self.updateGlobalMatrix( globalStiffnessMatrix, i, j, value )
 
@@ -194,12 +197,16 @@ class NonlinearHeatElement1D( Element1D ):
         '''
         Integrate capacity * Ni * Nj
         '''
+        if self._basisCache is None:
+            self._basisCache      = [ self.integrator.createCache( self.basisFunctions[i], self.basisFunctions.domain ) for i in range(len(self.basisFunctions)) ]
+        capacityCache   = self.integrator.createCache( lambda x: self.capacity(temperatureFunction(self.toGlobalCoordinates(x))), self.basisFunctions.domain )
+
         for i in range(len(self.basisFunctions)):
-            Ni      = self.basisFunctions[i]
+            cache = capacityCache * self._basisCache[i]
             for j in range( i, len(self.basisFunctions) ):
-                Nj      = self.basisFunctions[j]
-                value   = self._jacobian * self.integrator(   lambda x: self.capacity(temperatureFunction(self.toGlobalCoordinates(x))) * Ni(x)*Nj(x), 
-                                                            self.basisFunctions.domain )
+                value   = self._jacobian * self.integrator.integrateCached( lambda x: 1.0,
+                                                                            cache * self._basisCache[j], 
+                                                                            self.basisFunctions.domain )
                 self.updateGlobalMatrix( globalMassMatrix, i, j, value )
 
 
@@ -207,12 +214,13 @@ class NonlinearHeatElement1D( Element1D ):
         '''
         Integrate load * Ni
         '''
-        cache = self.integrator.createCache( lambda x: self.load(self.toGlobalCoordinates(x)), self.basisFunctions.domain )
+        if self._basisCache is None:
+            self._basisCache      = [ self.integrator.createCache( self.basisFunctions[i], self.basisFunctions.domain ) for i in range(len(self.basisFunctions)) ]
+        loadCache = self.integrator.createCache( lambda x: self.load(self.toGlobalCoordinates(x)), self.basisFunctions.domain )
         
         for i in range(len(self.basisFunctions)):
-            Ni      = self.basisFunctions[i]
-            value   = self._jacobian * self.integrator.integrateCached( lambda x: Ni(x), 
-                                                                        cache,
+            value   = self._jacobian * self.integrator.integrateCached( lambda x: 1.0, 
+                                                                        loadCache * self._basisCache[i],
                                                                         self.basisFunctions.domain )
             self.updateGlobalVector( globalLoadVector, i, value )
 
@@ -221,17 +229,19 @@ class NonlinearHeatElement1D( Element1D ):
         '''
         Integrate conductivityDerivative * dNi*Nj * sum(dNk*uk)
         '''
-        basisDerivativeCache    = [ self.integrator.createCache( self.basisDerivatives[i], self.basisDerivatives.domain ) for i in range(len(self.basisDerivatives)) ]
-        basisCache              = [ self.integrator.createCache( self.basisFunctions[i], self.basisFunctions.domain ) for i in range(len(self.basisFunctions)) ]
+        if self._basisDerivativeCache is None:
+            self._basisDerivativeCache    = [ self.integrator.createCache( self.basisDerivatives[i], self.basisDerivatives.domain ) for i in range(len(self.basisDerivatives)) ]
+        if self._basisCache is None:
+            self._basisCache              = [ self.integrator.createCache( self.basisFunctions[i], self.basisFunctions.domain ) for i in range(len(self.basisFunctions)) ]
         dConductivityCache      = self.integrator.createCache( lambda x: self.conductivityDerivative(self.toGlobalCoordinates(x)), self.basisDerivatives.domain )
         
         for i in range(len( self.basisDerivatives )):
-            cache0 = basisDerivativeCache[i] * dConductivityCache
+            cache0 = self._basisDerivativeCache[i] * dConductivityCache
             for j in range(len( self.basisFunctions )):
-                cache1  = cache0 * basisCache[j]
+                cache1  = cache0 * self._basisCache[j]
                 value   = 0.0
                 for k in range(len( self.basisDerivatives )):
-                    cache2  = cache1 * basisDerivativeCache[k]
+                    cache2  = cache1 * self._basisDerivativeCache[k]
                     value   +=  self._invJacobian * self.integrator.integrateCached(    lambda x: 1.0,
                                                                                         cache2,
                                                                                         self.basisFunctions.domain )    \
