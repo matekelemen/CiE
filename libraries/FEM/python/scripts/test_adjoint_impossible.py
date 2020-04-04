@@ -13,13 +13,20 @@ from pyfem.numeric import solveLinearHeat1D, solveAdjointLinearHeat1D
 from pyfem.optcontrol import squaredSolutionErrorFunctional
 from pyfem.postprocessing import animateTimeSeries, ConvergencePlot
 
+'''
+Usual 1D model but with a constant source on the farther half of the bar (impossible to correctly control with the given DoF)
+
+The left boundary has a constant zero Dirichlet condition, while a constant zero Neumann condition is set on the right side.
+The bar is subject to stationary source load, but only on the left half (top plot shows the source on the bar). 
+
+As always, the control is the flux on the right boundary, so following the applied load case is pretty much impossible, as
+is shown by the results: the functional converges, but not to 0. Looking at the animated time history (middle plot), the control
+overshoots on the right side, while not being able properly heat up the left half (as expected). 
+'''
+
 # ---------------------------------------------------------
 # SETTINGS
 # ---------------------------------------------------------
-'''
-Usual 1D model but with a constant source on the farther half of the bar (impossible to correctly control with the given DoF) 
-'''
-
 # Reference
 referenceControl            = lambda t: 0.0
 initialControl              = lambda t: 0.0
@@ -47,7 +54,7 @@ finiteDifferenceImplicity   = 0.5
 
 # Adjoint
 numberOfAdjointIterations   = 25
-regularization              = 15.0
+regularization              = 10.0
 
 # Postprocessing
 numberOfSamples             = 100
