@@ -81,14 +81,14 @@ The partial derivatives of the residual form the tangent stiffness matrix $`\bar
 = 
 \int_\Omega \kappa \frac{dN_i}{dx}\frac{dN_j}{dx}d\Omega
 + \int_\Omega \frac{d\kappa}{du}N_j\frac{dN_i}{dx}\frac{dN_k}{dx}d\Omega \hat{u}_k 
-+ \lambda \int_\Omega \frac{\partial f}{\partial u}N_i N_j d\Omega
++ \lambda \int_\Omega \frac{\partial f}{\partial \hat u_j}N_i N_j d\Omega
 \tag{8}
 ```
 
 ```math
 q_i = -\frac{\partial r_i}{\partial \lambda}
 =
-\int_\Omega f N_i d\Omega - (\kappa_1 N_i(x_1) \Phi_1 - \kappa_0 N_i(x_0) \Phi_0)
+- \int_\Omega f N_i d\Omega + \bigg( \kappa_1 N_i(x_1) \Phi_1 - \kappa_0 N_i(x_0) \Phi_0 \bigg)
 \tag{9}
 ```
 

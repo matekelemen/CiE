@@ -6,6 +6,56 @@ import numpy as np
 import scipy.sparse as sparse
 
 # ---------------------------------------------------------
+def newtonIteration(    targetSystem,
+                        initialSolution,
+                        tolerance=1e-5,
+                        maxIterations=10,
+                        verbose=False,
+                        convergencePlot=None    ):
+    '''
+    Attempts to find a root of a target function, using 1st order linearization.
+    The target function must return a 1D numpy array, while the target derivative
+    must return a matching nonsingular square numpy ndarray. Both the function and
+    derivative must expect the state (1D numpy array) as argument (and no other
+    positional arguments).
+    '''
+    # Initialize
+    solution                    = initialSolution.copy()
+    functionValue, derivative   = targetSystem(solution)
+    iterationCounter            = 1
+    targetNorm                  = np.linalg.norm(functionValue)
+
+    if verbose:
+        print( "Initial target\t: %.3E" % targetNorm )
+    if convergencePlot is not None:
+        convergencePlot(targetNorm)
+
+    # Loop
+    while True:
+        # Check if iteration limit exceeded
+        if iterationCounter >= maxIterations:
+            print( "Newton iteration failed to converge after %i iterations" % iterationCounter )
+            break
+
+        # Step
+        solution                    -= solveLinearSystem( derivative, functionValue )
+        functionValue, derivative   = targetSystem(solution)
+
+        # Check convergence
+        targetNorm                  = np.linalg.norm(functionValue)
+        if verbose:
+            print( "Target norm\t: %.3E" % targetNorm )
+        if convergencePlot is not None:
+            convergencePlot(targetNorm)
+        if targetNorm < tolerance:
+            break
+
+        iterationCounter            += 1
+    
+    return solution
+
+
+
 def reintegrate(    model, 
                     loadFactor, 
                     solution,
@@ -53,72 +103,58 @@ def stationaryLoadControl(  model,
     '''
     # ---------------------------------------------------------
     # Initialize arguments
-    u               = initialSolution
+    u               = initialSolution.copy()
 
     if loadFactors is None:
         loadFactors     = np.linspace( 0.0, 1.0, num=5+1 )
 
     if convergencePlot is not None:
         convergencePlot.start()
+
+    # Define inputs for the Newton iteration
+    def updateSystem(solution, loadFactor):
+        reintegrate(    model,
+                        loadFactor,
+                        solution,
+                        mass=False)
+        residual            = model.stiffness.dot(solution) - loadFactor*model.load
+        tangentStiffness    = model.stiffness + model.geometricStiffness
+        return residual, tangentStiffness
+
+    # Initialize structural matrices
+    reintegrate(    model,
+                    loadFactors[0],
+                    initialSolution,
+                    mass=False)
     
     # ---------------------------------------------------------
     # Increment loop
     for incrementIndex, control in enumerate(loadFactors):
 
+        if incrementIndex == 0:
+            continue
+
         # Print iteration header
         if verbose:
             print( "\nIncrement# " + str(incrementIndex) + " " + "-"*(35-11-len(str(incrementIndex))-1) )
 
-        # Check if first run (initialization)
-        if incrementIndex == 0:
-            reintegrate(    model, 
-                            loadFactors[0], 
-                            u,
-                            mass=False )
-            continue
-
         # Predict
         controlIncrement    = control-loadFactors[incrementIndex-1]
-        #u                   += solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
-        uMid                = u + 0.5 * solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
-        reintegrate(    model, 
-                        control, 
-                        uMid,
-                        mass=False )
         u                   += solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
-
-        # Compute prediction residual
-        reintegrate(    model, 
-                        control, 
-                        u,
-                        mass=False )
-        residual    = model.stiffness.dot(u) -  control*model.load
-        resNorm     = np.linalg.norm( residual )
-        if verbose:
-            print( "Prediction residual\t: %.3E" % resNorm )
-        if convergencePlot is not None:
-            convergencePlot( resNorm )
+        #uMid                = u + 0.5 * solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
+        #reintegrate(    model, 
+        #                control, 
+        #                uMid,
+        #                mass=False )
+        #u                   += solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
 
         # Correction loop
-        for correctionIndex in range(maxCorrections):
-            # Correct
-            u           += solveLinearSystem( model.stiffness + model.geometricStiffness, -residual )
-
-            # Update residual and check termination criterion
-            reintegrate(    model, 
-                            control, 
-                            u,
-                            mass=False )
-            residual    = model.stiffness.dot(u) - control*model.load
-            resNorm     = np.linalg.norm(residual)
-            if verbose:
-                print( "Corrected residual\t: %.3E" % resNorm )
-            if convergencePlot is not None:
-                convergencePlot( resNorm )
-            if resNorm < tolerance:
-                break
-            elif correctionIndex == maxCorrections-1:
-                print( "Warning: corrector failed to converge within the specified tolerance" )
+        u           = newtonIteration(  lambda solution: updateSystem(solution, control),
+                                        u,
+                                        tolerance=tolerance,
+                                        maxIterations=maxCorrections,
+                                        verbose=True,
+                                        convergencePlot=convergencePlot)
 
         # Plot if requested
         if axes is not None:
