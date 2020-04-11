@@ -51,9 +51,11 @@ model.integrate( )
 
 # Boundary conditions
 model.addBoundaryCondition( DirichletBoundary(  0, 
+                                                0.0,
                                                 lambda t: 0.0   ) )
 
 model.addBoundaryCondition( NeumannBoundary(    nElements*polynomialOrder,
+                                                length,
                                                 lambda t: 1.0) )
 
 # Solve

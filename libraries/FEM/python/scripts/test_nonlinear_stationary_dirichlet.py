@@ -8,7 +8,7 @@ from pyfem.discretization import IntegratedHierarchicBasisFunctions
 from pyfem.discretization import NonlinearHeatElement1D
 from pyfem.discretization import NonlinearFEModel
 from pyfem.discretization import DirichletBoundary
-from pyfem.numeric import stationaryFixedPointIteration as nonlinearSolver
+from pyfem.numeric import stationaryLoadControl as nonlinearSolver
 from pyfem.postprocessing import ConvergencePlot
 
 # ---------------------------------------------------------
@@ -34,7 +34,7 @@ polynomialOrder     = 3
 integrationOrder    = 2 * (2*polynomialOrder + 1)
 
 # Iteration
-numberOfIncrements  = 3
+numberOfIncrements  = 5
 numberOfCorrections = 30
 tolerance           = 1e-5
 

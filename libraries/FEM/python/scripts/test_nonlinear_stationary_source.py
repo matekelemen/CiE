@@ -81,11 +81,11 @@ model.allocateZeros( )
 # Boundary conditions
 leftBCID    = model.addBoundaryCondition(   DirichletBoundary(  0, 
                                                                 0.0,
-                                                                penaltyValue=penaltyValue ))
+                                                                0.0 ))
 
 rightBCID   = model.addBoundaryCondition(   DirichletBoundary(  nElements*polynomialOrder,
-                                                                0.0,
-                                                                penaltyValue=penaltyValue) )
+                                                                length,
+                                                                0.0) )
 
 # ---------------------------------------------------------
 # Solve in 2 increment iterations, round 1

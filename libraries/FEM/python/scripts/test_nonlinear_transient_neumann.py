@@ -75,10 +75,11 @@ model.allocateZeros( )
 
 # Boundary conditions
 model.addBoundaryCondition( DirichletBoundary(  0, 
-                                                lambda t: 0.0,
-                                                penaltyValue=penaltyValue   ) )
+                                                0.0,
+                                                lambda t: 0.0   ) )
 
 model.addBoundaryCondition( NeumannBoundary(    nElements*polynomialOrder,
+                                                length,
                                                 boundaryFlux) )
 
 # Initial values
