@@ -68,9 +68,11 @@ model.allocateZeros( )
 
 # Boundary conditions (right BC is the load)
 leftBCID    = model.addBoundaryCondition(   DirichletBoundary(  0, 
+                                                                0.0,
                                                                 0.0 ))
 
 rightBCID   = model.addBoundaryCondition(   DirichletBoundary(  nElements*polynomialOrder,
+                                                                length,
                                                                 boundaryTemperature) )
 
 # ---------------------------------------------------------

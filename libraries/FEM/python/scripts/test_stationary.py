@@ -48,15 +48,18 @@ model.integrate( )
 
 # Boundary conditions
 leftBCID    = model.addBoundaryCondition(   DirichletBoundary(  0, 
-                                                                0.0 ))
+                                                                0.0,
+                                                                1.0 ))
 
-rightBCID   = model.addBoundaryCondition(   DirichletBoundary(  nElements*polynomialOrder,
+rightBCID   = model.addBoundaryCondition(   NeumannBoundary(  nElements*polynomialOrder,
+                                                                length,
                                                                 1.0) )
 
 # Solve
 u       = solveLinearSystem( model.stiffness, model.load )
 
 # Output
+np.set_printoptions( precision=1, suppress=True )
 print( model.stiffness.todense() )
 print( "Solution: " + str(u) )
 

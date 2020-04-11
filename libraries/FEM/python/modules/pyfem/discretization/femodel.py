@@ -109,18 +109,12 @@ class FEModel:
         return len(self.boundaries)-1
 
 
-    def removeBoundaryCondition( self, boundaryID ):
-        boundaryCondition       = self.boundaries.pop( boundaryID )
-        if boundaryCondition.BCType is "dirichlet":
-            self.removeDirichletBoundary( boundaryCondition )
-        elif boundaryCondition.BCType is "neumann":
-            self.removeNeumannBoundary( boundaryCondition )
-        else:
-            raise NotImplementedError( "Unknown boundary condition type" )
-
-
     @requiresInitialized
     def applyBoundaryCondition( self, boundaryCondition, *args, **kwargs ):
+        # Check if boundary condition is initialized
+        boundaryCondition.initialize(self)
+        
+        # Defer enforcing to dedicated functions 
         if boundaryCondition.BCType is "dirichlet":
             self.applyDirichletBoundary( boundaryCondition, *args, **kwargs )
         elif boundaryCondition.BCType is "neumann":
@@ -131,40 +125,28 @@ class FEModel:
 
     @requiresInitialized
     def applyDirichletBoundary( self, boundaryCondition ):
-        #if boundaryCondition.applied is not True:
-        #    for index in range(self.size):
-        #        if np.abs( self.stiffness[boundaryCondition.DoF, index] )>1e-15:
-        #            self.stiffness[boundaryCondition.DoF, index] = 0.0
-        #        if np.abs( self.stiffness[ index, boundaryCondition.DoF] )>1e-15:
-        #            self.stiffness[ index, boundaryCondition.DoF ] = 0.0
-        #    #self.stiffness[boundaryCondition.DoF,boundaryCondition.DoF] += boundaryCondition.penaltyValue
-        #    self.stiffness[boundaryCondition.DoF,boundaryCondition.DoF] = 1.0
-        #    boundaryCondition.applied = True
-        ##self.load[boundaryCondition.DoF]    += boundaryCondition.penaltyValue * boundaryCondition.value
-        #self.load[boundaryCondition.DoF] = boundaryCondition.value
-        self.stiffness[boundaryCondition.DoF, boundaryCondition.DoF] += boundaryCondition.penaltyValue
-        self.load[boundaryCondition.DoF] += boundaryCondition.penaltyValue * boundaryCondition.value
-        boundaryCondition.applied = True
-
-
-    @requiresInitialized
-    def removeDirichletBoundary( self, boundaryCondition ):
         if boundaryCondition.applied is not True:
-            self.stiffness[boundaryCondition.DoF,boundaryCondition.DoF] -= boundaryCondition.penaltyValue
-            boundaryCondition.applied = False
-        self.load[boundaryCondition.DoF]    -= boundaryCondition.penaltyValue * boundaryCondition.value
+            # Reset the affected DoF
+            for index in range(self.size):
+                if np.abs( self.stiffness[boundaryCondition.DoF, index] )>1e-15:
+                    self.stiffness[boundaryCondition.DoF, index] = 0.0
+                if np.abs( self.stiffness[ index, boundaryCondition.DoF] )>1e-15:
+                    self.load[index] -= self.stiffness[index, boundaryCondition.DoF] * boundaryCondition.value
+                    self.stiffness[ index, boundaryCondition.DoF ] = 0.0
+
+            # Enforce boundary
+            self.stiffness[boundaryCondition.DoF,boundaryCondition.DoF] = 1.0
+            self.load[boundaryCondition.DoF] = boundaryCondition.value
+            #self.stiffness[boundaryCondition.DoF,boundaryCondition.DoF] += boundaryCondition.penaltyValue
+            #self.load[boundaryCondition.DoF]    += boundaryCondition.penaltyValue * boundaryCondition.value
+            
+            boundaryCondition.applied = True
 
 
     @requiresInitialized
     def applyNeumannBoundary( self, boundaryCondition ):
         self.load[boundaryCondition.DoF]    = boundaryCondition.value
         boundaryCondition.applied           = True
-
-
-    @requiresInitialized
-    def removeNeumannBoundary( self, boundaryCondition ):
-        self.load[boundaryCondition.DoF]    -= boundaryCondition.value
-        boundaryCondition.applied           = False
 
 
     @requiresInitialized
