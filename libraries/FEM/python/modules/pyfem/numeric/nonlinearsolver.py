@@ -35,7 +35,7 @@ def newtonIteration(    targetSystem,
         # Check if iteration limit exceeded
         if iterationCounter >= maxIterations:
             print( "Newton iteration failed to converge after %i iterations" % iterationCounter )
-            break
+            raise StopIteration
 
         # Step
         solution                    -= solveLinearSystem( derivative, functionValue )
@@ -131,30 +131,31 @@ def stationaryLoadControl(  model,
     # Increment loop
     for incrementIndex, control in enumerate(loadFactors):
 
-        if incrementIndex == 0:
-            continue
-
         # Print iteration header
         if verbose:
             print( "\nIncrement# " + str(incrementIndex) + " " + "-"*(35-11-len(str(incrementIndex))-1) )
 
         # Predict
         controlIncrement    = control-loadFactors[incrementIndex-1]
-        u                   += solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
-        #uMid                = u + 0.5 * solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
-        #reintegrate(    model, 
-        #                control, 
-        #                uMid,
-        #                mass=False )
         #u                   += solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
+        uMid                = u + 0.5 * solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
+        reintegrate(    model, 
+                        control, 
+                        uMid,
+                        mass=False )
+        u                   += solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
 
-        # Correction loop
-        u           = newtonIteration(  lambda solution: updateSystem(solution, control),
-                                        u,
-                                        tolerance=tolerance,
-                                        maxIterations=maxCorrections,
-                                        verbose=True,
-                                        convergencePlot=convergencePlot)
+        # Correct
+        try:
+            u           = newtonIteration(  lambda solution: updateSystem(solution, control),
+                                            u,
+                                            tolerance=tolerance,
+                                            maxIterations=maxCorrections,
+                                            verbose=True,
+                                            convergencePlot=convergencePlot)
+        except StopIteration as exception:
+            print(exception)
+            raise RuntimeError( "StopIteration" )
 
         # Plot if requested
         if axes is not None:
@@ -163,7 +164,7 @@ def stationaryLoadControl(  model,
     # ---------------------------------------------------------
     # Decorate plot if requested
     if axes is not None:
-        axes.legend( [ "Control parameter = %.2f" % l for l in loadFactors[1:] ] )
+        axes.legend( [ "Control parameter = %.2f" % l for l in loadFactors ] )
         axes.set_xlabel( "x [m]" )
         axes.set_ylabel( "T [C]" )
         axes.set_title( "Temperature Field" )
