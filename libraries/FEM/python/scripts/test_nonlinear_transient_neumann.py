@@ -39,20 +39,17 @@ integrationOrder            = 1 * (2*polynomialOrder + 1)
 finiteDifferenceImplicity   = 0.5
 
 # Iteration
-numberOfIncrements          = 1
-numberOfCorrections         = 50
-tolerance                   = 1e-5
+baseIncrement       = 0.2
+minIncrement        = 0.01
+maxIncrement        = 0.4
+maxIncrements       = 15
+maxCorrections      = 8
+tolerance           = 1e-5
 
 # ---------------------------------------------------------
 # General initialization
 samples         = np.linspace( 0, length, num=100 )
 convergencePlot = ConvergencePlot()
-
-loadFactors     = None
-if numberOfIncrements > 1:
-    loadFactors = np.linspace( 0.0, 1.0, num=numberOfIncrements )
-else:
-    loadFactors = [1.0]
 
 # ---------------------------------------------------------
 # Initialize FE model
@@ -127,8 +124,11 @@ timeSeries          = solveNonlinearHeat1D( time,
                                             initialSolution,
                                             model,
                                             theta=finiteDifferenceImplicity,
-                                            loadFactors=loadFactors,
-                                            maxCorrections=numberOfCorrections,
+                                            baseIncrement=baseIncrement,
+                                            minIncrement=minIncrement,
+                                            maxIncrement=maxIncrement,
+                                            maxIncrements=maxIncrements,
+                                            maxCorrections=maxCorrections,
                                             tolerance=tolerance,
                                             verbose=True,
                                             convergencePlot=convergencePlot )

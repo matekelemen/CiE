@@ -9,7 +9,7 @@ from pyfem.discretization import IntegratedHierarchicBasisFunctions
 from pyfem.discretization import NonlinearHeatElement1D
 from pyfem.discretization import NonlinearFEModel
 from pyfem.discretization import DirichletBoundary, NeumannBoundary
-from pyfem.numeric import stationaryFixedPointIteration as nonlinearSolver
+from pyfem.numeric import stationaryLoadControl as nonlinearSolver
 from pyfem.postprocessing import ConvergencePlot
 
 # ---------------------------------------------------------
@@ -34,8 +34,11 @@ polynomialOrder     = 3
 integrationOrder    = 3 * (2*polynomialOrder + 1)
 
 # Iteration
-numberOfIncrements  = 3
-numberOfCorrections = 30
+baseIncrement       = 0.2
+minIncrement        = 0.01
+maxIncrement        = 0.4
+maxIncrements       = 15
+maxCorrections      = 8
 tolerance           = 1e-5
 
 # ---------------------------------------------------------
@@ -76,8 +79,10 @@ rightBCID   = model.addBoundaryCondition(   NeumannBoundary(    nElements*polyno
 # Solve
 u = nonlinearSolver(    model,
                         np.zeros(model.size),
-                        loadFactors=np.linspace(0.0, 1.0, num=numberOfIncrements+1),
-                        maxCorrections=numberOfCorrections,
+                        baseIncrement=baseIncrement,
+                        minIncrement=minIncrement,
+                        maxIncrement=maxIncrement,
+                        maxCorrections=maxCorrections,
                         tolerance=tolerance,
                         verbose=True,
                         axes=axes[1],

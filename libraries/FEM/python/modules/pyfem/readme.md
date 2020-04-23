@@ -102,10 +102,6 @@ For the sake if simplicity, the load $`f`$ will be assumed to be independent of 
 * $`K       = \int_\Omega \kappa \frac{dN_i}{dx}\frac{dN_j}{dx}d\Omega`$
 * $`K_g     = \int_\Omega \frac{d\kappa}{du}N_j\frac{dN_i}{dx}\frac{dN_k}{dx} d\Omega \hat{u}_k  `$
 
-*Notes: $`K_g`$ is pretty expensive to compute at each iteration while not contributing all that much to the convergence of the Newton iteration. In some cases (with nonzero source loads for example) it even prevents the residual from converging. Maybe it's just a bug in the code but right now, neglecting $`K_g`$ and using only $`K`$ is much faster and more reliable.*
-
-
-
 ## Alternative to the Newton method
 
 Since the Newton method comes with a lot of extra computational burdens while not ensuring convergence, it's a good idea to try cheaper alternatives. One possible method is converting the problem into a fixed point iteration:
@@ -245,7 +241,53 @@ To sort out this mess, we need to separate the unknown terms ($`\square^{k+1}`$)
 \tag{20}
 ```
 
-This is where my knowledge currently ends. I'm working on implementing a fixed point iteration to solve the nonlinear transient model, but that's still in progress. I'll update this section once I have useful results.
+
+Back from sidetracking, the task now is to compute the derivative of the transient residual $`r^{k+1}`$ $`(19)`$ with respect to $`\hat u^{k+1}`$. Avoiding an infinite slew of indices, the following expressions are written in another kind of notational catastrophe: mixed matrix and index notation.
+```math
+\frac{\partial r^{k+1}}{\partial \hat u^{k+1}_l}
+=
+\frac{\partial}{\partial \hat u^{k+1}_l}
+\bigg(
+    \theta M^{k+1^{-1}} K^{k+1} \hat u^{k+1}
+    +
+    \frac{\hat u^{k+1}}{\Delta t}
+    -
+    \theta M^{k+1^{-1}} \lambda^{k+1} q^{k+1}
+\bigg)
+\tag{21}
+```
+
+From this point the time index is dropped since all components live in the $`(k+1)^{th}`$ time step. Rearranging the expression above and highlighting important terms:
+```math
+\frac{r}{\hat u_l}
+=
+\theta \textcolor{red}{\frac{\partial M^{-1}}{\partial \hat u_l} K \hat u}
++
+\theta M^{-1} \textcolor{green}{\frac{\partial (K \hat u) }{\partial \hat u_l}}
++
+\frac{1}{\Delta t}\frac{\partial \hat u}{\partial \hat u_l}
+-
+\lambda \theta \textcolor{teal}{\frac{\partial M^{-1}}{\partial \hat u_l} q}
+\tag{22}
+```
+
+The expression in $`\textcolor{green}{green}`$ should be familiar; it's the tangent stiffness matrix $`\bar K`$ from the stationary case $`(10)`$. The other two coloured expressions are similar, in that they are products of $`3^{rd}`$ order tensors and vectors, resulting in $`2^{nd}`$ order tensors. Expanding the interesting bits of $`(22)`$, we get:
+```math
+\frac{\partial r_i}{\partial \hat u_l}
+=
+-\theta \textcolor{red}{[M^{-1}]_{ip} \int_\Omega \frac{dc}{du} N_p N_k N_j d\Omega [K \hat u]_j [M^{-1}]_{kl}}
++
+\theta [M^{-1} (\textcolor{green}{K+K_g}) ]_{il}
++
+\frac{1}{\Delta t} \delta_{il}
++
+\lambda \theta \textcolor{teal}{
+    [M^{-1}]_{ip} \int_\Omega \frac{dc}{du} N_p N_k N_j d\Omega q_j [M^{-1}]_{kl}
+    }
+\tag{23}
+```
+
+And we're done. The residual $`(19)`$ and its derivative $`(22)`$ can be used for iteratively solving the nonlinear equation for each successive time step.
 
 # Module
 

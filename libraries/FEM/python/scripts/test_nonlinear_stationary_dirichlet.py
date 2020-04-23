@@ -33,8 +33,11 @@ polynomialOrder     = 3
 integrationOrder    = 2 * (2*polynomialOrder + 1)
 
 # Iteration
-numberOfIncrements  = 15
-numberOfCorrections = 15
+baseIncrement       = 0.2
+minIncrement        = 0.01
+maxIncrement        = 0.4
+maxIncrements       = 15
+maxCorrections      = 8
 tolerance           = 1e-5
 
 # ---------------------------------------------------------
@@ -78,8 +81,11 @@ rightBCID   = model.addBoundaryCondition(   DirichletBoundary(  nElements*polyno
 # Solve
 u = nonlinearSolver(    model,
                         np.zeros(model.size),
-                        loadFactors=np.linspace(0.0, 1.0, num=numberOfIncrements+1),
-                        maxCorrections=numberOfCorrections,
+                        baseIncrement=baseIncrement,
+                        minIncrement=minIncrement,
+                        maxIncrement=maxIncrement,
+                        maxIncrements=maxIncrements,
+                        maxCorrections=maxCorrections,
                         tolerance=tolerance,
                         verbose=True,
                         axes=axes[1],

@@ -290,8 +290,6 @@ class NonlinearFEModel( FEModel ):
         if not boundaryCondition.applied:
             FEModel.applyDirichletBoundary(self, boundaryCondition)
             for i in range(self.size):
-                #if np.abs(self.geometricStiffness[i, boundaryCondition.DoF]) > 1e-15:
-                #    self.geometricStiffness[i, boundaryCondition.DoF] = 0.0
                 if np.abs(self.geometricStiffness[boundaryCondition.DoF, i]) > 1e-15:
                     self.geometricStiffness[boundaryCondition.DoF, i] = 0.0
 
@@ -370,3 +368,11 @@ class NonlinearTransientFEModel( TransientFEModel ):
         for boundaryCondition in self.boundaries:
             self.applyBoundaryCondition( boundaryCondition )
         
+
+    @requiresInitialized
+    def applyDirichletBoundary(self, boundaryCondition):
+        if not boundaryCondition.applied:
+            FEModel.applyDirichletBoundary(self, boundaryCondition)
+            for i in range(self.size):
+                if np.abs(self.geometricStiffness[boundaryCondition.DoF, i]) > 1e-15:
+                    self.geometricStiffness[boundaryCondition.DoF, i] = 0.0

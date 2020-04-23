@@ -8,23 +8,8 @@ from pyfem.discretization import IntegratedHierarchicBasisFunctions
 from pyfem.discretization import NonlinearHeatElement1D
 from pyfem.discretization import NonlinearFEModel
 from pyfem.discretization import DirichletBoundary
-from pyfem.numeric import stationaryFixedPointIteration as nonlinearSolver
+from pyfem.numeric import stationaryLoadControl as nonlinearSolver
 from pyfem.postprocessing import ConvergencePlot
-
-'''
-Standard stationary setup with zero Dirichlet conditions on both ends. The bar is 
-loaded with a half sine wave shaped source. One twist is that the material is 
-nonlinear (sharp gaussian hump in capacity centered at u=0.5). The other twist is 
-that the calculation is carried out twice:
-
-    1)  incrementing is broken down into two parts: 
-        increment to half load, then use the result and increment from half to full load.
-
-    2)  increment from naught to full load in one function call.
-
-Both cases use the same number of increments (unless numberOfIncrements is odd).
-Obviously, the results should be identical (with minor numerical inaccuracies).
-'''
 
 # ---------------------------------------------------------
 # Geometry and material
@@ -48,8 +33,11 @@ penaltyValue        = 1e10
 integrationOrder    = 2 * (2*polynomialOrder + 1)
 
 # Iteration
-numberOfIncrements  = 4
-numberOfCorrections = 30
+baseIncrement       = 0.2
+minIncrement        = 0.01
+maxIncrement        = 0.4
+maxIncrements       = 15
+maxCorrections      = 8
 tolerance           = 1e-5
 
 # ---------------------------------------------------------
@@ -58,6 +46,7 @@ samples         = np.linspace( 0, length, num=100 )
 fig             = plt.figure( )
 axes            = ( fig.add_subplot( 2,1,1 ),
                     fig.add_subplot( 2,1,2 ))
+convergencePlot = ConvergencePlot()
 
 # ---------------------------------------------------------
 # Initialize FE model
@@ -88,68 +77,25 @@ rightBCID   = model.addBoundaryCondition(   DirichletBoundary(  nElements*polyno
                                                                 0.0) )
 
 # ---------------------------------------------------------
-# Solve in 2 increment iterations, round 1
-loadFactors     = np.linspace( 0.0, 0.5, num=int(numberOfIncrements/2)+1 )
-
 # Solve
-convergencePlot = ConvergencePlot()
 u = nonlinearSolver(    model,
                         np.zeros(model.size),
-                        loadFactors=loadFactors,
-                        maxCorrections=numberOfCorrections,
+                        baseIncrement=baseIncrement,
+                        minIncrement=minIncrement,
+                        maxIncrement=maxIncrement,
+                        maxCorrections=maxCorrections,
                         tolerance=tolerance,
                         verbose=True,
-                        axes=None,
+                        axes=axes[1],
                         convergencePlot=convergencePlot   )
 
-# Solve in 2 increment iterations, round 2
-loadFactors     = np.linspace( 0.5, 1.0, num=int(numberOfIncrements/2)+1 )
-
-# Solve
-u = nonlinearSolver(    model,
-                        u,
-                        loadFactors=loadFactors,
-                        maxCorrections=numberOfCorrections,
-                        tolerance=tolerance,
-                        verbose=True,
-                        axes=None,
-                        convergencePlot=convergencePlot   )
-convergencePlot.reset()
-
-u2 = u.copy()
 # ---------------------------------------------------------
-# Solve in 1 increment iteration
-loadFactors     = np.linspace( 0.0, 1.0, num=numberOfIncrements+1 )
-
-# Solve
-convergencePlot.reset()
-u = nonlinearSolver(    model,
-                        np.zeros(model.size),
-                        loadFactors=loadFactors,
-                        maxCorrections=numberOfCorrections,
-                        tolerance=tolerance,
-                        verbose=True,
-                        axes=None,
-                        convergencePlot=convergencePlot   )
-# ---------------------------------------------------------
-# Print solution difference
-print( "\nNorm of solution difference\t: %.3E" % np.linalg.norm(u-u2) )
-
 # Plot conductivity
 samples = np.linspace( 0.0, np.max(model.sample( u, samples )), num=len(samples) )
 axes[0].plot( samples, [conductivity(temp) for temp in samples] )
 axes[0].set_xlabel( "T [C]" )
 axes[0].set_ylabel( r'$\kappa$' + " [W/K]" )
 axes[0].set_title( "Capacity(temperature)" )
-
-# Plot solutions
-samples = np.linspace( 0.0, length, num=100 )
-axes[1].plot( samples, model.sample( u, samples ) )
-axes[1].plot( samples, model.sample( u2, samples ), "--" )
-axes[1].legend( ("Single pass", "Double pass") )
-axes[1].set_xlabel( "x [m]" )
-axes[1].set_ylabel( "T [C]" )
-axes[1].set_title( "Temperature Field" )
 
 plt.tight_layout()
 fig.canvas.draw()

@@ -92,7 +92,10 @@ def reintegrate(    model,
 
 def stationaryLoadControl(  model,
                             initialSolution,
-                            loadFactors=None,
+                            baseIncrement=0.5,
+                            minIncrement=0.05,
+                            maxIncrement=1.0,
+                            maxIncrements=50,
                             maxCorrections=10,
                             tolerance=1e-5,
                             verbose=True,
@@ -104,9 +107,7 @@ def stationaryLoadControl(  model,
     # ---------------------------------------------------------
     # Initialize arguments
     u               = initialSolution.copy()
-
-    if loadFactors is None:
-        loadFactors     = np.linspace( 0.0, 1.0, num=5+1 )
+    loadFactors     = []
 
     if convergencePlot is not None:
         convergencePlot.start()
@@ -123,39 +124,61 @@ def stationaryLoadControl(  model,
 
     # Initialize structural matrices
     reintegrate(    model,
-                    loadFactors[0],
+                    0.0,
                     initialSolution,
                     mass=False)
     
     # ---------------------------------------------------------
     # Increment loop
-    for incrementIndex, control in enumerate(loadFactors):
+    increment       = maxIncrement
+    lastControl     = 0.0
+    control         = lastControl + increment
+    incrementIndex  = -1
+
+    while control < 1.0:
+
+        # Update control
+        incrementIndex += 1
+        control = lastControl + increment
+
+        if control > 1.0:
+            control = 1.0
 
         # Print iteration header
         if verbose:
             print( "\nIncrement# " + str(incrementIndex) + " " + "-"*(35-11-len(str(incrementIndex))-1) )
 
         # Predict
-        controlIncrement    = control-loadFactors[incrementIndex-1]
+        controlIncrement    = control-lastControl
         #u                   += solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
         uMid                = u + 0.5 * solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
         reintegrate(    model, 
                         control, 
                         uMid,
                         mass=False )
-        u                   += solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
+        uNew                = u + solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
 
         # Correct
         try:
-            u           = newtonIteration(  lambda solution: updateSystem(solution, control),
-                                            u,
+            uNew        = newtonIteration(  lambda solution: updateSystem(solution, control),
+                                            uNew,
                                             tolerance=tolerance,
                                             maxIterations=maxCorrections,
                                             verbose=True,
                                             convergencePlot=convergencePlot)
-        except StopIteration as exception:
-            print(exception)
-            raise RuntimeError( "StopIteration" )
+        except StopIteration:
+            increment /= 2.0
+            if increment < minIncrement:
+                raise RuntimeError( "Nonlinear iteration failed to converge" )
+            continue
+
+        # Update
+        lastControl = control
+        u           = uNew.copy()
+        loadFactors.append(control)
+
+        if 2.0*increment < maxIncrement:
+            increment *= 2.0
 
         # Plot if requested
         if axes is not None:
@@ -245,6 +268,154 @@ def stationaryFixedPointIteration(  model,
     # Decorate plot if requested
     if axes is not None:
         axes.legend( [ "Control parameter = %.2f" % l for l in loadFactors[1:] ] )
+        axes.set_xlabel( "x [m]" )
+        axes.set_ylabel( "T [C]" )
+        axes.set_title( "Temperature Field" )
+
+    if convergencePlot is not None:
+        convergencePlot.finish()
+    
+    return u
+
+
+
+
+def transientLoadControl(   model,
+                            initialSolution,
+                            initialStiffness,
+                            initialMass,
+                            initialLoad,
+                            dt,
+                            baseIncrement=0.5,
+                            minIncrement=0.05,
+                            maxIncrement=1.0,
+                            maxIncrements=50,
+                            maxCorrections=10,
+                            tolerance=1e-5,
+                            theta=0.5,
+                            verbose=True,
+                            axes=None,
+                            convergencePlot=None ):
+    '''
+    Solves a nonlinear transient FEModel using a load controlled predictor and a constant load corrector
+    '''
+    # ---------------------------------------------------------
+    # Initialize arguments
+    u               = initialSolution.copy()
+    loadFactors     = []
+
+    if convergencePlot is not None:
+        convergencePlot.start()
+
+    def dResidual( model, solution, loadFactor, massInverse=None ):
+        '''
+        Compute the derivative of the residual with respect to the solution coefficients.
+        See the readme for a better view: eq.(23)
+        '''
+        # Preallocate
+        if massInverse is None:
+            massInverse = sparse.linalg.inv(model.mass)
+        im2         = massInverse.dot(massInverse)
+        Mgu         = np.zeros( im2.shape )
+        Mgq         = Mgu.copy()
+        Ku          = model.stiffness.dot(solution)
+        temperature = lambda x: model.sample(solution, x)
+
+        # Integrate
+        for e in model.elements:
+            capacityCache = e.integrator.createCache(   lambda xi: temperature(e.toGlobalCoordinates(xi)),
+                                                        e.basisFunctions.domain )
+            for i in range(len(e.basisFunctions)):
+                cache0 = capacityCache * e.basisCache[i]
+                for l in range(len(e.basisFunctions)):
+                    cache1 = cache0 * e.basisCache[l]
+                    for j in range(len(e.basisFunctions)):
+                        integral = e.integrator.integrateCached(
+                            lambda xi: 1.0,
+                            cache1 * e.basisCache[j],
+                            e.basisFunctions.domain
+                            )
+                        Mgu[e.DoFs[i], e.DoFs[l]] += integral * Ku[e.DoFs[j]]
+                        Mgq[e.DoFs[i], e.DoFs[l]] += integral * model.load[e.DoFs[j]]
+        
+        # Compute derivative
+        return theta * (-im2.dot(Mgu) + massInverse.dot(model.stiffness + model.geometricStiffness) - loadFactor*Mgq ) + np.eye(model.size)
+
+    # Define inputs for the Newton iteration
+    def updateSystem(solution, loadFactor):
+        reintegrate(    model,
+                        loadFactor,
+                        solution)
+        residual            = model.stiffness.dot(solution) - loadFactor*model.load
+        tangentStiffness    = model.stiffness + model.geometricStiffness
+        return residual, tangentStiffness
+
+    # Initialize structural matrices
+    reintegrate(    model,
+                    0.0,
+                    initialSolution,
+                    mass=False)
+    
+    # ---------------------------------------------------------
+    # Increment loop
+    increment       = maxIncrement
+    lastControl     = 0.0
+    control         = lastControl + increment
+    incrementIndex  = -1
+
+    while control < 1.0:
+
+        # Update control
+        incrementIndex += 1
+        control = lastControl + increment
+
+        if control > 1.0:
+            control = 1.0
+
+        # Print iteration header
+        if verbose:
+            print( "\nIncrement# " + str(incrementIndex) + " " + "-"*(35-11-len(str(incrementIndex))-1) )
+
+        # Predict
+        controlIncrement    = control-lastControl
+        #u                   += solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
+        uMid                = u + 0.5 * solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
+        reintegrate(    model, 
+                        control, 
+                        uMid,
+                        mass=False )
+        uNew                = u + solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
+
+        # Correct
+        try:
+            uNew        = newtonIteration(  lambda solution: updateSystem(solution, control),
+                                            uNew,
+                                            tolerance=tolerance,
+                                            maxIterations=maxCorrections,
+                                            verbose=True,
+                                            convergencePlot=convergencePlot)
+        except StopIteration:
+            increment /= 2.0
+            if increment < minIncrement:
+                raise RuntimeError( "Nonlinear iteration failed to converge" )
+            continue
+
+        # Update
+        lastControl = control
+        u           = uNew.copy()
+        loadFactors.append(control)
+
+        if 2.0*increment < maxIncrement:
+            increment *= 2.0
+
+        # Plot if requested
+        if axes is not None:
+            axes.plot( np.linspace( 0, 1, num=100 ), model.sample( u, np.linspace( 0, 1, num=100 ) ) )
+
+    # ---------------------------------------------------------
+    # Decorate plot if requested
+    if axes is not None:
+        axes.legend( [ "Control parameter = %.2f" % l for l in loadFactors ] )
         axes.set_xlabel( "x [m]" )
         axes.set_ylabel( "T [C]" )
         axes.set_title( "Temperature Field" )
