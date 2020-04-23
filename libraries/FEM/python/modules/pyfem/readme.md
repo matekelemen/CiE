@@ -259,7 +259,7 @@ Back from sidetracking, the task now is to compute the derivative of the transie
 
 From this point the time index is dropped since all components live in the $`(k+1)^{th}`$ time step. Rearranging the expression above and highlighting important terms:
 ```math
-\frac{r}{\hat u_l}
+\frac{\partial r}{\partial \hat u_l}
 =
 \theta \textcolor{red}{\frac{\partial M^{-1}}{\partial \hat u_l} K \hat u}
 +
@@ -275,14 +275,16 @@ The expression in $`\textcolor{green}{green}`$ should be familiar; it's the tang
 ```math
 \frac{\partial r_i}{\partial \hat u_l}
 =
--\theta \textcolor{red}{[M^{-1}]_{ip} \int_\Omega \frac{dc}{du} N_p N_k N_j d\Omega [K \hat u]_j [M^{-1}]_{kl}}
+-\theta \textcolor{red}{
+    [M^{-1}]_{ip} \int_\Omega \frac{dc}{du} N_p N_k N_j d\Omega [M^{-1} K \hat u]_j
+    }
 +
 \theta [M^{-1} (\textcolor{green}{K+K_g}) ]_{il}
 +
 \frac{1}{\Delta t} \delta_{il}
 +
 \lambda \theta \textcolor{teal}{
-    [M^{-1}]_{ip} \int_\Omega \frac{dc}{du} N_p N_k N_j d\Omega q_j [M^{-1}]_{kl}
+    [M^{-1}]_{ip} \int_\Omega \frac{dc}{du} N_p N_k N_j d\Omega [M^{-1} q]_j
     }
 \tag{23}
 ```
