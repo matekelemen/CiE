@@ -152,7 +152,4 @@ dr  = np.array(dr)
 dr  = np.transpose( dr, (1,0) )
 np.set_printoptions( precision=2, suppress=True )
 
-massInverse = sparse.linalg.inv(model.mass).todense()
-test        = model.geometricStiffness.todense().dot( massInverse )
-print( massInverse.dot(test) )
 print( dra - dr )

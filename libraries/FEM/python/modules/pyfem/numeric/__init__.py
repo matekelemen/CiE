@@ -3,4 +3,4 @@ from .finitedifferences import *
 from .solver import *
 from .nonlinearsolver import newtonIteration
 from .nonlinearsolver import stationaryLoadControl, stationaryFixedPointIteration
-from .nonlinearsolver import transientFixedPointIteration
+from .nonlinearsolver import transientLoadControl, transientFixedPointIteration

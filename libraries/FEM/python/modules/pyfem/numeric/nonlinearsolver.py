@@ -10,6 +10,7 @@ def newtonIteration(    targetSystem,
                         initialSolution,
                         tolerance=1e-5,
                         maxIterations=10,
+                        solverKWArgs={},
                         verbose=False,
                         convergencePlot=None    ):
     '''
@@ -38,7 +39,7 @@ def newtonIteration(    targetSystem,
             raise StopIteration
 
         # Step
-        solution                    -= solveLinearSystem( derivative, functionValue )
+        solution                    -= solveLinearSystem( derivative, functionValue, **solverKWArgs )
         functionValue, derivative   = targetSystem(solution)
 
         # Check convergence
@@ -280,6 +281,59 @@ def stationaryFixedPointIteration(  model,
 
 
 
+def transientResidual(  model, 
+                        solution, 
+                        loadFactor, 
+                        massInverse,
+                        theta,
+                        dt,
+                        previousState  ):
+    temp = theta*massInverse.dot(model.stiffness.todense()) + 1.0/dt*np.eye(model.size)
+    return np.ravel( temp.dot(solution) - theta*massInverse.dot(loadFactor*model.load) + previousState )
+
+
+
+def transientResidualDerivative(    model, 
+                                    solution, 
+                                    loadFactor, 
+                                    massInverse, 
+                                    theta, 
+                                    dt ):
+        '''
+        Compute the derivative of the residual with respect to the solution coefficients.
+        See the readme for a better view: eq.(23)
+        '''
+        # Preallocate
+        temp        = np.zeros(massInverse.shape)
+        MKu         = massInverse.dot( model.stiffness.dot(solution) )
+        Mq          = massInverse.dot(model.load)
+        temperature = lambda x: model.sample(solution, x)
+
+        # Integrate
+        for e in model.elements:
+            dCapacityCache = e.integrator.createCache(   lambda xi: e.capacityDerivative( temperature(e.toGlobalCoordinates(xi)) ),
+                                                        e.basisFunctions.domain )
+            for i in range(len(e.basisFunctions)):
+                cache0 = dCapacityCache * e._basisCache[i]
+                for l in range(len(e.basisFunctions)):
+                    cache1 = cache0 * e._basisCache[l]
+                    for j in range(len(e.basisFunctions)):
+                        integral = e._jacobian * e.integrator.integrateCached(
+                            lambda xi: 1.0,
+                            cache1 * e._basisCache[j],
+                            e.basisFunctions.domain
+                            )
+                        temp[e.DoFs[i], e.DoFs[l]] += integral * (loadFactor*Mq[e.DoFs[j]] - MKu[e.DoFs[j]])
+        
+        # Compute derivative
+        return  theta * massInverse.dot(                            \
+                            model.stiffness.todense()               \
+                            + model.geometricStiffness.todense()    \
+                            + temp                    )   \
+                + np.eye(model.size)/dt
+
+
+
 def transientLoadControl(   model,
                             initialSolution,
                             initialStiffness,
@@ -303,58 +357,43 @@ def transientLoadControl(   model,
     # Initialize arguments
     u               = initialSolution.copy()
     loadFactors     = []
+    massInverse     = np.zeros( model.mass.shape, dtype=model.mass.dtype )
 
     if convergencePlot is not None:
         convergencePlot.start()
 
-    def dResidual( model, solution, loadFactor, massInverse=None ):
-        '''
-        Compute the derivative of the residual with respect to the solution coefficients.
-        See the readme for a better view: eq.(23)
-        '''
-        # Preallocate
-        if massInverse is None:
-            massInverse = sparse.linalg.inv(model.mass)
-        im2         = massInverse.dot(massInverse)
-        Mgu         = np.zeros( im2.shape )
-        Mgq         = Mgu.copy()
-        Ku          = model.stiffness.dot(solution)
-        temperature = lambda x: model.sample(solution, x)
-
-        # Integrate
-        for e in model.elements:
-            capacityCache = e.integrator.createCache(   lambda xi: temperature(e.toGlobalCoordinates(xi)),
-                                                        e.basisFunctions.domain )
-            for i in range(len(e.basisFunctions)):
-                cache0 = capacityCache * e.basisCache[i]
-                for l in range(len(e.basisFunctions)):
-                    cache1 = cache0 * e.basisCache[l]
-                    for j in range(len(e.basisFunctions)):
-                        integral = e.integrator.integrateCached(
-                            lambda xi: 1.0,
-                            cache1 * e.basisCache[j],
-                            e.basisFunctions.domain
-                            )
-                        Mgu[e.DoFs[i], e.DoFs[l]] += integral * Ku[e.DoFs[j]]
-                        Mgq[e.DoFs[i], e.DoFs[l]] += integral * model.load[e.DoFs[j]]
-        
-        # Compute derivative
-        return theta * (-im2.dot(Mgu) + massInverse.dot(model.stiffness + model.geometricStiffness) - loadFactor*Mgq ) + np.eye(model.size)
+    DT              = 1.0/dt * sparse.eye(model.size)
+    previousState   =   (1.0-theta) * sparse.linalg.inv(initialMass).dot( initialLoad - initialStiffness.dot(u) ) \
+                        + DT.dot(u)
 
     # Define inputs for the Newton iteration
-    def updateSystem(solution, loadFactor):
+    def updateSystem(solution, loadFactor, previousState):
         reintegrate(    model,
                         loadFactor,
                         solution)
-        residual            = model.stiffness.dot(solution) - loadFactor*model.load
-        tangentStiffness    = model.stiffness + model.geometricStiffness
+
+        mInv = np.zeros( model.mass.shape, dtype=model.mass.dtype )
+        sparse.linalg.inv(model.mass).todense( out=mInv )
+
+        residual            = transientResidual(    model,
+                                                    solution,
+                                                    loadFactor,
+                                                    mInv,
+                                                    theta,
+                                                    dt,
+                                                    -1.0*previousState)
+        tangentStiffness    = transientResidualDerivative(  model,
+                                                            solution,
+                                                            loadFactor,
+                                                            mInv,
+                                                            theta,
+                                                            dt)
         return residual, tangentStiffness
 
     # Initialize structural matrices
     reintegrate(    model,
                     0.0,
-                    initialSolution,
-                    mass=False)
+                    initialSolution)
     
     # ---------------------------------------------------------
     # Increment loop
@@ -378,21 +417,20 @@ def transientLoadControl(   model,
 
         # Predict
         controlIncrement    = control-lastControl
-        #u                   += solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
-        uMid                = u + 0.5 * solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
-        reintegrate(    model, 
-                        control, 
-                        uMid,
-                        mass=False )
-        uNew                = u + solveLinearSystem( model.stiffness + model.geometricStiffness, controlIncrement * model.load )
+        tangentStiffness    = updateSystem( u, control, previousState )[1]
+        uMid                = u + 0.5 * solveLinearSystem( tangentStiffness, controlIncrement * model.load, sparse=False )
+
+        tangentStiffness    = updateSystem( uMid, control, previousState )[1]
+        uNew                = u + solveLinearSystem( tangentStiffness, controlIncrement * model.load, sparse=False )
 
         # Correct
         try:
-            uNew        = newtonIteration(  lambda solution: updateSystem(solution, control),
+            uNew        = newtonIteration(  lambda solution: updateSystem(solution, control, previousState),
                                             uNew,
                                             tolerance=tolerance,
                                             maxIterations=maxCorrections,
-                                            verbose=True,
+                                            solverKWArgs={"sparse" : False},
+                                            verbose=verbose,
                                             convergencePlot=convergencePlot)
         except StopIteration:
             increment /= 2.0
@@ -404,7 +442,7 @@ def transientLoadControl(   model,
         lastControl = control
         u           = uNew.copy()
         loadFactors.append(control)
-
+        
         if 2.0*increment < maxIncrement:
             increment *= 2.0
 

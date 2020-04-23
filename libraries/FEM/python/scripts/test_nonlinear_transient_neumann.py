@@ -6,9 +6,10 @@ from matplotlib import pyplot as plt
 # --- Internal Imports ---
 from pyfem.discretization import IntegratedHierarchicBasisFunctions
 from pyfem.discretization import NonlinearHeatElement1D
-from pyfem.discretization import NonlinearTransientFEModel
+from pyfem.discretization import NonlinearTransientFEModel as Model
 from pyfem.discretization import DirichletBoundary, NeumannBoundary
 from pyfem.numeric import solveNonlinearHeat1D
+from pyfem.numeric import transientLoadControl as nonlinearSolver
 from pyfem.postprocessing import ConvergencePlot
 from pyfem.postprocessing.graphics import animateTimeSeries
 
@@ -30,7 +31,7 @@ boundaryFlux                = lambda t: 1.0
 penaltyValue                = 1e10
 
 # Discretization
-time                        = np.linspace(0.0, 1.0, 60)
+time                        = np.linspace(0.0, 1.0, num=50)
 nElements                   = 10
 polynomialOrder             = 3
 
@@ -39,12 +40,12 @@ integrationOrder            = 1 * (2*polynomialOrder + 1)
 finiteDifferenceImplicity   = 0.5
 
 # Iteration
-baseIncrement       = 0.2
+baseIncrement       = 0.5
 minIncrement        = 0.01
-maxIncrement        = 0.4
-maxIncrements       = 15
-maxCorrections      = 8
-tolerance           = 1e-5
+maxIncrement        = 0.75
+maxIncrements       = 100
+maxCorrections      = 15
+tolerance           = 1e-10
 
 # ---------------------------------------------------------
 # General initialization
@@ -53,7 +54,7 @@ convergencePlot = ConvergencePlot()
 
 # ---------------------------------------------------------
 # Initialize FE model
-model               = NonlinearTransientFEModel( nElements*polynomialOrder + 1, loadFunction=load )
+model               = Model( nElements*polynomialOrder + 1, loadFunction=load )
 
 # Create elements
 basisFunctions      = IntegratedHierarchicBasisFunctions( polynomialOrder=polynomialOrder )
@@ -81,49 +82,12 @@ model.addBoundaryCondition( NeumannBoundary(    nElements*polynomialOrder,
 
 # Initial values
 initialSolution     = np.zeros(model.size)
-#model.updateTime(   time[0], 
-#                    u,
-#                    geometricStiffness=False )
-#
-#initialStiffness    = model.stiffness
-#initialMass         = model.mass
-#initialLoad         = model.load
-#
-#timeSeries          = np.zeros( (len(time), *u.shape) )
-#timeSeries[0]       = u.copy()
-#
-## ---------------------------------------------------------
-## Iteration
-#for k in range(1, len(time)):
-#
-#    # Update time
-#    initialStiffness    = model.stiffness
-#    initialMass         = model.mass
-#    initialLoad         = model.load
-#    model.updateTime(   time[k], 
-#                        u,
-#                        geometricStiffness=False )
-#
-#    # Solve
-#    u = nonlinearSolver(    model,
-#                            u,
-#                            initialStiffness,
-#                            initialMass,
-#                            initialLoad,
-#                            time[k] - time[k-1],
-#                            loadFactors=np.linspace(0.0, 1.0, num=numberOfIncrements+1),
-#                            maxCorrections=numberOfCorrections,
-#                            tolerance=tolerance,
-#                            verbose=True,
-#                            axes=None,
-#                            convergencePlot=convergencePlot   )
-#
-#    timeSeries[k] = u.copy()
 
 timeSeries          = solveNonlinearHeat1D( time,
                                             initialSolution,
                                             model,
                                             theta=finiteDifferenceImplicity,
+                                            nonlinearSolver=nonlinearSolver,
                                             baseIncrement=baseIncrement,
                                             minIncrement=minIncrement,
                                             maxIncrement=maxIncrement,
@@ -141,5 +105,6 @@ animateTimeSeries(  time,
                     model,
                     speed=0.02,
                     ylim=( -0.1, 1.0 ) )
+
 plt.tight_layout()
 plt.show( block=True )

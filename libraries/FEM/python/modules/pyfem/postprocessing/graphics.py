@@ -78,13 +78,14 @@ class ConvergencePlot:
     '''
     Convergence plot that can be updated dynamically
     '''
-    def __init__( self, figure=None, axes=None, yLabel="value [-]" ):
+    def __init__( self, maxPoints=50, figure=None, axes=None, yLabel="value [-]" ):
         if figure is None and axes is None:
             figure  = plt.figure()
             axes    = figure.add_subplot( 1,1,1 )
         elif (figure is None) is not (axes is None):
             raise RuntimeError( "Either BOTH figure AND axes must be given, or NEITHER" )
 
+        self.maxPoints  = maxPoints
         self.reset()
 
         self.figure     = figure
@@ -115,8 +116,15 @@ class ConvergencePlot:
         if self._yMin is None or self._yMin > value:
             self._yMin = value
 
-        self._x.append( self._counter )
-        self._y.append( value )
+        if self._counter <= self.maxPoints:
+            self._x.append( self._counter )
+            self._y.append( value )
+        else:
+            self._x[0] += 1
+            for k in range(1, self.maxPoints):
+                self._x[k]      += 1
+                self._y[k-1]    = self._y[k]
+            self._y[-1] = value
         
 
     
@@ -124,7 +132,7 @@ class ConvergencePlot:
         self.add( value )
         self.line.set_xdata( self._x )
         self.line.set_ydata( self._y )
-        self.axes.set_xlim( 0, self._counter )
+        self.axes.set_xlim( self._x[0], self._x[-1] )
         self.axes.set_ylim( self._yMin, self._yMax )
         self.figure.canvas.draw()
         plt.pause(1e-3)
