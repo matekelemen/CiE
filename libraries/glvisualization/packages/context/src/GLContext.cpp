@@ -11,7 +11,7 @@ namespace gl {
 
 DrawFunction makeEmptyDrawFunction( GLContext& )
 {
-    auto function = [&]() -> void {  };
+    auto function = [&]() -> bool { return true; };
     return function;
 }
 
@@ -176,7 +176,8 @@ void GLContext::startEventLoop( DrawFunctionFactory eventLoopGenerator,
     // Start event loop
     while(!glfwWindowShouldClose(_window))
     {
-        _drawFunction();
+        if ( !_drawFunction() )
+            glfwSetWindowShouldClose(_window, GLFW_TRUE);
 
         // Check errors
         GLuint err = glGetError();

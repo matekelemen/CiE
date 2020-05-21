@@ -54,8 +54,8 @@ void ProgramManager::compileShaders( )
         glGetShaderiv( id, GL_COMPILE_STATUS, &compileStatus );
         if (compileStatus != GL_TRUE)
         {
-            char buffer[512];
-            glGetShaderInfoLog( id, 512, NULL, buffer );
+            GLchar buffer[512];
+            glGetShaderInfoLog( id, sizeof(buffer)/sizeof(GLchar), NULL, buffer );
             log(    "Shader compilation failed | ID_" + std::to_string(id) + "\n" + 
                     std::string(buffer), 
                     LOG_TYPE_ERROR );

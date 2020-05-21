@@ -1,5 +1,8 @@
+// --- Internal Includes ---
 #include "../inc/ShaderManager.hpp"
 #include "../inc/shaders.hpp"
+
+// --- STD Includes ---
 #include <algorithm>
 #include <iostream>
 
@@ -9,9 +12,9 @@ namespace gl {
 
 ShaderManager::ShaderManager( GLContext& context ) :
     AbsContextClass( context, "ShaderManager" ),
-    _vertexShader( defaultColorVertexShader ),
-    _geometryShader( defaultColorGeometryShader ),
-    _fragmentShader( defaultColorFragmentShader ),
+    _vertexShader( "defaultColorVertexShader.glsl" ),
+    _geometryShader( "defaultColorGeometryShader.glsl" ),
+    _fragmentShader( "defaultColorFragmentShader.glsl" ),
     _vertexPtr(nullptr),
     _geometryPtr(nullptr),
     _fragmentPtr(nullptr)
@@ -22,11 +25,11 @@ ShaderManager::ShaderManager( GLContext& context ) :
 ShaderManager::~ShaderManager()
 {
     if (_vertexPtr != nullptr)
-        delete _vertexPtr;
+        delete[] _vertexPtr;
     if (_geometryPtr != nullptr)
-        delete _geometryPtr;
+        delete[] _geometryPtr;
     if (_fragmentPtr != nullptr)
-        delete _fragmentPtr;
+        delete[] _fragmentPtr;
 }
 
 
@@ -35,9 +38,9 @@ ShaderPtr ShaderManager::getVertexShader()
     if (_vertexPtr != nullptr)
         delete _vertexPtr;
 
-    _vertexPtr  = new Shader[_vertexShader._source.size()];
+    _vertexPtr  = new Shader[_vertexShader._source.size()+1];
     std::copy( _vertexShader._source.begin(), _vertexShader._source.end(), _vertexPtr );
-    _vertexPtr[ _vertexShader._source.size()-1 ] = '\0';
+    _vertexPtr[ _vertexShader._source.size() ] = '\0';
 
     return _vertexPtr;
 }
@@ -48,9 +51,9 @@ ShaderPtr ShaderManager::getGeometryShader()
     if (_geometryPtr != nullptr)
         delete _geometryPtr;
 
-    _geometryPtr  = new Shader[_geometryShader._source.size()];
+    _geometryPtr  = new Shader[_geometryShader._source.size()+1];
     std::copy( _geometryShader._source.begin(), _geometryShader._source.end(), _geometryPtr );
-    _geometryPtr[ _geometryShader._source.size()-1 ] = '\0';
+    _geometryPtr[ _geometryShader._source.size() ] = '\0';
     
     return _geometryPtr;
 }
@@ -61,9 +64,9 @@ ShaderPtr ShaderManager::getFragmentShader()
     if (_fragmentPtr != nullptr)
         delete _fragmentPtr;
 
-    _fragmentPtr  = new Shader[_fragmentShader._source.size()];
+    _fragmentPtr  = new Shader[_fragmentShader._source.size()+1];
     std::copy( _fragmentShader._source.begin(), _fragmentShader._source.end(), _fragmentPtr );
-    _fragmentPtr[ _fragmentShader._source.size()-1 ] = '\0';
+    _fragmentPtr[ _fragmentShader._source.size() ] = '\0';
     
     return _fragmentPtr;
 }
@@ -87,6 +90,27 @@ void ShaderManager::setFragmentShader( const ShaderStruct& shader )
 {
     _fragmentShader = shader;
     log( "Set new fragment shader" );
+}
+
+
+void ShaderManager::setVertexShader( const std::string& fileName )
+{
+    _vertexShader = ShaderStruct( fileName );
+    log( "Set new vertex shader: " + fileName );
+}
+
+
+void ShaderManager::setGeometryShader( const std::string& fileName )
+{
+    _geometryShader = ShaderStruct( fileName );
+    log( "Set new geometry shader: " + fileName );
+}
+
+
+void ShaderManager::setFragmentShader( const std::string& fileName )
+{
+    _fragmentShader = ShaderStruct( fileName );
+    log( "Set new fragment shader: " + fileName );
 }
 
 

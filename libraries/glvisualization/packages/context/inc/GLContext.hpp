@@ -26,7 +26,7 @@ class GLContext;
 using WindowPtr             = GLFWwindow*;
 using MonitorPtr            = GLFWmonitor*;
 
-using DrawFunction          = std::function<void()>;
+using DrawFunction          = std::function<bool()>;
 using DrawFunctionFactory   = std::function<DrawFunction(GLContext&)>;
 
 // Define default functions and variables

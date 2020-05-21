@@ -20,7 +20,7 @@ class ProgramManager : public AbsContextClass
 {
 public:
     ProgramManager(     GLContext& context,
-                        const std::string& className );
+                        const std::string& className = "ProgramManager" );
     virtual ~ProgramManager();
 
     virtual void initialize();

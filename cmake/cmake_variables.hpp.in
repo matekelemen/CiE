@@ -5,8 +5,11 @@
 
 namespace cie {
 
-const std::string INSTALL_PATH  =  "@CMAKE_INSTALL_PREFIX@";
-const std::string BINARY_PATH   =  "@CMAKE_BINARY_DIR@";
+const std::string INSTALL_PATH  = "@CMAKE_INSTALL_PREFIX@";
+const std::string BINARY_PATH   = "@CMAKE_BINARY_DIR@";
+const std::string SOURCE_PATH   = "@CMAKE_SOURCE_DIR@";
+const std::string DATA_PATH     = "@INSTALL_DATA_PREFIX@";
+const bool USE_OPENMP           = std::string("@CIE_OPENMP@") == std::string("ON") ? true : false;
 
 }
 

@@ -4,10 +4,11 @@ namespace cie {
 namespace gl {
 
 
-DrawManager::DrawManager( GLContext& context ) :
-    ProgramManager( context, "DrawManager" ),
+DrawManager::DrawManager( GLContext& context, const std::string& className ) :
+    ProgramManager( context, className ),
     _shaderManager( context ),
-    _camera( new Camera(context) )
+    _camera( new Camera(context) ),
+    _transformationID(-1)
 {
     _buffers.setDrawMode( GL_DYNAMIC_DRAW );
 }
@@ -21,7 +22,6 @@ DrawManager::~DrawManager()
 void DrawManager::initialize()
 {
     log( "Run default draw function initialization" );
-    float cLen = 0.9f;
 
     // Initialize uniforms
     for (auto uniform : _shaderManager.uniforms())
@@ -42,106 +42,46 @@ void DrawManager::initialize()
                             &name);
         
         if (type == GL_FLOAT_MAT4)
+        {
+            _transformationID = id;
             glUniformMatrix4fv( id, 
                                 1, 
                                 GL_FALSE, 
                                 glm::value_ptr(_camera->transformationMatrix()) );
+        }
 
-        //for (size_t i=0; i<4; ++i)
-        //{
-        //    for (size_t j=0; j<4; ++j)
-        //        std::cout << std::to_string( _camera.transformationMatrix()[i][j] ) + ", ";
-        //    std::cout << "\n";
-        //}
-
-        GLuint error = glGetError();
-        if( error!=0 )
-            logID(  "Initializing uniform \"" + uniform + "\" failed!",
-                    error,
-                    LOG_TYPE_ERROR );
+        checkGLErrors( "Initializing uniform \"" + uniform + "\" failed!" );
     }
-
-    std::vector<float> vertices = {
-        0.0f, 0.0, 0.0f,        1.0f, 0.0f, 0.0f,
-        cLen, 0.0f, 0.0f,       0.0f, 1.0f, 0.0f,
-        cLen, cLen, 0.0f,       0.0f, 0.0f, 1.0f,
-        0.0f, cLen, 0.0f,       1.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, cLen,       1.0f, 0.0f, 1.0f,
-        cLen, 0.0f, cLen,       0.0f, 1.0f, 1.0f,
-        0.0f, cLen, cLen,       1.0f, 1.0f, 1.0f
-
-    };
-
-    std::vector<GLuint> triangles = {
-        0,1,2,
-        0,2,3,
-        0,3,6,
-        0,6,4,
-        0,4,5,
-        0,5,1
-    };
-
-    _buffers.writeToActiveBuffer(GL_ARRAY_BUFFER, vertices);
-    _buffers.writeToActiveBuffer(GL_ELEMENT_ARRAY_BUFFER, triangles);
-
-    GLuint error = glGetError();
-    if( error!=0 )
-        logID( "Default draw function initialization failed!",
-                error,
-                LOG_TYPE_ERROR );
 }
 
 
-void DrawManager::draw()
+bool DrawManager::draw()
 {
     // Set background and clear
-    glClearColor( 0.2f, 0.2f, 0.2f, 1.0f );
+    glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     // Set transformation
-    for (auto uniform : _shaderManager.uniforms())
-    {
-        GLint id = glGetUniformLocation( _programID, &uniform[0] );
-        _uniformIDs.push_back( id );
+    if (_transformationID >= 0)
+        glUniformMatrix4fv( _transformationID, 
+                            1, 
+                            GL_FALSE, 
+                            glm::value_ptr(_camera->transformationMatrix()) );
+    else
+        logID( "Unset transformation matrix ID!", _transformationID, LOG_TYPE_ERROR );
 
-        GLsizei     length;
-        GLsizei     size;
-        GLenum      type;
-        GLchar      name;
-        glGetActiveUniform( _programID,
-                            id,
-                            0,
-                            &length,
-                            &size,
-                            &type,
-                            &name);
-        
-        if (type == GL_FLOAT_MAT4)
-            glUniformMatrix4fv( id, 
-                                1, 
-                                GL_FALSE, 
-                                glm::value_ptr(_camera->transformationMatrix()) );
-    }
-
-    // Get number of elements to draw
-    GLint64 numberOfElements;
-    glGetBufferParameteri64v( GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &numberOfElements );
-    numberOfElements /= sizeof(GLuint);
-
-    // Draw buffer
-    glDrawElements( GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0 );
+    return true;
 }
 
 
 DrawFunction DrawManager::makeDrawFunction( GLContext& context )
 {
     log( "Create callable draw function factory" );
-    return [&context, this]()->void
+    return [&context, this]() -> bool
         {
-            this->draw();
+            return this->draw();
         };
 }
-
 
 
 void DrawManager::compileShaders()
@@ -217,6 +157,25 @@ void DrawManager::makeProgram()
     // Check error
     if (glGetError()!=0)
         logID( "Failed to make program", _programID, LOG_TYPE_ERROR );
+
+    // Validate program
+    glValidateProgram( _programID );
+    GLint programStatus;
+    glGetProgramiv( _programID, GL_VALIDATE_STATUS, &programStatus );
+    if (programStatus == GL_TRUE)
+        logID( "Program validated successfully", _programID );
+    else
+    {
+        GLsizei messageLength;
+        GLchar buffer[512];
+        glGetProgramInfoLog(    _programID,
+                                sizeof(buffer)/sizeof(GLchar),
+                                &messageLength,
+                                buffer );
+        log(    "Program validation failed! | ID_" + std::to_string(_programID) + "\n"
+                    + std::string(buffer),
+                LOG_TYPE_ERROR );
+    }
 }
 
 
