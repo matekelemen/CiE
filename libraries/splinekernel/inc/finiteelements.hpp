@@ -1,10 +1,12 @@
 #ifndef CIE_FINITEELEMENTS_HPP
 #define CIE_FINITEELEMENTS_HPP
 
+// --- STD Includes ---
 #include <vector>
 #include <tuple>
 #include <array>
 #include <functional>
+#include <cstdint>
 
 namespace cie
 {

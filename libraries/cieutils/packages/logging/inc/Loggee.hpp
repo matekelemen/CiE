@@ -1,5 +1,5 @@
-#ifndef CIEUTILS_LOGGEE_HPP
-#define CIEUTILS_LOGGEE_HPP
+#ifndef CIE_CIEUTILS_LOGGEE_HPP
+#define CIE_CIEUTILS_LOGGEE_HPP
 
 // --- Internal Includes ---
 #include "Logger.hpp"

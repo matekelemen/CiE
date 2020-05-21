@@ -1,7 +1,10 @@
 #ifndef LINALG_ARRAY_TYPES_HPP
 #define LINALG_ARRAY_TYPES_HPP
 
+// --- STD Includes ---
 #include <array>
+#include <cstddef>
+#include <cstdint>
 
 namespace cie {
 

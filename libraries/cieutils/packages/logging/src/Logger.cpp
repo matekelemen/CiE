@@ -9,6 +9,22 @@ namespace cie {
 namespace utils {
 
 
+namespace detail {
+
+Time getTime()
+{
+    return std::chrono::steady_clock::now();
+}
+
+std::string getDate()
+{
+    auto t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    return std::string(std::ctime(&t));
+}
+
+}
+
+
 Logger::Logger( const std::string& fileName ) :
     _manager( detail::fileDirectory(fileName) ),
     _timeLog( {detail::getTime()} ),

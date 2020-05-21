@@ -1,8 +1,10 @@
 #include "meshgenerator_helper.hpp"
 
+// --- STD Includes ---
 #include <cmath>
 #include <numeric>
 #include <algorithm>
+#include <stdexcept>
 
 namespace cie {
 namespace meshkernel

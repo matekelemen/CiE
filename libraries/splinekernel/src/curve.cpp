@@ -1,10 +1,13 @@
+// --- Internal Includes ---
 #include "basisfunctions.hpp"
 #include "curve.hpp"
 
+// --- STD Includes ---
 #include <algorithm>
 #include <array>
 #include <cmath>
 #include <string>
+#include <stdexcept>
 
 namespace cie
 {

@@ -357,7 +357,6 @@ def transientLoadControl(   model,
     # Initialize arguments
     u               = initialSolution.copy()
     loadFactors     = []
-    massInverse     = np.zeros( model.mass.shape, dtype=model.mass.dtype )
 
     if convergencePlot is not None:
         convergencePlot.start()
@@ -367,7 +366,7 @@ def transientLoadControl(   model,
                         + DT.dot(u)
 
     # Define inputs for the Newton iteration
-    def updateSystem(solution, loadFactor, previousState):
+    def updateSystem(solution, loadFactor):
         reintegrate(    model,
                         loadFactor,
                         solution)
@@ -402,7 +401,7 @@ def transientLoadControl(   model,
     control         = lastControl + increment
     incrementIndex  = -1
 
-    while control < 1.0:
+    while control < 1.0 or incrementIndex < 0:
 
         # Update control
         incrementIndex += 1
@@ -417,15 +416,15 @@ def transientLoadControl(   model,
 
         # Predict
         controlIncrement    = control-lastControl
-        tangentStiffness    = updateSystem( u, control, previousState )[1]
+        tangentStiffness    = updateSystem( u, control )[1]
         uMid                = u + 0.5 * solveLinearSystem( tangentStiffness, controlIncrement * model.load, sparse=False )
 
-        tangentStiffness    = updateSystem( uMid, control, previousState )[1]
+        tangentStiffness    = updateSystem( uMid, control )[1]
         uNew                = u + solveLinearSystem( tangentStiffness, controlIncrement * model.load, sparse=False )
 
         # Correct
         try:
-            uNew        = newtonIteration(  lambda solution: updateSystem(solution, control, previousState),
+            uNew        = newtonIteration(  lambda solution: updateSystem(solution, control),
                                             uNew,
                                             tolerance=tolerance,
                                             maxIterations=maxCorrections,

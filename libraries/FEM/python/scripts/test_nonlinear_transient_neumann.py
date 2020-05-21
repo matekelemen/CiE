@@ -27,11 +27,11 @@ dConductivity               = lambda u: 9.0 * np.exp( -(u-0.5)**2 / 0.005 ) * (2
 
 # Load
 load                        = lambda t, x: 0.0
-boundaryFlux                = lambda t: 1.0
+boundaryFlux                = lambda t: 1.0 - np.exp(-100.0*t)
 penaltyValue                = 1e10
 
 # Discretization
-time                        = np.linspace(0.0, 1.0, num=50)
+time                        = np.linspace(0.0, 1.0, num=30)
 nElements                   = 10
 polynomialOrder             = 3
 
@@ -40,9 +40,9 @@ integrationOrder            = 1 * (2*polynomialOrder + 1)
 finiteDifferenceImplicity   = 0.5
 
 # Iteration
-baseIncrement       = 0.5
+baseIncrement       = 1.0
 minIncrement        = 0.01
-maxIncrement        = 0.75
+maxIncrement        = 1.0
 maxIncrements       = 100
 maxCorrections      = 15
 tolerance           = 1e-10
