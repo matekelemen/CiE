@@ -1,10 +1,12 @@
 # --- Python Imports ---
 import numpy as np
+import collections
 
 # --- Internal Imports ---
 from .basisfunctions import *
 from pyfem.numeric import Integrator
 from pyfem.utilities import isArray
+from pyfem.utilities.cache import Cache 
 
 # ---------------------------------------------------------
 
@@ -28,6 +30,18 @@ class Element:
 
         self._basisDerivativeCache  = None
         self._basisCache            = None
+        self._sampleCache           = Cache()
+
+    
+    def copy( self ):
+        copy = Element( self.domain,
+                        self.DoFs,
+                        self.load,
+                        basisFunctions=self.basisFunctions,
+                        integrationOrder=self.integrator.polynomialOrder )
+
+        # Do not copy the integrator and its caches
+        return copy
 
 
     def updateGlobalMatrix( self, matrix, index1, index2, value ):
@@ -67,6 +81,15 @@ class Element1D( Element ):
         self._jacobian      = (self.domain[1]-self.domain[0])/2.0
         self._invJacobian   = 1.0/self._jacobian
 
+    
+    def copy( self ):
+        copy = Element1D(   self.domain,
+                            self.DoFs,
+                            self.load,
+                            basisFunctions=self.basisFunctions,
+                            integrationOrder=self.integrator.polynomialOrder)
+        return copy
+
 
     def toGlobalCoordinates( self, localCoordinates ):
         '''
@@ -99,10 +122,18 @@ class Element1D( Element ):
         else:
             values = 0.0
 
+        # Get basis functions
+        cacheID = self._sampleCache.hash(positions)
+        if not self._sampleCache.check(cacheID, hashed=True):
+            localCoordinates = self.toLocalCoordinates(positions)
+            self._sampleCache.overwrite( cacheID, [self.basisFunctions( basisID, localCoordinates ) for basisID in range(len(self.basisFunctions)) ], hashed=True )
+        
+
         # Compute solution
-        for basisID, coefficient in enumerate( coefficients ):
-            values += coefficient * self.basisFunctions( basisID, self.toLocalCoordinates(positions) )
-            
+        for coefficient, basisValues in zip( coefficients, self._sampleCache.get(cacheID, hashed=True) ):
+            #values += coefficient * self.basisFunctions( basisID, self.toLocalCoordinates(positions) )
+            values += coefficient * basisValues
+
         return values
 
 
@@ -115,6 +146,17 @@ class LinearHeatElement1D( Element1D ):
         Element1D.__init__(self, *args, **kwargs )
         self.capacity       = capacity
         self.conductivity   = conductivity
+
+
+    def copy( self ):
+        copy = LinearHeatElement1D( self.capacity,
+                                    self.conductivity,
+                                    self.domain,
+                                    self.DoFs,
+                                    self.load,
+                                    basisFunctions=self.basisFunctions,
+                                    integrationOrder=self.integrator.polynomialOrder)
+        return copy
 
     
     def integrateStiffness( self, globalStiffnessMatrix ):
@@ -152,7 +194,6 @@ class LinearHeatElement1D( Element1D ):
         Integrate load * Ni
         '''
         cache = self.integrator.createCache( lambda x: self.load(self.toGlobalCoordinates(x)), self.basisFunctions.domain )
-        
         for i, function in enumerate(self.basisFunctions):
             value = self._jacobian * self.integrator.integrateCached(   lambda x: function(x), 
                                                                         cache,
@@ -174,6 +215,19 @@ class NonlinearHeatElement1D( Element1D ):
         self.capacityDerivative     = capacityDerivative
         self.conductivity           = conductivity
         self.conductivityDerivative = conductivityDerivative
+
+
+    def copy( self ):
+        copy = NonlinearHeatElement1D(  self.capacity,
+                                        self.capacityDerivative,
+                                        self.conductivity,
+                                        self.conductivityDerivative,
+                                        self.domain,
+                                        self.DoFs,
+                                        self.load,
+                                        basisFunctions=self.basisFunctions,
+                                        integrationOrder=self.integrator.polynomialOrder)
+        return copy
 
 
     def integrateStiffness( self, globalStiffnessMatrix, temperatureFunction, solution ):

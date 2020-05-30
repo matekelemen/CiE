@@ -3,6 +3,7 @@ import numpy as np
 import scipy.sparse as sparse
 import functools
 from copy import copy
+from enum import Enum
 
 # --- Internal Imports ---
 from pyfem.utilities import isNumpyArray, gridPairs
