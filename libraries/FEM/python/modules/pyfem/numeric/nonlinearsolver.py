@@ -17,7 +17,7 @@ def newtonIteration(    targetSystem,
     Attempts to find a root of a target function, using 1st order linearization.
     The target function must return a 1D numpy array, while the target derivative
     must return a matching nonsingular square numpy ndarray. Both the function and
-    derivative must expect the state (1D numpy array) as argument (and no other
+    derivative must expect the initial state (1D numpy array) as argument (and no other
     positional arguments).
     '''
     # Initialize
@@ -147,7 +147,7 @@ def stationaryLoadControl(  model,
 
         # Print iteration header
         if verbose:
-            print( "\nIncrement# " + str(incrementIndex) + " " + "-"*(35-11-len(str(incrementIndex))-1) )
+            print( "Increment# " + str(incrementIndex) + " " + "-"*(35-11-len(str(incrementIndex))-1) )
 
         # Predict
         controlIncrement    = control-lastControl
@@ -412,7 +412,7 @@ def transientLoadControl(   model,
 
         # Print iteration header
         if verbose:
-            print( "\nIncrement# " + str(incrementIndex) + " " + "-"*(35-11-len(str(incrementIndex))-1) )
+            print( "Increment# " + str(incrementIndex) + " " + "-"*(35-11-len(str(incrementIndex))-1) )
 
         # Predict
         controlIncrement    = control-lastControl

@@ -150,8 +150,15 @@ def solveNonlinearHeat1D(   time,
     previousMass        = None
     previousLoad        = None
 
+    verbose             = False
+    if "verbose" in kwargs:
+        verbose = kwargs["verbose"]
+
     # Step through 
     for k in range(1, len(time)):
+        if verbose:
+            print( "\nTime increment %i" % k )
+
         # Cache previous state
         previousStiffness   = model.stiffness.copy()
         previousMass        = model.mass.copy()

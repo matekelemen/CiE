@@ -291,6 +291,72 @@ The expression in $`\textcolor{green}{green}`$ should be familiar; it's the tang
 
 And we're done. The residual $`(19)`$ and its derivative $`(22)`$ can be used for iteratively solving the nonlinear equation for each successive time step.
 
+
+## Adjoint
+
+Based on Julian's thesis, the adjoint of the nonlinear transient heat equation takes the following form:
+```math
+-
+\bigg( 
+    \frac{\partial c}{\partial u} \bigg \vert_{\bar u} \bar u 
+    + c(\bar u) 
+\bigg) \partial_\tau p
++
+\bigg(
+    \frac{ \partial \kappa }{ \partial u} \bigg \vert_{\bar u }
+    + \kappa (\bar u)
+\bigg) \Delta p
+=
+u_\Omega -\bar u
+\tag{24}
+```
+
+
+```math
+\bigg(
+    \kappa(\bar u)
+    + \frac{ \partial \kappa }{ \partial u } \bigg \vert_{\bar u} \bar u
+\bigg) \partial_n p
++
+\bigg(
+    \frac{ \partial \kappa } { \partial u } \bigg \vert_{\bar u} \bar u
+    - \alpha \kappa(\bar u) p
+\bigg)
+=
+0
+\tag{25}
+```
+
+
+```math
+p(\bullet, 0) = 0
+\tag{26}
+```
+
+* $`p = p(\tau,x)`$ : adjoint state
+* $`\tau = T - t`$ : reversed time variable
+* $`\bar u`$ : forward solution
+* $`u_\Omega`$ : prescribed state
+
+Keep in mind that the time variable has already been reversed here. 
+
+The DE $`(24)`$ is almost identical to the original one $`(12)`$, save for the coefficients of the adjoint state $`p`$, and the space derivatives. The coefficients are now functions of $`\tau`$ and $`x`$ but not $`p`$, which makes the derivation a bit simpler.
+
+Let's rename the coefficients from $`(24)`$ and reduce the system to 1D:
+```math
+- \hat c \dot p + \hat \kappa p'' = u_\Omega - \bar u
+\tag{27}
+```
+
+Note that the time derivative is replaced with the derivative of the reversed time variable $`\dot p := \frac{\partial p}{\partial \tau}`$
+
+Most of the derivation is identical to the nonlinear transient one, so it is skipped up to computing the derivatives of the discretized system:
+```math
+
+```
+
+
+
 # Module
 
 ## Class Structure
