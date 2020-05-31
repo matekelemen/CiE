@@ -23,53 +23,41 @@ SpaceTreeIndexConverter<N,2> SpaceTreeNode<N,M>::_centerIndex = SpaceTreeIndexCo
 
 template <size_t N, size_t M>
 SpaceTreeNode<N, M>::SpaceTreeNode() :
-    _data(0.0),
-    _children( _dataIndex.numberOfChildren() ),
+    _data(),
+    _children( ),
     _edgeLength(2.0)
 {
-    for (auto it = _children.begin(); it!=_children.end(); ++it)
-    {
-        *it = nullptr;
-    }
-    for (auto it = _center.begin(); it != _center.end(); ++it)
-    {
-        *it = 0.0;
-    }
+    for (auto& child : _children)
+        child.reset();
+    for (auto& coordinate : _center)
+        coordinate = 0.0;
     check();
 }
 
 
 template <size_t N, size_t M>
-SpaceTreeNode<N, M>::SpaceTreeNode(const DoubleArray<N>& center, double edgeLength) :
+SpaceTreeNode<N, M>::SpaceTreeNode(const typename SpaceTreeNode<N,M>::coordinate_container_type& center, double edgeLength) :
     _center(center),
-    _data( _dataIndex.numberOfDataPoints() ,0.0),
-    _children( _dataIndex.numberOfChildren() ),
+    _data(),
+    _children(),
     _edgeLength(edgeLength)
 {
-    for (auto it = _children.begin(); it!=_children.end(); ++it)
-    {
-        *it = nullptr;
-    }
+    for (auto& child : _children)
+        child.reset();
     check();
 }
 
 
 template <size_t N, size_t M>
-SpaceTreeNode<N, M>::SpaceTreeNode(         const SpaceTreeNode<N, M>& parent, 
+SpaceTreeNode<N, M>::SpaceTreeNode( const SpaceTreeNode<N, M>& parent, 
                                     size_t index, 
                                     const GeometryFunction<N>& geometry) :
-    _data( _dataIndex.numberOfDataPoints() ),
-    _children( _dataIndex.numberOfChildren() ),
+    _data(),
+    _children(),
     _edgeLength( parent._edgeLength/2.0 )
 {
     // Check dimensions
     check();
-
-    // Initialize children
-    for (auto it = _children.begin(); it!=_children.end(); ++it)
-    {
-        *it = nullptr;
-    }
     
     // Initialize center
     for (size_t i = 0; i < N; ++i)
@@ -118,17 +106,17 @@ bool SpaceTreeNode<N, M>::divideRecursive(const GeometryFunction<N>& geometry, s
 {
     bool boundary   = false;
     bool value      = false;
-    if (_data[0] > 0.0) value = true;
+
+    if (_data[0] > 0.0) 
+        value = true;
 
     // Check if boundary node
     for (const auto& data : _data)
-    {
         if ( (data>0.0) != value )
         {
             boundary = true;
             break;
         }
-    }
 
     // Divide if boundary
     if (boundary)
@@ -169,13 +157,11 @@ void SpaceTreeNode<N,M>::wipe()
 {
     #pragma omp task shared(_children)
     for (auto& child : _children)
-    {
         if (child != nullptr)
         {
             child->wipe();
             child.reset();
         }
-    }
 }
 
 
@@ -197,19 +183,26 @@ void SpaceTreeNode<N, M>::evaluate(const GeometryFunction<N>& geometry)
 
 
 template <size_t N, size_t M>
-DoubleArray<N> SpaceTreeNode<N, M>::pointCoordinates(const UIntArray<N>& indexN) const
+typename SpaceTreeNode<N,M>::coordinate_container_type SpaceTreeNode<N, M>::pointCoordinates(const UIntArray<N>& indexN) const
 {
-    DoubleArray<N> point;
-    double dx = _edgeLength / ((double)M-1.0);
-    for (size_t j = 0; j < N; ++j)
-        point[j] = _center[j] + dx*(indexN[j] - (M-1.0)/2.0);
+    typename SpaceTreeNode<N,M>::coordinate_container_type point;
+        
+    double dx       = _edgeLength / ((double)M-1.0);
+    double offset   = (M-1.0) / 2.0;
+    auto centerIt   = _center.begin();
+    auto indexIt    = indexN.begin();
+
+    for (   auto pointIt=point.begin(); 
+            pointIt!=point.end(); 
+            ++pointIt,++centerIt,++indexIt  )
+                *pointIt = *centerIt + dx * (*indexIt - offset);
 
     return point;
 }
 
 
 template <size_t N, size_t M>
-DoubleArray<N> SpaceTreeNode<N, M>::pointCoordinates(size_t index) const
+typename SpaceTreeNode<N,M>::coordinate_container_type SpaceTreeNode<N, M>::pointCoordinates(size_t index) const
 {
     return pointCoordinates( _dataIndex(index) );
 }
@@ -224,28 +217,28 @@ void SpaceTreeNode<N, M>::check() const
 
 
 template <size_t N, size_t M>
-DoubleArray<N>& SpaceTreeNode<N, M>::center()
+typename SpaceTreeNode<N,M>::coordinate_container_type& SpaceTreeNode<N, M>::center()
 {
     return _center;
 }
 
 
 template <size_t N, size_t M>
-const DoubleArray<N>& SpaceTreeNode<N, M>::center() const
+const typename SpaceTreeNode<N,M>::coordinate_container_type& SpaceTreeNode<N, M>::center() const
 {
     return _center;
 }
 
 
 template <size_t N, size_t M>
-const DoubleVector& SpaceTreeNode<N, M>::data() const
+const typename SpaceTreeNode<N,M>::data_container_type& SpaceTreeNode<N, M>::data() const
 {
     return _data;
 }
 
 
 template <size_t N, size_t M>
-const std::vector<SpaceTreeNodePtr<N, M>>& SpaceTreeNode<N, M>::children() const
+const typename SpaceTreeNode<N,M>::child_container_type& SpaceTreeNode<N, M>::children() const
 {
     return _children;
 }

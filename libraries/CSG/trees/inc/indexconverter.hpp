@@ -19,10 +19,12 @@ public:
     size_t numberOfChildren() const;
     size_t numberOfDataPoints() const;
 
-private:
-    std::vector<UIntArray<N>>  _indices;
-    size_t                      _numberOfChildren;
-    size_t                      _numberOfDataPoints;
+    friend class SpaceTreeNode<N,M>;
+
+protected:
+    std::vector<UIntArray<N>>   _indices;
+    static const size_t         _numberOfChildren;
+    static const size_t         _numberOfDataPoints;
 };
 
 }

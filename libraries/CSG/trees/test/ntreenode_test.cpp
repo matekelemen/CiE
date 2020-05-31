@@ -85,7 +85,7 @@ TEST_CASE("SpaceTreeNode divide 3D")
 
     // Initialize and divide tree
     root.evaluate(sphere);
-    root.divide(sphere, 6);
+    root.divide(sphere, 7);
 
     // Check writing to file
     CHECK_NOTHROW(writeSpaceTree<3,3>(root, "spacetree3D.csv"));

@@ -8,9 +8,15 @@ namespace csg {
 
 
 template <size_t N, size_t M>
-SpaceTreeIndexConverter<N,M>::SpaceTreeIndexConverter() :
-    _numberOfChildren(intPow(2,N)),
-    _numberOfDataPoints(intPow(M,N))
+constexpr const size_t SpaceTreeIndexConverter<N,M>::_numberOfChildren = intPow(2,N);
+
+
+template <size_t N, size_t M>
+constexpr const size_t SpaceTreeIndexConverter<N,M>::_numberOfDataPoints = intPow(M,N);
+
+
+template <size_t N, size_t M>
+SpaceTreeIndexConverter<N,M>::SpaceTreeIndexConverter()
 {
     _indices = std::vector<UIntArray<N>>( _numberOfDataPoints );
 

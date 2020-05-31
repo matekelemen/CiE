@@ -21,7 +21,7 @@ using GeometryFunction = std::function<double(const DoubleArray<N>&)>;
 
 // Integer power and base conversions --------------------------------
 
-const size_t intPow(int base, size_t exponent);
+constexpr const size_t intPow(int base, size_t exponent);
 
 
 template <size_t M>
@@ -50,14 +50,15 @@ void writeSpaceTree(const SpaceTreeNode<N,M>& node, const std::string& filename)
 
 
 // Collecting nodes --------------------------------------------------
-bool uniformSigns(const DoubleVector& data);
+template <class ContainerType>
+bool uniformSigns(const ContainerType& data);
 
 template <size_t N, size_t M>
 std::vector<const SpaceTreeNode<N,M>*> boundaryNodes(const SpaceTreeNode<N,M>& root);
 
 template <size_t N, size_t M>
-void boundaryNodes(   const SpaceTreeNode<N,M>& root,
-                                                    std::vector<const SpaceTreeNode<N,M>*>& nodes );
+void boundaryNodes( const SpaceTreeNode<N,M>& root,
+                    std::vector<const SpaceTreeNode<N,M>*>& nodes );
 
 
 }

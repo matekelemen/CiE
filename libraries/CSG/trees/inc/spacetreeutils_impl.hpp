@@ -8,6 +8,17 @@ namespace cie {
 namespace csg {
 
 
+constexpr const size_t intPow(int base, size_t exponent)
+{
+    size_t result = 1;
+    for (size_t i = 0; i < exponent; ++i)
+    {
+        result *= base;
+    }
+    return result;
+}
+
+
 template <size_t M>
 void baseN(size_t base_10, size_t base, UIntArray<M>& base_N)
 {
@@ -114,6 +125,16 @@ void writeSpaceTree(const SpaceTreeNode<N,M>& node, const std::string& filename)
 
 
 // Collecting nodes --------------------------------------------------
+template <class ContainerType>
+bool uniformSigns(const ContainerType& data)
+{
+    bool result = data[0] > 0.0;
+    for (auto it=data.begin()+1; it!=data.end(); ++it)
+        if ( ((*it) > 0.0) != result) return false;
+    return true;
+}
+
+
 template <size_t N, size_t M>
 std::vector<const SpaceTreeNode<N,M>*> boundaryNodes(const SpaceTreeNode<N,M>& root)
 {
