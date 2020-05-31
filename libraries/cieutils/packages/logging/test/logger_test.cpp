@@ -10,7 +10,7 @@ namespace cie {
 namespace utils {
 
 
-std::string loggerTestDir = BINARY_PATH + "/test/logger";
+std::string loggerTestDir = BINARY_PATH;
 
 
 TEST_CASE( "Logger" )
