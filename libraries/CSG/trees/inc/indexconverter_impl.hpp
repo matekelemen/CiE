@@ -8,48 +8,50 @@ namespace csg {
 
 
 template <size_t N, size_t M>
-constexpr const size_t SpaceTreeIndexConverter<N,M>::_numberOfChildren = intPow(2,N);
-
-
-template <size_t N, size_t M>
-constexpr const size_t SpaceTreeIndexConverter<N,M>::_numberOfDataPoints = intPow(M,N);
-
-
-template <size_t N, size_t M>
-SpaceTreeIndexConverter<N,M>::SpaceTreeIndexConverter()
+constexpr typename AbsSpaceTreeIndexConverter<N,M>::index_array_type
+AbsSpaceTreeIndexConverter<N,M>::initializeIndexArray()
 {
-    _indices = std::vector<UIntArray<N>>( _numberOfDataPoints );
-
+    typename AbsSpaceTreeIndexConverter<N,M>::index_array_type indexArray;
     for (size_t i=0; i<_numberOfDataPoints; ++i)
-        _indices[i] = baseN<N>(i,M);
+        indexArray[i] = baseN<N>(i,M);
+    return indexArray;
 }
 
 
 template <size_t N, size_t M>
-const UIntArray<N>& SpaceTreeIndexConverter<N,M>::operator()(size_t index) const
+AbsSpaceTreeIndexConverter<N,M>::AbsSpaceTreeIndexConverter()
 {
-    return _indices[index];
+    //_indices = std::vector<UIntArray<N>>( _numberOfDataPoints );
+    //for (size_t i=0; i<_numberOfDataPoints; ++i)
+    //    _indices[i] = baseN<N>(i,M);
 }
 
 
 template <size_t N, size_t M>
-size_t SpaceTreeIndexConverter<N,M>::operator()(const UIntArray<N>& indexN) const
-{
-    return std::distance( _indices.begin(), &indexN );
-}
-
-
-template <size_t N, size_t M>
-size_t SpaceTreeIndexConverter<N,M>::numberOfChildren() const
+constexpr size_t AbsSpaceTreeIndexConverter<N,M>::numberOfChildren()
 {
     return _numberOfChildren;
 }
 
 
 template <size_t N, size_t M>
-size_t SpaceTreeIndexConverter<N,M>::numberOfDataPoints() const
+constexpr size_t AbsSpaceTreeIndexConverter<N,M>::numberOfDataPoints()
 {
     return _numberOfDataPoints;
+}
+
+
+template <size_t N, size_t M>
+constexpr const UIntArray<N>& SpaceTreeIndexConverter<N,M>::convert(size_t index)
+{
+    return _indices[index];
+}
+
+
+template <size_t N, size_t M>
+constexpr size_t SpaceTreeIndexConverter<N,M>::convert(const UIntArray<N>& indexN)
+{
+    return std::distance( _indices.begin(), &indexN );
 }
 
 

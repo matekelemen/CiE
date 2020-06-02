@@ -7,6 +7,7 @@
 #include "linalgtypes.hpp"
 
 // --- STD Includes ---
+#include <deque>
 #include <stdint.h>
 #include <memory>
 
@@ -35,14 +36,16 @@ public:
     SpaceTreeNode();
     SpaceTreeNode(  const coordinate_container_type& center, 
                     double edgeLength);
-    SpaceTreeNode(  const SpaceTreeNode<N, M>& parent,
+    SpaceTreeNode(  SpaceTreeNode<N, M>& parent,
                     size_t index,
-                    const GeometryFunction<N>& geometry);
+                    const GeometryFunction<N>& geometry,
+                    bool autoEvaluate = true);
 
     void evaluate(const GeometryFunction<N>& geometry, size_t index);
     void evaluate(const GeometryFunction<N>& geometry);
     
     bool divide(const GeometryFunction<N>& geometry, size_t level);
+    bool divideOffload( const GeometryFunction<N>& geometry, size_t level );
 
     void write(std::ostream& file) const;
     void wipe();
@@ -58,15 +61,20 @@ public:
     double edgeLength() const;
 
 protected:
-    void check() const;
     bool divideRecursive(const GeometryFunction<N>& geometry, size_t level);
+
+    bool divideOffloadRecursive( const GeometryFunction<N>& geometry, size_t level );
+    void requestEvaluation( SpaceTreeNode<N,M>& parent,
+                            const coordinate_container_type& point, 
+                            double* dataPtr );
     
-    coordinate_container_type                   _center;
-    data_container_type                         _data;
-    child_container_type                        _children;
-    double                                      _edgeLength;
-    static SpaceTreeIndexConverter<N,M>         _dataIndex;
-    static SpaceTreeIndexConverter<N,2>         _centerIndex;
+    coordinate_container_type                                   _center;
+    data_container_type                                         _data;
+    child_container_type                                        _children;
+    double                                                      _edgeLength;
+    static SpaceTreeIndexConverter<N,M>                         _dataIndex;
+    static SpaceTreeIndexConverter<N,2>                         _centerIndex;
+    std::deque<std::pair<coordinate_container_type,double*>>    _evaluationRequests;
 };
 
 

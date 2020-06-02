@@ -27,42 +27,43 @@ SpaceTreeNode<N, M>::SpaceTreeNode() :
     _children( ),
     _edgeLength(2.0)
 {
+    static_assert( M<2 || M%2 != 1, "Number of partitions must be odd and greater than 1!" );
+
     for (auto& child : _children)
         child.reset();
     for (auto& coordinate : _center)
         coordinate = 0.0;
-    check();
 }
 
 
 template <size_t N, size_t M>
-SpaceTreeNode<N, M>::SpaceTreeNode(const typename SpaceTreeNode<N,M>::coordinate_container_type& center, double edgeLength) :
+SpaceTreeNode<N, M>::SpaceTreeNode( const typename SpaceTreeNode<N,M>::coordinate_container_type& center, 
+                                    double edgeLength) :
     _center(center),
     _data(),
     _children(),
     _edgeLength(edgeLength)
 {
+    static_assert( M>1 || M%2 != 1, "Number of partitions must be odd and greater than 1!" );
+
     for (auto& child : _children)
         child.reset();
-    check();
 }
 
 
 template <size_t N, size_t M>
-SpaceTreeNode<N, M>::SpaceTreeNode( const SpaceTreeNode<N, M>& parent, 
+SpaceTreeNode<N, M>::SpaceTreeNode( SpaceTreeNode<N, M>& parent, 
                                     size_t index, 
-                                    const GeometryFunction<N>& geometry) :
+                                    const GeometryFunction<N>& geometry,
+                                    bool autoEvaluate ) :
     _data(),
     _children(),
     _edgeLength( parent._edgeLength/2.0 )
 {
-    // Check dimensions
-    check();
-    
     // Initialize center
     for (size_t i = 0; i < N; ++i)
         _center[i] =    parent._center[i] 
-                        + parent._edgeLength/4.0 * (2.0*_centerIndex(index)[i]-1.0);
+                        + parent._edgeLength/4.0 * (2.0*_centerIndex.convert(index)[i]-1.0);
 
     // Copy parent data and evaluate new points
     bool evaluatePoint;
@@ -73,7 +74,7 @@ SpaceTreeNode<N, M>::SpaceTreeNode( const SpaceTreeNode<N, M>& parent,
         evaluatePoint = false;   
         for (size_t j=0; j<N; ++j)
         {
-            if ( (_dataIndex(i)[j]%2) != 0 )
+            if ( (_dataIndex.convert(i)[j]%2) != 0 )
                 {
                     evaluatePoint = true;
                     break;
@@ -81,9 +82,12 @@ SpaceTreeNode<N, M>::SpaceTreeNode( const SpaceTreeNode<N, M>& parent,
         }
         // Copy parent data if shared, evaluate geometry if not
         if (!evaluatePoint)
-            _data[i] = parent._data[ i/2 + (M-1)/2 * reinterpretBase<N>( _centerIndex(index), M ) ];
+            _data[i] = parent._data[ i/2 + (M-1)/2 * reinterpretBase<N>( _centerIndex.convert(index), M ) ];
         else
-            evaluate(geometry,i);
+            if (autoEvaluate)
+                evaluate( geometry, i );
+            else
+                requestEvaluation( parent, pointCoordinates(i), &_data[i] );
     }
 }
 
@@ -204,15 +208,7 @@ typename SpaceTreeNode<N,M>::coordinate_container_type SpaceTreeNode<N, M>::poin
 template <size_t N, size_t M>
 typename SpaceTreeNode<N,M>::coordinate_container_type SpaceTreeNode<N, M>::pointCoordinates(size_t index) const
 {
-    return pointCoordinates( _dataIndex(index) );
-}
-
-
-template <size_t N, size_t M>
-void SpaceTreeNode<N, M>::check() const
-{
-    if (M%2 != 1)
-        throw std::runtime_error("Number of partitions must be odd and >1! (" + std::to_string(M) + ")");
+    return pointCoordinates( _dataIndex.convert(index) );
 }
 
 
@@ -258,6 +254,87 @@ template <size_t N, size_t M>
 double SpaceTreeNode<N, M>::edgeLength() const
 {
     return _edgeLength;
+}
+
+
+template<size_t N, size_t M>
+bool SpaceTreeNode<N,M>::divideOffload( const GeometryFunction<N>& geometry, size_t level )
+{
+    bool result;
+
+    //#pragma omp parallel shared(_children,_data,_evaluationRequests)
+    //#pragma omp single
+    result = divideOffloadRecursive( geometry, level );
+
+    return result;
+}
+
+
+template<size_t N, size_t M>
+bool SpaceTreeNode<N,M>::divideOffloadRecursive( const GeometryFunction<N>& geometry, size_t level )
+{
+    bool boundary   = false;
+    bool value      = false;
+
+    if (_data[0] > 0.0) 
+        value = true;
+
+    // Check if boundary node
+    for (const auto& data : _data)
+        if ( (data>0.0) != value )
+        {
+            boundary = true;
+            break;
+        }
+
+    // Divide if boundary
+    if (boundary)
+    {
+        //#pragma omp parallel for shared(_evaluationRequests, _children, _data, geometry, level)
+        #pragma omp parallel for simd
+        for (auto it = _children.begin(); it != _children.end(); ++it)
+            *it = std::make_unique<SpaceTreeNode>(  *this,
+                                                    std::distance(_children.begin(),it),
+                                                    geometry,
+                                                    false);
+
+        // Offload evaluation
+        //std::vector<double> values(_evaluationRequests.size());
+        //#pragma omp parallel for shared(_evaluationRequests,_children, _data, geometry, level)
+        //#pragma omp target teams distribute parallel for map(from:_evaluationRequests) map(to:values)
+        #pragma omp parallel for simd
+        for (size_t i=0; i<_evaluationRequests.size(); ++i)
+        {
+            //values[i] = geometry(_evaluationRequests[i].first);
+            *_evaluationRequests[i].second = geometry(_evaluationRequests[i].first);
+        }
+        
+        //for (size_t i=0; i<_evaluationRequests.size(); ++i)
+        //    *_evaluationRequests[i].second = values[i];
+
+        _evaluationRequests.clear();
+
+        // Divide children if necessary
+        if (level>1)
+            for (auto& child : _children)
+                child->divideOffloadRecursive(geometry, level-1);
+    }
+
+    // Reset children if not boundary
+    else
+        wipe();
+
+    return boundary;
+}
+
+
+template<size_t N, size_t M>
+void SpaceTreeNode<N,M>::requestEvaluation( SpaceTreeNode<N,M>& parent,
+                                            const typename SpaceTreeNode<N,M>::coordinate_container_type& point, 
+                                            double* dataPtr )
+{
+    #pragma omp critical(requestUpdate)
+    parent._evaluationRequests.emplace_back( point, dataPtr );
 }
 
 

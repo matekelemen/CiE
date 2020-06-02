@@ -7,25 +7,39 @@
 namespace cie {
 namespace csg {
 
+
 template <size_t N, size_t M>
-class SpaceTreeIndexConverter
+class AbsSpaceTreeIndexConverter
 {
 public:
-    SpaceTreeIndexConverter();
+    typedef std::array<UIntArray<N>,intPow(M,N)> index_array_type;
 
-    const UIntArray<N>& operator()(size_t index) const;
-    size_t operator()(const UIntArray<N>& indexM) const;
+    AbsSpaceTreeIndexConverter();
 
-    size_t numberOfChildren() const;
-    size_t numberOfDataPoints() const;
+    static constexpr size_t numberOfChildren();
+    static constexpr size_t numberOfDataPoints();
+
+protected:
+    static constexpr index_array_type initializeIndexArray();
+
+    static constexpr const size_t       _numberOfChildren       = intPow(2,N);
+    static constexpr const size_t       _numberOfDataPoints     = intPow(M,N);
+};
+
+
+template <size_t N, size_t M>
+class SpaceTreeIndexConverter : public AbsSpaceTreeIndexConverter<N,M>
+{
+public:
+    static constexpr const UIntArray<N>& convert(size_t index);
+    static constexpr size_t convert(const UIntArray<N>& indexM);
 
     friend class SpaceTreeNode<N,M>;
 
 protected:
-    std::vector<UIntArray<N>>   _indices;
-    static const size_t         _numberOfChildren;
-    static const size_t         _numberOfDataPoints;
+    static constexpr typename AbsSpaceTreeIndexConverter<N,M>::index_array_type _indices = AbsSpaceTreeIndexConverter<N,M>::initializeIndexArray();
 };
+
 
 }
 }

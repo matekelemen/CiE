@@ -7,12 +7,14 @@ namespace cie {
 namespace csg {
 
 
+#pragma acc routine seq
 double unitCircle(const DoubleArray<2>& point)
 {
     return (point[0]*point[0]+point[1]*point[1]) - 1.0;
 }
 
 
+#pragma acc routine seq
 double unitSphere(const DoubleArray<3>& point)
 {
     return (point[0]*point[0]+point[1]*point[1]+point[2]*point[2]) - 1.0;
@@ -79,16 +81,28 @@ TEST_CASE("SpaceTreeNode divide 2D")
 
 TEST_CASE("SpaceTreeNode divide 3D")
 {
-    // Create geometry
-    SpaceTreeNode<3, 3> root({ 1.0,1.0,1.0 }, 2.0);
-    GeometryFunction<3> sphere = unitSphere;
+    {
+        // Create geometry
+        SpaceTreeNode<3, 3> root({ 1.0,1.0,1.0 }, 2.0);
+        GeometryFunction<3> sphere = unitSphere;
 
-    // Initialize and divide tree
-    root.evaluate(sphere);
-    root.divide(sphere, 7);
+        // Initialize and divide tree
+        root.evaluate(sphere);
+        root.divide(sphere, 7);
+    }
 
-    // Check writing to file
-    CHECK_NOTHROW(writeSpaceTree<3,3>(root, "spacetree3D.csv"));
+    {
+        // Create geometry
+        SpaceTreeNode<3, 3> root({ 1.0,1.0,1.0 }, 2.0);
+        GeometryFunction<3> sphere = unitSphere;
+
+        // Initialize and divide tree
+        root.evaluate(sphere);
+        root.divideOffload(sphere, 7);
+
+        // Check writing to file
+        CHECK_NOTHROW(writeSpaceTree<3,3>(root, "spacetree3D.csv"));
+    }
 }
 
 

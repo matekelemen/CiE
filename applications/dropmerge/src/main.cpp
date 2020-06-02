@@ -18,6 +18,7 @@ const size_t M      = 5;
 int main(std::function<double(const DoubleArray<3>&, double)> targetFunction, double speed = 1.0)
 {
     // Initialize target function
+    mergeCounter = 0;
     auto target = [&](const DoubleArray<3>& point) -> double { return targetFunction(point, 0.0); };
 
     // Build tree
@@ -50,7 +51,7 @@ int main(std::function<double(const DoubleArray<3>&, double)> targetFunction, do
                 auto timerID = manager.tic();
                 //root.wipe();
                 root.evaluate(target);
-                root.divide(target, depth);
+                root.divideOffload(target, depth);
                 manager.toc( "Dividing took", timerID );
                 manager.collectNodesToBuffer();
             }
@@ -81,8 +82,6 @@ int main(std::function<double(const DoubleArray<3>&, double)> targetFunction, do
                             keyCallback,
                             cursorCallback,
                             mouseCallback     );
-
-
     return 0;
 }
 
@@ -100,6 +99,8 @@ int main(int argc, char *argv[])
     auto targetFunction =  [](const cie::DoubleArray<3>& point, double offset) 
         {return cie::csg::exponentialMergeFunction<3>(point,offset);};
 
+    cie::csg::main(targetFunction, speed);
+    //std::cout << "\nTotal merge function calls: " << cie::csg::mergeCounter << "\n";
 
-    return cie::csg::main(targetFunction, speed);
+    return 0;
 }

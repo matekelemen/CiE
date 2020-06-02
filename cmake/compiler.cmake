@@ -2,7 +2,8 @@
 if( CMAKE_COMPILER_IS_GNUCXX )
 
     # If compiler is g++: Enable further  warnings and treat all warnings as errors. fPIC stands for position independent code.
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Werror -fPIC -Wreturn-type" )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -fPIC -Wreturn-type" )
+    #set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror" )
 
     # Compiler optimizations
     set( CIE_COMPILE_OPTIONS "debug" CACHE STRING "debug or release" )
@@ -22,8 +23,17 @@ endif( CMAKE_COMPILER_IS_GNUCXX )
 
 
 # OpenMP
-if( CMAKE_COMPILER_IS_GNUCXX )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp" )
-elseif( MSVC )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /openmp" )
+if( ${CIE_ENABLE_OPENMP} )
+    if( CMAKE_COMPILER_IS_GNUCXX )
+        set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp" )
+    elseif( MSVC )
+        set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /openmp" )
+    endif()
+endif()
+
+# OpenACC
+if( ${CIE_ENABLE_OPENACC} )
+    if( CMAKE_COMPILER_IS_GNUCXX )
+        set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenacc" )
+    endif()
 endif()

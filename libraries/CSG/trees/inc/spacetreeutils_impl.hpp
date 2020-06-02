@@ -20,7 +20,7 @@ constexpr const size_t intPow(int base, size_t exponent)
 
 
 template <size_t M>
-void baseN(size_t base_10, size_t base, UIntArray<M>& base_N)
+constexpr void baseN(size_t base_10, size_t base, UIntArray<M>& base_N)
 {
     for (size_t i = 0; i < M; ++i)
     {
@@ -40,7 +40,7 @@ void baseN(size_t base_10, size_t base, UIntArray<M>& base_N)
 
 
 template <size_t M>
-UIntArray<M> baseN(size_t base_10, size_t base)
+constexpr UIntArray<M> baseN(size_t base_10, size_t base)
 {
     UIntArray<M> result;
     baseN<M>(base_10, base, result);
@@ -49,7 +49,7 @@ UIntArray<M> baseN(size_t base_10, size_t base)
 
 
 template <size_t M>
-size_t base10(const UIntArray<M>& base_N, size_t base)
+constexpr size_t base10(const UIntArray<M>& base_N, size_t base)
 {
     size_t power = 1;
     size_t base_10 = 0;
@@ -63,7 +63,7 @@ size_t base10(const UIntArray<M>& base_N, size_t base)
 
 
 template <size_t M>
-size_t reinterpretBase( const UIntArray<M>& baseN, size_t newBase )
+constexpr size_t reinterpretBase( const UIntArray<M>& baseN, size_t newBase )
 {
     size_t power = 1;
     size_t value = 0;
