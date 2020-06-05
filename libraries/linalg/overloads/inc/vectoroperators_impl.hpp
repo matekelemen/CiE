@@ -1,127 +1,141 @@
 #ifndef LINALG_VECTOR_OPERATORS_IMPL_HPP
 #define LINALG_VECTOR_OPERATORS_IMPL_HPP
 
+// --- STD Includes ---
+#include <algorithm>
+#include <numeric>
+
 namespace cie {
 
-template <size_t N>
-DoubleArray<N> operator+(const DoubleArray<N>& vector, double scalar)
+// ---------------------------------------------------------
+// VECTOR - SCALAR OPERATORS
+// ---------------------------------------------------------
+template <concepts::NumericContainer ArrayType, concepts::NumericType ScalarType>
+ArrayType operator+( const ArrayType& vector, const ScalarType& scalar )
 {
-    DoubleArray<N> result;
+    ArrayType result;
     std::transform( 
         vector.begin(), 
         vector.end(), 
         result.begin(), 
-        [scalar](auto vectorIt) -> double
-            {return vectorIt + scalar;}
+        [&scalar](const auto& component) -> ScalarType
+            {return component + scalar;}
         );
-    
     return result;
 }
 
 
-template <size_t N>
-DoubleArray<N> operator+(double scalar, const DoubleArray<N>& vector)
+template <concepts::NumericContainer ArrayType, concepts::NumericType ScalarType>
+ArrayType operator+( const ScalarType& scalar, const ArrayType& vector )
 {
     return vector + scalar;
 }
 
 
-template <size_t N>
-DoubleArray<N> operator-(const DoubleArray<N>& vector, double scalar)
+template <concepts::NumericContainer ArrayType, concepts::NumericType ScalarType>
+ArrayType operator-( const ArrayType& vector, const ScalarType& scalar )
 {
-    DoubleArray<N> result;
+    ArrayType result;
     std::transform( 
         vector.begin(), 
         vector.end(), 
         result.begin(), 
-        [scalar](auto vectorIt) -> double
-            {return vectorIt - scalar;}
+        [&scalar](const auto& component) -> ScalarType
+            {return component - scalar;}
         );
-    
     return result;
 }
 
 
-template <size_t N>
-DoubleArray<N> operator+(const DoubleArray<N>& lhs, const DoubleArray<N>& rhs)
+template <concepts::NumericContainer ArrayType, concepts::NumericType ScalarType>
+ArrayType operator-( const ScalarType& scalar, const ArrayType& vector )
 {
-    DoubleArray<N> result;
-    std::transform( 
-        lhs.begin(), 
-        lhs.end(), 
-        rhs.begin(), 
-        result.begin(), 
-        [](double lhsIt, double rhsIt) -> double
-            {return lhsIt + rhsIt;}
-        );
-    
-    return result;
+    return vector - scalar;
 }
 
 
-template <size_t N>
-DoubleArray<N> operator-(const DoubleArray<N>& lhs, const DoubleArray<N>& rhs)
+template <concepts::NumericContainer ArrayType, concepts::NumericType ScalarType>
+ArrayType operator*( const ArrayType& vector, const ScalarType& scalar )
 {
-    DoubleArray<N> result;
-    std::transform( 
-        lhs.begin(), 
-        lhs.end(), 
-        rhs.begin(), 
-        result.begin(), 
-        [](auto lhsIt, auto rhsIt) -> double
-            {return (lhsIt) - (rhsIt);}
-        );
-
-    return result;
-}
-
-
-template <size_t N>
-DoubleArray<N> operator*(const DoubleArray<N>& vector, double scalar)
-{
-    DoubleArray<N> result;
+    ArrayType result;
     std::transform( 
         vector.begin(), 
         vector.end(), 
         result.begin(), 
-        [scalar](auto vectorIt) -> double
-            {return vectorIt * scalar;}
+        [&scalar](const auto& component) -> ScalarType
+            {return component * scalar;}
         );
-    
     return result;
 }
 
 
-template <size_t N>
-DoubleArray<N> operator*(double scalar, const DoubleArray<N>& vector)
+template <concepts::NumericContainer ArrayType, concepts::NumericType ScalarType>
+ArrayType operator/( const ArrayType& vector, const ScalarType& scalar )
+{
+    ArrayType result;
+    std::transform( 
+        vector.begin(), 
+        vector.end(), 
+        result.begin(), 
+        [&scalar](const auto& component) -> ScalarType
+            {return component / scalar;}
+        );
+    return result;
+}
+
+
+template <concepts::NumericContainer ArrayType, concepts::NumericType ScalarType>
+ArrayType operator*( const ScalarType& scalar, const ArrayType& vector )
 {
     return vector * scalar;
 }
 
 
-template <size_t N>
-DoubleArray<N> operator/(const DoubleArray<N>& vector, double scalar)
+// ---------------------------------------------------------
+// VECTOR - VECTOR OPERATORS
+// ---------------------------------------------------------
+template <concepts::NumericContainer ArrayType>
+ArrayType operator+( const ArrayType& lhs, const ArrayType& rhs )
 {
-    if (abs(scalar)<1e-15)
-        throw std::runtime_error("Division by 0!");
-    else {
-        DoubleArray<N> result(vector);
-        std::transform( 
-            vector.begin(), 
-            vector.end(), 
-            result.begin(), 
-            [scalar](auto vectorIt) -> double
-                {return vectorIt / scalar;}
-            );
-        
-        return result;
-    }
+    typedef typename ArrayType::value_type ValueType;
+    ArrayType result;
+    std::transform( 
+        lhs.begin(), 
+        lhs.end(), 
+        rhs.begin(), 
+        result.begin(), 
+        [](const ValueType& lhsComponent, const ValueType& rhsComponent) -> ValueType
+            {return lhsComponent + rhsComponent;}
+        );
+    
+    return result;
 }
 
 
-template <size_t N>
-double operator*(const DoubleArray<N>& lhs, const DoubleArray<N>& rhs)
+template <concepts::NumericContainer ArrayType>
+ArrayType operator-( const ArrayType& lhs, const ArrayType& rhs )
 {
+    typedef typename ArrayType::value_type ValueType;
+    ArrayType result;
+    std::transform( 
+        lhs.begin(), 
+        lhs.end(), 
+        rhs.begin(), 
+        result.begin(), 
+        [](const ValueType& lhsComponent, const ValueType& rhsComponent) -> ValueType
+            {return lhsComponent - rhsComponent;}
+        );
+    
+    return result;
+}
+
+
+template <concepts::NumericContainer ArrayType>
+typename ArrayType::value_type operator*( const ArrayType& lhs, const ArrayType& rhs )
+{
+    if (lhs.size() != rhs.size())
+        throw std::runtime_error("Inconsistent vector sizes!");
+    
     return std::inner_product( lhs.begin(), lhs.end(), rhs.begin(), 0.0 );
 }
 

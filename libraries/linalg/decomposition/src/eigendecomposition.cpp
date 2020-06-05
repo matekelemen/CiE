@@ -1,5 +1,5 @@
+// --- Internal Includes ---
 #include "../inc/eigendecomposition.hpp"
-
 #include "../../types/inc/typeoperations.hpp"
 #include "../../overloads/inc/vectoroperators.hpp"
 #include "../../overloads/inc/matrixoperators.hpp"
@@ -24,7 +24,7 @@ DoubleVector principalComponent(const Matrix& matrix, double tolerance, size_t m
 
     // Iterative approximation
     size_t iteration = 0;
-    while ( norm<DoubleVector>( cie::operator-(output, memory) )>tolerance && iteration<maxIterations ){
+    while ( norm<DoubleVector>( cie::operator-(output,memory) )>tolerance && iteration<maxIterations ){
         memory  = output;
         output  = matrix * output;
         normalize<DoubleVector>(output);

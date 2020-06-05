@@ -1,48 +1,52 @@
 #ifndef LINALG_VECTOR_OPERATORS
 #define LINALG_VECTOR_OPERATORS
 
+// --- Utility Includes ---
+#include "cieutils/concepts.hpp"
+
+// --- Internal Includes ---
 #include "../../types/inc/matrix.hpp"
 #include "../../types/inc/vectortypes.hpp"
 #include "../../types/inc/arraytypes.hpp"
-#include <algorithm>
-#include <numeric>
 
 namespace cie {
 
-DoubleVector operator+(const DoubleVector& vector, double scalar);
-DoubleVector operator+(double scalar, const DoubleVector& vector);
-DoubleVector operator-(const DoubleVector& vector, double scalar);
+// ---------------------------------------------------------
+// VECTOR - SCALAR OPERATORS
+// ---------------------------------------------------------
+template <concepts::NumericContainer ArrayType, concepts::NumericType ScalarType>
+ArrayType operator+( const ArrayType& vector, const ScalarType& scalar );
 
-DoubleVector operator+(const DoubleVector& lhs, const DoubleVector& rhs);
-DoubleVector operator-(const DoubleVector& lhs, const DoubleVector& rhs);
+template <concepts::NumericContainer ArrayType, concepts::NumericType ScalarType>
+ArrayType operator+( const ScalarType& scalar, const ArrayType& vector );
 
-DoubleVector operator*(const DoubleVector& vector, double scalar);
-DoubleVector operator*(double scalar, const DoubleVector& vector);
-DoubleVector operator/(const DoubleVector& vector, double scalar);
+template <concepts::NumericContainer ArrayType, concepts::NumericType ScalarType>
+ArrayType operator-( const ArrayType& vector, const ScalarType& scalar );
 
-double operator*(const DoubleVector& lhs, const DoubleVector& rhs); // Dot product
+template <concepts::NumericContainer ArrayType, concepts::NumericType ScalarType>
+ArrayType operator-( const ScalarType& scalar, const ArrayType& vector );
 
-template <size_t N>
-DoubleArray<N> operator+(const DoubleArray<N>& vector, double scalar);
-template <size_t N>
-DoubleArray<N> operator+(double scalar, const DoubleArray<N>& vector);
-template <size_t N>
-DoubleArray<N> operator-(const DoubleArray<N>& vector, double scalar);
+template <concepts::NumericContainer ArrayType, concepts::NumericType ScalarType>
+ArrayType operator*( const ArrayType& vector, const ScalarType& scalar );
 
-template <size_t N>
-DoubleArray<N> operator+(const DoubleArray<N>& lhs, const DoubleArray<N>& rhs);
-template <size_t N>
-DoubleArray<N> operator-(const DoubleArray<N>& lhs, const DoubleArray<N>& rhs);
+template <concepts::NumericContainer ArrayType, concepts::NumericType ScalarType>
+ArrayType operator*( const ScalarType& scalar, const ArrayType& vector );
 
-template <size_t N>
-DoubleArray<N> operator*(const DoubleArray<N>& vector, double scalar);
-template <size_t N>
-DoubleArray<N> operator*(double scalar, const DoubleArray<N>& vector);
-template <size_t N>
-DoubleArray<N> operator/(const DoubleArray<N>& vector, double scalar);
+template <concepts::NumericContainer ArrayType, concepts::NumericType ScalarType>
+ArrayType operator/( const ArrayType& vector, const ScalarType& scalar );
 
-template <size_t N>
-double operator*(const DoubleArray<N>& lhs, const DoubleArray<N>& rhs); // Dot product
+
+// ---------------------------------------------------------
+// VECTOR - VECTOR OPERATORS
+// ---------------------------------------------------------
+template <concepts::NumericContainer ArrayType>
+ArrayType operator+( const ArrayType& lhs, const ArrayType& rhs );
+
+template <concepts::NumericContainer ArrayType>
+ArrayType operator-( const ArrayType& lhs, const ArrayType& rhs );
+
+template <concepts::NumericContainer ArrayType>
+typename ArrayType::value_type operator*( const ArrayType& lhs, const ArrayType& rhs );
 
 }
 
