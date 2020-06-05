@@ -29,9 +29,7 @@ include_directories( "${CIEUTILS_INCLUDE_DIRECTORIES}" )
 # ---------------------------------------------------------
 # Add library from the collected source files. The headers are given so visual studio displays them
 ADD_SHARED_LIBRARY( cieutils ${CIEUTILS_SOURCE_FILES} ${CIEUTILS_HEADER_FILES} )
-TARGET_LINK_LIBRARIES_INSTALL( cieutils linalg )
-
-
+TARGET_LINK_LIBRARIES_INSTALL( cieutils )
 
 
 # Add an executable and link to the library

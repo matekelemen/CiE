@@ -4,6 +4,8 @@
 // --- Internal Includes ---
 #include "basic_concepts.hpp"
 
+// --- STD Includes ---
+#include <iterator>
 
 namespace cie {
 namespace concepts {

@@ -50,6 +50,12 @@ concept ClassContainer
 
 
 template <class ContainerType>
+concept NumericContainer
+=   STLContainer<ContainerType>
+    && NumericType<typename ContainerType::value_type>;
+
+
+template <class ContainerType>
 concept PointerContainer
 =   STLContainer<ContainerType>
     && PointerType<typename ContainerType::value_type>;
