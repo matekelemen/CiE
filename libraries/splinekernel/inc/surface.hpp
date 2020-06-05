@@ -1,11 +1,14 @@
 #ifndef CIE_SURFACE_HPP
 #define CIE_SURFACE_HPP
 
+// --- Linalg Includes ---
+#include "linalg/linalg.hpp"
+
+// --- STD Includes ---
 #include <vector>
 #include <array>
 #include <algorithm>
 
-#include "linalg.hpp"
 
 namespace cie
 {

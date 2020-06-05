@@ -1,11 +1,13 @@
 #ifndef OPT_RANDOM_UTILITIES_HPP
 #define OPT_RANDOM_UTILITIES_HPP
 
+// --- Linalg Includes ---
+#include "linalg/types.hpp"
 
+// --- STD Includes ---
 #include <ctime>
 #include <random>
 
-#include "linalgtypes.hpp"
 
 namespace cie {
 namespace opt {

@@ -1,7 +1,10 @@
 #ifndef OPTIMIZATION_GRADIENT_ESTIMATE_HPP
 #define OPTIMIZATION_GRADIENT_ESTIMATE_HPP
 
-#include "linalgtypes.hpp"
+// --- Linalg Includes ---
+#include "linalg/types.hpp"
+
+// --- Internal Incldudes ---
 #include "../../representation/inc/element.hpp"
 #include "objectivefunction.hpp"
 

@@ -1,8 +1,11 @@
 #ifndef CSG_RECTANGLE_HPP
 #define CSG_RECTANGLE_HPP
 
+// --- Linalg Includes ---
+#include "linalg/types.hpp"
+
+// --- Internal Includes ---
 #include "csgobject.hpp"
-#include "linalgtypes.hpp"
 
 namespace cie {
 namespace csg {

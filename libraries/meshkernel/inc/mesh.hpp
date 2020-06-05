@@ -1,7 +1,10 @@
 #ifndef MESHKERNEL_MESH_HPP
 #define MESHKERNEL_MESH_HPP
 
-#include "linalgtypes.hpp"
+// --- Linalg Includes ---
+#include "linalg/types.hpp"
+
+// --- STD Includes ---
 #include <memory>
 
 namespace cie {

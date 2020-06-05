@@ -2,7 +2,7 @@
 #define GLVISUALIZATION_SHADERS_IMPL_HPP
 
 // --- Utility Includes ---
-#include "file.hpp"
+#include "cieutils/file.hpp"
 
 // --- Internal Includes ---
 #include "../inc/shaders.hpp"

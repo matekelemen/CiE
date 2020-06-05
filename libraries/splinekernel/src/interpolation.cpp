@@ -1,8 +1,12 @@
+// --- Linalg Includes ---
+#include "linalg/linalg.hpp"
+
+// --- Internal Includes ---
 #include "interpolation.hpp"
 #include "basisfunctions.hpp"
-#include "linalg.hpp"
-#include <string>
 
+// --- STD Includes ---
+#include <string>
 #include <cmath>
 #include <exception>
 #include <fstream>

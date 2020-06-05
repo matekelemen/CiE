@@ -1,5 +1,8 @@
+// --- External Includes ---
 #include "catch.hpp"
-#include "../inc/linalg.hpp"
+
+// --- Internal Includes ---
+#include "linalg/linalg.hpp"
 
 namespace cie {
 namespace linalg {

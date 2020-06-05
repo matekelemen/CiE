@@ -1,7 +1,11 @@
+// --- Linalg Includes ---
+#include "linalg/linalg.hpp"
+
+// --- Internal Include ---
 #include "finiteelements.hpp"
 #include "basisfunctions.hpp"
-#include "linalg.hpp"
 
+// --- STD Includes ---
 #include <cmath>
 #include <algorithm>
 #include <numeric>

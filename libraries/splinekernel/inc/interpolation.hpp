@@ -1,9 +1,12 @@
 #ifndef CIE_INTERPOLATION_HPP
 #define CIE_INTERPOLATION_HPP
 
+// --- Linalg Includes ---
+#include "linalg/linalg.hpp"
+
+// --- STD Includes ---
 #include <array>
 #include <vector>
-#include "linalg.hpp"
 
 namespace cie
 {

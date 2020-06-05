@@ -1,7 +1,10 @@
 #ifndef CSG_MINIMUM_DISC_HPP
 #define CSG_MINIMUM_DISC_HPP
 
-#include "linalgtypes.hpp"
+// --- Linalg Includes ---
+#include "linalg/types.hpp"
+
+// --- STD Includes ---
 #include <vector>
 #include <array>
 #include <memory>

@@ -1,6 +1,10 @@
+// --- External Includes ---
 #include "catch.hpp"
-#include "../inc/linalg.hpp"
 
+// --- Internal Includes ---
+#include "linalg/linalg.hpp"
+
+// --- STD Includes ---
 #include <fstream>
 #include <sstream>
 

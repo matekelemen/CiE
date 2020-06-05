@@ -1,12 +1,17 @@
 #ifndef GLVISUALIZATION_BUFFER_HANDLER_HPP
 #define GLVISUALIZATION_BUFFER_HANDLER_HPP
 
+// --- External Includes ---
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "linalgtypes.hpp"
+// --- Linalg Includes ---
+#include "linalg/types.hpp"
+
+// --- Internal Includes ---
 #include "../../context/inc/AbsContextClass.hpp"
 
+// --- STD Includes ---
 #include <vector>
 
 namespace cie {

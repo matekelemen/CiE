@@ -1,7 +1,8 @@
 #ifndef CSG_CSG_OBJECT_HPP
 #define CSG_CSG_OBJECT_HPP
 
-#include "linalgtypes.hpp"
+// --- Linalg Includes ---
+#include "linalg/types.hpp"
 
 namespace cie {
 namespace csg {

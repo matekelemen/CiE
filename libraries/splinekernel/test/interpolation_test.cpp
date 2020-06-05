@@ -1,6 +1,13 @@
+// --- External Includes ---
 #include "catch.hpp"
-#include "linalg.hpp"
+
+// --- Linalg Includes ---
+#include "linalg/linalg.hpp"
+
+// --- Internal Includes ---
 #include "interpolation.hpp"
+
+// --- STD Includes ---
 #include <algorithm>
 
 namespace cie

@@ -1,11 +1,14 @@
 #ifndef CSG_NTREEUTILS_HPP
 #define CSG_NTREEUTILS_HPP
 
+// --- Linalg Includes ---
+#include "linalg/types.hpp"
+
+// --- STD Includes ---
 #include <stdint.h>
 #include <functional>
 #include <fstream>
 
-#include "linalgtypes.hpp"
 
 namespace cie {
 namespace csg {

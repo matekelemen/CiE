@@ -1,7 +1,8 @@
 #ifndef OPTIMIZATION_ELEMENT_HPP
 #define OPTIMIZATION_ELEMENT_HPP
 
-#include "linalgtypes.hpp"
+// --- Linalg Includes ---
+#include "linalg/types.hpp"
 
 namespace cie {
 namespace opt {

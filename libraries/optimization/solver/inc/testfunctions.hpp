@@ -1,7 +1,10 @@
 #ifndef OPTIMIZATION_TEST_FUNCTIONS_HPP
 #define OPTIMIZATION_TEST_FUNCTIONS_HPP
 
-#include "linalgtypes.hpp"
+// --- Linalg Includes ---
+#include "linalg/types.hpp"
+
+// --- Internal Includes ---
 #include "../../objective/inc/objectivefunction.hpp"
 
 namespace cie {

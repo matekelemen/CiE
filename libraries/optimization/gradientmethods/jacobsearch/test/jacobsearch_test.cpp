@@ -1,7 +1,14 @@
+// --- External Includes ---
 #include "catch.hpp"
+
+// --- Internal Includes ---
 #include "../inc/jacobsearch.hpp"
-#include "linalgtypes.hpp"
 #include "../../solver/inc/testfunctions.hpp"
+
+// --- Linalg Includes ---
+#include "linalg/types.hpp"
+
+// --- STD Includes ---
 #include <iostream>
 
 namespace cie {

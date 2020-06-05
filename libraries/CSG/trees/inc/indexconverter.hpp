@@ -1,8 +1,11 @@
 #ifndef CSG_NTREE_INDEX_CONVERTER_HPP
 #define CSG_NTREE_INDEX_CONVERTER_HPP
 
+// Linalg Includes ---
+#include "linalg/types.hpp"
+
+// --- Internal Includes ---
 #include "spacetreeutils.hpp"
-#include "linalgtypes.hpp"
 
 namespace cie {
 namespace csg {

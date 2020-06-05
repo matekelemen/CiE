@@ -1,8 +1,11 @@
 #ifndef OPTIMIZATION_JACOB_SEARCH_IMPL_HPP
 #define OPTIMIZATION_JACOB_SEARCH_IMPL_HPP
 
-#include "linalgtypes.hpp"
-#include "linalgoverloads.hpp"
+// --- Linalg Includes ---
+#include "linalg/types.hpp"
+#include "linalg/overloads.hpp"
+
+// --- Internal Includes ---
 #include "quadraticsubstitute.hpp"
 
 namespace cie {

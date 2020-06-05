@@ -1,8 +1,10 @@
 #ifndef LINALG_SPARSE_HPP
 #define LINALG_SPARSE_HPP
 
-#include "linalg.hpp"
+// --- Linalg Includes ---
+#include "linalg/types.hpp"
 
+// --- STD Includes ---
 #include <vector>
 #include <tuple>
 #include <cstddef>

@@ -5,12 +5,14 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+// --- Utility Includes ---
+#include "cieutils/logging.hpp"
+#include "cieutils/observer.hpp"
+
 // --- Internal Includes ---
-#include "logging.hpp"
-#include "observer.hpp"
-#include "cmake_variables.hpp"
 #include "windowutilities.hpp"
 #include "defaultCallback.hpp"
+#include "cmake_variables.hpp"
 
 // --- STD Includes ---
 #include <functional>

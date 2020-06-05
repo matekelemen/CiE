@@ -1,7 +1,10 @@
 #ifndef OPTIMIZATION_OBJECTIVE_SUBSTITUTE
 #define OPTIMIZATION_OBJECTIVE_SUBSTITUTE
 
-#include "linalgtypes.hpp"
+// --- Linalg Includes ---
+#include "linalg/types.hpp"
+
+// --- STD Includes ---
 #include <utility>
 
 namespace cie {

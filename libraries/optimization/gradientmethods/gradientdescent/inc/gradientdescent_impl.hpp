@@ -1,11 +1,15 @@
 #ifndef OPTIMIZATION_GRADIENT_DESCENT_IMPL_HPP
 #define OPTIMIZATION_GRADIENT_DESCENT_IMPL_HPP
 
-#include "linalgtypes.hpp"
-#include "linalgoverloads.hpp"
+// --- Linalg Includes ---
+#include "linalg/types.hpp"
+#include "linalg/overloads.hpp"
+
+// --- Internal Includes ---
 #include "gradientestimate.hpp"
 #include "../../solver/inc/solver.hpp"
 
+// --- STD Includes ---
 #include <functional>
 
 namespace cie {

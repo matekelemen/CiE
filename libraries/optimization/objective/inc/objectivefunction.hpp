@@ -1,10 +1,15 @@
 #ifndef OPTIMIZATION_OBJECTIVE_FUNCTION_HPP
 #define OPTIMIZATION_OBJECTIVE_FUNCTION_HPP
 
+// --- Linalg Includes ---
+#include "linalg/types.hpp"
+
+// --- Internal Includes ---
+#include "../../representation/inc/element.hpp"
+
+// --- STD Includes ---
 #include <memory>
 #include <functional>
-#include "../../representation/inc/element.hpp"
-#include "linalgtypes.hpp"
 
 namespace cie {
 namespace opt {

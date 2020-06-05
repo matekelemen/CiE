@@ -1,9 +1,14 @@
+// --- Linalg Includes ---
+#include "linalg/overloads.hpp"
+
+// --- Internal Includes ---
 #include "../inc/minimumdisc.hpp"
-#include "linalgoverloads.hpp"
-#include <numeric>
+
+// --- STD Includes ---
+#include <algorithm>
 #include <iostream>
 #include <random>
-#include <algorithm>
+#include <numeric>
 
 
 // Create random generator
