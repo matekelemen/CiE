@@ -7,6 +7,8 @@
 
 namespace cie {
 
+using Bool      = bool;
+
 using Size      = size_t;
 using Float     = float;
 using Double    = double;

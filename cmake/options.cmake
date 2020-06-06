@@ -15,3 +15,11 @@ set( CIE_ENABLE_OPENACC OFF CACHE BOOL "enable openacc directives" )
 # ---------------------------------------------------------
 option( CIE_USE_CPP_GRAPHICS "Compile OpenGL and GLEW" ON )
 set( OpenGL_GL_PREFERENCE "GLVND" CACHE STRING "GLVND or LEGACY" )
+
+# ---------------------------------------------------------
+# MACRO OPTIONS
+# ---------------------------------------------------------
+set( CIE_ENABLE_OUT_OF_RANGE_TESTS ON CACHE BOOL "" )
+if( ${CIE_ENABLE_OUT_OF_RANGE_TESTS} )
+    add_compile_definitions( CIE_ENABLE_OUT_OF_RANGE_TESTS )
+endif()
