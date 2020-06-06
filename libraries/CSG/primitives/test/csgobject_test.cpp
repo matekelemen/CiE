@@ -15,7 +15,7 @@ namespace cie {
 namespace csg {
 
 
-template <  size_t N, 
+template <  Size N, 
             class ValueType = Bool, 
             class CoordinateType = Double>
 class CSGTestObject : public CSGObject<N,ValueType,CoordinateType>
@@ -31,7 +31,7 @@ protected:
 
 TEST_CASE( "CSGObject", "[primitives]" )
 {
-    const size_t dimension    = 2;
+    const Size dimension    = 2;
 
     REQUIRE_NOTHROW( CSGTestObject<dimension>() );
 

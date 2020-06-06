@@ -106,6 +106,14 @@ concept ClassPointer
         };
 
 
+// ---------------------------------------------------------
+// POLYMORPHISM
+// ---------------------------------------------------------
+template <class DerivedType, class BaseType>
+concept DerivedFrom
+= std::derived_from<DerivedType,BaseType>;
+
+
 }
 }
 

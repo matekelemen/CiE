@@ -4,10 +4,15 @@
 // --- Utility Includes ---
 #include "cieutils/macros.hpp"
 
+// --- STD Includes ---
+#include <utility>
+
 namespace cie {
 namespace csg {
 
-
+// ---------------------------------------------------------
+// ABSTRACT BASE
+// ---------------------------------------------------------
 template <  Size N, 
             concepts::CopyConstructible ValueType,
             concepts::NumericType CoordinateType    >
