@@ -23,11 +23,11 @@ CSGObject<N,ValueType,CoordinateType>::evaluate( const ContainerType& point ) co
 {
     CIE_OUT_OF_RANGE_TEST( point.size() == N, "CSGObject" )
 
-    CSGObject<N,ValueType,CoordinateType>::point_type internalPoint;
+    typename CSGObject<N,ValueType,CoordinateType>::point_type internalPoint;
     std::copy(  point.begin(),
                 point.end(),
                 internalPoint.begin() );
-    return this->operator()(internalPoint);
+    return this->at(internalPoint);
 }
 
 
@@ -41,11 +41,11 @@ CSGObject<N,ValueType,CoordinateType>::evaluate( ContainerType&& point ) const
 {
     CIE_OUT_OF_RANGE_TEST( point.size() == N, "CSGObject" )
     
-    CSGObject<N,ValueType,CoordinateType>::point_type internalPoint;
+    typename CSGObject<N,ValueType,CoordinateType>::point_type internalPoint;
     std::move(  point.begin(),
                 point.end(),
                 internalPoint.begin() );
-    return this->operator()(internalPoint);
+    return this->at(internalPoint);
 }
 
 

@@ -15,7 +15,7 @@ namespace csg {
 class CSGTestObject_true : public CSGObject<2,Bool,Double>
 {
 protected:
-    Bool operator()(const typename CSGTestObject_true::point_type& point) const override
+    Bool at(const typename CSGTestObject_true::point_type& point) const override
     {
         return true;
     }
@@ -25,7 +25,7 @@ protected:
 class CSGTestObject_false : public CSGObject<2,Bool,Double>
 {
 protected:
-    Bool operator()(const typename CSGTestObject_false::point_type& point) const override
+    Bool at(const typename CSGTestObject_false::point_type& point) const override
     {
         return false;
     }
@@ -35,7 +35,7 @@ protected:
 class TestBinaryOperator : public BinaryOperator<2,Bool,Double>
 {
 protected:
-    Bool operator()( const typename TestBinaryOperator::point_type& point ) const override
+    Bool at( const typename TestBinaryOperator::point_type& point ) const override
     { return this->_lhs->evaluate(point) ^ this->_rhs->evaluate(point); }
 };
 

@@ -32,7 +32,7 @@ public:
     std::shared_ptr<typename UnaryOperator::abstract_base_type>& rhs();
 
 protected:
-    virtual ValueType operator()(const typename UnaryOperator::point_type& point) const override = 0;
+    virtual ValueType at(const typename UnaryOperator::point_type& point) const override = 0;
 
     std::shared_ptr<typename UnaryOperator::abstract_base_type> _rhs;
 };
@@ -61,7 +61,7 @@ public:
     std::shared_ptr<typename BinaryOperator::abstract_base_type>& lhs();
 
 protected:
-    virtual ValueType operator()(const typename BinaryOperator::point_type& point) const override = 0;
+    virtual ValueType at(const typename BinaryOperator::point_type& point) const override = 0;
 
     std::shared_ptr<typename BinaryOperator::abstract_base_type> _lhs;
 };
@@ -79,7 +79,7 @@ template <Size N, concepts::NumericType CoordinateType = Double>
 class BooleanComplement : public UnaryOperator<N,Bool,CoordinateType>
 {
 protected:
-    virtual Bool operator()(const typename BooleanComplement::point_type& point) const override;
+    virtual Bool at(const typename BooleanComplement::point_type& point) const override;
 };
 
 
@@ -87,7 +87,7 @@ template <Size N, concepts::NumericType CoordinateType = Double>
 class BooleanUnion : public BinaryOperator<N,Bool,CoordinateType>
 {
 protected:
-    virtual Bool operator()(const typename BooleanUnion::point_type& point) const override;
+    virtual Bool at(const typename BooleanUnion::point_type& point) const override;
 };
 
 
@@ -95,7 +95,7 @@ template <Size N, concepts::NumericType CoordinateType = Double>
 class BooleanSubtraction : public BinaryOperator<N,Bool,CoordinateType>
 {
 protected:
-    virtual Bool operator()(const typename BooleanSubtraction::point_type& point) const override;
+    virtual Bool at(const typename BooleanSubtraction::point_type& point) const override;
 };
 
 
@@ -103,7 +103,7 @@ template <Size N, concepts::NumericType CoordinateType = Double>
 class BooleanIntersection : public BinaryOperator<N,Bool,CoordinateType>
 {
 protected:
-    virtual Bool operator()(const typename BooleanIntersection::point_type& point) const override;
+    virtual Bool at(const typename BooleanIntersection::point_type& point) const override;
 };
 
 

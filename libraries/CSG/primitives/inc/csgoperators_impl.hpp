@@ -112,28 +112,28 @@ BinaryOperator<N,ValueType,CoordinateType>::lhs()
 // BOOLEAN OPERATORS
 // ---------------------------------------------------------
 template <Size N, concepts::NumericType CoordinateType>
-Bool BooleanComplement<N,CoordinateType>::operator()( const typename BooleanComplement<N,CoordinateType>::point_type& point ) const
+Bool BooleanComplement<N,CoordinateType>::at( const typename BooleanComplement<N,CoordinateType>::point_type& point ) const
 {
     return !this->_rhs->evaluate(point);
 }
 
 
 template <Size N, concepts::NumericType CoordinateType>
-Bool BooleanUnion<N,CoordinateType>::operator()( const typename BooleanUnion<N,CoordinateType>::point_type& point ) const
+Bool BooleanUnion<N,CoordinateType>::at( const typename BooleanUnion<N,CoordinateType>::point_type& point ) const
 {
     return this->_lhs->evaluate(point) || this->_rhs->evaluate(point);
 }
 
 
 template <Size N, concepts::NumericType CoordinateType>
-Bool BooleanSubtraction<N,CoordinateType>::operator()( const typename BooleanSubtraction<N,CoordinateType>::point_type& point ) const
+Bool BooleanSubtraction<N,CoordinateType>::at( const typename BooleanSubtraction<N,CoordinateType>::point_type& point ) const
 {
     return this->_lhs->evaluate(point) && !this->_rhs->evaluate(point);
 }
 
 
 template <Size N, concepts::NumericType CoordinateType>
-Bool BooleanIntersection<N,CoordinateType>::operator()( const typename BooleanIntersection<N,CoordinateType>::point_type& point ) const
+Bool BooleanIntersection<N,CoordinateType>::at( const typename BooleanIntersection<N,CoordinateType>::point_type& point ) const
 {
     return this->_lhs->evaluate(point) && this->_rhs->evaluate(point);
 }

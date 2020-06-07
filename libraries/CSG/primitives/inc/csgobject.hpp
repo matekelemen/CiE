@@ -12,20 +12,26 @@ namespace cie {
 namespace csg {
 
 
-// ---------------------------------------------------------
-// ABSTRACT BASE
-// ---------------------------------------------------------
+
+template <Size N, concepts::NumericType CoordinateType = Double>
+class Primitive
+{
+public:
+    typedef CoordinateType                  coordinate_type;
+    typedef std::array<CoordinateType,N>    point_type;
+    static const Size                       dimension = N;
+};
+
+
+
 template <  Size N, 
             concepts::CopyConstructible ValueType = Bool,
             concepts::NumericType CoordinateType = Double   >
-class CSGObject
+class CSGObject : public Primitive<N,CoordinateType>
 {
 public:
     typedef CSGObject                       abstract_base_type;
     typedef ValueType                       value_type;
-    typedef CoordinateType                  coordinate_type;
-    typedef std::array<CoordinateType,N>    point_type;
-    static const Size                       dimension = N;
 
     template <class ContainerType>
     ValueType evaluate( const ContainerType& point ) const
@@ -36,7 +42,7 @@ public:
         requires concepts::ClassContainer<ContainerType,CoordinateType>;
 
 protected:
-    virtual ValueType operator()(const point_type& point) const = 0;
+    virtual ValueType at(const typename CSGObject::point_type& point) const = 0;
 };
 
 

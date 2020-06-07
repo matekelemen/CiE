@@ -3,7 +3,6 @@
 
 // CSG primitives
 #include "../primitives/inc/csgobject.hpp"
-#include "../primitives/inc/rectangle.hpp"
 
 // Clustering
 #include "../clustering/inc/minimumdisc.hpp"

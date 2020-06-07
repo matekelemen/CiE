@@ -22,7 +22,7 @@ public:
     CSGTestObject_default() = default;
 
 protected:
-    Bool operator()(const typename CSGTestObject_default::point_type& point) const override
+    Bool at(const typename CSGTestObject_default::point_type& point) const override
     {
         return false;
     }
@@ -37,7 +37,7 @@ public:
     CSGTestObject_nondefault( Double arg0, Size arg1 ) {}
 
 protected:
-    Bool operator()(const typename CSGTestObject_nondefault::point_type& point) const override
+    Bool at(const typename CSGTestObject_nondefault::point_type& point) const override
     {
         return true;
     }
@@ -47,7 +47,7 @@ protected:
 class TestUnaryOperator : public UnaryOperator<dimension,Bool,Double>
 {
 protected:
-    Bool operator()( const typename TestUnaryOperator::point_type& point ) const override
+    Bool at( const typename TestUnaryOperator::point_type& point ) const override
     { return !this->_rhs->evaluate(point); }
 };
 

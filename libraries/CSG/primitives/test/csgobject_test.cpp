@@ -21,7 +21,7 @@ template <  Size N,
 class CSGTestObject : public CSGObject<N,ValueType,CoordinateType>
 {
 protected:
-    ValueType operator()(const typename CSGTestObject::point_type& point) const override
+    ValueType at(const typename CSGTestObject::point_type& point) const override
     {
         ValueType output;
         return output;
