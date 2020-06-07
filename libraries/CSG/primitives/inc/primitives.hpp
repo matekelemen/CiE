@@ -17,10 +17,10 @@ class Box : public Primitive<N,CoordinateType>
 {
 public:
     template <class ContainerType1, class ContainerType2>
-    Box( const ContainerType1& center, 
+    Box(    const ContainerType1& center, 
             const ContainerType2& lengths )
-        requires concepts::ClassContainer<ContainerType1,CoordinateType>
-                    && concepts::ClassContainer<ContainerType2,CoordinateType>;
+    requires concepts::ClassContainer<ContainerType1,CoordinateType>
+                && concepts::ClassContainer<ContainerType2,CoordinateType>;
 
     const typename Box::point_type& center() const;
     const typename Box::point_type& lengths() const;

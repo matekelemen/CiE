@@ -34,4 +34,10 @@ DivisionByZeroException::DivisionByZeroException( const String& message ) :
 }
 
 
+GeometryException::GeometryException( const String& message, const String& functionName ) :
+    Exception( "Geometry exception\nin function " + functionName + "\n" + message )
+{
+}
+
+
 }

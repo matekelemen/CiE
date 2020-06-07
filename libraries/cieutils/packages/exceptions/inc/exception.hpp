@@ -41,6 +41,12 @@ struct DivisionByZeroException : public Exception
 };
 
 
+struct GeometryException : public Exception
+{
+    GeometryException( const String& message, const String& functionName );
+};
+
+
 }
 
 

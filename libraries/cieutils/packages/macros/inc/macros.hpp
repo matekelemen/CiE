@@ -44,4 +44,20 @@
 #endif
 
 
+#ifdef CIE_ENABLE_RUNTIME_GEOMETRY_CHECKS
+    #define CIE_RUNTIME_GEOMETRY_ASSERT(boolExpression, message, functionName)  \
+        if (!(boolExpression))                                                  \
+        {                                                                       \
+            std::stringstream stream;                                           \
+            stream << #boolExpression;                                          \
+            stream << " (";                                                     \
+            stream << message;                                                  \
+            stream << ")";                                                      \
+            throw cie::GeometryException( stream.str(), functionName );         \
+        }
+#else
+    #define CIE_RUNTIME_GEOMETRY_ASSERT(boolExpression, message, functionName)
+#endif
+
+
 #endif
