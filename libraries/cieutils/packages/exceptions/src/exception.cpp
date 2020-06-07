@@ -23,7 +23,13 @@ AbstractCallException::AbstractCallException( const String& functionName ) :
 
 
 OutOfRangeException::OutOfRangeException( const String& message ) :
-    Exception( "Out-of-range or size mismatch:\n\t" + message )
+    Exception( "Index out-of-range or size mismatch exception\nin function: " + message )
+{
+}
+
+
+DivisionByZeroException::DivisionByZeroException( const String& message ) :
+    Exception( "Division by zero exception\nin function: " + message )
 {
 }
 

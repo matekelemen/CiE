@@ -1,22 +1,25 @@
-#ifndef LINALG_ERROR_TYPES_HPP
-#define LINALG_ERROR_TYPES_HPP
+#ifndef CIE_LINALG_ERROR_TYPES_HPP
+#define CIE_LINALG_ERROR_TYPES_HPP
 
-#include <string>
-#include <stdexcept>
-#include <fstream>
+// --- Utility Includes ---
+#include <cieutils/exceptions.hpp>
+#include <cieutils/types.hpp>
 
+// --- Internal Includes ---
 #include "linalghelper.hpp"
 
 namespace cie {
 namespace linalg {
 
-class MatrixError : public std::runtime_error {
+template <class MatrixType>
+class MatrixError : public Exception {
 public:
-    MatrixError(const std::string& message, const Matrix& matrix);
+    MatrixError(const String& message, const MatrixType& matrix);
 };
 
 }
 }
 
+#include "errortypes_impl.hpp"
 
 #endif

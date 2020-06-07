@@ -22,8 +22,8 @@ Box<N,CoordinateType>::Box( const ContainerType1& center,
     requires concepts::ClassContainer<ContainerType1,CoordinateType>
                 && concepts::ClassContainer<ContainerType2,CoordinateType>
 {
-    CIE_OUT_OF_RANGE_TEST( center.size() == N, "Box::Box" )
-    CIE_OUT_OF_RANGE_TEST( lengths.size() == N, "Box::Box" )
+    CIE_OUT_OF_RANGE_ASSERT( center.size() == N, "Box::Box" )
+    CIE_OUT_OF_RANGE_ASSERT( lengths.size() == N, "Box::Box" )
 
     std::copy(  center.begin(),
                 center.end(),
@@ -92,7 +92,7 @@ template <  Size N,
 Bool
 CSGBox<N,CoordinateType>::at( const typename CSGBox<N,CoordinateType>::point_type& point ) const
 {
-    CIE_OUT_OF_RANGE_TEST( point.size() == N, "CSGBox::at" )
+    CIE_OUT_OF_RANGE_ASSERT( point.size() == N, "CSGBox::at" )
 
     auto centerIt = this->_center.begin();
     auto lengthIt = this->_lengths.begin();

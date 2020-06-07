@@ -1,15 +1,23 @@
-#include "../inc/gaussiansolver.hpp"
+#ifndef CIE_LINALG_GAUSSIAN_SOLVER_IMPL_HPP
+#define CIE_LINALG_GAUSSIAN_SOLVER_IMPL_HPP
 
+// --- Internal Includes ---
 #include "../../types/inc/typeoperations.hpp"
+
+// --- STD Includes ---
+#include <cmath>
+#include <numeric>
+#include <algorithm>
 
 namespace cie {
 namespace linalg {
 
 
-DoubleVector solve( const Matrix& matrix,
-              const DoubleVector& rhs )
+template <class ValueType, concepts::NumericContainer ContainerType>
+ContainerType solve(    const Matrix<ValueType>& matrix,
+                        const ContainerType& vector )
 {
-    size_t n = matrix.size1( );
+    Size n = matrix.size1( );
 
     if( n == 0 )
     {
@@ -17,32 +25,32 @@ DoubleVector solve( const Matrix& matrix,
     }
 
     runtime_check( matrix.size2( ) == n, "Solve needs a square matrix!" );
-    runtime_check( rhs.size( ) == n, "Matrix and vector sizes don't match!" );
+    runtime_check( vector.size( ) == n, "Matrix and vector sizes don't match!" );
 
     // Instead of swapping rows in our matrix we use a permutation vector
     PermutationVector permute( n );
 
     std::iota( permute.begin( ), permute.end( ), 0 ); // initialize  with 1 ... n
 
-    DoubleVector x( n ), tmpB = rhs;
-    Matrix tmpM = matrix;
+    DoubleVector x( n ), tmpB = vector;
+    Matrix<ValueType> tmpM = matrix;
 
     // Create two convenience lambda functions to access and permute tmpM and tmpP
-    auto permuteMatrix = [&]( size_t i, size_t j ) -> double& { return tmpM( permute[i], j ); };
-    auto permuteDoubleVector = [&]( size_t i ) -> double& { return tmpB[permute[i]]; };
+    auto permuteMatrix = [&]( Size i, Size j ) -> ValueType& { return tmpM( permute[i], j ); };
+    auto permuteDoubleVector = [&]( Size i ) -> ValueType& { return tmpB[permute[i]]; };
 
-    double tolerance = 1e-10 * norm<Matrix>( matrix );
+    ValueType tolerance = 1e-10 * norm<Matrix<ValueType>>( matrix );
 
     // LU decomposition with partial pivoting
-    for( size_t k = 0; k < n - 1; k++ )
+    for( Size k = 0; k < n - 1; k++ )
     {
         updatePermutation( tmpM, permute, k, tolerance );
 
-        for( size_t i = k + 1; i < n; i++ )
+        for( Size i = k + 1; i < n; i++ )
         {
             permuteMatrix( i, k ) /= permuteMatrix( k, k );
 
-            for( size_t j = k + 1; j < n; j++)
+            for( Size j = k + 1; j < n; j++)
             {
                 permuteMatrix( i, j ) -= permuteMatrix( i, k ) * permuteMatrix( k, j );
             }
@@ -53,18 +61,18 @@ DoubleVector solve( const Matrix& matrix,
     updatePermutation( tmpM, permute, n - 1, tolerance );
 
     // forward substitution
-    for( size_t i = 1; i < n; i++ )
+    for( Size i = 1; i < n; i++ )
     {
-        for( size_t j = 0; j < i; j++ )
+        for( Size j = 0; j < i; j++ )
         {
             permuteDoubleVector( i ) -= permuteMatrix( i, j ) * permuteDoubleVector( j );
         }
     }
 
     // backward substitution
-    for( size_t i = n; i > 0; i-- )
+    for( Size i = n; i > 0; i-- )
     {
-        for( size_t j = i; j < n; j++ )
+        for( Size j = i; j < n; j++ )
         {
             permuteDoubleVector( i - 1 ) -= permuteMatrix( i - 1, j ) * permuteDoubleVector( j );
         }
@@ -73,10 +81,12 @@ DoubleVector solve( const Matrix& matrix,
     }
 
     // permute solution and write into x
-    std::transform( permute.begin( ), permute.end( ), x.begin( ), [&]( size_t i ){ return tmpB[i]; } );
+    std::transform( permute.begin( ), permute.end( ), x.begin( ), [&]( Size i ){ return tmpB[i]; } );
 
     return x;
 }
 
 }
 }
+
+#endif

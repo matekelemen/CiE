@@ -1,7 +1,14 @@
-#ifndef LINALG_MATRIX_HPP
-#define LINALG_MATRIX_HPP
+#ifndef CIE_LINALG_MATRIX_HPP
+#define CIE_LINALG_MATRIX_HPP
 
+// --- Utility Includes ---
+#include <cieutils/concepts.hpp>
+#include <cieutils/types.hpp>
+
+// --- Internal Includes ---
 #include "vectortypes.hpp"
+
+// --- STD Includes ---
 #include <vector>
 #include <iostream>
 #include <array>
@@ -9,38 +16,42 @@
 namespace cie {
 namespace linalg {
 
+
+template <concepts::NumericType ValueType = Double>
 class Matrix
 {
 public:
+    typedef ValueType   value_type;
+
     explicit Matrix( );
 
-    Matrix( size_t size1, size_t size2 );
-    Matrix( size_t size1, size_t size2, double value );
+    Matrix( Size size1, Size size2 );
+    Matrix( Size size1, Size size2, ValueType value );
 
-    Matrix( const std::vector<double>& rowMajorData, size_t size1 );
+    Matrix( const std::vector<ValueType>& rowMajorData, Size size1 );
     Matrix( const std::vector<DoubleVector>& vectorOfRows );
 
-    size_t size1( ) const;
-    size_t size2( ) const;
-    size_t size() const;
+    Size size1( ) const;
+    Size size2( ) const;
+    Size size() const;
 
-    std::array<size_t, 2> sizes( ) const;
+    std::array<Size, 2> sizes( ) const;
 
-    double& operator()( size_t i, size_t j );
-    double operator()( size_t i, size_t j ) const;
-    double& operator[]( size_t i );
-    double operator[]( size_t i ) const;
+    ValueType& operator()( Size i, Size j );
+    ValueType operator()( Size i, Size j ) const;
+    ValueType& operator[]( Size i );
+    ValueType operator[]( Size i ) const;
 
-	const std::vector<double>& data() const { return data_; }
+	const std::vector<ValueType>& data() const { return data_; }
 
     void transpose();
 
 private:
-    void checkIndices(size_t i, size_t j) const;
+    void checkIndices(Size i, Size j) const;
 
-    size_t size1_, size2_;
-    std::vector<double> data_;
-    bool _transpose;
+    Size                    size1_, size2_;
+    std::vector<ValueType>  data_;
+    bool                    _transpose;
 }; // class Matrix
 
 } // namespace linalg

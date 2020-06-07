@@ -141,9 +141,9 @@ Disc::Disc( const DoubleArray<2>& point1,
 
     // Calculate center
     _center = 
-        linalg::Matrix(     {   point1[1]-point3[1], point2[1]-point1[1],
-                                point3[0]-point1[0], point1[0]-point2[0]},
-                            2 )
+        linalg::Matrix<Double>({    point1[1]-point3[1], point2[1]-point1[1],
+                                    point3[0]-point1[0], point1[0]-point2[0]},
+                                2 )
         *
         DoubleArray<2>( {   squareNorm(point1) - squareNorm(point2),
                             squareNorm(point1) - squareNorm(point3) })

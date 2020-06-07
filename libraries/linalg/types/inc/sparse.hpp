@@ -1,46 +1,50 @@
-#ifndef LINALG_SPARSE_HPP
-#define LINALG_SPARSE_HPP
+#ifndef CIE_LINALG_SPARSE_HPP
+#define CIE_LINALG_SPARSE_HPP
 
 // --- Linalg Includes ---
 #include "linalg/types.hpp"
+
+// --- Utility Includes ---
+#include <cieutils/types.hpp>
+#include <cieutils/concepts.hpp>
 
 // --- STD Includes ---
 #include <vector>
 #include <tuple>
 #include <cstddef>
 
-namespace cie
-{
-namespace linalg
-{
+namespace cie::linalg {
 
-template<typename IndexType>
+template<concepts::NumericType IndexType, concepts::NumericType ValueType = Double>
 class CompressedSparseRowMatrix
 {
 public:
+    typedef IndexType   index_type;
+    typedef ValueType   value_type;
+
     explicit CompressedSparseRowMatrix( );
 
-    void allocate( const std::vector<std::vector<size_t>>& locationMaps );
+    void allocate( const std::vector<std::vector<Size>>& locationMaps );
 
-    size_t size1( ) const;
-    size_t size2( ) const;
+    Size size1( ) const;
+    Size size2( ) const;
     IndexType nnz( ) const;
 
-    double operator()( size_t i, size_t j ) const;
-    std::vector<double> operator*( const std::vector<double>& vector );
+    ValueType operator()( Size i, Size j ) const;
+    std::vector<ValueType> operator*( const std::vector<ValueType>& vector );
 
-    void scatter( const linalg::Matrix& elementMatrix,
-                  const std::vector<size_t>& locationMap );
+    void scatter( const linalg::Matrix<ValueType>& elementMatrix,
+                  const std::vector<Size>& locationMap );
 
     //! Obtain sparse data structure and set matrix to zero
-    std::tuple<IndexType*, IndexType*, double*, size_t> release( );
+    std::tuple<IndexType*, IndexType*, ValueType*, Size> release( );
 
 private:
     IndexType* indices_;
     IndexType* indptr_;
-    double* data_;
+    ValueType* data_;
 
-    size_t size1_, size2_;
+    Size size1_, size2_;
 
     void cleanup( );
 
@@ -52,8 +56,7 @@ public:
     CompressedSparseRowMatrix& operator=( const CompressedSparseRowMatrix& ) = delete;
 };
 
-} // namespace splinekernel
-} // namespace cie
+}
 
 #include "sparse_impl.hpp"
 

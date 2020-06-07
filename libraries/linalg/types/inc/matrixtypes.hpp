@@ -1,13 +1,17 @@
 #ifndef LINALG_MATRIX_TYPES_HPP
 #define LINALG_MATRIX_TYPES_HPP
 
+// --- Internal Includes ---
 #include "matrix.hpp"
 #include "sparse.hpp"
+
+// --- STD Includes ---
 #include <memory>
 
 namespace cie {
 
-using MatrixPtr = std::shared_ptr<linalg::Matrix>;
+template <class ValueType>
+using MatrixPtr = std::shared_ptr<linalg::Matrix<ValueType>>;
 
 }
 

@@ -1,22 +1,83 @@
-#ifndef LINALG_MATRIX_IMPL_HPP
-#define LINALG_MATRIX_IMPL_HPP
+#ifndef CIE_LINALG_MATRIX_IMPL_HPP
+#define CIE_LINALG_MATRIX_IMPL_HPP
 
-/*
- * Although we are not using templates we implement trivial
- * functions inline if they are called very often, such that
- * the compiler can optimize these function calls. The conse-
- * quence is that when we change something in this file we
- * have to recompile everything that includes linalg.hpp.
- */
+// --- Utility Includes ---
+#include <cieutils/macros.hpp>
 
+// --- STD Includes ---
 #include <string>
 
 namespace cie {
-namespace linalg
+namespace linalg {
+
+
+template <concepts::NumericType ValueType>
+Matrix<ValueType>::Matrix( Size size1, Size size2, ValueType value ) :
+    size1_( size1 ), 
+    size2_( size2 ), 
+    data_( size1 * size2, value ),
+    _transpose(false)
 {
+}
 
 
-inline double& Matrix::operator()( size_t i, size_t j )
+template <concepts::NumericType ValueType>
+Matrix<ValueType>::Matrix(Size size1, Size size2) :
+	Matrix(size1, size2, 0.0)
+{
+}
+
+
+template <concepts::NumericType ValueType>
+Matrix<ValueType>::Matrix() :
+	Matrix(0, 0)
+{
+}
+
+
+template <concepts::NumericType ValueType>
+Matrix<ValueType>::Matrix( const std::vector<ValueType>& rowMajorData, Size size1 ) :
+    size1_( size1 ), 
+    size2_( 0 ), 
+    data_( rowMajorData ),
+    _transpose(false)
+{
+    if( size1 != 0 )
+        size2_ = rowMajorData.size( ) / size1;
+    else
+    {
+        CIE_OUT_OF_RANGE_ASSERT(  rowMajorData.size()==0,
+                                "Matrix::Matrix" )
+    }
+
+    CIE_OUT_OF_RANGE_ASSERT(  size1_ * size2_ == rowMajorData.size( ),
+                            "Matrix::Matrix" )
+}
+
+
+template <concepts::NumericType ValueType>
+Matrix<ValueType>::Matrix( const std::vector<DoubleVector>& vectorOfRows ) :
+    size1_( vectorOfRows.size( ) ), 
+    size2_( 0 ),
+    _transpose(false)
+{
+    if( size1_ != 0 )
+    {
+        size2_ = vectorOfRows.front( ).size( );
+        data_.resize( size1_ * size2_ );
+
+        for( Size i = 0; i < size1_; ++i )
+        {
+            CIE_OUT_OF_RANGE_ASSERT(  vectorOfRows[i].size( ) == size2_,
+                                    "Matrix::Matrix" )
+            std::copy( vectorOfRows[i].begin( ), vectorOfRows[i].end( ), data_.begin( ) + ( i * size2_ ) );
+        }
+    }
+}
+
+
+template <concepts::NumericType ValueType>
+inline ValueType& Matrix<ValueType>::operator()( Size i, Size j )
 {
     checkIndices(i,j);
 
@@ -27,7 +88,8 @@ inline double& Matrix::operator()( size_t i, size_t j )
 }
 
 
-inline double Matrix::operator()( size_t i, size_t j ) const
+template <concepts::NumericType ValueType>
+inline ValueType Matrix<ValueType>::operator()( Size i, Size j ) const
 {
     checkIndices(i, j);
 
@@ -38,66 +100,65 @@ inline double Matrix::operator()( size_t i, size_t j ) const
 }
 
 
-inline double& Matrix::operator[]( size_t i )
+template <concepts::NumericType ValueType>
+inline ValueType& Matrix<ValueType>::operator[]( Size i )
 {
     return data_[i];
 }
 
 
-inline double Matrix::operator[]( size_t i ) const
+template <concepts::NumericType ValueType>
+inline ValueType Matrix<ValueType>::operator[]( Size i ) const
 {
     return data_[i];
 }
 
 
-inline size_t Matrix::size1( ) const
+template <concepts::NumericType ValueType>
+inline Size Matrix<ValueType>::size1( ) const
 {
     return size1_;
 }
 
 
-inline size_t Matrix::size2( ) const
+template <concepts::NumericType ValueType>
+inline Size Matrix<ValueType>::size2( ) const
 {
     return size2_;
 }
 
 
-inline size_t Matrix::size() const
+template <concepts::NumericType ValueType>
+inline Size Matrix<ValueType>::size() const
 {
     return data_.size();
 }
 
 
-inline std::array<size_t, 2> Matrix::sizes( ) const
+template <concepts::NumericType ValueType>
+inline std::array<Size, 2> Matrix<ValueType>::sizes( ) const
 {
     return { size1_, size2_ };
 }
 
 
-inline void Matrix::transpose()
+template <concepts::NumericType ValueType>
+inline void Matrix<ValueType>::transpose()
 {
-    size_t temp = size1_;
+    Size temp = size1_;
     size1_      = size2_;
     size2_      = temp;
     _transpose  = !_transpose;
 }
 
 
-inline void Matrix::checkIndices(size_t i, size_t j) const
+template <concepts::NumericType ValueType>
+inline void Matrix<ValueType>::checkIndices(Size i, Size j) const
 {
-    if (i >= size1_)
-        throw std::range_error("Matrix subscript1 "
-            + std::to_string(i)
-            + " out of range! ("
-            + std::to_string(size1_)
-            + ")");
-
-    if (j >= size2_)
-        throw std::range_error("Matrix subscript2 "
-            + std::to_string(i)
-            + " out of range! ("
-            + std::to_string(size2_)
-            + ")");
+    CIE_OUT_OF_RANGE_ASSERT(  i < size1_,
+                            "Matrix::checkIndices" )
+    CIE_OUT_OF_RANGE_ASSERT(  j < size2_,
+                            "Matrix::checkIndices" )
 }
 
 } // namespace linalg

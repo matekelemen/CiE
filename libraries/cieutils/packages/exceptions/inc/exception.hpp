@@ -1,8 +1,8 @@
 #ifndef CIE_CIEUTILS_EXCEPTIONS_HPP
 #define CIE_CIEUTILS_EXCEPTIONS_HPP
 
-// --- Internal Includes ---
-#include "../../types/inc/types.hpp"
+// --- Utility Includes ---
+#include <cieutils/types.hpp>
 
 // --- STD Includes ---
 #include <stdexcept>
@@ -32,6 +32,12 @@ struct AbstractCallException : public Exception
 struct OutOfRangeException : public Exception
 {
     OutOfRangeException( const String& message );
+};
+
+
+struct DivisionByZeroException : public Exception
+{
+    DivisionByZeroException( const String& message );
 };
 
 

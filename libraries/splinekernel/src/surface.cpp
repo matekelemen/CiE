@@ -1,3 +1,4 @@
+// --- Internal Includes ---
 #include "basisfunctions.hpp"
 #include "surface.hpp"
 
@@ -8,26 +9,26 @@ namespace splinekernel
 namespace detail
 {
 
-std::vector<std::vector<double>> evaluateShapeFunctions( const std::vector<double>& knotVector,
-                                                         size_t numberOfControlPoints ,
-                                                         size_t numberOfSamplePoints )
+std::vector<std::vector<Double>> evaluateShapeFunctions( const std::vector<Double>& knotVector,
+                                                         Size numberOfControlPoints ,
+                                                         Size numberOfSamplePoints )
 {
-    std::vector<std::vector<double>> shapeFunctionValues( numberOfSamplePoints );
+    std::vector<std::vector<Double>> shapeFunctionValues( numberOfSamplePoints );
 
-    size_t polynomialDegree = knotVector.size( ) - numberOfControlPoints - 1;
+    Size polynomialDegree = knotVector.size( ) - numberOfControlPoints - 1;
 
-    double t0 = knotVector.front( );
-    double t1 = knotVector.back( );
+    Double t0 = knotVector.front( );
+    Double t1 = knotVector.back( );
 
-    for( size_t iEvaluationCoordinate = 0; iEvaluationCoordinate < numberOfSamplePoints; ++iEvaluationCoordinate )
+    for( Size iEvaluationCoordinate = 0; iEvaluationCoordinate < numberOfSamplePoints; ++iEvaluationCoordinate )
     {
         shapeFunctionValues[iEvaluationCoordinate].resize( numberOfControlPoints );
 
-        double t = iEvaluationCoordinate / ( numberOfSamplePoints - 1.0 ) * ( t1 - t0 ) + t0;
+        Double t = iEvaluationCoordinate / ( numberOfSamplePoints - 1.0 ) * ( t1 - t0 ) + t0;
 
-        for( size_t iShapeFunction = 0; iShapeFunction < numberOfControlPoints; ++iShapeFunction )
+        for( Size iShapeFunction = 0; iShapeFunction < numberOfControlPoints; ++iShapeFunction )
         {
-            double value = evaluateBSplineBasis( t, iShapeFunction, polynomialDegree, knotVector );
+            Double value = evaluateBSplineBasis( t, iShapeFunction, polynomialDegree, knotVector );
 
             shapeFunctionValues[iEvaluationCoordinate][iShapeFunction] = value;
         }
@@ -36,19 +37,19 @@ std::vector<std::vector<double>> evaluateShapeFunctions( const std::vector<doubl
     return shapeFunctionValues;
 }
 
-double computeComponent( const std::vector<double>& Nr,
-                         const std::vector<double>& Ns,
-                         const linalg::Matrix& controlPointValues )
+Double computeComponent( const std::vector<Double>& Nr,
+                         const std::vector<Double>& Ns,
+                         const linalg::Matrix<Double>& controlPointValues )
 {
-    size_t size1 = controlPointValues.size1( );
-    size_t size2 = controlPointValues.size2( );
+    Size size1 = controlPointValues.size1( );
+    Size size2 = controlPointValues.size2( );
 
-    double value = 0.0;
+    Double value = 0.0;
 
     // Compute sum over basis functions (tensor product) times control point value
-    for( size_t iCP = 0; iCP < size1; ++iCP )
+    for( Size iCP = 0; iCP < size1; ++iCP )
     {
-        for( size_t jCP = 0; jCP < size2; ++jCP )
+        for( Size jCP = 0; jCP < size2; ++jCP )
         {
             value += Nr[iCP] * Ns[jCP] * controlPointValues( iCP, jCP );
         }
@@ -59,11 +60,11 @@ double computeComponent( const std::vector<double>& Nr,
 
 } // splinesurfacehelper
 
-VectorOfMatrices evaluateSurface( const std::array<std::vector<double>, 2>& knotVectors,
+VectorOfMatrices evaluateSurface( const std::array<std::vector<Double>, 2>& knotVectors,
                                   const VectorOfMatrices& controlPoints,
-                                  std::array<size_t, 2> numberOfSamplePoints )
+                                  std::array<Size, 2> numberOfSamplePoints )
 {
-    using Shapes1D = std::vector<std::vector<double>>;
+    using Shapes1D = std::vector<std::vector<Double>>;
 
     // First evaluate shape functions separately in both coordinate directions
     Shapes1D shapesR = detail::evaluateShapeFunctions( knotVectors[0], controlPoints[0].size1( ), numberOfSamplePoints[0] );
@@ -72,14 +73,14 @@ VectorOfMatrices evaluateSurface( const std::array<std::vector<double>, 2>& knot
     VectorOfMatrices result( controlPoints.size( ) );
 
     // Loop over components, e.g. x, y and z, each being a 2D matrix of values
-    for( size_t iComponent = 0; iComponent < controlPoints.size( ); ++iComponent )
+    for( Size iComponent = 0; iComponent < controlPoints.size( ); ++iComponent )
     {
         result[iComponent] = linalg::Matrix( numberOfSamplePoints[0], numberOfSamplePoints[1], 0.0 );
 
         // Loop over all sample points in local coordinates r and s
-        for( size_t iR = 0; iR < numberOfSamplePoints[0]; ++iR )
+        for( Size iR = 0; iR < numberOfSamplePoints[0]; ++iR )
         {
-            for( size_t iS = 0; iS < numberOfSamplePoints[1]; ++iS )
+            for( Size iS = 0; iS < numberOfSamplePoints[1]; ++iS )
             {
                 // Compute tensor product and multiply by control point values
                 result[iComponent]( iR, iS ) = detail::computeComponent( shapesR[iR], shapesS[iS], controlPoints[iComponent] );

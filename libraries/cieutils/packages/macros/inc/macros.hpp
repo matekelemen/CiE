@@ -13,18 +13,34 @@
 
 
 #ifdef CIE_ENABLE_OUT_OF_RANGE_TESTS
-    #define CIE_OUT_OF_RANGE_TEST(boolExpression, objectName)   \
-        if (!(boolExpression))                                  \
-        {                                                       \
-            std::stringstream stream;                           \
-            stream << #boolExpression;                          \
-            stream << " (";                                     \
-            stream << objectName;                               \
-            stream << ")";                                      \
-            throw cie::OutOfRangeException( stream.str() );     \
+    #define CIE_OUT_OF_RANGE_ASSERT(boolExpression, functionName)   \
+        if (!(boolExpression))                                      \
+        {                                                           \
+            std::stringstream stream;                               \
+            stream << #boolExpression;                              \
+            stream << " (";                                         \
+            stream << functionName;                                 \
+            stream << ")";                                          \
+            throw cie::OutOfRangeException( stream.str() );         \
         }
 #else
-    #define CIE_OUT_OF_RANGE_TEST(boolExpression, objectName)
+    #define CIE_OUT_OF_RANGE_ASSERT(boolExpression, functionName)
+#endif
+
+
+#ifdef CIE_ENABLE_DIVISION_BY_ZERO_CHECKS
+    #define CIE_DIVISION_BY_ZERO_ASSERT(boolExpression, functionName)   \
+        if (!(boolExpression))                                          \
+        {                                                               \
+            std::stringstream stream;                                   \
+            stream << #boolExpression;                                  \
+            stream << " (";                                             \
+            stream << functionName;                                     \
+            stream << ")";                                              \
+            throw cie::DivisionByZeroException( stream.str() );         \
+        }
+#else
+    #define CIE_DIVISION_BY_ZERO_ASSERT(boolExpression, functionName)
 #endif
 
 

@@ -10,9 +10,12 @@
 namespace cie {
 namespace linalg {
 
-std::pair<MatrixPtr,MatrixPtr> QRFactorization(const Matrix& matrix);
+template <class ValueType>
+std::pair<MatrixPtr<ValueType>,MatrixPtr<ValueType>> QRFactorization(const Matrix<ValueType>& matrix);
 
 }
 }
+
+#include "QRFactorization_impl.hpp"
 
 #endif

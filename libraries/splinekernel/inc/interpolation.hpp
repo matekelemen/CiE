@@ -16,7 +16,7 @@ namespace splinekernel
 using ControlPoints2D = std::array<std::vector<double>, 2>;
 using ControlPointsAndKnotVector = std::pair<ControlPoints2D, std::vector<double>>;
 
-using VectorOfMatrices = std::vector<linalg::Matrix>;
+using VectorOfMatrices = std::vector<linalg::Matrix<Double>>;
 using VectorPair = std::array<std::vector<double>, 2>;
 using ControlPointsAndKnotVector3D = std::pair<VectorOfMatrices, VectorPair>;
 

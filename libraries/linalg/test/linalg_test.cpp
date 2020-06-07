@@ -3,33 +3,35 @@
 
 // --- Internal Includes ---
 #include "linalg/linalg.hpp"
+#include "../utilities/inc/linalghelper.hpp"
 
 // --- STD Includes ---
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 namespace cie {
 namespace linalg
 {
 
-TEST_CASE( "Matrix" )
+TEST_CASE( "Matrix", "[matrix]" )
 {
-    CHECK( Matrix( 1, 3, 0.0 ).size1( ) == 1 );
-    CHECK( Matrix( 1, 3, 0.0 ).size2( ) == 3 );
-    CHECK( Matrix( 5, 2 ).sizes( )[0] == 5);
-    CHECK( Matrix( 5, 2 ).sizes( )[1] == 2 );
+    CHECK( Matrix<Double>( 1, 3, 0.0 ).size1( ) == 1 );
+    CHECK( Matrix<Double>( 1, 3, 0.0 ).size2( ) == 3 );
+    CHECK( Matrix<Double>( 5, 2 ).sizes( )[0] == 5);
+    CHECK( Matrix<Double>( 5, 2 ).sizes( )[1] == 2 );
 
-    Matrix matrix1( 2, 2, 4.2 );
-    Matrix matrix( matrix1 );
+    Matrix<Double> matrix1( 2, 2, 4.2 );
+    Matrix<Double> matrix( matrix1 );
 
     REQUIRE( matrix.size1( ) == 2 );
     REQUIRE( matrix.size2( ) == 2 );
     REQUIRE( matrix.sizes( )[0] == 2 );
     REQUIRE( matrix.sizes( )[1] == 2 );
 
-    for( size_t i = 0; i < 2; ++i )
+    for( Size i = 0; i < 2; ++i )
     {
-        for( size_t j = 0; j < 2; ++j )
+        for( Size j = 0; j < 2; ++j )
         {
             CHECK( matrix( i, j ) == 4.2 );
 
@@ -37,33 +39,33 @@ TEST_CASE( "Matrix" )
         }
     }
 
-    const Matrix& ref = matrix;
+    const Matrix<Double>& ref = matrix;
 
-    for( size_t i = 0; i < 2; ++i )
+    for( Size i = 0; i < 2; ++i )
     {
-        for( size_t j = 0; j < 2; ++j )
+        for( Size j = 0; j < 2; ++j )
         {
             CHECK( ref( i, j ) == i * 10.0 + j );
         }
     }
 }
 
-TEST_CASE( "Matrix_zero_size" )
+TEST_CASE( "Matrix_zero_size", "[matrix]" )
 {
-    Matrix m( 1, 2, 3.0 );
+    Matrix<Double> m( 1, 2, 3.0 );
 
-    REQUIRE_NOTHROW( m = Matrix( 0, 0, 2.0 ) );
+    REQUIRE_NOTHROW( m = Matrix<Double>( 0, 0, 2.0 ) );
 
     CHECK( m.size1( ) == 0 );
     CHECK( m.size2( ) == 0 );
 
-    REQUIRE_NOTHROW( m = Matrix{ std::vector<DoubleVector>{ } } );
+    REQUIRE_NOTHROW( m = Matrix<Double>{ std::vector<DoubleVector>{ } } );
 
     CHECK( m.size1( ) == 0 );
     CHECK( m.size2( ) == 0 );
 }
 
-TEST_CASE( "Matrix_inconsistent_input" )
+TEST_CASE( "Matrix_inconsistent_input", "[matrix]" )
 {
     std::vector<DoubleVector> inconsistentData
     {
@@ -72,26 +74,26 @@ TEST_CASE( "Matrix_inconsistent_input" )
         DoubleVector{  0.0, 0.0, 0.0 }
     };
 
-    CHECK_THROWS_AS( Matrix{ inconsistentData }, std::runtime_error );
+    CHECK_THROWS_AS( Matrix<Double>{ inconsistentData }, OutOfRangeException );
 
-    CHECK_NOTHROW( Matrix{ { DoubleVector { } } } );
+    CHECK_NOTHROW( Matrix<Double>{ { DoubleVector { } } } );
 
-    CHECK( Matrix{ { DoubleVector { } } }.size1( ) == 1 );
-    CHECK( Matrix{ { DoubleVector { } } }.size2( ) == 0 );
+    CHECK( Matrix<Double>{ { DoubleVector { } } }.size1( ) == 1 );
+    CHECK( Matrix<Double>{ { DoubleVector { } } }.size2( ) == 0 );
 }
 
 
-TEST_CASE( "Matrix_linearized_input" )
+TEST_CASE( "Matrix_linearized_input", "[matrix]" )
 {
-    std::vector<double> data{ 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
+    std::vector<Double> data{ 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
 
-    CHECK_THROWS_AS( Matrix( data, 2 ), std::runtime_error );
+    CHECK_THROWS_AS( Matrix<Double>( data, 2 ), OutOfRangeException );
 
     data.pop_back( );
 
-    REQUIRE_NOTHROW( Matrix( data, 2 ) );
+    REQUIRE_NOTHROW( Matrix<Double>( data, 2 ) );
 
-    Matrix m( data, 2 );
+    Matrix<Double> m( data, 2 );
 
     CHECK( m( 0, 0 ) == 0.0 );
     CHECK( m( 0, 1 ) == 1.0 );
@@ -104,7 +106,7 @@ TEST_CASE( "Matrix_linearized_input" )
 namespace linalgtesthelper
 {
     template<typename ContainerType>
-    std::vector<double> writeAndParse( const ContainerType& container )
+    std::vector<Double> writeAndParse( const ContainerType& container )
     {
         std::ofstream outfile( "write.csv" );
 
@@ -112,7 +114,7 @@ namespace linalgtesthelper
 
         outfile.close( );
 
-        std::vector<double> values;
+        std::vector<Double> values;
 
         std::ifstream infile( "write.csv" );
 
@@ -147,9 +149,9 @@ TEST_CASE( "write_vector" )
     CHECK( result[2] == v[2] );
 }
 
-TEST_CASE( "write_matrix" )
+TEST_CASE( "write_matrix", "[matrix]" )
 {
-    Matrix m( { DoubleVector{ 1.0, -2.0 },
+    Matrix<Double> m( { DoubleVector{ 1.0, -2.0 },
                 DoubleVector{ -8.0, 4.0 } } );
 
     auto result = linalgtesthelper::writeAndParse( m );
@@ -166,11 +168,11 @@ TEST_CASE( "norm" )
 {
     DoubleVector vector { 4.0, 3.0 };
 
-    double tolerance = 1e-12;
+    Double tolerance = 1e-12;
 
     CHECK( norm( vector ) == Approx( 5.0 ).epsilon( tolerance ) );
 
-    Matrix matrix( { DoubleVector{  1.2,  3.3,  9.1 },
+    Matrix<Double> matrix( { DoubleVector{  1.2,  3.3,  9.1 },
                      DoubleVector{  2.9,  8.6,  2.6 },
                      DoubleVector{ -4.8,  0.3, -2.1 } } );
 
@@ -179,7 +181,7 @@ TEST_CASE( "norm" )
 
 TEST_CASE( "solve" )
 {
-    Matrix matrix( { DoubleVector{  5.2,  1.2,  7.3, -2.3 },
+    Matrix<Double> matrix( { DoubleVector{  5.2,  1.2,  7.3, -2.3 },
                      DoubleVector{  8.9, -7.6, -0.2,  3.4 },
                      DoubleVector{ -5.7,  6.2, -3.4,  7.8 },
                      DoubleVector{  9.8, -0.7,  5.4, -2.1 } } );
@@ -193,7 +195,7 @@ TEST_CASE( "solve" )
 
     REQUIRE( solution.size( ) == 4 );
 
-    double tolerance = 1e-12;
+    Double tolerance = 1e-12;
 
     CHECK( solution[0] == Approx(  1.3218868527560599 ).epsilon( tolerance ) );
     CHECK( solution[1] == Approx(  1.4702413909379624 ).epsilon( tolerance ) );
@@ -203,7 +205,7 @@ TEST_CASE( "solve" )
 
 TEST_CASE( "solve_singular" )
 {
-    Matrix matrix( { DoubleVector{  1.0, -1.0 },
+    Matrix<Double> matrix( { DoubleVector{  1.0, -1.0 },
                      DoubleVector{ -1.0,  1.0 } } );
 
     DoubleVector rhs { 0.0, 0.0 };
@@ -211,15 +213,15 @@ TEST_CASE( "solve_singular" )
     REQUIRE( matrix.size1( ) == 2 );
     REQUIRE( matrix.size2( ) == 2 );
 
-    CHECK_THROWS_AS( solve( matrix, rhs ), std::runtime_error );
+    CHECK_THROWS_AS( solve( matrix, rhs ), MatrixError<decltype(matrix)> );
 }
 
 TEST_CASE( "solve_zero_pivot" )
 {
-    Matrix matrix( { DoubleVector{ 0.0       , 1.85943691, 6.97111553, 8.69227093 },
-					 DoubleVector{ 3.28991871, 1.53597987, 7.61514532, 3.60326283 },
-					 DoubleVector{ 2.94417179, 6.82592967, 1.11991796, 3.83895535 },
-					 DoubleVector{ 5.35016312, 6.02883842, 6.90193734, 1.79666592 } } );
+    Matrix<Double> matrix( {    DoubleVector{ 0.0       , 1.85943691, 6.97111553, 8.69227093 },
+					            DoubleVector{ 3.28991871, 1.53597987, 7.61514532, 3.60326283 },
+					            DoubleVector{ 2.94417179, 6.82592967, 1.11991796, 3.83895535 },
+					            DoubleVector{ 5.35016312, 6.02883842, 6.90193734, 1.79666592 } } );
 
     DoubleVector rhs { 2.50464842, 9.42931494, 3.00660354, 1.41937798 };
 
@@ -232,9 +234,9 @@ TEST_CASE( "solve_zero_pivot" )
     REQUIRE_NOTHROW( computedSolution = solve( matrix, rhs ) );
     REQUIRE( computedSolution.size( ) == 4 );
 
-    double tolerance = 1e-12;
+    Double tolerance = 1e-12;
 
-    for( size_t i = 0; i < 4; ++i )
+    for( Size i = 0; i < 4; ++i )
     {
     	CHECK( computedSolution[i] == Approx( expectedSolution[i] ).epsilon( tolerance ) );
     }

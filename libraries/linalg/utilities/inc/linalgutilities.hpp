@@ -1,29 +1,23 @@
-#ifndef LINALG_UTILITIES_HPP
-#define LINALG_UTILITIES_HPP
+#ifndef CIE_LINALG_UTILITIES_HPP
+#define CIE_LINALG_UTILITIES_HPP
 
+// --- Utility Includes ---
+#include <cieutils/types.hpp>
+
+// --- Internal includes ---
 #include "../../types/inc/matrix.hpp"
-//#include "../../overloads/inc/vectoroperators.hpp"
-//#include "../../overloads/inc/matrixoperators.hpp"
 #include "errortypes.hpp"
 
 namespace cie {
 namespace linalg {
 
 
-// Euclidean norms
-/*
-double norm( const Vector& vector );
-double norm( const Matrix& matrix );
+using PermutationVector = std::vector<Size>;
 
-void normalize( Vector& vector );
-void normalize( Matrix& matrix );
-*/
-
-using PermutationVector = std::vector<size_t>;
-
-void updatePermutation( const Matrix& matrix,
+template <class ValueType>
+void updatePermutation( const Matrix<ValueType>& matrix,
                         PermutationVector& permutation,
-                        size_t index,
+                        Size index,
                         double singularTolerance );
 
 void runtime_check( bool result, const char message[] );
@@ -32,5 +26,6 @@ void runtime_check( bool result, const char message[] );
 } // namespace linalg
 }
 
+#include "linalgutilities_impl.hpp"
 
 #endif

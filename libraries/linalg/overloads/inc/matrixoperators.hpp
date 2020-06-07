@@ -1,35 +1,49 @@
 #ifndef LINALG_MATRIX_OPERATORS
 #define LINALG_MATRIX_OPERATORS
 
+// --- Utility Includes ---
+#include <cieutils/concepts.hpp>
+
+// --- Internal Includes ---
 #include "../../types/inc/arraytypes.hpp"
 #include "../../types/inc/vectortypes.hpp"
 #include "../../types/inc/matrix.hpp"
-#include <string>
-#include <algorithm>
 
 namespace cie {
 namespace linalg {
 
-Matrix operator+(const Matrix& matrix, double scalar);
-Matrix operator+(double scalar, const Matrix& matrix);
-Matrix operator-(const Matrix& matrix, double scalar);
+template <concepts::NumericType ValueType, concepts::NumericType ScalarType>
+Matrix<ValueType> operator+(const Matrix<ValueType>& matrix, ScalarType scalar);
 
-Matrix operator+(const Matrix& lhs, const Matrix& rhs);
-Matrix operator-(const Matrix& lhs, const Matrix& rhs);
+template <concepts::NumericType ValueType, concepts::NumericType ScalarType>
+Matrix<ValueType> operator+(ScalarType scalar, const Matrix<ValueType>& matrix);
 
-Matrix operator*(const Matrix& matrix, double scalar);
-Matrix operator*(double scalar, const Matrix& matrix);
-Matrix operator/(const Matrix& matrix, double scalar);
+template <concepts::NumericType ValueType, concepts::NumericType ScalarType>
+Matrix<ValueType> operator-(const Matrix<ValueType>& matrix, ScalarType scalar);
 
-DoubleVector operator*(const DoubleVector& vector, const Matrix& matrix);
-DoubleVector operator*(const Matrix& matrix, const DoubleVector& vector);
+template <concepts::NumericType ValueType>
+Matrix<ValueType> operator+(const Matrix<ValueType>& lhs, const Matrix<ValueType>& rhs);
 
-template <size_t N>
-DoubleArray<N> operator*(const DoubleArray<N>& vector, const Matrix& matrix);
-template <size_t N>
-DoubleArray<N> operator*(const Matrix& matrix, const DoubleArray<N>& vector);
+template <concepts::NumericType ValueType>
+Matrix<ValueType> operator-(const Matrix<ValueType>& lhs, const Matrix<ValueType>& rhs);
 
-Matrix operator*(const Matrix& lhs, const Matrix& rhs);
+template <concepts::NumericType ValueType, concepts::NumericType ScalarType>
+Matrix<ValueType> operator*(const Matrix<ValueType>& matrix, ScalarType scalar);
+
+template <concepts::NumericType ValueType, concepts::NumericType ScalarType>
+Matrix<ValueType> operator*(ScalarType scalar, const Matrix<ValueType>& matrix);
+
+template <concepts::NumericType ValueType, concepts::NumericType ScalarType>
+Matrix<ValueType> operator/(const Matrix<ValueType>& matrix, ScalarType scalar);
+
+template <concepts::NumericType ValueType, concepts::NumericContainer ContainerType>
+ContainerType operator*(const ContainerType& vector, const Matrix<ValueType>& matrix);
+
+template <concepts::NumericType ValueType, concepts::NumericContainer ContainerType>
+ContainerType operator*(const Matrix<ValueType>& matrix, const ContainerType& vector);
+
+template <concepts::NumericType ValueType>
+Matrix<ValueType> operator*(const Matrix<ValueType>& lhs, const Matrix<ValueType>& rhs);
 
 } // namespace linalg
 }

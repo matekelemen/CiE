@@ -1,6 +1,7 @@
 #ifndef LINALG_SPARSE_IMPL_HPP
 #define LINALG_SPARSE_IMPL_HPP
 
+// --- STD Includes ---
 #include <algorithm>
 #include <numeric>
 
@@ -9,18 +10,18 @@ namespace cie
 namespace linalg
 {
 
-template<typename IndexType>
-CompressedSparseRowMatrix<IndexType>::CompressedSparseRowMatrix( ) :
+template<concepts::NumericType IndexType, concepts::NumericType ValueType>
+CompressedSparseRowMatrix<IndexType,ValueType>::CompressedSparseRowMatrix( ) :
     indices_( nullptr ), indptr_( nullptr ), data_( nullptr ),
     size1_( 0 ), size2_( 0 )
 {
 
 }
 
-template<typename IndexType>
-std::tuple<IndexType*, IndexType*, double*, size_t> CompressedSparseRowMatrix<IndexType>::release( )
+template<concepts::NumericType IndexType, concepts::NumericType ValueType>
+std::tuple<IndexType*, IndexType*, ValueType*, Size> CompressedSparseRowMatrix<IndexType,ValueType>::release( )
 {
-    std::tuple<IndexType*, IndexType*, double*, size_t> sparseDataStructure { indices_, indptr_, data_, size1_ };
+    std::tuple<IndexType*, IndexType*, ValueType*, Size> sparseDataStructure { indices_, indptr_, data_, size1_ };
 
     indices_ = nullptr;
     indptr_ = nullptr;
@@ -32,26 +33,26 @@ std::tuple<IndexType*, IndexType*, double*, size_t> CompressedSparseRowMatrix<In
     return sparseDataStructure;
 }
 
-template<typename IndexType>
-IndexType CompressedSparseRowMatrix<IndexType>::nnz( ) const
+template<concepts::NumericType IndexType, concepts::NumericType ValueType>
+IndexType CompressedSparseRowMatrix<IndexType,ValueType>::nnz( ) const
 {
     return indptr_[size1_];
 }
 
-template<typename IndexType>
-size_t CompressedSparseRowMatrix<IndexType>::size1( ) const
+template<concepts::NumericType IndexType, concepts::NumericType ValueType>
+Size CompressedSparseRowMatrix<IndexType,ValueType>::size1( ) const
 {
     return size1_;
 }
 
-template<typename IndexType>
-size_t CompressedSparseRowMatrix<IndexType>::size2( ) const
+template<concepts::NumericType IndexType, concepts::NumericType ValueType>
+Size CompressedSparseRowMatrix<IndexType,ValueType>::size2( ) const
 {
     return size2_;
 }
 
-template<typename IndexType>
-void CompressedSparseRowMatrix<IndexType>::cleanup( )
+template<concepts::NumericType IndexType, concepts::NumericType ValueType>
+void CompressedSparseRowMatrix<IndexType,ValueType>::cleanup( )
 {
     delete[] indices_;
     delete[] indptr_;
@@ -65,9 +66,9 @@ void CompressedSparseRowMatrix<IndexType>::cleanup( )
     size2_ = 0;
 }
 
-template<typename IndexType>
-double CompressedSparseRowMatrix<IndexType>::operator ()( size_t i,
-                                               size_t j ) const
+template<concepts::NumericType IndexType, concepts::NumericType ValueType>
+ValueType CompressedSparseRowMatrix<IndexType,ValueType>::operator ()( Size i,
+                                               Size j ) const
 {
     auto result = std::find( indices_ + indptr_[i], indices_ + indptr_[i + 1], j );
 
@@ -79,15 +80,15 @@ double CompressedSparseRowMatrix<IndexType>::operator ()( size_t i,
     return 0.0;
 }
 
-template<typename IndexType>
-std::vector<double> CompressedSparseRowMatrix<IndexType>::operator*( const std::vector<double>& vector )
+template<concepts::NumericType IndexType, concepts::NumericType ValueType>
+std::vector<ValueType> CompressedSparseRowMatrix<IndexType,ValueType>::operator*( const std::vector<ValueType>& vector )
 {
     if (vector.size() != size2_)
         throw std::runtime_error("Inconsistent sizes in matrix vector multiplication.");
 
-    std::vector<double> result( size1_, 0.0 );
+    std::vector<ValueType> result( size1_, 0.0 );
 
-    for( size_t i = 0; i < size1_; ++i )
+    for( Size i = 0; i < size1_; ++i )
     {
         for( IndexType j = indptr_[i]; j < indptr_[i + 1]; ++j )
         {
@@ -98,25 +99,25 @@ std::vector<double> CompressedSparseRowMatrix<IndexType>::operator*( const std::
     return result;
 }
 
-template<typename IndexType>
-CompressedSparseRowMatrix<IndexType>::~CompressedSparseRowMatrix( )
+template<concepts::NumericType IndexType, concepts::NumericType ValueType>
+CompressedSparseRowMatrix<IndexType,ValueType>::~CompressedSparseRowMatrix( )
 {
     cleanup( );
 }
 
 
 
-template<typename IndexType>
-void CompressedSparseRowMatrix<IndexType>::allocate( const std::vector<std::vector<size_t>>& locationMaps )
+template<concepts::NumericType IndexType, concepts::NumericType ValueType>
+void CompressedSparseRowMatrix<IndexType,ValueType>::allocate( const std::vector<std::vector<Size>>& locationMaps )
 {
     cleanup( );
 
-    size_t numberOfElements = locationMaps.size( );
-    size_t globalNumberOfDofs = 0;
+    Size numberOfElements = locationMaps.size( );
+    Size globalNumberOfDofs = 0;
 
     for( const auto& locationMap : locationMaps )
     {
-        size_t maxElementIndex = *std::max_element( locationMap.begin( ), locationMap.end( ) ) + 1;
+        Size maxElementIndex = *std::max_element( locationMap.begin( ), locationMap.end( ) ) + 1;
 
         if( maxElementIndex > globalNumberOfDofs )
         {
@@ -124,27 +125,27 @@ void CompressedSparseRowMatrix<IndexType>::allocate( const std::vector<std::vect
         }
     }
 
-    std::vector<std::vector<size_t>> dofToElementCoupling( globalNumberOfDofs );
+    std::vector<std::vector<Size>> dofToElementCoupling( globalNumberOfDofs );
 
-    for( size_t iElement = 0; iElement < numberOfElements; ++iElement )
+    for( Size iElement = 0; iElement < numberOfElements; ++iElement )
     {
-        for( size_t dofIndex : locationMaps[iElement] )
+        for( Size dofIndex : locationMaps[iElement] )
         {
             dofToElementCoupling[dofIndex].push_back( iElement );
         }
     }
 
-    std::vector<std::vector<size_t>> dofToDofCoupling( globalNumberOfDofs );
-    std::vector<size_t> tmp;
+    std::vector<std::vector<Size>> dofToDofCoupling( globalNumberOfDofs );
+    std::vector<Size> tmp;
 
-    for( size_t iDof = 0; iDof < globalNumberOfDofs; ++iDof )
+    for( Size iDof = 0; iDof < globalNumberOfDofs; ++iDof )
     {
         if (dofToElementCoupling[iDof].size( ) <= 0)
             throw std::runtime_error("Found dof without connected element!");
 
         tmp.resize( 0 );
 
-        for( size_t iElement = 0; iElement < dofToElementCoupling[iDof].size( ); ++iElement )
+        for( Size iElement = 0; iElement < dofToElementCoupling[iDof].size( ); ++iElement )
         {
             const auto& locationMap = locationMaps[dofToElementCoupling[iDof][iElement]];
 
@@ -157,7 +158,7 @@ void CompressedSparseRowMatrix<IndexType>::allocate( const std::vector<std::vect
         dofToDofCoupling[iDof].insert( dofToDofCoupling[iDof].end( ), tmp.begin( ), end );
     }
 
-    std::vector<std::vector<size_t>>{ }.swap( dofToElementCoupling );
+    std::vector<std::vector<Size>>{ }.swap( dofToElementCoupling );
 
     size1_ = globalNumberOfDofs;
     size2_ = globalNumberOfDofs;
@@ -165,7 +166,7 @@ void CompressedSparseRowMatrix<IndexType>::allocate( const std::vector<std::vect
     indptr_ = new IndexType[size1_ + 1];
     indptr_[0] = 0;
 
-    auto vectorSizePredicate = []( const std::vector<size_t>& dofs ) { return static_cast<IndexType>( dofs.size( ) ); };
+    auto vectorSizePredicate = []( const std::vector<Size>& dofs ) { return static_cast<IndexType>( dofs.size( ) ); };
 
     // Fill indptr with cumulative sum of the vector sizes of dofToDofCoupling
     std::transform( dofToDofCoupling.begin( ), dofToDofCoupling.end( ), indptr_ + 1, vectorSizePredicate );
@@ -178,44 +179,44 @@ void CompressedSparseRowMatrix<IndexType>::allocate( const std::vector<std::vect
     // Concatenate dof indices
     IndexType* currentRow = indices_;
 
-    for( const std::vector<size_t>& dofs : dofToDofCoupling )
+    for( const std::vector<Size>& dofs : dofToDofCoupling )
     {
         std::copy( dofs.begin( ), dofs.end( ), currentRow );
 
         currentRow += dofs.size( );
     }
 
-    std::vector<std::vector<size_t>>{ }.swap( dofToDofCoupling );
+    std::vector<std::vector<Size>>{ }.swap( dofToDofCoupling );
 
     // Resize data
-    data_ = new double[nnz];
+    data_ = new ValueType[nnz];
 
     std::fill( data_, data_ + nnz, 0.0 );
 }
 
-template<typename IndexType>
-void CompressedSparseRowMatrix<IndexType>::scatter( const linalg::Matrix& elementMatrix,
-                                                    const std::vector<size_t>& locationMap )
+template<concepts::NumericType IndexType, concepts::NumericType ValueType>
+void CompressedSparseRowMatrix<IndexType,ValueType>::scatter( const linalg::Matrix<ValueType>& elementMatrix,
+                                                    const std::vector<Size>& locationMap )
 {
-    size_t size = elementMatrix.size1( );
+    Size size = elementMatrix.size1( );
 
     if (size != elementMatrix.size2( ))
         throw std::runtime_error("Can only scatter square matrix!");
 
-    for( size_t iRow = 0; iRow < size; ++iRow )
+    for( Size iRow = 0; iRow < size; ++iRow )
     {
-        size_t rowIndex = locationMap[iRow];
+        Size rowIndex = locationMap[iRow];
 
-        for( size_t iColumn = 0; iColumn < size; ++iColumn )
+        for( Size iColumn = 0; iColumn < size; ++iColumn )
         {
-            size_t columnIndex = locationMap[iColumn];
+            Size columnIndex = locationMap[iColumn];
 
             auto result = std::find( indices_ + indptr_[rowIndex], indices_ + indptr_[rowIndex + 1], columnIndex );
 
             if (!result)
                 throw std::runtime_error("Entry was not found in sparsity pattern!");
 
-            size_t index = std::distance( indices_, result );
+            Size index = std::distance( indices_, result );
 
             data_[index] += elementMatrix( iRow, iColumn );
 

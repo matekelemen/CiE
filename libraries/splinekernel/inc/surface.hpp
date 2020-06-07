@@ -4,6 +4,9 @@
 // --- Linalg Includes ---
 #include "linalg/linalg.hpp"
 
+// --- Utility Includes ---
+#include <cieutils/types.hpp>
+
 // --- STD Includes ---
 #include <vector>
 #include <array>
@@ -15,7 +18,7 @@ namespace cie
 namespace splinekernel
 {
 
-using VectorOfMatrices = std::vector<linalg::Matrix>;
+using VectorOfMatrices = std::vector<linalg::Matrix<Double>>;
 
 /* Evaluates a 2D B-Spline patch.
  * @param knotVectors Two knot vectors in r and s directions
