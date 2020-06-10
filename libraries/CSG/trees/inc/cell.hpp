@@ -17,22 +17,14 @@ namespace cie::csg {
 // ABSTRACT CELL
 // ---------------------------------------------------------
 template <  Size dimension,
-            class ChildType,
+            class SelfType,
             concepts::NumericType CoordinateType = Double>
-class Cell : public Primitive<dimension,CoordinateType>
+class Cell :    public Primitive<dimension,CoordinateType>,
+                public utils::AbsTree<std::vector,SelfType>
 {
 public:
-    typedef ChildType                               child_type;
-    typedef std::vector<std::shared_ptr<ChildType>> child_container_type;
-
     virtual Bool isInside( const typename Cell::point_type& point ) const;
-    virtual child_container_type& split( const typename Cell::point_type& point ) = 0;
-
-    const child_container_type& children() const;
-    child_container_type& children();
-
-protected:
-    child_container_type _children;
+    virtual typename Cell::child_container_type& split( const typename Cell::point_type& point ) = 0;
 };
 
 
@@ -40,7 +32,8 @@ protected:
 // PRIMITIVE CELLS
 // ---------------------------------------------------------
 template <Size dimension, concepts::NumericType CoordinateType = Double>
-class BoxCell : public Cell<dimension,BoxCell<dimension,CoordinateType>,CoordinateType>, public Box<dimension,CoordinateType>
+class BoxCell :     public Cell<dimension,BoxCell<dimension,CoordinateType>,CoordinateType>, 
+                    public Box<dimension,CoordinateType>
 {
 public:
     template <class ContainerType1, class ContainerType2>

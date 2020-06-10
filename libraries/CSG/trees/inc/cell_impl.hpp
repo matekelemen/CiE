@@ -12,25 +12,9 @@ namespace cie::csg {
 // ---------------------------------------------------------
 // ABSTRACT CELL
 // ---------------------------------------------------------
-template <Size dimension, class ChildType, concepts::NumericType CoordinateType>
-const typename Cell<dimension,ChildType,CoordinateType>::child_container_type&
-Cell<dimension,ChildType,CoordinateType>::children() const
-{
-    return _children;
-}
-
-
-template <Size dimension, class ChildType, concepts::NumericType CoordinateType>
-typename Cell<dimension,ChildType,CoordinateType>::child_container_type&
-Cell<dimension,ChildType,CoordinateType>::children()
-{
-    return _children;
-}
-
-
-template <Size dimension, class ChildType, concepts::NumericType CoordinateType>
+template <Size dimension, class SelfType, concepts::NumericType CoordinateType>
 Bool
-Cell<dimension,ChildType,CoordinateType>::isInside( const typename Cell<dimension,ChildType,CoordinateType>::point_type& point ) const
+Cell<dimension,SelfType,CoordinateType>::isInside( const typename Cell<dimension,SelfType,CoordinateType>::point_type& point ) const
 {
     throw AbstractCallException( "Cell::isInside" );
 }
