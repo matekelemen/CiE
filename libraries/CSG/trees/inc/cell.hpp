@@ -7,6 +7,7 @@
 // --- Utility Includes ---
 #include <cieutils/types.hpp>
 #include <cieutils/concepts.hpp>
+#include <cieutils/trees.hpp>
 
 // --- STD Includes ---
 #include <memory>
