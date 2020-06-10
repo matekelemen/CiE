@@ -1,6 +1,7 @@
 #ifndef CSG_NTREE_UTILITIES_IMPL_HPP
 #define CSG_NTREE_UTILITIES_IMPL_HPP
 
+// --- STD Includes ---
 #include <algorithm>
 #include <string>
 
@@ -12,9 +13,7 @@ constexpr const size_t intPow(int base, size_t exponent)
 {
     size_t result = 1;
     for (size_t i = 0; i < exponent; ++i)
-    {
         result *= base;
-    }
     return result;
 }
 
@@ -25,9 +24,7 @@ constexpr void baseN(size_t base_10, size_t base, UIntArray<M>& base_N)
     for (size_t i = 0; i < M; ++i)
     {
         if (base_10 == 0)
-        {
             base_N[i]   = 0;
-        }
         else
         {
             base_N[i]   = base_10 % base;

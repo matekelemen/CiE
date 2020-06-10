@@ -7,9 +7,9 @@
 // --- Internal Includes ---
 #include "spacetreeutils.hpp"
 
-namespace cie {
-namespace csg {
+namespace cie::csg {
 
+namespace detail {
 
 template <size_t N, size_t M>
 class AbsSpaceTreeIndexConverter
@@ -29,9 +29,11 @@ protected:
     static constexpr const size_t       _numberOfDataPoints     = intPow(M,N);
 };
 
+}
+
 
 template <size_t N, size_t M>
-class SpaceTreeIndexConverter : public AbsSpaceTreeIndexConverter<N,M>
+class SpaceTreeIndexConverter : public detail::AbsSpaceTreeIndexConverter<N,M>
 {
 public:
     static constexpr const UIntArray<N>& convert(size_t index);
@@ -40,11 +42,10 @@ public:
     friend class SpaceTreeNode<N,M>;
 
 protected:
-    static constexpr typename AbsSpaceTreeIndexConverter<N,M>::index_array_type _indices = AbsSpaceTreeIndexConverter<N,M>::initializeIndexArray();
+    static constexpr typename detail::AbsSpaceTreeIndexConverter<N,M>::index_array_type _indices = detail::AbsSpaceTreeIndexConverter<N,M>::initializeIndexArray();
 };
 
 
-}
 }
 
 #include "indexconverter_impl.hpp"

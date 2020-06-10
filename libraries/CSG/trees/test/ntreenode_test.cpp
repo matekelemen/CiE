@@ -1,10 +1,13 @@
+// --- External Includes ---
 #include "catch.hpp"
+
+// --- Internal Includes ---
 #include "../inc/spacetreenode.hpp"
 
+// --- STD Includes ---
 #include <iostream>
 
-namespace cie {
-namespace csg {
+namespace cie::csg {
 
 
 #pragma acc routine seq
@@ -124,5 +127,4 @@ TEST_CASE("Boundary nodes")
 }
 
 
-}
 }

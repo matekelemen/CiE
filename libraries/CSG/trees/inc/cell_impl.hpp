@@ -5,32 +5,32 @@
 #include <cieutils/exceptions.hpp>
 
 // --- Internal Includes ---
-#include "spacetreeutils.hpp"
+#include "indexconverter.hpp"
 
 namespace cie::csg {
 
 // ---------------------------------------------------------
 // ABSTRACT CELL
 // ---------------------------------------------------------
-template <Size dimension, concepts::NumericType CoordinateType>
-const typename Cell<dimension,CoordinateType>::child_container_type&
-Cell<dimension,CoordinateType>::children() const
+template <Size dimension, class ChildType, concepts::NumericType CoordinateType>
+const typename Cell<dimension,ChildType,CoordinateType>::child_container_type&
+Cell<dimension,ChildType,CoordinateType>::children() const
 {
     return _children;
 }
 
 
-template <Size dimension, concepts::NumericType CoordinateType>
-typename Cell<dimension,CoordinateType>::child_container_type&
-Cell<dimension,CoordinateType>::children()
+template <Size dimension, class ChildType, concepts::NumericType CoordinateType>
+typename Cell<dimension,ChildType,CoordinateType>::child_container_type&
+Cell<dimension,ChildType,CoordinateType>::children()
 {
     return _children;
 }
 
 
-template <Size dimension, concepts::NumericType CoordinateType>
+template <Size dimension, class ChildType, concepts::NumericType CoordinateType>
 Bool
-Cell<dimension,CoordinateType>::isinside( const typename Cell<dimension,CoordinateType>::point_type& point )
+Cell<dimension,ChildType,CoordinateType>::isInside( const typename Cell<dimension,ChildType,CoordinateType>::point_type& point ) const
 {
     throw AbstractCallException( "Cell::isInside" );
 }
@@ -52,9 +52,9 @@ requires concepts::ClassContainer<ContainerType1,CoordinateType>
 
 template <Size dimension, concepts::NumericType CoordinateType>
 Bool
-BoxCell<dimension,CoordinateType>::isInside( const typename BoxCell<dimension,CoordinateType>::point_type& point ) const override
+BoxCell<dimension,CoordinateType>::isInside( const typename BoxCell<dimension,CoordinateType>::point_type& point ) const
 {
-    CIE_OUT_OF_RANGE_ASSERT( point.size() == N, "BoxCell::isInside" )
+    CIE_OUT_OF_RANGE_ASSERT( point.size() == dimension, "BoxCell::isInside" )
 
     auto centerIt = this->_center.begin();
     auto lengthIt = this->_lengths.begin();
@@ -67,7 +67,7 @@ BoxCell<dimension,CoordinateType>::isInside( const typename BoxCell<dimension,Co
 
 template <Size dimension, concepts::NumericType CoordinateType>
 typename BoxCell<dimension,CoordinateType>::child_container_type&
-BoxCell<dimension,CoordinateType>::split( const typename BoxCell<dimension,CoordinateType>::point_type& point ) override
+BoxCell<dimension,CoordinateType>::split( const typename BoxCell<dimension,CoordinateType>::point_type& point )
 {
     CIE_RUNTIME_GEOMETRY_ASSERT(    isInside(point),
                                     "Cannot split geometry using a point outside it!",
@@ -78,29 +78,30 @@ BoxCell<dimension,CoordinateType>::split( const typename BoxCell<dimension,Coord
         this->_children.clear();
     }
 
-    _children.resize( intPow(2,dimension) );
+    this->_children.resize( intPow(2,dimension) );
     typename BoxCell<dimension,CoordinateType>::point_type tempCenter;
     typename BoxCell<dimension,CoordinateType>::point_type tempLengths;
-    auto centerIt       = this->_center.begin();
-    auto lengthIt       = this->_lengths.begin();
-    auto tempCenterIt   = tempCenter.begin();
-    auto tempLengthIt   = tempLengths.begin();
+    SpaceTreeIndexConverter<2,2> base2;
 
-    for (auto childIt=this->_children.begin(); childIt!=this->_children.end(); ++childIt)
-        for (auto pointIt=point.begin(); pointIt!=point.end(); ++pointIt,++centerIt,++lengthIt,++tempCenterIt,++tempLengthIt)
+    for (Size childIndex=0; childIndex < this->_children.size(); ++childIndex)
+    {
+        for (Size i=0; i<dimension; ++i)
         {
-            if ( std::distance(this->_children.begin(),childIt) == 0)
+            if (base2.convert(childIndex)[i] == 0)
             {
-                *tempLengthIt = *pointIt - (*centerIt - (*lengthIt)/2.0);
-                *tempCenterIt = *pointIt - (*tempLengthIt)/2.0;
+                tempLengths[i]  = point[i] - (this->_center[i] - this->_lengths[i]/2.0);
+                tempCenter[i]   = point[i] - tempLengths[i]/2.0;
             }
             else
             {
-                *tempLengthIt = *pointIt + (*centerIt - (*lengthIt)/2.0);
-                *tempCenterIt = *pointIt + (*tempLengthIt)/2.0;
+                tempLengths[i]  = (this->_center[i] + this->_lengths[i]/2.0) - point[i];
+                tempCenter[i]   = point[i] + tempLengths[i]/2.0;
             }
         }
 
+        this->_children[childIndex] = std::make_shared<BoxCell<dimension,CoordinateType>>( tempCenter, tempLengths );
+    }
+    return this->_children;
 }
 
 

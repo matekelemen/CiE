@@ -3,9 +3,9 @@
 
 #include <iterator>
 
-namespace cie {
-namespace csg {
+namespace cie::csg {
 
+namespace detail {
 
 template <size_t N, size_t M>
 constexpr typename AbsSpaceTreeIndexConverter<N,M>::index_array_type
@@ -40,6 +40,8 @@ constexpr size_t AbsSpaceTreeIndexConverter<N,M>::numberOfDataPoints()
     return _numberOfDataPoints;
 }
 
+}
+
 
 template <size_t N, size_t M>
 constexpr const UIntArray<N>& SpaceTreeIndexConverter<N,M>::convert(size_t index)
@@ -55,7 +57,6 @@ constexpr size_t SpaceTreeIndexConverter<N,M>::convert(const UIntArray<N>& index
 }
 
 
-}
 }
 
 #endif

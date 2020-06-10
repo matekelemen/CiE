@@ -10,45 +10,44 @@
 #include <fstream>
 
 
-namespace cie {
-namespace csg {
+namespace cie::csg {
 
 
-template <size_t N, size_t M>
+template <Size N, Size M>
 class SpaceTreeNode;
 
 
-template <size_t N>
-using GeometryFunction = std::function<double(const DoubleArray<N>&)>;
+template <Size N>
+using GeometryFunction = std::function<Double(const DoubleArray<N>&)>;
 
 
 // Integer power and base conversions --------------------------------
 
-constexpr const size_t intPow(int base, size_t exponent);
+constexpr const Size intPow(int base, Size exponent);
 
 
-template <size_t M>
-constexpr void baseN(size_t base_10, size_t base, UIntArray<M>& base_N);
+template <Size M>
+constexpr void baseN(Size base_10, Size base, UIntArray<M>& base_N);
 
 
-template <size_t M>
-constexpr UIntArray<M> baseN(size_t base_10, size_t base);
+template <Size M>
+constexpr UIntArray<M> baseN(Size base_10, Size base);
 
 
-template <size_t M>
-constexpr size_t base10(const UIntArray<M>& base_N, size_t base);
+template <Size M>
+constexpr Size base10(const UIntArray<M>& base_N, Size base);
 
 
-template <size_t M>
-constexpr size_t reinterpretBase( const UIntArray<M>& baseN, size_t newBase );
+template <Size M>
+constexpr Size reinterpretBase( const UIntArray<M>& baseN, Size newBase );
 
 
 // Writing to file ---------------------------------------------------
-template <size_t N, size_t M>
+template <Size N, Size M>
 void writeSpaceTree(const SpaceTreeNode<N,M>& node, std::ostream& file);
 
 
-template <size_t N, size_t M>
+template <Size N, Size M>
 void writeSpaceTree(const SpaceTreeNode<N,M>& node, const std::string& filename);
 
 
@@ -56,15 +55,14 @@ void writeSpaceTree(const SpaceTreeNode<N,M>& node, const std::string& filename)
 template <class ContainerType>
 bool uniformSigns(const ContainerType& data);
 
-template <size_t N, size_t M>
+template <Size N, Size M>
 std::vector<const SpaceTreeNode<N,M>*> boundaryNodes(const SpaceTreeNode<N,M>& root);
 
-template <size_t N, size_t M>
+template <Size N, Size M>
 void boundaryNodes( const SpaceTreeNode<N,M>& root,
                     std::vector<const SpaceTreeNode<N,M>*>& nodes );
 
 
-}
 }
 
 #include "spacetreeutils_impl.hpp"
