@@ -16,6 +16,58 @@ namespace csg {
 // ---------------------------------------------------------
 template <  Size N, 
             concepts::NumericType CoordinateType   >
+template <class ContainerType>
+Cube<N,CoordinateType>::Cube(   const ContainerType& base,
+                                CoordinateType length  )
+    requires concepts::ClassContainer<ContainerType,CoordinateType> :
+    _length(length)
+{
+    CIE_OUT_OF_RANGE_ASSERT( base.size() == N, "Cube::Cube" )
+
+    std::copy(  base.begin(),
+                base.end(),
+                _base.begin() );
+}
+
+
+template <  Size N, 
+            concepts::NumericType CoordinateType   >
+const typename Cube<N,CoordinateType>::point_type&
+Cube<N,CoordinateType>::base() const
+{
+    return _base;
+}
+
+
+template <  Size N, 
+            concepts::NumericType CoordinateType   >
+const typename Cube<N,CoordinateType>::coordinate_type&
+Cube<N,CoordinateType>::length() const
+{
+    return _length;
+}
+
+
+template <  Size N, 
+            concepts::NumericType CoordinateType   >
+typename Cube<N,CoordinateType>::point_type&
+Cube<N,CoordinateType>::base()
+{
+    return _base;
+}
+
+
+template <  Size N, 
+            concepts::NumericType CoordinateType   >
+typename Cube<N,CoordinateType>::coordinate_type&
+Cube<N,CoordinateType>::length()
+{
+    return _length;
+}
+
+
+template <  Size N, 
+            concepts::NumericType CoordinateType   >
 template <class ContainerType1, class ContainerType2>
 Box<N,CoordinateType>::Box( const ContainerType1& center,
                                             const ContainerType2& lengths  )
@@ -74,6 +126,33 @@ Box<N,CoordinateType>::lengths()
 // SPECIALIZED BOOLEAN PRIMITIVES
 // ---------------------------------------------------------
 namespace boolean {
+
+
+template <  Size N, 
+            concepts::NumericType CoordinateType   >
+template <class ContainerType>
+CSGCube<N,CoordinateType>::CSGCube( const ContainerType& base,
+                                    CoordinateType length  )
+    requires concepts::ClassContainer<ContainerType,CoordinateType> :
+        Cube<N,CoordinateType>(base,length)
+{
+}
+
+
+template <  Size N, 
+            concepts::NumericType CoordinateType   >
+Bool
+CSGCube<N,CoordinateType>::at( const typename CSGCube<N,CoordinateType>::point_type& point ) const
+{
+    CIE_OUT_OF_RANGE_ASSERT( point.size() == N, "CSGCube::at" )
+
+    auto baseIt = this->_base.begin();
+    for (auto pointIt=point.begin(); pointIt!=point.end(); ++pointIt,++baseIt)
+        if ( ((*pointIt) < (*baseIt)) == ((*pointIt) < ((*baseIt) + this->_length)) )
+            return false;
+    return true;
+}
+
 
 template <  Size N, 
             concepts::NumericType CoordinateType   >

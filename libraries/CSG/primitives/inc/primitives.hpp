@@ -33,10 +33,46 @@ protected:
 };
 
 
+template <  Size N, 
+            concepts::NumericType CoordinateType = Double>
+class Cube : public Primitive<N,CoordinateType>
+{
+public:
+    template <class ContainerType>
+    Cube(   const ContainerType& base, 
+            CoordinateType length )
+    requires concepts::ClassContainer<ContainerType,CoordinateType>;
+
+    const typename Cube::point_type& base() const;
+    const typename Cube::coordinate_type& length() const;
+    typename Cube::point_type& base();
+    typename Cube::coordinate_type& length();
+
+protected:
+    typename Cube::point_type       _base;
+    typename Cube::coordinate_type  _length;
+};
+
+
 // ---------------------------------------------------------
 // SPECIALIZED BOOLEAN PRIMITIVES
 // ---------------------------------------------------------
 namespace boolean {
+
+
+template <Size N, concepts::NumericType CoordinateType = Double>
+class CSGCube : public Cube<N,CoordinateType>, public CSGObject<N,Bool,CoordinateType>
+{
+public:
+    template <class ContainerType>
+    CSGCube(    const ContainerType& base, 
+                CoordinateType length )
+        requires concepts::ClassContainer<ContainerType,CoordinateType>;
+
+protected:
+    virtual Bool at( const typename CSGCube::point_type& point ) const override;
+};
+
 
 template <Size N, concepts::NumericType CoordinateType = Double>
 class CSGBox : public Box<N,CoordinateType>, public CSGObject<N,Bool,CoordinateType>

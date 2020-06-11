@@ -14,9 +14,9 @@ namespace cie::csg {
 // ---------------------------------------------------------
 template <Size dimension, class SelfType, concepts::NumericType CoordinateType>
 Bool
-Cell<dimension,SelfType,CoordinateType>::isInside( const typename Cell<dimension,SelfType,CoordinateType>::point_type& point ) const
+AbsCell<dimension,SelfType,CoordinateType>::isInside( const typename AbsCell<dimension,SelfType,CoordinateType>::point_type& point ) const
 {
-    throw AbstractCallException( "Cell::isInside" );
+    throw AbstractCallException( "AbsCell::isInside" );
 }
 
 
@@ -24,12 +24,68 @@ Cell<dimension,SelfType,CoordinateType>::isInside( const typename Cell<dimension
 // PRIMITIVE CELLS
 // ---------------------------------------------------------
 template <Size dimension, concepts::NumericType CoordinateType>
+template <class ContainerType>
+CubeCell<dimension,CoordinateType>::CubeCell(   const ContainerType& base, 
+                                                CoordinateType length )
+requires concepts::ClassContainer<ContainerType,CoordinateType> :
+    boolean::CSGCube<dimension,CoordinateType>( base, length )
+{
+}
+
+
+template <Size dimension, concepts::NumericType CoordinateType>
+Bool
+CubeCell<dimension,CoordinateType>::isInside( const typename CubeCell<dimension,CoordinateType>::point_type& point ) const
+{
+    return this->at(point);
+}
+
+
+template <Size dimension, concepts::NumericType CoordinateType>
+typename CubeCell<dimension,CoordinateType>::child_container_type&
+CubeCell<dimension,CoordinateType>::split( const typename CubeCell<dimension,CoordinateType>::point_type& point )
+{
+    if (this->_children.size() != 0)
+    {
+        std::cerr << "Overwriting existing children!\n";
+        this->_children.clear();
+    }
+
+    this->_children.resize( intPow(2,dimension) );
+    typename CubeCell<dimension,CoordinateType>::point_type tempBase;
+    SpaceTreeIndexConverter<dimension,2> base2;
+
+    for (Size childIndex=0; childIndex < this->_children.size(); ++childIndex)
+    {
+        for (Size i=0; i<dimension; ++i)
+        {
+            if (base2.convert(childIndex)[i] == 0)
+                tempBase[i]   = this->_base[i];
+            else
+                tempBase[i]   = this->_base[i] + this->_length/2.0;
+        }
+
+        this->_children[childIndex] = std::make_shared<CubeCell<dimension,CoordinateType>>( tempBase, this->_length / 2.0 );
+    }
+    return this->_children;
+}
+
+
+template <Size dimension, concepts::NumericType CoordinateType>
+typename CubeCell<dimension,CoordinateType>::child_container_type&
+CubeCell<dimension,CoordinateType>::split( )
+{
+    return this->split( typename CubeCell<dimension,CoordinateType>::point_type() );
+}
+
+
+template <Size dimension, concepts::NumericType CoordinateType>
 template <class ContainerType1, class ContainerType2>
 BoxCell<dimension,CoordinateType>::BoxCell( const ContainerType1& center, 
                                             const ContainerType2& lengths )
 requires concepts::ClassContainer<ContainerType1,CoordinateType>
             && concepts::ClassContainer<ContainerType2,CoordinateType> :
-    Box<dimension,CoordinateType>( center, lengths )
+    boolean::CSGBox<dimension,CoordinateType>( center, lengths )
 {
 }
 
@@ -38,14 +94,7 @@ template <Size dimension, concepts::NumericType CoordinateType>
 Bool
 BoxCell<dimension,CoordinateType>::isInside( const typename BoxCell<dimension,CoordinateType>::point_type& point ) const
 {
-    CIE_OUT_OF_RANGE_ASSERT( point.size() == dimension, "BoxCell::isInside" )
-
-    auto centerIt = this->_center.begin();
-    auto lengthIt = this->_lengths.begin();
-    for (auto pointIt=point.begin(); pointIt!=point.end(); ++pointIt,++centerIt,++lengthIt)
-        if ( (*pointIt<(*centerIt - (*lengthIt)/2.0)) == (*pointIt<(*centerIt + (*lengthIt)/2.0)) )
-            return false;
-    return true;
+    return this->at(point);
 }
 
 
@@ -65,7 +114,7 @@ BoxCell<dimension,CoordinateType>::split( const typename BoxCell<dimension,Coord
     this->_children.resize( intPow(2,dimension) );
     typename BoxCell<dimension,CoordinateType>::point_type tempCenter;
     typename BoxCell<dimension,CoordinateType>::point_type tempLengths;
-    SpaceTreeIndexConverter<2,2> base2;
+    SpaceTreeIndexConverter<dimension,2> base2;
 
     for (Size childIndex=0; childIndex < this->_children.size(); ++childIndex)
     {
