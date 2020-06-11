@@ -12,11 +12,30 @@ namespace cie::csg {
 // ---------------------------------------------------------
 // ABSTRACT CELL
 // ---------------------------------------------------------
-template <Size dimension, class SelfType, concepts::NumericType CoordinateType>
-Bool
-AbsCell<dimension,SelfType,CoordinateType>::isInside( const typename AbsCell<dimension,SelfType,CoordinateType>::point_type& point ) const
+template <class CSGObjectType, class SelfType>
+template <class ...Args>
+AbsCell<CSGObjectType,SelfType>::AbsCell( Args&&... args ) :
+    CSGObjectType( std::forward<Args>(args) ... )
 {
-    throw AbstractCallException( "AbsCell::isInside" );
+}
+
+
+template <class CSGObjectType, class SelfType>
+template <concepts::NumericContainer PointType>
+typename AbsCell<CSGObjectType,SelfType>::child_container_type& 
+AbsCell<CSGObjectType,SelfType>::split( const PointType& point )
+{
+    typename AbsCell<CSGObjectType,SelfType>::point_type point_internal;
+    std::copy( point.begin(), point.end(), point_internal.begin() );
+    return this->split_internal(point_internal);
+}
+
+
+template <class CSGObjectType, class SelfType>
+typename AbsCell<CSGObjectType,SelfType>::child_container_type& 
+AbsCell<CSGObjectType,SelfType>::split( const typename AbsCell<CSGObjectType,SelfType>::point_type& point )
+{
+    return this->split_internal(point);
 }
 
 
@@ -28,22 +47,14 @@ template <class ContainerType>
 CubeCell<dimension,CoordinateType>::CubeCell(   const ContainerType& base, 
                                                 CoordinateType length )
 requires concepts::ClassContainer<ContainerType,CoordinateType> :
-    boolean::CSGCube<dimension,CoordinateType>( base, length )
+    CubeCell<dimension,CoordinateType>::cell_base_type( base, length )
 {
-}
-
-
-template <Size dimension, concepts::NumericType CoordinateType>
-Bool
-CubeCell<dimension,CoordinateType>::isInside( const typename CubeCell<dimension,CoordinateType>::point_type& point ) const
-{
-    return this->at(point);
 }
 
 
 template <Size dimension, concepts::NumericType CoordinateType>
 typename CubeCell<dimension,CoordinateType>::child_container_type&
-CubeCell<dimension,CoordinateType>::split( const typename CubeCell<dimension,CoordinateType>::point_type& point )
+CubeCell<dimension,CoordinateType>::split_internal( const typename CubeCell<dimension,CoordinateType>::point_type& point )
 {
     if (this->_children.size() != 0)
     {
@@ -75,34 +86,26 @@ template <Size dimension, concepts::NumericType CoordinateType>
 typename CubeCell<dimension,CoordinateType>::child_container_type&
 CubeCell<dimension,CoordinateType>::split( )
 {
-    return this->split( typename CubeCell<dimension,CoordinateType>::point_type() );
+    return this->split_internal( typename CubeCell<dimension,CoordinateType>::point_type() );
 }
 
 
 template <Size dimension, concepts::NumericType CoordinateType>
 template <class ContainerType1, class ContainerType2>
-BoxCell<dimension,CoordinateType>::BoxCell( const ContainerType1& center, 
+BoxCell<dimension,CoordinateType>::BoxCell( const ContainerType1& base, 
                                             const ContainerType2& lengths )
 requires concepts::ClassContainer<ContainerType1,CoordinateType>
             && concepts::ClassContainer<ContainerType2,CoordinateType> :
-    boolean::CSGBox<dimension,CoordinateType>( center, lengths )
+    BoxCell<dimension,CoordinateType>::cell_base_type( base, lengths )
 {
-}
-
-
-template <Size dimension, concepts::NumericType CoordinateType>
-Bool
-BoxCell<dimension,CoordinateType>::isInside( const typename BoxCell<dimension,CoordinateType>::point_type& point ) const
-{
-    return this->at(point);
 }
 
 
 template <Size dimension, concepts::NumericType CoordinateType>
 typename BoxCell<dimension,CoordinateType>::child_container_type&
-BoxCell<dimension,CoordinateType>::split( const typename BoxCell<dimension,CoordinateType>::point_type& point )
+BoxCell<dimension,CoordinateType>::split_internal( const typename BoxCell<dimension,CoordinateType>::point_type& point )
 {
-    CIE_RUNTIME_GEOMETRY_ASSERT(    isInside(point),
+    CIE_RUNTIME_GEOMETRY_ASSERT(    this->evaluate(point),
                                     "Cannot split geometry using a point outside it!",
                                     "BoxCell::split")
     if (this->_children.size() != 0)
@@ -112,7 +115,7 @@ BoxCell<dimension,CoordinateType>::split( const typename BoxCell<dimension,Coord
     }
 
     this->_children.resize( intPow(2,dimension) );
-    typename BoxCell<dimension,CoordinateType>::point_type tempCenter;
+    typename BoxCell<dimension,CoordinateType>::point_type tempBase;
     typename BoxCell<dimension,CoordinateType>::point_type tempLengths;
     SpaceTreeIndexConverter<dimension,2> base2;
 
@@ -122,17 +125,17 @@ BoxCell<dimension,CoordinateType>::split( const typename BoxCell<dimension,Coord
         {
             if (base2.convert(childIndex)[i] == 0)
             {
-                tempLengths[i]  = point[i] - (this->_center[i] - this->_lengths[i]/2.0);
-                tempCenter[i]   = point[i] - tempLengths[i]/2.0;
+                tempLengths[i]  = point[i] - this->_base[i];
+                tempBase[i]     = this->_base[i];
             }
             else
             {
-                tempLengths[i]  = (this->_center[i] + this->_lengths[i]/2.0) - point[i];
-                tempCenter[i]   = point[i] + tempLengths[i]/2.0;
+                tempLengths[i]  = (this->_base[i] + this->_lengths[i]) - point[i];
+                tempBase[i]     = point[i];
             }
         }
 
-        this->_children[childIndex] = std::make_shared<BoxCell<dimension,CoordinateType>>( tempCenter, tempLengths );
+        this->_children[childIndex] = std::make_shared<BoxCell<dimension,CoordinateType>>( tempBase, tempLengths );
     }
     return this->_children;
 }

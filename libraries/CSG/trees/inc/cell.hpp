@@ -5,9 +5,9 @@
 #include "../../primitives/inc/primitives.hpp"
 
 // --- Utility Includes ---
-#include <cieutils/types.hpp>
-#include <cieutils/concepts.hpp>
 #include <cieutils/trees.hpp>
+#include <cieutils/concepts.hpp>
+#include <cieutils/types.hpp>
 
 // --- STD Includes ---
 #include <memory>
@@ -16,24 +16,32 @@ namespace cie::csg {
 // ---------------------------------------------------------
 // ABSTRACT CELL
 // ---------------------------------------------------------
-template <  Size dimension,
-            class SelfType,
-            concepts::NumericType CoordinateType = Double>
-class AbsCell : public Primitive<dimension,CoordinateType>,
+template <  class CSGObjectType,
+            class SelfType  >
+class AbsCell : public CSGObjectType,
                 public utils::AbsTree<std::vector,SelfType>
 {
 public:
-    virtual Bool isInside( const typename AbsCell::point_type& point ) const;
-    virtual typename AbsCell::child_container_type& split( const typename AbsCell::point_type& point ) = 0;
+    typedef AbsCell<CSGObjectType,SelfType> cell_base_type;
+
+    template <class ...Args>
+    AbsCell( Args&&... args );
+
+    template <concepts::NumericContainer PointType>
+    typename AbsCell::child_container_type& split( const PointType& point );
+    typename AbsCell::child_container_type& split( const typename AbsCell::point_type& point );
+
+protected:
+    virtual typename AbsCell::child_container_type& split_internal( const typename AbsCell::point_type& point ) = 0;
 };
 
 
 // ---------------------------------------------------------
-// PRIMITIVE CELLS
+// BOOLEAN PRIMITIVE CELLS
 // ---------------------------------------------------------
-template <Size dimension, concepts::NumericType CoordinateType = Double>
-class CubeCell :    public AbsCell<dimension,CubeCell<dimension,CoordinateType>,CoordinateType>, 
-                    public boolean::CSGCube<dimension,CoordinateType>
+template <  Size dimension,
+            concepts::NumericType CoordinateType = Double>
+class CubeCell :    public AbsCell<boolean::CSGCube<dimension,CoordinateType>,CubeCell<dimension,CoordinateType>>
 {
 public:
     template <class ContainerType>
@@ -41,25 +49,26 @@ public:
                 CoordinateType length )
     requires concepts::ClassContainer<ContainerType,CoordinateType>;
 
-    virtual Bool isInside( const typename CubeCell::point_type& point ) const override;
-    virtual typename CubeCell::child_container_type& split( const typename CubeCell::point_type& point ) override;
-    virtual typename CubeCell::child_container_type& split( );
+    typename CubeCell::child_container_type& split( );
+
+protected:
+    virtual typename CubeCell::child_container_type& split_internal( const typename CubeCell::point_type& point ) override;
 };
 
 
-template <Size dimension, concepts::NumericType CoordinateType = Double>
-class BoxCell :     public AbsCell<dimension,BoxCell<dimension,CoordinateType>,CoordinateType>, 
-                    public boolean::CSGBox<dimension,CoordinateType>
+template <  Size dimension, 
+            concepts::NumericType CoordinateType = Double>
+class BoxCell :     public AbsCell<boolean::CSGBox<dimension,CoordinateType>,BoxCell<dimension,CoordinateType>>
 {
 public:
     template <class ContainerType1, class ContainerType2>
-    BoxCell(const ContainerType1& center, 
+    BoxCell(const ContainerType1& base, 
             const ContainerType2& lengths )
     requires concepts::ClassContainer<ContainerType1,CoordinateType>
                 && concepts::ClassContainer<ContainerType2,CoordinateType>;
 
-    virtual Bool isInside( const typename BoxCell::point_type& point ) const override;
-    virtual typename BoxCell::child_container_type& split( const typename BoxCell::point_type& point ) override;
+protected:
+    virtual typename BoxCell::child_container_type& split_internal( const typename BoxCell::point_type& point ) override;
 };
 
 

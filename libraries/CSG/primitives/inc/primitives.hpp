@@ -13,28 +13,6 @@ namespace csg {
 // ---------------------------------------------------------
 template <  Size N, 
             concepts::NumericType CoordinateType = Double>
-class Box : public Primitive<N,CoordinateType>
-{
-public:
-    template <class ContainerType1, class ContainerType2>
-    Box(    const ContainerType1& center, 
-            const ContainerType2& lengths )
-    requires concepts::ClassContainer<ContainerType1,CoordinateType>
-                && concepts::ClassContainer<ContainerType2,CoordinateType>;
-
-    const typename Box::point_type& center() const;
-    const typename Box::point_type& lengths() const;
-    typename Box::point_type& center();
-    typename Box::point_type& lengths();
-
-protected:
-    typename Box::point_type     _center;
-    typename Box::point_type     _lengths;
-};
-
-
-template <  Size N, 
-            concepts::NumericType CoordinateType = Double>
 class Cube : public Primitive<N,CoordinateType>
 {
 public:
@@ -51,6 +29,29 @@ public:
 protected:
     typename Cube::point_type       _base;
     typename Cube::coordinate_type  _length;
+};
+
+
+
+template <  Size N, 
+            concepts::NumericType CoordinateType = Double>
+class Box : public Primitive<N,CoordinateType>
+{
+public:
+    template <class ContainerType1, class ContainerType2>
+    Box(    const ContainerType1& base, 
+            const ContainerType2& lengths )
+    requires concepts::ClassContainer<ContainerType1,CoordinateType>
+                && concepts::ClassContainer<ContainerType2,CoordinateType>;
+
+    const typename Box::point_type& base() const;
+    const typename Box::point_type& lengths() const;
+    typename Box::point_type& base();
+    typename Box::point_type& lengths();
+
+protected:
+    typename Box::point_type     _base;
+    typename Box::point_type     _lengths;
 };
 
 
