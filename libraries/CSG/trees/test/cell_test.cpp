@@ -8,9 +8,9 @@
 namespace cie::csg {
 
 
-TEST_CASE( "CubeCell", "[trees]" )
+TEST_CASE( "boolean::CubeCell", "[trees]" )
 {
-    using TestCell = CubeCell<2,Double>;
+    using TestCell = boolean::CubeCell<2,Double>;
 
     REQUIRE_NOTHROW( TestCell( DoubleArray<2>({1.0,1.0}), 2.0) );
     TestCell cell( DoubleArray<2>({2.0,2.0}), 2.0 );
@@ -40,9 +40,9 @@ TEST_CASE( "CubeCell", "[trees]" )
 }
 
 
-TEST_CASE( "BoxCell", "[trees]" )
+TEST_CASE( "boolean::BoxCell", "[trees]" )
 {
-    using TestCell = BoxCell<2,Double>;
+    using TestCell = boolean::BoxCell<2,Double>;
 
     REQUIRE_NOTHROW( TestCell( DoubleArray<2>({1.0,1.0}), DoubleArray<2>({0.0,1.0}) ) );
     TestCell cell( DoubleArray<2>({0.0,1.0}), DoubleArray<2>({4.0,2.0}) );

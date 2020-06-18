@@ -39,6 +39,9 @@ protected:
 // ---------------------------------------------------------
 // BOOLEAN PRIMITIVE CELLS
 // ---------------------------------------------------------
+namespace boolean {
+    
+
 template <  Size dimension,
             concepts::NumericType CoordinateType = Double>
 class CubeCell :    public AbsCell<boolean::CSGCube<dimension,CoordinateType>,CubeCell<dimension,CoordinateType>>
@@ -72,7 +75,7 @@ protected:
 };
 
 
-
+}
 
 
 }

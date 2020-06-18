@@ -13,8 +13,7 @@
 #include <stdint.h>
 #include <memory>
 
-namespace cie {
-namespace csg {
+namespace cie::csg {
 
 // Define node pointer (needs forward declaration)
 template <size_t N, size_t M>
@@ -80,7 +79,6 @@ protected:
 };
 
 
-}
 }
 
 #include "spacetreenode_impl.hpp"

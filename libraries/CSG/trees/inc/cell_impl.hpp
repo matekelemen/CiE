@@ -40,8 +40,11 @@ AbsCell<CSGObjectType,SelfType>::split( const typename AbsCell<CSGObjectType,Sel
 
 
 // ---------------------------------------------------------
-// PRIMITIVE CELLS
+// BOOLEAN PRIMITIVE CELLS
 // ---------------------------------------------------------
+namespace boolean {
+
+
 template <Size dimension, concepts::NumericType CoordinateType>
 template <class ContainerType>
 CubeCell<dimension,CoordinateType>::CubeCell(   const ContainerType& base, 
@@ -138,6 +141,9 @@ BoxCell<dimension,CoordinateType>::split_internal( const typename BoxCell<dimens
         this->_children[childIndex] = std::make_shared<BoxCell<dimension,CoordinateType>>( tempBase, tempLengths );
     }
     return this->_children;
+}
+
+
 }
 
 
