@@ -338,6 +338,9 @@ p(\bullet, 0) = 0
 * $`\bar u`$ : forward solution
 * $`u_\Omega`$ : prescribed state
 
+*Note:*
+*The initial condition $`(26)`$ is most likely incorrect, as it would mean that no control is needed at $`\tau=0`$ ($`t=T`$)*.
+
 Keep in mind that the time variable has already been reversed here. 
 
 The DE $`(24)`$ is almost identical to the original one $`(12)`$, save for the coefficients of the adjoint state $`p`$, and the space derivatives. The coefficients are now functions of $`\tau`$ and $`x`$ but not $`p`$, which makes the derivation a bit simpler.
@@ -349,17 +352,17 @@ Let's rename the coefficients from $`(24)`$ and reduce the system to 1D:
 ```
 
 ```math
-\tilde c := \frac{\partial c}{\partial u} \bigg \vert_{\bar u} \bar u + c(\bar u)
+\tilde c(x) := \frac{\partial c}{\partial u} \bigg \vert_{\bar u} \bar u + c(\bar u)
 \tag{28}
 ```
 
 ```math
-\tilde \kappa := \frac{ \partial \kappa }{ \partial u} \bigg \vert_{\bar u } + \kappa (\bar u)
+\tilde \kappa(x) := \frac{ \partial \kappa }{ \partial u} \bigg \vert_{\bar u } + \kappa (\bar u)
 \tag{29}
 ```
 
 ```math
-\tilde f := u_\Omega - \bar u
+\tilde f(x) := u_\Omega - \bar u
 \tag{30}
 ```
 
