@@ -5,7 +5,7 @@
 #include "cieutils/types.hpp"
 #include "cieutils/concepts.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <memory>
 
 namespace cie {

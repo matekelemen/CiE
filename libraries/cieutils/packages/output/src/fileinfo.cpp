@@ -1,7 +1,7 @@
 // --- Internal Includes ---
 #include "../inc/fileinfo.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <filesystem>
 
 

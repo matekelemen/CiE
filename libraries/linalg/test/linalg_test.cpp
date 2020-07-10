@@ -5,7 +5,7 @@
 #include "linalg/linalg.hpp"
 #include "../utilities/inc/linalghelper.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <fstream>
 #include <sstream>
 #include <iostream>

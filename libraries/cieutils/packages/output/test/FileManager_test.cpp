@@ -6,7 +6,7 @@
 #include "../inc/fileinfo.hpp"
 #include "cmake_variables.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <iostream>
 
 

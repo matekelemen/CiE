@@ -5,7 +5,7 @@
 #include "interpolation.hpp"
 #include "basisfunctions.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <string>
 #include <cmath>
 #include <exception>

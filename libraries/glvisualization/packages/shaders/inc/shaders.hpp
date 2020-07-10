@@ -8,7 +8,7 @@
 // --- Utility Includes ---
 #include "cmake_variables.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <string>
 #include <vector>
 #include <iostream>

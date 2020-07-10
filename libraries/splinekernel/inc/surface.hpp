@@ -7,7 +7,7 @@
 // --- Utility Includes ---
 #include <cieutils/types.hpp>
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <vector>
 #include <array>
 #include <algorithm>

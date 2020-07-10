@@ -3,7 +3,7 @@
 #include "../inc/fileinfo.hpp"
 #include "cmake_variables.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <filesystem>
 #include <algorithm>
 

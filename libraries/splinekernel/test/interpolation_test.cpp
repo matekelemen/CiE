@@ -7,7 +7,7 @@
 // --- Internal Includes ---
 #include "interpolation.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <algorithm>
 
 namespace cie

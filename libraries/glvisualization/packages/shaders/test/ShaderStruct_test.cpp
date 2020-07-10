@@ -4,7 +4,7 @@
 // --- Internal Includes ---
 #include "../inc/shaders.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <string>
 #include <iostream>
 

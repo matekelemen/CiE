@@ -1,7 +1,7 @@
 #ifndef CSG_NTREE_UTILITIES_IMPL_HPP
 #define CSG_NTREE_UTILITIES_IMPL_HPP
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <algorithm>
 #include <string>
 

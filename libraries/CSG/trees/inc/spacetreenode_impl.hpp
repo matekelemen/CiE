@@ -4,7 +4,7 @@
 // --- Internal Imports ---
 #include "cmake_variables.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <string>
 #include <iostream>
 #include <cmath>

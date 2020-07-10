@@ -8,7 +8,7 @@
 #include "indexconverter.hpp"
 #include "spacetreeutils.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <deque>
 #include <stdint.h>
 #include <memory>

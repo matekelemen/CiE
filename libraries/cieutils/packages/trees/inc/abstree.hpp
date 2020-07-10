@@ -4,7 +4,7 @@
 // --- Internal Includes ---
 #include "../../types/inc/types.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <functional>
 
 namespace cie::utils {

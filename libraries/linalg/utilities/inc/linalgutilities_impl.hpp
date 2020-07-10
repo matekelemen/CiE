@@ -1,7 +1,7 @@
 #ifndef CIE_LINALG_UTILITIES_IMPL_HPP
 #define CIE_LINALG_UTILITIES_IMPL_HPP
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <algorithm>
 #include <cmath>
 #include <numeric>

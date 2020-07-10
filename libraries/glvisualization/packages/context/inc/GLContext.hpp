@@ -14,7 +14,7 @@
 #include "defaultCallback.hpp"
 #include "cmake_variables.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <functional>
 #include <memory>
 #include <string>

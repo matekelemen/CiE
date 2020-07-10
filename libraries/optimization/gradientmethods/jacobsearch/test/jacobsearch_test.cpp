@@ -8,7 +8,7 @@
 // --- Linalg Includes ---
 #include "linalg/types.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <iostream>
 
 namespace cie {

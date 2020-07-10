@@ -4,7 +4,7 @@
 // --- Internal Includes ---
 #include "../inc/minimumdisc.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <algorithm>
 #include <iostream>
 #include <random>

@@ -4,7 +4,7 @@
 // --- Internal Includes ---
 #include "AbsObserver.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <memory>
 #include <vector>
 

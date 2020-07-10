@@ -4,7 +4,7 @@
 // --- Internal Includes ---
 #include "../../types/inc/typeoperations.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <cmath>
 #include <numeric>
 #include <algorithm>

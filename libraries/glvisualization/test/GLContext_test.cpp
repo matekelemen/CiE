@@ -7,7 +7,7 @@
 #include "../inc/DrawManager.hpp"
 #include "../../callbacks/inc/CallbackGroup.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <iostream>
 
 

@@ -1,7 +1,7 @@
 #ifndef LINALG_SPARSE_IMPL_HPP
 #define LINALG_SPARSE_IMPL_HPP
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <algorithm>
 #include <numeric>
 

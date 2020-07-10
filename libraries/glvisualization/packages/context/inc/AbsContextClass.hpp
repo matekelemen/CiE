@@ -4,7 +4,7 @@
 // --- Internal Includes ---
 #include "GLContext.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <string>
 
 

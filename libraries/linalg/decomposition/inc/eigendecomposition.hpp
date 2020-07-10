@@ -8,7 +8,7 @@
 #include "../../types/inc/vectortypes.hpp"
 #include "../../types/inc/matrix.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <utility>
 
 

@@ -8,7 +8,7 @@
 // --- Internal Includes ---
 #include "vectortypes.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <vector>
 #include <iostream>
 #include <array>

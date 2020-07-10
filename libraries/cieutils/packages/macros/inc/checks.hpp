@@ -1,11 +1,11 @@
-#ifndef CIE_CIEUTILS_MACROS_HPP
-#define CIE_CIEUTILS_MACROS_HPP
+#ifndef CIE_CIEUTILS_CHECK_MACROS_HPP
+#define CIE_CIEUTILS_CHECK_MACROS_HPP
 
 // --- Internal Includes ---
 #include "../../exceptions/inc/exception.hpp"
 #include "cmake_variables.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <sstream>
 
 

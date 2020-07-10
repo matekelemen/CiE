@@ -4,7 +4,7 @@
 // --- Internal Includes ---
 #include "../inc/abstree.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <vector>
 #include <memory>
 #include <iostream>

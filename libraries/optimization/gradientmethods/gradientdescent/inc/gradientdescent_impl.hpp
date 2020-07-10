@@ -9,7 +9,7 @@
 #include "gradientestimate.hpp"
 #include "../../solver/inc/solver.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <functional>
 
 namespace cie {

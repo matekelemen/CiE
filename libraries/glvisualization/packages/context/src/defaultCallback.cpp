@@ -1,7 +1,7 @@
 // --- Internal Includes ---
 #include "../inc/defaultCallback.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <iostream>
 #include <string>
 

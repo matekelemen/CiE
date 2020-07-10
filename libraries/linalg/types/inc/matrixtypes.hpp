@@ -5,7 +5,7 @@
 #include "matrix.hpp"
 #include "sparse.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <memory>
 
 namespace cie {

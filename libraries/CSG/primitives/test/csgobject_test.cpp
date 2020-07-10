@@ -7,7 +7,7 @@
 // --- Internal Includes ---
 #include "../inc/csgobject.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <vector>
 #include <deque>
 

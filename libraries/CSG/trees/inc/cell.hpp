@@ -9,7 +9,7 @@
 #include <cieutils/concepts.hpp>
 #include <cieutils/types.hpp>
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <memory>
 
 namespace cie::csg {

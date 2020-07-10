@@ -4,7 +4,7 @@
 // --- Internal Includes ---
 #include "../inc/spacetreenode.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <iostream>
 
 namespace cie::csg {

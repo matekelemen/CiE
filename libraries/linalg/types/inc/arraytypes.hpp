@@ -1,7 +1,7 @@
 #ifndef LINALG_ARRAY_TYPES_HPP
 #define LINALG_ARRAY_TYPES_HPP
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <array>
 #include <cstddef>
 #include <cstdint>

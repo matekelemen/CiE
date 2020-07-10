@@ -4,7 +4,7 @@
 // --- Utility Includes ---
 #include <cieutils/macros.hpp>
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <algorithm>
 
 namespace cie {
