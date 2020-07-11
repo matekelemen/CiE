@@ -3,23 +3,15 @@ project( linalg CXX )
 # ---------------------------------------------------------
 # GATHER FILES AND INCLUDE DIRECTORIES
 # ---------------------------------------------------------
-file( GLOB_RECURSE LINALG_TEST_SOURCE_FILES test/*.cpp )
-file( GLOB LINALG_LIBRARY_SOURCE_FILES src/*.cpp )
-file( GLOB LINALG_HEADER_FILES inc/*.h* )
+COLLECT_PACKAGES(   LINALG_INCLUDE_DIRECTORIES
+                    LINALG_HEADER_FILES
+                    LINALG_LIBRARY_SOURCE_FILES
+                    LINALG_TEST_SOURCE_FILES )
 
-SUBDIRLIST( subdirs ${CMAKE_CURRENT_SOURCE_DIR} )
-foreach( subdirectory ${subdirs} )
-    # Include header directories
-    include_directories( "${subdirectory}/inc" )
-    # Append library header and source files
-    file( GLOB TEMP_HEADERS ${subdirectory}/inc/*.h* )
-    file( GLOB TEMP_SOURCES ${subdirectory}/src/*.cpp )
-    file( GLOB TEMP_TESTS ${subdirectory}/test/*.cpp )
-    list( APPEND LINALG_HEADER_FILES ${TEMP_HEADERS} )
-    list( APPEND LINALG_LIBRARY_SOURCE_FILES ${TEMP_SOURCES} )
-    list( APPEND LINALG_TEST_SOURCE_FILES ${TEMP_TESTS} )
-endforeach()
+file( GLOB LINALG_SOURCE_DRIVERS ${CMAKE_CURRENT_SOURCE_DIR}/test/*.cpp )
+list( INSERT LINALG_TEST_SOURCE_FILES 0 ${LINALG_SOURCE_DRIVERS} )
 
+include_directories( ${LINALG_INCLUDE_DIRECTORIES} )
 include_directories( "../cieutils/inc" )
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/inc" )
 

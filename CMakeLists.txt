@@ -87,3 +87,11 @@ add_subdirectory( libraries )
 # BUILD APPLICATIONS
 # ---------------------------------------------------------
 add_subdirectory( applications )
+
+# ---------------------------------------------------------
+# TESTRUNNER
+# ---------------------------------------------------------
+add_custom_target( testrunner
+                    COMMAND ${CMAKE_COMMAND} 
+                        "-DVAR=${INSTALL_TEST_PREFIX}" 
+                        -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/testrunner.cmake" )

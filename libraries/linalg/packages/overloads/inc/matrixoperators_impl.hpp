@@ -5,8 +5,7 @@
 #include <string>
 #include <algorithm>
 
-namespace cie {
-namespace linalg {
+namespace cie::linalg {
 
 
 template <concepts::NumericType ValueType, concepts::NumericType ScalarType>
@@ -237,7 +236,6 @@ Matrix<ValueType> operator*(const Matrix<ValueType>& lhs, const Matrix<ValueType
 }
 
 
-}
-}
+} // namespace cie::linalg
 
 #endif

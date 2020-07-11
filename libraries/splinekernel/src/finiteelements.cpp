@@ -1,5 +1,5 @@
 // --- Linalg Includes ---
-#include "linalg/linalg.hpp"
+#include <linalg/linalg.hpp>
 
 // --- Internal Include ---
 #include "finiteelements.hpp"

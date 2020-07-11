@@ -2,16 +2,15 @@
 #include "catch.hpp"
 
 // --- Internal Includes ---
-#include "linalg/linalg.hpp"
-#include "../utilities/inc/linalghelper.hpp"
+#include <linalg/linalg.hpp>
+#include "../packages/utilities/inc/linalghelper.hpp"
 
 // --- STL Includes ---
 #include <fstream>
 #include <sstream>
 #include <iostream>
 
-namespace cie {
-namespace linalg
+namespace cie::linalg
 {
 
 TEST_CASE( "Matrix", "[matrix]" )
@@ -242,5 +241,4 @@ TEST_CASE( "solve_zero_pivot" )
     }
 }
 
-} // namespace linalg
-}
+} // namespace cie::linalg

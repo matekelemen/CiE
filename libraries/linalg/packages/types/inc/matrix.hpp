@@ -6,15 +6,15 @@
 #include <cieutils/types.hpp>
 
 // --- Internal Includes ---
-#include "vectortypes.hpp"
+#include "./vectortypes.hpp"
 
 // --- STL Includes ---
 #include <vector>
 #include <iostream>
 #include <array>
+#include <memory>
 
-namespace cie {
-namespace linalg {
+namespace cie::linalg {
 
 
 template <concepts::NumericType ValueType = Double>
@@ -54,8 +54,14 @@ private:
     bool                    _transpose;
 }; // class Matrix
 
-} // namespace linalg
-}
+
+
+template <class ValueType>
+using MatrixPtr = std::shared_ptr<Matrix<ValueType>>;
+
+
+
+} // namespace cie::linalg
 
 #include "matrix_impl.hpp"
 

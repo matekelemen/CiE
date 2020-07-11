@@ -24,7 +24,7 @@ DoubleVector principalComponent(const Matrix<Double>& matrix, Double tolerance, 
 
     // Iterative approximation
     Size iteration = 0;
-    while ( norm<DoubleVector>( cie::operator-(output,memory) )>tolerance && iteration++<maxIterations ){
+    while ( norm<DoubleVector>( ::operator-(output,memory) )>tolerance && iteration++<maxIterations ){
         memory  = output;
         output  = matrix * output;
         normalize<DoubleVector>(output);

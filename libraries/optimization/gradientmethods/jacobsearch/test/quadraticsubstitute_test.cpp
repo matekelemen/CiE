@@ -3,8 +3,7 @@
 
 #include <iostream>
 
-namespace cie {
-namespace opt {
+namespace cie::opt {
 
 
 double paraboloidTestFunction(const DoubleArray<2>& position, const DoubleArray<2>& offset){
@@ -41,5 +40,4 @@ TEST_CASE("QuadraticSubstitute"){
     CHECK( paraboloidTestFunction(minimum.first, offset) == Approx(0.0) );
 }
 
-}
 }

@@ -12,8 +12,7 @@
 
 
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 GLContext context_global( 4,5,4,"glvisualization_testrunner_log.txt" );
@@ -66,7 +65,8 @@ struct TestDrawManager : public DrawManager
 
         // Draw buffer
         glDrawElements( GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0 );
-        return true;
+
+        return false;
     }
 };
 
@@ -166,5 +166,4 @@ TEST_CASE( "DrawManager" )
 
 
 
-}
 }

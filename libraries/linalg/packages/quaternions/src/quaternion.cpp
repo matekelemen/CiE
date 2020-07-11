@@ -1,9 +1,9 @@
+// --- Internal Includes ---
 #include "../inc/quaternion.hpp"
 #include "../../overloads/inc/vectoroperators.hpp"
 
 
-namespace cie {
-namespace linalg {
+namespace cie::linalg {
 
 
 Quaternion::Quaternion() :
@@ -54,14 +54,9 @@ DoubleArray<4>::const_iterator Quaternion::end() const
 }
 
 
-
-
-
 Quaternion operator+( const Quaternion& lhs, const Quaternion& rhs )
 {
-    return Quaternion( 
-        cie::operator+( lhs.coefficients(), rhs.coefficients() ) 
-        );
+    return Quaternion( ::operator+(lhs.coefficients(), rhs.coefficients()) );
 }
 
 
@@ -84,9 +79,7 @@ Quaternion operator*( const Quaternion& lhs, const Quaternion& rhs )
 
 Quaternion operator*( const Quaternion& quaternion, double scalar )
 {
-    return Quaternion( 
-        cie::operator*( quaternion.coefficients(), scalar ) 
-        );
+    return Quaternion( ::operator*(quaternion.coefficients(), scalar) );
 }
 
 
@@ -108,5 +101,4 @@ Quaternion conjugate( const Quaternion& quaternion )
 
 
 
-}
-}
+} // namespace cie::linalg

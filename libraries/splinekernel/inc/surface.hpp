@@ -1,8 +1,8 @@
-#ifndef CIE_SURFACE_HPP
-#define CIE_SURFACE_HPP
+#ifndef CIE_SPLINEKERNEL_SURFACE_HPP
+#define CIE_SPLINEKERNEL_SURFACE_HPP
 
 // --- Linalg Includes ---
-#include "linalg/linalg.hpp"
+#include <linalg/linalg.hpp>
 
 // --- Utility Includes ---
 #include <cieutils/types.hpp>

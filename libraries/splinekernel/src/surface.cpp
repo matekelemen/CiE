@@ -2,9 +2,7 @@
 #include "basisfunctions.hpp"
 #include "surface.hpp"
 
-namespace cie
-{
-namespace splinekernel
+namespace cie::splinekernel
 {
 namespace detail
 {
@@ -91,5 +89,4 @@ VectorOfMatrices evaluateSurface( const std::array<std::vector<Double>, 2>& knot
     return result;
 }
 
-} // namespace splinekernel
-} // namespace cie
+} // namespace cie::splinekernel

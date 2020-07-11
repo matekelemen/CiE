@@ -1,10 +1,12 @@
 #ifndef LINALG_TYPE_OPERATIONS_IMPL_HPP
 #define LINALG_TYPE_OPERATIONS_IMPL_HPP
 
+// --- STL Includes ---
 #include <cmath>
+#include <stdexcept>
 
-namespace cie {
-namespace linalg {
+
+namespace cie::linalg {
 
 template <typename T>
 double norm2(const T& object)
@@ -42,7 +44,6 @@ void normalize(T& object, NormFunction<T> measure, double tolerance)
     } // else
 }
 
-} // namespace linalg
-}
+} // namespace cie::linalg
 
 #endif

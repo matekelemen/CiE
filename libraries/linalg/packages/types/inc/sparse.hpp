@@ -1,8 +1,8 @@
 #ifndef CIE_LINALG_SPARSE_HPP
 #define CIE_LINALG_SPARSE_HPP
 
-// --- Linalg Includes ---
-#include "linalg/types.hpp"
+// --- Internal Includes ---
+#include "./matrix.hpp"
 
 // --- Utility Includes ---
 #include <cieutils/types.hpp>
@@ -33,7 +33,7 @@ public:
     ValueType operator()( Size i, Size j ) const;
     std::vector<ValueType> operator*( const std::vector<ValueType>& vector );
 
-    void scatter( const linalg::Matrix<ValueType>& elementMatrix,
+    void scatter( const Matrix<ValueType>& elementMatrix,
                   const std::vector<Size>& locationMap );
 
     //! Obtain sparse data structure and set matrix to zero

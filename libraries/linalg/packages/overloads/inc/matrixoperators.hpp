@@ -9,8 +9,7 @@
 #include "../../types/inc/vectortypes.hpp"
 #include "../../types/inc/matrix.hpp"
 
-namespace cie {
-namespace linalg {
+namespace cie::linalg {
 
 template <concepts::NumericType ValueType, concepts::NumericType ScalarType>
 Matrix<ValueType> operator+(const Matrix<ValueType>& matrix, ScalarType scalar);
@@ -46,7 +45,6 @@ template <concepts::NumericType ValueType>
 Matrix<ValueType> operator*(const Matrix<ValueType>& lhs, const Matrix<ValueType>& rhs);
 
 } // namespace linalg
-}
 
 #include "matrixoperators_impl.hpp"
 
