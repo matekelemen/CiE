@@ -3,6 +3,7 @@
 
 // --- Internal Includes ---
 #include "../inc/spacetreenode.hpp"
+#include "cmake_variables.hpp"
 
 // --- STL Includes ---
 #include <iostream>
@@ -78,7 +79,7 @@ TEST_CASE("SpaceTreeNode divide 2D")
     CHECK(root.child(0).children().size() == 4);
 
     // Check writing to file
-    CHECK_NOTHROW(writeSpaceTree<2,3>(root, "spacetree2D.csv"));
+    CHECK_NOTHROW(writeSpaceTree<2,3>(root, TEST_OUTPUT_PATH + "/spacetree2D.csv"));
 }
 
 
@@ -104,7 +105,7 @@ TEST_CASE("SpaceTreeNode divide 3D")
         root.divideOffload(sphere, 7);
 
         // Check writing to file
-        CHECK_NOTHROW(writeSpaceTree<3,3>(root, "spacetree3D.csv"));
+        CHECK_NOTHROW(writeSpaceTree<3,3>(root, TEST_OUTPUT_PATH + "/spacetree3D.csv"));
     }
 }
 

@@ -11,11 +11,10 @@
 #include <string>
 
 
-namespace cie {
-namespace utils {
+namespace cie::utils {
 
 
-std::string loggeeTestDir = BINARY_PATH + "/test/loggee";
+std::string loggeeTestDir = TEST_OUTPUT_PATH;
 
 
 struct TestLoggee : public Loggee
@@ -80,13 +79,7 @@ TEST_CASE( "Loggee" )
     CHECK( checkLine("[TestLoggee]") );
     CHECK( checkLine("[TestLoggee] test9") );
     CHECK( checkLine("[TestLoggee]") );
-
-    
-    //std::string msg;
-    //while (std::getline(file, msg))
-    //    std::cout << msg << "\n";
 }
 
 
-}
 }

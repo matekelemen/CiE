@@ -1,11 +1,17 @@
+// --- External includes ---
 #include "catch.hpp"
+
+// --- Internal Includes ---
 #include "../inc/QRFactorization.hpp"
 #include "../../utilities/inc/linalghelper.hpp"
+#include "cmake_variables.hpp"
+
+// --- STL Includes ---
 #include <iostream>
 #include <fstream>
 
-namespace cie {
-namespace linalg {
+
+namespace cie::linalg {
 
 TEST_CASE("QR Factorization")
 {
@@ -16,14 +22,13 @@ TEST_CASE("QR Factorization")
     
     auto qr = QRFactorization(matrix);
     
-    std::ofstream QFile("Q.csv");
+    std::ofstream QFile( TEST_OUTPUT_PATH + "/QR_factorization_Q.csv");
     linalghelper::write(*(qr.first),QFile);
     QFile.close();
 
-    std::ofstream RFile("R.csv");
+    std::ofstream RFile(TEST_OUTPUT_PATH + "/QR_factorization_R.csv");
     linalghelper::write(*(qr.second),RFile);
     RFile.close();
 }
 
-}
 }

@@ -6,11 +6,10 @@
 #include "cmake_variables.hpp"
 
 
-namespace cie {
-namespace utils {
+namespace cie::utils {
 
 
-std::string loggerTestDir = BINARY_PATH;
+std::string loggerTestDir = TEST_OUTPUT_PATH;
 
 
 TEST_CASE( "Logger" )
@@ -61,5 +60,4 @@ TEST_CASE( "Logger" )
 }
 
 
-}
 }

@@ -4,6 +4,7 @@
 // --- Internal Includes ---
 #include <linalg/linalg.hpp>
 #include "../packages/utilities/inc/linalghelper.hpp"
+#include "cmake_variables.hpp"
 
 // --- STL Includes ---
 #include <fstream>
@@ -107,7 +108,8 @@ namespace linalgtesthelper
     template<typename ContainerType>
     std::vector<Double> writeAndParse( const ContainerType& container )
     {
-        std::ofstream outfile( "write.csv" );
+        const std::string testFileName = TEST_OUTPUT_PATH + "/Matrix_linearized_input.csv";
+        std::ofstream outfile( testFileName );
 
         REQUIRE_NOTHROW( linalghelper::write( container, outfile ) );
 
@@ -115,7 +117,7 @@ namespace linalgtesthelper
 
         std::vector<Double> values;
 
-        std::ifstream infile( "write.csv" );
+        std::ifstream infile( testFileName );
 
 		std::string line;
         while( !infile.eof() )

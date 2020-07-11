@@ -14,7 +14,7 @@ namespace cie {
 namespace utils {
 
 
-std::string testDir = BINARY_PATH + "/test";
+std::string testDir = TEST_OUTPUT_PATH + "/test";
 
 
 TEST_CASE( "FileManager - constructor" )
