@@ -5,7 +5,7 @@
 #include <cieutils/exceptions.hpp>
 
 // --- Internal Includes ---
-#include "indexconverter.hpp"
+#include "../inc/indexconverter.hpp"
 
 namespace cie::csg {
 

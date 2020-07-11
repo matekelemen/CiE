@@ -80,6 +80,6 @@ protected:
 
 }
 
-#include "cell_impl.hpp"
+#include "../impl/cell_impl.hpp"
 
 #endif

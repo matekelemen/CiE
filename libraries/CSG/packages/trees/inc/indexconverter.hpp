@@ -48,6 +48,6 @@ protected:
 
 }
 
-#include "indexconverter_impl.hpp"
+#include "../impl/indexconverter_impl.hpp"
 
 #endif

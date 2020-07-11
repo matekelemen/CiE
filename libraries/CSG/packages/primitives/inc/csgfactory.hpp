@@ -28,6 +28,6 @@ struct CSGFactory
 }
 }
 
-#include "csgfactory_impl.hpp"
+#include "../impl/csgfactory_impl.hpp"
 
 #endif

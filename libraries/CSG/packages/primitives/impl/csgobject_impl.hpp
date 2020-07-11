@@ -2,7 +2,7 @@
 #define CIE_CSG_CSG_OBJECT_IMPL_HPP
 
 // --- Utility Includes ---
-#include "cieutils/macros.hpp"
+#include <cieutils/macros.hpp>
 
 // --- STL Includes ---
 #include <utility>

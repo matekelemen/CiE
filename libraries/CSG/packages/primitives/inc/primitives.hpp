@@ -103,6 +103,6 @@ namespace numeric {
 }
 }
 
-#include "primitives_impl.hpp"
+#include "../impl/primitives_impl.hpp"
 
 #endif

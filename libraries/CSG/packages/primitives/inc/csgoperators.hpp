@@ -110,6 +110,6 @@ protected:
 }
 }
 
-#include "csgoperators_impl.hpp"
+#include "../impl/csgoperators_impl.hpp"
 
 #endif

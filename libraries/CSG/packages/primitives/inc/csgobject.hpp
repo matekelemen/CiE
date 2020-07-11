@@ -55,6 +55,6 @@ using CSGObjectPtr = std::shared_ptr<CSGObject<N,ValueType,CoordinateType>>;
 }
 }
 
-#include "csgobject_impl.hpp"
+#include "../impl/csgobject_impl.hpp"
 
 #endif

@@ -65,6 +65,6 @@ void boundaryNodes( const SpaceTreeNode<N,M>& root,
 
 }
 
-#include "spacetreeutils_impl.hpp"
+#include "../impl/spacetreeutils_impl.hpp"
 
 #endif

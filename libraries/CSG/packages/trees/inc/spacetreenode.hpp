@@ -81,6 +81,6 @@ protected:
 
 }
 
-#include "spacetreenode_impl.hpp"
+#include "../impl/spacetreenode_impl.hpp"
 
 #endif
