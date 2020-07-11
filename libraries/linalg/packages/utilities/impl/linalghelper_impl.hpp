@@ -1,9 +1,7 @@
 #ifndef CIE_LINALG_HELPER_IMPL_HPP
 #define CIE_LINALG_HELPER_IMPL_HPP
 
-namespace cie {
-namespace linalg {
-namespace linalghelper {
+namespace cie::linalg::linalghelper {
 
 
 template<class RowFunction>
@@ -42,8 +40,6 @@ void write( const Matrix<ValueType>& matrix, std::ostream& out )
 }
 
 
-} // namespace linalghelper
-} // namespace linalg
-}
+} // namespace cie::linalg::linalghelper
 
 #endif

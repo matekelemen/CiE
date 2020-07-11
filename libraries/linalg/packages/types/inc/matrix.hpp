@@ -63,6 +63,6 @@ using MatrixPtr = std::shared_ptr<Matrix<ValueType>>;
 
 } // namespace cie::linalg
 
-#include "matrix_impl.hpp"
+#include "../impl/matrix_impl.hpp"
 
 #endif

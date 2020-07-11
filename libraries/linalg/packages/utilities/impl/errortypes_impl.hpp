@@ -5,8 +5,7 @@
 #include <fstream>
 #include <iostream>
 
-namespace cie {
-namespace linalg {
+namespace cie::linalg {
 
 template <class MatrixType>
 MatrixError<MatrixType>::MatrixError(const String& message, const MatrixType& matrix) :
@@ -19,7 +18,6 @@ MatrixError<MatrixType>::MatrixError(const String& message, const MatrixType& ma
     }
 }
 
-}
 }
 
 #endif

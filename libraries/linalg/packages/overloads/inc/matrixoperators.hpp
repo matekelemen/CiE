@@ -46,6 +46,6 @@ Matrix<ValueType> operator*(const Matrix<ValueType>& lhs, const Matrix<ValueType
 
 } // namespace linalg
 
-#include "matrixoperators_impl.hpp"
+#include "../impl/matrixoperators_impl.hpp"
 
 #endif

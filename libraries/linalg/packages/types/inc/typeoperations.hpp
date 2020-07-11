@@ -18,6 +18,6 @@ void normalize(T& object, NormFunction<T> measure=&norm<T>, double tolerance=1e-
 } // namespace linalg
 }
 
-#include "typeoperations_impl.hpp"
+#include "../impl/typeoperations_impl.hpp"
 
 #endif

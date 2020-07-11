@@ -49,6 +49,6 @@ template <cie::concepts::NumericContainer ArrayType>
 typename ArrayType::value_type operator*( const ArrayType& lhs, const ArrayType& rhs );
 
 
-#include "vectoroperators_impl.hpp"
+#include "../impl/vectoroperators_impl.hpp"
 
 #endif

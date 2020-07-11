@@ -8,8 +8,7 @@
 #include "../../types/inc/matrix.hpp"
 #include "errortypes.hpp"
 
-namespace cie {
-namespace linalg {
+namespace cie::linalg {
 
 
 using PermutationVector = std::vector<Size>;
@@ -23,9 +22,8 @@ void updatePermutation( const Matrix<ValueType>& matrix,
 void runtime_check( bool result, const char message[] );
 
 
-} // namespace linalg
-}
+} // namespace cie::linalg
 
-#include "linalgutilities_impl.hpp"
+#include "../impl/linalgutilities_impl.hpp"
 
 #endif

@@ -14,8 +14,7 @@
 #include <ostream>
 #include <stdexcept>
 
-namespace cie {
-namespace linalg {
+namespace cie::linalg {
 namespace linalghelper {
 
 
@@ -30,9 +29,8 @@ void write( const Matrix<ValueType>& matrix, std::ostream& out = std::cout );
 
 
 } // namespace linalghelper
-} // namespace linalg
-}
+} // namespace cie::linalg
 
-#include "linalghelper_impl.hpp"
+#include "../impl/linalghelper_impl.hpp"
 
 #endif

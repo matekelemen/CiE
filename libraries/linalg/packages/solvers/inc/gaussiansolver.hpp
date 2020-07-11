@@ -20,6 +20,6 @@ ContainerType solve(    const Matrix<ValueType>& matrix,
 }
 }
 
-#include "gaussiansolver_impl.hpp"
+#include "../impl/gaussiansolver_impl.hpp"
 
 #endif

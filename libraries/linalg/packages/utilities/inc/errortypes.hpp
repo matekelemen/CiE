@@ -8,8 +8,7 @@
 // --- Internal Includes ---
 #include "linalghelper.hpp"
 
-namespace cie {
-namespace linalg {
+namespace cie::linalg {
 
 template <class MatrixType>
 class MatrixError : public Exception {
@@ -18,8 +17,7 @@ public:
 };
 
 }
-}
 
-#include "errortypes_impl.hpp"
+#include "../impl/errortypes_impl.hpp"
 
 #endif

@@ -7,17 +7,16 @@
 // --- STL Includes ---
 #include <string>
 #include <iostream>
+#include <memory>
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 TEST_CASE( "ShaderStruct" )
 {
-    ShaderStruct vertexShader( "defaultColorVertexShader.glsl" );
-    vertexShader.print();
+    REQUIRE_NOTHROW( std::make_shared<ShaderStruct>( "defaultColorVertexShader.glsl" ) );
+    //vertexShader.print();
 }
 
 
-}
 }
