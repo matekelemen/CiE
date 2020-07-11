@@ -2,7 +2,7 @@
 #define DROPMERGE_SPACE_TREE_DRAW_MANAGER_HPP
 
 // --- CSG Includes ---
-#include "csg.hpp"
+#include <csg/trees.hpp>
 
 // --- Internal Includes ---
 #include "DrawManager.hpp"

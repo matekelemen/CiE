@@ -1,5 +1,5 @@
 // --- CSG Includes ---
-#include "../../libraries/CSG/trees/inc/spacetreenode.hpp"
+#include <csg/trees.hpp>
 
 // --- GL Includes ---
 #include "csgvisualization.hpp"

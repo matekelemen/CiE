@@ -1,9 +1,12 @@
 #ifndef DROPMERGE_DYNAMIC_TREE_HPP
 #define DROPMERGE_DYNAMIC_TREE_HPP
 
-#include "../../libraries/CSG/trees/inc/spacetreeutils.hpp"
-#include "../../libraries/CSG/trees/inc/spacetreenode.hpp"
+// --- CSG Includes ---
+#include <csg/trees.hpp>
+
+// --- Internal Includes ---
 #include "mergefunction.hpp"
+
 
 // Set dimension and subdivision (needed for python bindings)
 const size_t N = 2;

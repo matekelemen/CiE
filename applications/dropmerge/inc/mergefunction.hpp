@@ -1,10 +1,11 @@
 #ifndef DROPMERGE_MERGE_FUNCTION_HPP
 #define DROPMERGE_MERGE_FUNCTION_HPP
 
-#include "../../libraries/CSG/trees/inc/spacetreenode.hpp"
+// --- CSG Includes ---
+#include <csg/trees.hpp>
 
-namespace cie {
-namespace csg {
+
+namespace cie::csg {
 
 
 template <size_t D>
@@ -15,7 +16,6 @@ template <size_t D>
 double exponentialMergeFunction( const DoubleArray<D>& point, double offset=0.0 );
 
 
-}
 }
 
 #include "mergefunction_impl.hpp"

@@ -40,6 +40,7 @@ include( cmake/vars_install.cmake )
 # ---------------------------------------------------------
 # GLOBAL MACRO DEFINITIONS
 # ---------------------------------------------------------
+include( cmake/macro_global.cmake )
 include( cmake/macro_install.cmake )
 include( cmake/macro_link.cmake )
 include( cmake/macro_add.cmake )
