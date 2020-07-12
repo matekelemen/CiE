@@ -1,5 +1,5 @@
-#ifndef CSG_NTREENODE_IMPL_HPP
-#define CSG_NTREENODE_IMPL_HPP
+#ifndef CIE_CSG_SPACETREENODE_IMPL_HPP
+#define CIE_CSG_SPACETREENODE_IMPL_HPP
 
 // --- Internal Imports ---
 #include "cmake_variables.hpp"
@@ -9,11 +9,10 @@
 #include <iostream>
 #include <cmath>
 
-namespace cie {
-namespace csg {
+namespace cie::csg {
 
 
-// Initialize the static converters
+// Initialize static index converters
 template <size_t N, size_t M>
 SpaceTreeIndexConverter<N,M> SpaceTreeNode<N,M>::_dataIndex = SpaceTreeIndexConverter<N,M>();
 
@@ -338,7 +337,6 @@ void SpaceTreeNode<N,M>::requestEvaluation( SpaceTreeNode<N,M>& parent,
 }
 
 
-}
-}
+} // namespace cie::csg
 
 #endif

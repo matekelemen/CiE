@@ -8,8 +8,7 @@
 // --- STL Includes ---
 #include <memory>
 
-namespace cie {
-namespace csg {
+namespace cie::csg {
 
 
 
@@ -52,8 +51,7 @@ template <  Size N,
 using CSGObjectPtr = std::shared_ptr<CSGObject<N,ValueType,CoordinateType>>;
 
 
-}
-}
+} // namespace cie::csg
 
 #include "../impl/csgobject_impl.hpp"
 

@@ -1,5 +1,5 @@
-#ifndef CSG_NTREENODE_HPP
-#define CSG_NTREENODE_HPP
+#ifndef CIE_CSG_NTREENODE_HPP
+#define CIE_CSG_NTREENODE_HPP
 
 // --- Linalg Includes ---
 #include "linalg/types.hpp"

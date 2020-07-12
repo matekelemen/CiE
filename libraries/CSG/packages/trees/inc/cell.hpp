@@ -13,9 +13,11 @@
 #include <memory>
 
 namespace cie::csg {
+
 // ---------------------------------------------------------
 // ABSTRACT CELL
 // ---------------------------------------------------------
+
 template <  class CSGObjectType,
             class SelfType  >
 class AbsCell : public CSGObjectType,
@@ -24,6 +26,7 @@ class AbsCell : public CSGObjectType,
 public:
     typedef AbsCell<CSGObjectType,SelfType> cell_base_type;
 
+public:
     template <class ...Args>
     AbsCell( Args&&... args );
 

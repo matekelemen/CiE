@@ -4,13 +4,13 @@
 // --- Internal Includes ---
 #include "csgobject.hpp"
 
-namespace cie {
-namespace csg {
+namespace cie::csg {
 
 
 // ---------------------------------------------------------
 // ABSTRACT PRIMITIVES
 // ---------------------------------------------------------
+
 template <  Size N, 
             concepts::NumericType CoordinateType = Double>
 class Cube : public Primitive<N,CoordinateType>
@@ -100,8 +100,7 @@ namespace numeric {
 }
 
 
-}
-}
+} // namespace cie::csg
 
 #include "../impl/primitives_impl.hpp"
 
