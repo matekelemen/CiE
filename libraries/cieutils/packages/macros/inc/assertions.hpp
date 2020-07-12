@@ -18,10 +18,9 @@
 // Assertion message
 #define CIE_ASSERTION_MESSAGE(expression) "\nCIE assertion failure!\nassertion\t: " CIE_MACRO_TO_STRING(expression) "\n" CIE_CODE_LOCATION
 
-
 // Static assertion
-#define CIE_ASSERT(boolExpression)                                          \
-    assert(boolExpression);
+#define CIE_ASSERT(boolExpression,message)                                  \
+    assert( boolExpression && message );
 
 // Static assertion
 #define CIE_STATIC_ASSERT(boolExpression)                                   \
