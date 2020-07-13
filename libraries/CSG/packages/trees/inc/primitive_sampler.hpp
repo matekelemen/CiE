@@ -1,8 +1,12 @@
 #ifndef CIE_CSG_PRIMITIVE_SAMPLER_HPP
 #define CIE_CSG_PRIMITIVE_SAMPLER_HPP
 
+// --- Utility Includes ---
+#include <cieutils/macros.hpp>
+
 // --- Internal Includes ---
 #include "../../primitives/inc/primitives.hpp"
+#include "./spacetreeutils.hpp"
 
 
 namespace cie::csg {
@@ -26,7 +30,9 @@ public:
     typedef typename primitive_type::point_type         point_type;
 
 public:
-    virtual typename PrimitiveType::point_type getSamplePoint( const PrimitiveType& primitive, Size index ) const = 0;
+    virtual typename PrimitiveType::point_type operator()( const PrimitiveType& primitive, Size index ) const = 0;
+    virtual constexpr Size size() const 
+        { CIE_ASSERT(false, "Pure virtual function") return 0; };
 };
 
 } // namespace detail
@@ -43,11 +49,13 @@ class CubeSampler :
     public detail::AbsPrimitiveSampler<Cube<N,CoordinateType>,M>
 {
 public:
-    virtual typename CubeSampler::point_type getSamplePoint
+    virtual typename CubeSampler::point_type operator()
     ( 
         const typename CubeSampler::primitive_type& primitive, 
         Size index 
     ) const override;
+
+    virtual constexpr Size size() const override {return intPow(M,N);}
 };
 
 
@@ -58,11 +66,13 @@ class BoxSampler :
     public detail::AbsPrimitiveSampler<Box<N,CoordinateType>,M>
 {
 public:
-    virtual typename BoxSampler::point_type getSamplePoint
+    virtual typename BoxSampler::point_type operator()
     ( 
         const typename BoxSampler::primitive_type& primitive, 
         Size index 
     ) const override;
+
+    virtual constexpr Size size() const override {return intPow(M,N);}
 };
 
 

@@ -5,16 +5,52 @@
 #include "linalg/types.hpp"
 
 // --- Internal Includes ---
-#include "indexconverter.hpp"
-#include "spacetreeutils.hpp"
+#include "./cell.hpp"
+#include "./primitive_sampler.hpp"
 
 // --- STL Includes ---
 #include <deque>
 #include <stdint.h>
 #include <memory>
+#include <functional>
 
 namespace cie::csg {
 
+
+// Target function definition
+template <  concepts::NumericContainer PointType,
+            class ValueType >
+using TargetFunction = std::function<ValueType(const PointType&)>;
+
+
+///*
+template <  class CellType,
+            class SamplerType,
+            class SplitPolicy,
+            concepts::STLContainer ValueContainerType = std::array<ValueType,SamplerType::size()> >
+class SpaceTreeNode : public CellType
+{
+public:
+    static const Size                           resolution = SamplerType::resolution;
+
+    typedef CellType                            cell_type;
+    typedef typename SamplerType::value_type    value_type;
+    typedef ValueContainerType                  value_container_type;
+
+public:
+    SpaceTreeNode();
+
+    const value_container_type& values() const;
+    value_container_type& values();
+    const value_type& value( Size index ) const;
+    value_type& value( Size index );
+
+protected:
+    value_container_type    _values;
+};
+//*/
+
+/*
 // Define node pointer (needs forward declaration)
 template <size_t N, size_t M>
 class SpaceTreeNode;
@@ -77,6 +113,7 @@ protected:
     static SpaceTreeIndexConverter<N,2>                         _centerIndex;
     std::deque<std::pair<coordinate_container_type,double*>>    _evaluationRequests;
 };
+//*/
 
 
 }

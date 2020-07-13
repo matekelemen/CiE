@@ -18,13 +18,14 @@ namespace cie::csg {
 // ABSTRACT CELL
 // ---------------------------------------------------------
 
-template <  class CSGObjectType,
+template <  class PrimitiveType,
             class SelfType  >
-class AbsCell : public CSGObjectType,
+class AbsCell : public PrimitiveType,
                 public utils::AbsTree<std::vector,SelfType>
 {
 public:
-    typedef AbsCell<CSGObjectType,SelfType> cell_base_type;
+    typedef PrimitiveType                   primitive_type;
+    typedef AbsCell<PrimitiveType,SelfType> cell_base_type;
 
 public:
     template <class ...Args>

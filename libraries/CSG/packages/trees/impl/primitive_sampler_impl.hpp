@@ -18,7 +18,7 @@ template <  Size N,
             Size M,
             concepts::NumericType CoordinateType >
 inline typename CubeSampler<N,M,CoordinateType>::point_type
-CubeSampler<N,M,CoordinateType>::getSamplePoint(
+CubeSampler<N,M,CoordinateType>::operator()(
         const typename CubeSampler<N,M,CoordinateType>::primitive_type& primitive,
         Size index ) const
 {
@@ -45,7 +45,7 @@ template <  Size N,
             Size M,
             concepts::NumericType CoordinateType >
 inline typename BoxSampler<N,M,CoordinateType>::point_type
-BoxSampler<N,M,CoordinateType>::getSamplePoint(
+BoxSampler<N,M,CoordinateType>::operator()(
         const typename BoxSampler<N,M,CoordinateType>::primitive_type& primitive,
         Size index ) const
 {

@@ -12,28 +12,28 @@ namespace cie::csg {
 // ---------------------------------------------------------
 // ABSTRACT CELL
 // ---------------------------------------------------------
-template <class CSGObjectType, class SelfType>
+template <class PrimitiveType, class SelfType>
 template <class ...Args>
-AbsCell<CSGObjectType,SelfType>::AbsCell( Args&&... args ) :
-    CSGObjectType( std::forward<Args>(args) ... )
+AbsCell<PrimitiveType,SelfType>::AbsCell( Args&&... args ) :
+    PrimitiveType( std::forward<Args>(args) ... )
 {
 }
 
 
-template <class CSGObjectType, class SelfType>
+template <class PrimitiveType, class SelfType>
 template <concepts::NumericContainer PointType>
-typename AbsCell<CSGObjectType,SelfType>::child_container_type& 
-AbsCell<CSGObjectType,SelfType>::split( const PointType& point )
+typename AbsCell<PrimitiveType,SelfType>::child_container_type& 
+AbsCell<PrimitiveType,SelfType>::split( const PointType& point )
 {
-    typename AbsCell<CSGObjectType,SelfType>::point_type point_internal;
+    typename AbsCell<PrimitiveType,SelfType>::point_type point_internal;
     std::copy( point.begin(), point.end(), point_internal.begin() );
     return this->split_internal(point_internal);
 }
 
 
-template <class CSGObjectType, class SelfType>
-typename AbsCell<CSGObjectType,SelfType>::child_container_type& 
-AbsCell<CSGObjectType,SelfType>::split( const typename AbsCell<CSGObjectType,SelfType>::point_type& point )
+template <class PrimitiveType, class SelfType>
+typename AbsCell<PrimitiveType,SelfType>::child_container_type& 
+AbsCell<PrimitiveType,SelfType>::split( const typename AbsCell<PrimitiveType,SelfType>::point_type& point )
 {
     return this->split_internal(point);
 }
