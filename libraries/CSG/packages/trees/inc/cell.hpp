@@ -41,45 +41,80 @@ protected:
 
 
 // ---------------------------------------------------------
-// BOOLEAN PRIMITIVE CELLS
+// BOOLEAN PRIMITIVE CELL TEMPLATES
 // ---------------------------------------------------------
 namespace boolean {
     
 
 template <  Size dimension,
+            class SelfType,
             concepts::NumericType CoordinateType = Double>
-class CubeCell :    public AbsCell<boolean::CSGCube<dimension,CoordinateType>,CubeCell<dimension,CoordinateType>>
+class CubeCellTemplate :    public AbsCell<boolean::CSGCube<dimension,CoordinateType>,CubeCellTemplate<dimension,SelfType,CoordinateType>>
+{
+public:
+    template <class ContainerType>
+    CubeCellTemplate(   const ContainerType& base, 
+                        CoordinateType length )
+    requires concepts::ClassContainer<ContainerType,CoordinateType>;
+
+    typename CubeCellTemplate::child_container_type& split( );
+
+protected:
+    virtual typename CubeCellTemplate::child_container_type& split_internal( const typename CubeCellTemplate::point_type& point ) override;
+};
+
+
+template <  Size dimension,
+            class SelfType,
+            concepts::NumericType CoordinateType = Double>
+class BoxCellTemplate :     public AbsCell<boolean::CSGBox<dimension,CoordinateType>,BoxCellTemplate<dimension,SelfType,CoordinateType>>
+{
+public:
+    template <class ContainerType1, class ContainerType2>
+    BoxCellTemplate(const ContainerType1& base, 
+                    const ContainerType2& lengths )
+    requires concepts::ClassContainer<ContainerType1,CoordinateType>
+                && concepts::ClassContainer<ContainerType2,CoordinateType>;
+
+protected:
+    virtual typename BoxCellTemplate::child_container_type& split_internal( const typename BoxCellTemplate::point_type& point ) override;
+};
+
+
+// ---------------------------------------------------------
+// BOOLEAN PRIMITIVE CELL TEMPLATES
+// ---------------------------------------------------------
+
+template <  Size Dimension,
+            concepts::NumericType CoordinateType = Double >
+class CubeCell : public CubeCellTemplate<Dimension,CubeCell<Dimension,CoordinateType>,CoordinateType>
 {
 public:
     template <class ContainerType>
     CubeCell(   const ContainerType& base, 
                 CoordinateType length )
-    requires concepts::ClassContainer<ContainerType,CoordinateType>;
-
-    typename CubeCell::child_container_type& split( );
-
-protected:
-    virtual typename CubeCell::child_container_type& split_internal( const typename CubeCell::point_type& point ) override;
+    requires concepts::ClassContainer<ContainerType,CoordinateType> :
+        CubeCellTemplate<Dimension,CubeCell<Dimension,CoordinateType>,CoordinateType>(base,length) 
+    {}
 };
 
 
-template <  Size dimension, 
-            concepts::NumericType CoordinateType = Double>
-class BoxCell :     public AbsCell<boolean::CSGBox<dimension,CoordinateType>,BoxCell<dimension,CoordinateType>>
+template <  Size Dimension,
+            concepts::NumericType CoordinateType = Double >
+class BoxCell : public BoxCellTemplate<Dimension,BoxCell<Dimension,CoordinateType>,CoordinateType>
 {
 public:
     template <class ContainerType1, class ContainerType2>
-    BoxCell(const ContainerType1& base, 
-            const ContainerType2& lengths )
+    BoxCell(    const ContainerType1& base, 
+                const ContainerType2& lengths )
     requires concepts::ClassContainer<ContainerType1,CoordinateType>
-                && concepts::ClassContainer<ContainerType2,CoordinateType>;
-
-protected:
-    virtual typename BoxCell::child_container_type& split_internal( const typename BoxCell::point_type& point ) override;
+                && concepts::ClassContainer<ContainerType2,CoordinateType> :
+        BoxCellTemplate<Dimension,BoxCell<Dimension,CoordinateType>,CoordinateType>(base,lengths)
+    {}
 };
 
 
-}
+} // namespace boolean
 
 
 }
