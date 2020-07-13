@@ -67,7 +67,7 @@ concept Multipliable
 
 
 template <class T>
-concept Dividable
+concept Divisible
 = requires ( T instance )
     {
         { instance / instance }     -> std::same_as<T>;
@@ -82,7 +82,7 @@ concept NumericType
     && Addable<T>
     && Subtractable<T>
     && Multipliable<T>
-    && Dividable<T>;
+    && Divisible<T>;
 
 
 template <class T>
