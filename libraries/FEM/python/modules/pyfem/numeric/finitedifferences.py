@@ -108,17 +108,10 @@ def solveAdjointLinearHeat1D(   time,
         dt      = time[k] - time[k-1]
 
         # Step
-        sol = solveLinearSystem(    LHSMatrix(dt),
-                                    RHSMatrix(dt).dot( timeSeries[k] )  \
-                                        + theta * adjointRHS[k-1]       \
-                                        + (1.0-theta) * adjointRHS[k]   )
-
-        # Neglect transient adjoint system and solve the stationary one at each time step 
-        #sol     = solveLinearSystem(    model.stiffness,
-        #                                adjointRHS[k]    )
-
-        # Update time series
-        timeSeries[k-1] = sol
+        timeSeries[k-1] = solveLinearSystem(    LHSMatrix(dt),
+                                                RHSMatrix(dt).dot( timeSeries[k] )  \
+                                                    + theta * adjointRHS[k-1]       \
+                                                    + (1.0-theta) * adjointRHS[k]   )
 
     return timeSeries
 
@@ -215,5 +208,8 @@ def solveAdjointNonlinearHeat1D(    model,
                                                 1.0/dt*timeSeries[i+1]          \
                                                     - theta*massInverse.dot(model.load) + (1.0-theta)*previousState,
                                                 sparse=False  )
+        
+        # Update for next iteration
+        previousState   = (1.0-theta) * massInverse.dot( timeSeries[i] - model.load )
     
     return timeSeries

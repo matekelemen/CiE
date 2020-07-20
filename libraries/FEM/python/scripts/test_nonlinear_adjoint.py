@@ -41,12 +41,12 @@ ddConductivity              = lambda u: 2.0*b/d * exp(u) * ( 2.0/d*(c-u)**2 - 1.
 load                        = lambda t, x: 0.0
 penaltyValue                = 1e10
 
-referenceControl            = lambda t: 1.0 - np.exp(-100.0*t)
+referenceControl            = lambda t: 1.0 - np.exp(-100.0*t) + t
 initialControl              = lambda t: 0.0
 
 # Adjoint settings
 numberOfAdjointIterations   = 10
-regularization              = 1e1
+regularization              = 3e0
 
 # Discretization
 time                        = np.linspace(0.0, 1.0, num=25)
