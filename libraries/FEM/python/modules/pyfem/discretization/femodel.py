@@ -160,6 +160,15 @@ class FEModel:
 
 
     @requiresInitialized
+    def sampleDerivative( self, solution, samples ):
+        values = np.zeros( samples.shape )
+        for element in self.elements:
+            values += element.derivative( solution[element.DoFs], samples )
+
+        return values
+
+
+    @requiresInitialized
     def updateLoad( self, load, *args, **kwargs ):
         '''
         Set load on all elements and reintegrate
