@@ -1,12 +1,11 @@
-#ifndef CIE_CSG_NTREENODE_HPP
-#define CIE_CSG_NTREENODE_HPP
+#ifndef CIE_CSG_SPACE_TREE_NODE_HPP
+#define CIE_CSG_SPACE_TREE_NODE_HPP
 
 // --- Linalg Includes ---
 #include "linalg/types.hpp"
 
 // --- Internal Includes ---
 #include "./cell.hpp"
-#include "./primitive_sampler.hpp"
 
 // --- STL Includes ---
 #include <deque>
@@ -23,22 +22,24 @@ template <  concepts::NumericContainer PointType,
 using TargetFunction = std::function<ValueType(const PointType&)>;
 
 
-/*
+///*
 template <  class CellType,
             class SamplerType,
             class SplitPolicy,
-            concepts::STLContainer ValueContainerType = std::array<ValueType,SamplerType::size()> >
-class SpaceTreeNode : public CellType
+            concepts::STLContainer ValueContainerType = std::vector<typename SplitPolicy::value_type> >
+class SpaceTreeNode_ : public CellType
 {
 public:
-    static const Size                           resolution = SamplerType::resolution;
+    static const Size                                   resolution = SamplerType::resolution;
 
-    typedef CellType                            cell_type;
-    typedef typename SamplerType::value_type    value_type;
-    typedef ValueContainerType                  value_container_type;
+    typedef CellType                                    cell_type;
+    typedef ValueContainerType                          value_container_type;
+    typedef typename value_container_type::value_type   value_type;
+    typedef SamplerType                                 sampler_type;
 
 public:
-    SpaceTreeNode();
+    template <class ...Args>
+    SpaceTreeNode_( Args&&... args );
 
     const value_container_type& values() const;
     value_container_type& values();
@@ -46,7 +47,25 @@ public:
     value_type& value( Size index );
 
 protected:
-    value_container_type    _values;
+    value_container_type        _values;
+    static const sampler_type   _sampler = sampler_type();
+
+    
+public: // Member classes
+
+    struct sample_point_iterator
+    {
+        typedef typename SpaceTreeNode_::point_type value_type;
+
+        sample_point_iterator( Size counter ) : _counter(counter) {}
+        sample_point_iterator() : sample_point_iterator(0) {}
+        sample_point_iterator& operator++();
+        value_type operator*() {return };
+        bool operator!=( sample_point_iterator rhs ) {return this->_counter != rhs._counter;}
+
+    private:
+        Size _counter;
+    };
 };
 //*/
 

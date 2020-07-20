@@ -7,52 +7,42 @@
 // --- Internal Includes ---
 #include "./primitive_sampler.hpp"
 
+// --- STL Includes ---
+#include <functional>
+
 
 namespace cie::csg {
 
 
-// Forward declare SpaceTreeNode
-template <  class CellType,
-            class SamplerType,
-            class SplitPolicy,
-            concepts::STLContainer ValueContainerType >
-class SpaceTreeNode;
-
-
 
 // Abstract split policy
-template <  class SamplerType,
-            concepts::STLContainer ValueContainerType >
+template <  class PointIterator,
+            concepts::IteratorType ValueIterator>
 class AbsSplitPolicy
 {
 public:
-    typedef SamplerType                             sampler_type;
-    typedef typename sampler_type::primitive_type   primitive_type;
-    typedef typename sampler_type::point_type       point_type;
-    typedef ValueContainerType                      value_container_type;
+    typedef PointIterator                       point_iterator_type;
+    typedef ValueIterator                       value_iterator_type;
+    typedef typename PointIterator::value_type  point_type;
+    typedef typename ValueIterator::value_type  value_type;
 
 public:
-    virtual point_type operator()(  const primitive_type& primitive,
-                                    const value_container_type& values ) const = 0;
-
-protected:
-    static const SamplerType _sampler;
+    virtual point_type operator()(  point_iterator_type pointBegin,
+                                    point_iterator_type pointEnd,
+                                    value_iterator_type valueBegin ) const = 0;
 };
 
 
 
 // Midpoint splitter
-template <  class SamplerType,
-            concepts::STLContainer ValueContainerType >
-class MidpointSplitPolicy : public AbsSplitPolicy<SamplerType,ValueContainerType>
+template <  class PointIterator,
+            concepts::IteratorType ValueIterator>
 {
 public:
     virtual typename MidpointSplitPolicy::point_type operator()( 
-        const typename MidpointSplitPolicy::primitive_type& primitive,
-        const typename MidpointSplitPolicy::value_container_type& values ) const override;
-
-protected:
-    typename SamplerType::sampler_base_type
+                typename MidpointSplitPolicy::point_iterator pointBegin,
+                typename MidpointSplitPolicy::point_iterator pointEnd,
+                typename MidpointSplitPolicy::value_iterator valueEnd ) const override;
 };
 
 

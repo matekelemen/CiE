@@ -11,29 +11,30 @@
 namespace cie::csg {
 
 
-template <  class SamplerType,
-            concepts::STLContainer ValueContainerType >
-typename MidpointSplitPolicy<SamplerType,ValueContainerType>::point_type
-MidpointSplitPolicy<SamplerType,ValueContainerType>:: operator()(
-    const typename MidpointSplitPolicy<SamplerType,ValueContainerType>::primitive_type& primitive,
-    const typename MidpointSplitPolicy<SamplerType,ValueContainerType>::value_container_type& values ) const
+
+template <  class PointIterator,
+            class ValueIterator >
+inline typename MidpointSplitPolicy<PointIterator,ValueIterator>::point_type
+MidpointSplitPolicy<PointIterator,ValueIterator>:: operator()(
+            typename MidpointSplitPolicy<PointIterator,ValueIterator>::point_iterator pointBegin,
+            typename MidpointSplitPolicy<PointIterator,ValueIterator>::point_iterator pointEnd,
+            typename MidpointSplitPolicy<PointIterator,ValueIterator>::value_iterator valueBegin ) const
 {
-    typename MidpointSplitPolicy<SamplerType,ValueContainerType>::point_type point;
-    utils::setContainerSize( point, SamplerType::dimension );
-    std::fill( point.begin(), point.end(), typename SamplerType::coordinate_type(0) );
-
-    auto numberOfSamples = typename SamplerType::coordinate_type(SamplerType::size());
-
-    for (Size i=0; i<numberOfSamples; ++i)
+    typename MidpointSplitPolicy<PointIterator,ValueIterator>::point_type point;
+    Size counter = 0;
+    
+    for ( ; pointBegin!=pointEnd; pointBegin++ )
     {
-        auto tempPoint  = _sampler(primitive,i);
-        auto pointIt    = point.begin();
-        for (auto tempIt=tempPoint.begin(); tempIt!=tempPoint.end(); ++tempIt,++pointIt)
-            *pointIt += *tempIt;
+        auto tempIt = pointBegin->begin();
+        for (auto coordinateIt=point.begin(); coordinateIt!=point.end(); ++coordinateIt,++tempIt)
+        {
+            ++counter;
+            *coordinateIt += *tempIt;
+        }
     }
 
-    for (auto it=tempPoint.begin(); it!=tempPoint.end(); ++itimerspec)
-            *it /= numberOfSamples;
+    for (auto& coordinate : point)
+        coordinate /= counter;
 
     return point;
 }
