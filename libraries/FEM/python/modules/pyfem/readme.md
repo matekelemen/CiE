@@ -357,7 +357,7 @@ Let's rename the coefficients from $`(24)`$ and reduce the system to 1D:
 ```
 
 ```math
-\tilde \kappa(x) := \frac{ \partial \kappa }{ \partial u} \bigg \vert_{\bar u } + \kappa (\bar u)
+\tilde \kappa(x) := \frac{ \partial \kappa }{ \partial u} \bigg \vert_{\bar u } \bar u + \kappa (\bar u)
 \tag{29}
 ```
 

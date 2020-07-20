@@ -14,28 +14,44 @@ from pyfem.postprocessing import ConvergencePlot
 from pyfem.postprocessing.graphics import animateTimeSeries
 
 from pyfem.optcontrol.adjointmodel import AdjointHeatElement1D, AdjointModel
+from pyfem.numeric import solveAdjointNonlinearHeat1D
+from pyfem.numeric import solveLinearSystem
+from pyfem.optcontrol import squaredSolutionErrorFunctional
 
 # ---------------------------------------------------------
-# Geometry and material
+# Geometry
 length                      = 1.0
-#capacity                    = lambda u: 1.0
-#dCapacity                   = lambda u: 0.0
-capacity                    = lambda u: 1.0 + 9.0 * np.exp( -(u-0.5)**2 / 0.005 )
-dCapacity                   = lambda u: 9.0 * np.exp( -(u-0.5)**2 / 0.005 ) * (2.0/0.005)*(0.5-u)
-#conductivity                = lambda u: 1.0
-#dConductivity               = lambda u: 0.0
-conductivity                = lambda u: 1.0 + 9.0 * np.exp( -(u-0.5)**2 / 0.005 )
-dConductivity               = lambda u: 9.0 * np.exp( -(u-0.5)**2 / 0.005 ) * (2.0/0.005)*(0.5-u)
+
+# Material
+a                           = 1.0
+b                           = 9.0
+c                           = 0.5
+d                           = 0.005
+
+exp                         = lambda u: np.exp( -(u-c)**2 / d )
+
+capacity                    = lambda u: a + b * exp(u)
+dCapacity                   = lambda u: b * exp(u) * (2.0/d)*(c-u)
+
+conductivity                = capacity
+dConductivity               = dCapacity
+ddConductivity              = lambda u: 2.0*b/d * exp(u) * ( 2.0/d*(c-u)**2 - 1.0 )
 
 # Load
 load                        = lambda t, x: 0.0
-boundaryFlux                = lambda t: 1.0 - np.exp(-100.0*t)
 penaltyValue                = 1e10
 
+referenceControl            = lambda t: 1.0 - np.exp(-100.0*t)
+initialControl              = lambda t: 0.0
+
+# Adjoint settings
+numberOfAdjointIterations   = 10
+regularization              = 1e1
+
 # Discretization
-time                        = np.linspace(0.0, 1.0, num=10)
-nElements                   = 5
-polynomialOrder             = 2
+time                        = np.linspace(0.0, 1.0, num=25)
+nElements                   = 10
+polynomialOrder             = 1
 
 # Integration
 integrationOrder            = 1 * (2*polynomialOrder + 1)
@@ -45,9 +61,12 @@ finiteDifferenceImplicity   = 0.5
 baseIncrement       = 1.0
 minIncrement        = 0.01
 maxIncrement        = 1.0
-maxIncrements       = 100
+maxIncrements       = 35
 maxCorrections      = 15
 tolerance           = 1e-10
+
+# Postprocessing and visualization
+numberOfSamples     = 100
 
 # ---------------------------------------------------------
 # General initialization
@@ -74,18 +93,22 @@ model.elements      = [ NonlinearHeatElement1D( capacity, dCapacity,
 model.allocateZeros( )
 
 # Boundary conditions
-model.addBoundaryCondition( DirichletBoundary(  0, 
-                                                0.0,
-                                                lambda t: 0.0   ) )
+leftBCID    = model.addBoundaryCondition( DirichletBoundary(    0, 
+                                                                0.0,
+                                                                lambda t: 0.0   ) )
 
-model.addBoundaryCondition( NeumannBoundary(    nElements*polynomialOrder,
-                                                length,
-                                                boundaryFlux) )
+rightBCID   = model.addBoundaryCondition( NeumannBoundary(  nElements*polynomialOrder,
+                                                            length,
+                                                            referenceControl) )
 
 # Initial values
 initialSolution     = np.zeros(model.size)
 
-timeSeries          = solveNonlinearHeat1D( time,
+
+# ---------------------------------------------------------
+# REFERENCE SOLUTION
+# ---------------------------------------------------------
+referenceTimeSeries = solveNonlinearHeat1D( time,
                                             initialSolution,
                                             model,
                                             theta=finiteDifferenceImplicity,
@@ -96,17 +119,160 @@ timeSeries          = solveNonlinearHeat1D( time,
                                             maxIncrements=maxIncrements,
                                             maxCorrections=maxCorrections,
                                             tolerance=tolerance,
-                                            verbose=True,
+                                            verbose=False,
                                             convergencePlot=convergencePlot )
 
 # ---------------------------------------------------------
-adjointElement = AdjointHeatElement1D(  model.elements[0],
+# ADJOINT LOOP
+# ---------------------------------------------------------
+referenceControl    = np.array( [ model.boundaries[rightBCID].value(t) for t in time ] )
+functionalValues    = np.zeros( numberOfAdjointIterations )
+controls            = np.zeros( (numberOfAdjointIterations, len(time)) )
+
+# Set initial control
+control             = np.array( [initialControl(t) for t in time] )
+
+def controlFunctor( t, control ):
+    index = np.abs( time-t ).argmin()
+    return control[index]
+
+# Optimization loop
+for i in range(numberOfAdjointIterations):
+
+    # Set control
+    model.boundaries[rightBCID].value   = lambda t: controlFunctor(t,control)
+    model.updateTime( time[0], initialSolution )
+
+    # Compute solution for the current control
+    timeSeries = solveNonlinearHeat1D(  time,
+                                        initialSolution,
                                         model,
-                                        timeSeries,
-                                        timeSeries,
-                                        dConductivity )
-#referenceTimeSeries = timeSeries.copy()
-#adjoint = AdjointModel( model,
-#                        time,
-#                        referenceTimeSeries,
-#                        timeSeries )
+                                        theta=finiteDifferenceImplicity,
+                                        nonlinearSolver=nonlinearSolver,
+                                        baseIncrement=baseIncrement,
+                                        minIncrement=minIncrement,
+                                        maxIncrement=maxIncrement,
+                                        maxIncrements=maxIncrements,
+                                        maxCorrections=maxCorrections,
+                                        tolerance=tolerance,
+                                        verbose=False,
+                                        convergencePlot=convergencePlot )
+
+    initialAdjointSolution = None
+    #########################################################################
+    # Solve the stationary adjoint, and use the solution as the initial one
+    model.updateTime( time[-1], timeSeries[-1] )
+    temperatureField = lambda x: model.sample( timeSeries[-1], x )
+    model.integrate( temperatureField, timeSeries[-1], stiffness=True )
+    initialAdjointSolution  = solveLinearSystem(    model.stiffness,
+                                                    timeSeries[-1] - referenceTimeSeries[-1]    )
+    #########################################################################
+
+    adjointModel            = AdjointModel( model,
+                                            time,
+                                            referenceTimeSeries,
+                                            timeSeries,
+                                            ddConductivity )
+    adjointModel.allocateZeros()
+    adjointModel.addBoundaryCondition(  model.boundaries[leftBCID] )
+    adjointModel.addBoundaryCondition(  model.boundaries[rightBCID] )
+
+    adjointTimeSeries       = solveAdjointNonlinearHeat1D(  adjointModel,
+                                                            theta=finiteDifferenceImplicity,
+                                                            initialAdjointSolution=initialAdjointSolution )
+
+    # Compute projections and update control
+    projections         = -1.0/regularization * np.asarray([ 
+                                adjointTimeSeries[tIndex][-1] for tIndex, t in enumerate(time)
+                                ])
+    control             += projections
+
+    # Get functional integrated in space (for every time step)
+    functionalValue = [ squaredSolutionErrorFunctional( solution,
+                                                        referenceSolution,
+                                                        model   )
+                        for solution, referenceSolution in zip(timeSeries, referenceTimeSeries) ]
+
+    # Integrate functional in time
+    functionalValue = np.trapz( functionalValue,
+                                x=time  )
+
+    # Save intermediate results
+    controls[i]         = control.copy()
+    functionalValues[i] = functionalValue
+
+    # Print detauls
+    message     = "Iteration\t\t:%i" % i
+    message     += "\nNorm of control error\t:%.3E" % np.trapz( (referenceControl - control)**2, x=time )
+    message     += "\nFunctional value\t:%.3E" % functionalValue
+    message     += "\n"
+    print( message )
+
+
+# ---------------------------------------------------------
+# POSTPROCESSING
+# ---------------------------------------------------------
+# Find best control
+uIndex  = functionalValues.argmin()
+u       = controls[uIndex]
+
+# Compute solution with best control
+model.boundaries[rightBCID].value   = lambda t: controlFunctor( t, u )
+timeSeries = solveNonlinearHeat1D(  time,
+                                    initialSolution,
+                                    model,
+                                    theta=finiteDifferenceImplicity,
+                                    nonlinearSolver=nonlinearSolver,
+                                    baseIncrement=baseIncrement,
+                                    minIncrement=minIncrement,
+                                    maxIncrement=maxIncrement,
+                                    maxIncrements=maxIncrements,
+                                    maxCorrections=maxCorrections,
+                                    tolerance=tolerance,
+                                    verbose=False )
+
+
+# Output and graphics
+print( "\nFinal control:\t" + str(u) + "\nin iteration " + str(uIndex) )
+
+fig     = plt.figure( )
+axes    = ( fig.add_subplot( 3,1,1 ),
+            fig.add_subplot( 3,1,2 ),
+            fig.add_subplot( 3,2,5 ),
+            fig.add_subplot( 3,2,6 ))
+
+# Load
+samples             = np.linspace( 0, length, num=numberOfSamples )
+axes[0].plot( samples, [ load(0,x) for x in samples ], "r--" )
+axes[0].set_xlabel( "x" )
+axes[0].set_ylabel( "load" )
+
+# Animation
+animateTimeSeries(  time,
+                    samples,
+                    np.asarray((referenceTimeSeries, timeSeries)),
+                    model,
+                    speed=0.05,
+                    ylim=(-0.1,0.5),
+                    figure=fig,
+                    axis=axes[1] )
+axes[1].set_xlabel( "x" )
+axes[1].set_ylabel( "y" )
+axes[1].legend( ["Reference solution", "Final solution", "Load of reference"] )
+
+# Functional
+axes[2].plot( functionalValues, ".-" )
+axes[2].set_yscale( "log" )
+axes[2].set_xlabel( "# Iteration" )
+axes[2].set_ylabel( "Functional value" )
+axes[2].grid( b=True, axis="y" )
+
+# Final control
+axes[3].plot( referenceControl, ".-" )
+axes[3].plot( u, ".-" )
+axes[3].set_xlabel( "time" )
+axes[3].set_ylabel( "Control" )
+axes[3].legend( [ "ref", "opt" ] )
+
+fig.canvas.draw()
+plt.show( block=True )

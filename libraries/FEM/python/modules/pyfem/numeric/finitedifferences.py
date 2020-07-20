@@ -181,3 +181,39 @@ def solveNonlinearHeat1D(   time,
                                                 **kwargs    )
 
     return timeSeries
+
+
+
+def solveAdjointNonlinearHeat1D(    model,
+                                    theta=0.5,
+                                    initialAdjointSolution=None ):
+    '''
+    '''
+    # Allocate
+    timeSeries      = np.zeros( (len(model.time), model.size) )
+
+    # Define helper functions
+    def updateTime( timeIndex ):
+        model.updateTime( timeIndex )
+        model.integrate( stiffness=True, mass=True, load=False )
+    
+    # Initialize
+    if initialAdjointSolution is not None:
+        timeSeries[-1]  = initialAdjointSolution.copy()
+
+    updateTime(len(model.time)-1)
+    massInverse     = linalg.inv(model.mass)
+    previousState   = (1.0-theta) * massInverse.dot( timeSeries[-1] - model.load )
+
+    # Loop
+    for i in range( len(model.time)-2, -1, -1 ):
+        updateTime( i )
+        dt              = model.time[i+1] - model.time[i]
+        massInverse     = linalg.inv(model.mass)
+        timeSeries[i]   = solveLinearSystem(    1.0/dt*np.identity(model.size)  \
+                                                    + theta*massInverse.dot( model.stiffness + model.nonsymmetricStiffness ),
+                                                1.0/dt*timeSeries[i+1]          \
+                                                    - theta*massInverse.dot(model.load) + (1.0-theta)*previousState,
+                                                sparse=False  )
+    
+    return timeSeries

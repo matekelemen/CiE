@@ -14,9 +14,9 @@ from .element import Element, Element1D
 def requiresInitialized( function ):
     @functools.wraps( function )
     def decoratedFunction( instance, *args, **kwargs ):
-        for value in vars(instance).values():
+        for key, value in instance.__dict__.items():
             if value is None:
-                raise AttributeError( "Uninitialized member variable when calling a function that requires an initialized object!" )
+                raise AttributeError( "Uninitialized member variable when calling a function that requires an initialized object!:\n" + key )
         else:
             return function( instance, *args, **kwargs )
     return decoratedFunction
@@ -81,7 +81,7 @@ class FEModel:
         DoFs = np.transpose( self.getDoFs(), (1,0) )
 
         # Check if already initialized
-        if self.stiffness is not None or self.load is not None:
+        if self.stiffness is not None:
             raise RuntimeError( "Attempt to initialize existing matrices" )
 
         # Initialize matrices
@@ -223,7 +223,7 @@ class TransientFEModel( FEModel ):
 
     @requiresInitialized
     def integrate( self, *args, stiffness=True, mass=True, load=True, **kwargs ):
-        FEModel.integrate( self, *args, stiffness, mass, **kwargs )
+        FEModel.integrate( self, *args, stiffness=stiffness, load=load, **kwargs )
         if mass:
             for element in self.elements:
                     element.integrateMass( self.mass, *args, **kwargs )

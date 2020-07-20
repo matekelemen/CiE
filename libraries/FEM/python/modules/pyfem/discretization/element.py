@@ -207,7 +207,7 @@ class LinearHeatElement1D( Element1D ):
         '''
         basisCache  = [ self.integrator.createCache( self.basisFunctions[i], self.basisFunctions.domain ) for i in range(len(self.basisFunctions)) ]
 
-        for i, function in enumerate(self.basisFunctions):
+        for i in range(len(self.basisFunctions)):
             for j in range( i, len(self.basisFunctions) ):
                 value = self._jacobian \
                         * self.integrator.integrateCached(  lambda x: self.capacity, 
