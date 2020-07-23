@@ -54,6 +54,12 @@ class AdjointModel(TransientFEModel):
                                                             shape=self.shape )
 
 
+    def resetMatrices( self, stiffness=True, mass=True, load=False ):
+        TransientFEModel.resetMatrices( self, stiffness=stiffness, mass=mass, load=load )
+        if stiffness:
+            self.nonsymmetricStiffness.data = np.zeros( self.nonsymmetricStiffness.data.shape, dtype=self.nonsymmetricStiffness.data.dtype )
+
+
     @property
     def load( self ):
         '''
@@ -82,9 +88,13 @@ class AdjointModel(TransientFEModel):
         self.timeIndex = timeIndex
         for element in self.elements:
             element.timeIndex = timeIndex
+        self.integrate()
+        for boundaryCondition in self.boundaries:
+            self.applyBoundaryCondition(boundaryCondition)
 
 
     def integrate( self, *args, stiffness=True, mass=True, load=False, **kwargs ):
+        self.resetMatrices( stiffness=stiffness, mass=mass, load=load )
         TransientFEModel.integrate(self,*args,stiffness=stiffness,mass=mass,load=load,**kwargs)
         if stiffness:
             for element in self.elements:

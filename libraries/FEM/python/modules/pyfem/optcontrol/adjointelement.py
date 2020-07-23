@@ -64,7 +64,7 @@ class AdjointHeatElement1D( Element1D ):
     def conductivityDerivative( self, x ):
         u   = self.solutionField( self.forwardSolution[self.timeIndex], x )
         du  = self.derivativeField( self.forwardSolution[self.timeIndex], x )
-        return ( self.element.conductivityDerivative(u) + self._ddConductivity(u) ) * du
+        return 2*self.element.conductivityDerivative(u)*du + self._ddConductivity(u)*u
 
 
     def integrateNonsymmetricStiffness( self, globalMatrix ):
