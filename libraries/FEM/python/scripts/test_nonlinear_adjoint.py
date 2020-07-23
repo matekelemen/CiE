@@ -41,12 +41,13 @@ ddConductivity              = lambda u: 2.0*b/d * exp(u) * ( 2.0/d*(c-u)**2 - 1.
 load                        = lambda t, x: 0.0
 penaltyValue                = 1e10
 
-referenceControl            = lambda t: 1.0 - np.exp(-100.0*t) + t
+#referenceControl            = lambda t: 2.0*(1.0 - np.exp(-100.0*t)) - t/2.0
+referenceControl            = lambda t: t
 initialControl              = lambda t: 0.0
 
 # Adjoint settings
 numberOfAdjointIterations   = 10
-regularization              = 3e0
+regularization              = 1e1
 
 # Discretization
 time                        = np.linspace(0.0, 1.0, num=25)
@@ -123,27 +124,20 @@ referenceTimeSeries = solveNonlinearHeat1D( time,
                                             convergencePlot=convergencePlot )
 
 # ---------------------------------------------------------
-# ADJOINT LOOP
+# APPROXIMATE GRADIENT
 # ---------------------------------------------------------
+dControl            = 1e-8
 referenceControl    = np.array( [ model.boundaries[rightBCID].value(t) for t in time ] )
-functionalValues    = np.zeros( numberOfAdjointIterations )
-controls            = np.zeros( (numberOfAdjointIterations, len(time)) )
 
-# Set initial control
-control             = np.array( [initialControl(t) for t in time] )
+def makeControl( index ):
+    def control( t ):
+        return referenceControl[index] + dControl
+    return control
 
-def controlFunctor( t, control ):
-    index = np.abs( time-t ).argmin()
-    return control[index]
+gradient    = []
 
-# Optimization loop
-for i in range(numberOfAdjointIterations):
-
-    # Set control
-    model.boundaries[rightBCID].value   = lambda t: controlFunctor(t,control)
-    model.updateTime( time[0], initialSolution )
-
-    # Compute solution for the current control
+for i in range(len(time)):
+    model.boundaries[rightBCID].value = makeControl(i)
     timeSeries = solveNonlinearHeat1D(  time,
                                         initialSolution,
                                         model,
@@ -157,36 +151,6 @@ for i in range(numberOfAdjointIterations):
                                         tolerance=tolerance,
                                         verbose=False,
                                         convergencePlot=convergencePlot )
-
-    initialAdjointSolution = None
-    #########################################################################
-    # Solve the stationary adjoint, and use the solution as the initial one
-    model.updateTime( time[-1], timeSeries[-1] )
-    temperatureField = lambda x: model.sample( timeSeries[-1], x )
-    model.integrate( temperatureField, timeSeries[-1], stiffness=True )
-    initialAdjointSolution  = solveLinearSystem(    model.stiffness,
-                                                    timeSeries[-1] - referenceTimeSeries[-1]    )
-    #########################################################################
-
-    adjointModel            = AdjointModel( model,
-                                            time,
-                                            referenceTimeSeries,
-                                            timeSeries,
-                                            ddConductivity )
-    adjointModel.allocateZeros()
-    adjointModel.addBoundaryCondition(  model.boundaries[leftBCID] )
-    adjointModel.addBoundaryCondition(  model.boundaries[rightBCID] )
-
-    adjointTimeSeries       = solveAdjointNonlinearHeat1D(  adjointModel,
-                                                            theta=finiteDifferenceImplicity,
-                                                            initialAdjointSolution=initialAdjointSolution )
-
-    # Compute projections and update control
-    projections         = -1.0/regularization * np.asarray([ 
-                                adjointTimeSeries[tIndex][-1] for tIndex, t in enumerate(time)
-                                ])
-    control             += projections
-
     # Get functional integrated in space (for every time step)
     functionalValue = [ squaredSolutionErrorFunctional( solution,
                                                         referenceSolution,
@@ -196,83 +160,41 @@ for i in range(numberOfAdjointIterations):
     # Integrate functional in time
     functionalValue = np.trapz( functionalValue,
                                 x=time  )
+    gradient.append( functionalValue/dControl )
 
-    # Save intermediate results
-    controls[i]         = control.copy()
-    functionalValues[i] = functionalValue
-
-    # Print detauls
-    message     = "Iteration\t\t:%i" % i
-    message     += "\nNorm of control error\t:%.3E" % np.trapz( (referenceControl - control)**2, x=time )
-    message     += "\nFunctional value\t:%.3E" % functionalValue
-    message     += "\n"
-    print( message )
-
+gradient    = np.asarray(gradient)
+gradient    = gradient / np.linalg.norm(gradient)
 
 # ---------------------------------------------------------
-# POSTPROCESSING
+# ADJOINT GRADIENT
 # ---------------------------------------------------------
-# Find best control
-uIndex  = functionalValues.argmin()
-u       = controls[uIndex]
+adjointModel            = AdjointModel( model,
+                                        time,
+                                        referenceTimeSeries,
+                                        timeSeries,
+                                        ddConductivity )
+adjointModel.allocateZeros()
+adjointModel.addBoundaryCondition(  model.boundaries[leftBCID] )
+adjointModel.addBoundaryCondition(  model.boundaries[rightBCID] )
 
-# Compute solution with best control
-model.boundaries[rightBCID].value   = lambda t: controlFunctor( t, u )
-timeSeries = solveNonlinearHeat1D(  time,
-                                    initialSolution,
-                                    model,
-                                    theta=finiteDifferenceImplicity,
-                                    nonlinearSolver=nonlinearSolver,
-                                    baseIncrement=baseIncrement,
-                                    minIncrement=minIncrement,
-                                    maxIncrement=maxIncrement,
-                                    maxIncrements=maxIncrements,
-                                    maxCorrections=maxCorrections,
-                                    tolerance=tolerance,
-                                    verbose=False )
+#########################################################################
+# Solve the stationary adjoint, and use the solution as the initial one
+adjointModel.updateTime( len(time)-1 )
+initialAdjointSolution  = solveLinearSystem(    adjointModel.stiffness + adjointModel.nonsymmetricStiffness,
+                                                timeSeries[-1] - referenceTimeSeries[-1]    )
+#########################################################################
 
+adjointTimeSeries       = solveAdjointNonlinearHeat1D(  adjointModel,
+                                                        theta=finiteDifferenceImplicity,
+                                                        initialAdjointSolution=initialAdjointSolution )
 
-# Output and graphics
-print( "\nFinal control:\t" + str(u) + "\nin iteration " + str(uIndex) )
-
-fig     = plt.figure( )
-axes    = ( fig.add_subplot( 3,1,1 ),
-            fig.add_subplot( 3,1,2 ),
-            fig.add_subplot( 3,2,5 ),
-            fig.add_subplot( 3,2,6 ))
-
-# Load
-samples             = np.linspace( 0, length, num=numberOfSamples )
-axes[0].plot( samples, [ load(0,x) for x in samples ], "r--" )
-axes[0].set_xlabel( "x" )
-axes[0].set_ylabel( "load" )
-
-# Animation
-animateTimeSeries(  time,
-                    samples,
-                    np.asarray((referenceTimeSeries, timeSeries)),
-                    model,
-                    speed=0.05,
-                    ylim=(-0.1,0.5),
-                    figure=fig,
-                    axis=axes[1] )
-axes[1].set_xlabel( "x" )
-axes[1].set_ylabel( "y" )
-axes[1].legend( ["Reference solution", "Final solution", "Load of reference"] )
-
-# Functional
-axes[2].plot( functionalValues, ".-" )
-axes[2].set_yscale( "log" )
-axes[2].set_xlabel( "# Iteration" )
-axes[2].set_ylabel( "Functional value" )
-axes[2].grid( b=True, axis="y" )
-
-# Final control
-axes[3].plot( referenceControl, ".-" )
-axes[3].plot( u, ".-" )
-axes[3].set_xlabel( "time" )
-axes[3].set_ylabel( "Control" )
-axes[3].legend( [ "ref", "opt" ] )
-
-fig.canvas.draw()
-plt.show( block=True )
+# Compute projections
+projections         = -1.0/regularization * np.asarray([ 
+                            adjointTimeSeries[tIndex][-1] for tIndex, t in enumerate(time)
+                            ])
+projections = projections / np.linalg.norm(projections)
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+print( gradient )
+print( projections )
+print( gradient-projections )

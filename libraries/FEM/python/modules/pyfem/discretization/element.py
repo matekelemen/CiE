@@ -154,12 +154,11 @@ class Element1D( Element ):
         cacheID = self._derivativeCache.hash(positions)
         if not self._derivativeCache.check(cacheID, hashed=True):
             localCoordinates = self.toLocalCoordinates(positions)
-            self._derivativeCache.overwrite( cacheID, [self.basisDerivatives( basisID, localCoordinates ) for basisID in range(len(self.basisDerivatives)) ], hashed=True )
+            self._derivativeCache.overwrite( cacheID, [self._invJacobian * self.basisDerivatives( basisID, localCoordinates ) for basisID in range(len(self.basisDerivatives)) ], hashed=True )
         
 
         # Compute solution
         for coefficient, derivativeValues in zip( coefficients, self._derivativeCache.get(cacheID, hashed=True) ):
-            #values += coefficient * self.basisDerivatives( basisID, self.toLocalCoordinates(positions) )
             values += coefficient * derivativeValues
 
         return values

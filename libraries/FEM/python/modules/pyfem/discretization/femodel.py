@@ -248,7 +248,7 @@ class TransientFEModel( FEModel ):
     def applyBoundaryCondition( self, boundaryCondition ):
         BC                          = copy(boundaryCondition)
         BC.value                    = BC.value( self.time )
-        boundaryCondition.applied   = True
+        boundaryCondition.applied   = False
         return FEModel.applyBoundaryCondition( self, BC )
 
 
