@@ -23,7 +23,7 @@ template <  concepts::NumericContainer PointType,
 using TargetFunction = std::function<ValueType(const PointType&)>;
 
 
-///*
+/*
 template <  class CellType,
             class SamplerType,
             class SplitPolicy,
@@ -48,9 +48,9 @@ public:
 protected:
     value_container_type    _values;
 };
-//*/
+*/
 
-/*
+///*
 // Define node pointer (needs forward declaration)
 template <size_t N, size_t M>
 class SpaceTreeNode;
