@@ -127,11 +127,12 @@ referenceTimeSeries = solveNonlinearHeat1D( time,
 # APPROXIMATE GRADIENT
 # ---------------------------------------------------------
 dControl            = 1e-8
-referenceControl    = np.array( [ model.boundaries[rightBCID].value(t) for t in time ] )
+referenceControls   = np.array( [ model.boundaries[rightBCID].value(t) for t in time ] )
+initialControls     = np.array( [ initialControl(t) for t in time ] )
 
 def makeControl( index ):
     def control( t ):
-        return referenceControl[index] + dControl
+        return initialControls[index] + dControl
     return control
 
 gradient    = []
@@ -177,6 +178,9 @@ adjointModel.allocateZeros()
 adjointModel.addBoundaryCondition(  model.boundaries[leftBCID] )
 adjointModel.addBoundaryCondition(  model.boundaries[rightBCID] )
 
+# Reset adjoint BC (control)
+adjointModel.boundaries[rightBCID].value = initialControl
+
 #########################################################################
 # Solve the stationary adjoint, and use the solution as the initial one
 adjointModel.updateTime( len(time)-1 )
@@ -186,7 +190,7 @@ initialAdjointSolution  = solveLinearSystem(    adjointModel.stiffness + adjoint
 
 adjointTimeSeries       = solveAdjointNonlinearHeat1D(  adjointModel,
                                                         theta=finiteDifferenceImplicity,
-                                                        initialAdjointSolution=initialAdjointSolution )
+                                                        initialAdjointSolution=None )
 
 # Compute projections
 projections         = -1.0/regularization * np.asarray([ 

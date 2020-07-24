@@ -46,13 +46,13 @@ referenceControl            = lambda t: t
 initialControl              = lambda t: 0.0
 
 # Adjoint settings
-numberOfAdjointIterations   = 10
-regularization              = 1e1
+numberOfAdjointIterations   = 15
+regularization              = 5e0
 
 # Discretization
-time                        = np.linspace(0.0, 1.0, num=25)
+time                        = np.linspace(0.0, 1.0, num=30)
 nElements                   = 10
-polynomialOrder             = 1
+polynomialOrder             = 2
 
 # Integration
 integrationOrder            = 1 * (2*polynomialOrder + 1)
@@ -172,7 +172,7 @@ for i in range(numberOfAdjointIterations):
     #########################################################################
     # Solve the stationary adjoint, and use the solution as the initial one
     adjointModel.updateTime( len(time)-1 )
-    initialAdjointSolution  = solveLinearSystem(    adjointModel.stiffness + adjointModel.nonsymmetricStiffness,
+    initialAdjointSolution  = solveLinearSystem(    adjointModel.stiffness,
                                                     timeSeries[-1] - referenceTimeSeries[-1]    )
     #########################################################################
 
@@ -275,3 +275,12 @@ axes[3].legend( [ "ref", "opt" ] )
 
 fig.canvas.draw()
 plt.show( block=True )
+
+
+# Write to file
+with open("controls.csv", "w") as file:
+    for i, control in enumerate(controls):
+        file.write( str(i)+"," )
+        for value in control:
+            file.write( str(value)+"," )
+        file.write("\n")
