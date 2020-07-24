@@ -1,10 +1,14 @@
+// --- External Includes ---
 #include "catch.hpp"
+
+// --- Internal Includes ---
 #include "basisfunctions.hpp" 
+
+// --- STL Includes ---
 #include <vector>
 
-namespace cie
-{
-namespace splinekernel
+
+namespace cie::splinekernel
 {
 
 TEST_CASE("Linear interpolation")
@@ -90,5 +94,4 @@ TEST_CASE("Quadratic C1 interpolation")
     CHECK_THROWS(evaluateBSplineBasis(0.0, 4, p, knotVector));
 }
 
-} // namespace splinekernel
-} // namespace cie
+} // namespace cie::splinekernel

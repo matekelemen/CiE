@@ -1,7 +1,7 @@
 // --- Internal Includes ---
 #include "../inc/Loggee.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <string>
 
 

@@ -5,20 +5,19 @@
 #include "../inc/fileinfo.hpp"
 #include "cmake_variables.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <string>
 #include <fstream>
 #include <filesystem>
 
 
-namespace cie {
-namespace utils {
+namespace cie::utils {
 namespace detail {
 
 
 TEST_CASE( "File Info" )
 {
-    std::string validDirectory      = BINARY_PATH;
+    std::string validDirectory      = TEST_OUTPUT_PATH;
     std::string invalid             = "abcd/efgh/jklmn/3.145/whatever.cpp/test";
 
     // Check validity
@@ -27,9 +26,11 @@ TEST_CASE( "File Info" )
     CHECK( !isDirectory(invalid) );
     CHECK( !isFile(invalid) );
 
-    std::filesystem::create_directory( "test" );
+    std::string testDirName         = TEST_OUTPUT_PATH + "/test";
+
+    std::filesystem::create_directory( testDirName );
     std::string testFileBase        = "test_file_name_123";
-    std::string testFileName        = "test/" + testFileBase;
+    std::string testFileName        = testDirName + "/" + testFileBase;
     std::string textExtension       = "txt";
     std::string binaryExtension     = "bin";
     
@@ -54,8 +55,8 @@ TEST_CASE( "File Info" )
     CHECK( fileName(binaryTestName) == testFileBase + "." + binaryExtension );
 
     // Check directory name
-    CHECK( fileDirectory(textTestName) == "test" );
-    CHECK( fileDirectory(binaryTestName) == "test" );
+    CHECK( fileDirectory(textTestName) == testDirName );
+    CHECK( fileDirectory(binaryTestName) == testDirName );
 
     // Create files
     std::ofstream textFile( textTestName );
@@ -112,6 +113,5 @@ TEST_CASE( "File Info" )
 }
 
 
-}
 }
 }

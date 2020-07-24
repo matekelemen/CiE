@@ -1,7 +1,7 @@
 #ifndef CIEUTILS_FILEMANAGER_HPP
 #define CIEUTILS_FILEMANAGER_HPP
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <fstream>
 #include <vector>
 #include <string>

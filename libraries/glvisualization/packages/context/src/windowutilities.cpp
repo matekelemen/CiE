@@ -1,7 +1,7 @@
 // --- Internal Includes ---
 #include "../inc/windowutilities.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <utility>
 
 namespace cie {

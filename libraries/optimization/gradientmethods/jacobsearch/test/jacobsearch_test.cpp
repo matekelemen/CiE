@@ -8,11 +8,10 @@
 // --- Linalg Includes ---
 #include "linalg/types.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <iostream>
 
-namespace cie {
-namespace opt {
+namespace cie::opt {
 
 
 double jacobSearchTestFunction(const RNRElement<2>& point)
@@ -85,13 +84,12 @@ TEST_CASE("Jacob search - rosenbrock")
 	for (size_t i = 0; i < 15; ++i)
 	{
 		REQUIRE_NOTHROW(solver.step());
-		std::cout << solver.getSolution().getData()[0] << ",\t" << solver.getSolution().getData()[1] << ":\t" << solver.getSolution().getObjective() << std::endl;
+		//std::cout << solver.getSolution().getData()[0] << ",\t" << solver.getSolution().getData()[1] << ":\t" << solver.getSolution().getObjective() << std::endl;
 	}
-	std::cout << "\n";
+	//std::cout << "\n";
 }
 
 
 
 
-}
 }

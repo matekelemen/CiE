@@ -1,12 +1,14 @@
+// --- External Includes ---
 #include "catch.hpp"
+
+// --- Internal Includes ---
 #include "curve.hpp"
 
+// --- STL Includes ---
 #include <array>
 #include <vector>
 
-namespace cie
-{
-namespace splinekernel
+namespace cie::splinekernel
 {
 
 TEST_CASE("Linear interpolation curve")
@@ -49,5 +51,4 @@ TEST_CASE("Linear interpolation curve")
     CHECK( C[1][10] == Approx( 3.0 ) );
 }
 
-} // namespace splinekernel
-} // namespace cie
+} // namespace cie::splinekernel

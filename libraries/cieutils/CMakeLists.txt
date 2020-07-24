@@ -3,24 +3,12 @@ project( cieutils CXX )
 # ---------------------------------------------------------
 # GATHER FILES AND INCLUDE DIRECTORIES
 # ---------------------------------------------------------
-# Gather source files into CMake variables
-file( GLOB_RECURSE CIEUTILS_TEST_FILES test/*.cpp )
-
-file( GLOB CIEUTILS_SOURCE_FILES src/*.cpp)
-file( GLOB CIEUTILS_HEADER_FILES inc/*.h* )
-file( GLOB CIEUTILS_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/inc" )
-
-SUBDIRLIST( subdirs "${CMAKE_CURRENT_SOURCE_DIR}/packages" )
-foreach( subdirectory ${subdirs} )
-    set( subdirectory "${CMAKE_CURRENT_SOURCE_DIR}/packages/${subdirectory}" )
-    file( GLOB headers ${subdirectory}/inc/*.h* )
-    file( GLOB sources ${subdirectory}/src/*.cpp )
-    file( GLOB tests ${subdirectory}/test/*.cpp )
-    list( APPEND CIEUTILS_INCLUDE_DIRECTORIES "${subdirectory}/inc" )
-    list( APPEND CIEUTILS_HEADER_FILES ${headers} )
-    list( APPEND CIEUTILS_SOURCE_FILES ${sources} )
-    list( APPEND CIEUTILS_TEST_FILES ${tests} )
-endforeach()
+COLLECT_PACKAGES(   CIEUTILS_INCLUDE_DIRECTORIES
+                    CIEUTILS_HEADER_FILES
+                    CIEUTILS_SOURCE_FILES
+                    CIEUTILS_TEST_FILES )
+file( GLOB CIEUTILS_TEST_DRIVERS ${CMAKE_CURRENT_SOURCE_DIR}/test/*.cpp )
+list( APPEND CIEUTILS_TEST_FILES ${CIEUTILS_TEST_DRIVERS} )
 
 include_directories( "${CIEUTILS_INCLUDE_DIRECTORIES}" )
 

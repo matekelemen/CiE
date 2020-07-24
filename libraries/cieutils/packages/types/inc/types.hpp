@@ -1,7 +1,7 @@
 #ifndef CIE_CIEUTILS_TYPES_HPP
 #define CIE_CIEUTILS_TYPES_HPP
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <cstddef>
 #include <string>
 

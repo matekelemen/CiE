@@ -2,7 +2,7 @@
 #include "basisfunctions.hpp"
 #include "curve.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <algorithm>
 #include <array>
 #include <cmath>

@@ -1,12 +1,15 @@
+// --- External Includes ---
 #include "catch.hpp"
+
+// --- Internal Includes ---
 #include "curve.hpp"
 
+// --- STL Includes ---
 #include <array>
 #include <vector>
 
-namespace cie
-{
-namespace splinekernel
+
+namespace cie::splinekernel
 {
 
 TEST_CASE("FindKnotSpan_test")
@@ -129,7 +132,7 @@ TEST_CASE( "DeBoorCurveScript_test" )
     CHECK( C[0][1] == Approx( 9.4375 ) );
     CHECK( C[0][2] == Approx( 8.3385 ) );
     CHECK( C[0][3] == Approx( 7.0208 ) );
-    CHECK( C[0][4] == Approx( 5.6406 ) );
+
     CHECK( C[0][5] == Approx( 4.336 ) );
     CHECK( C[0][6] == Approx( 3.1724 ) );
     CHECK( C[0][7] == Approx( 2.197 ) );
@@ -148,5 +151,4 @@ TEST_CASE( "DeBoorCurveScript_test" )
     CHECK( C[1][9] == Approx( 1.0 ) );
 }
 
-} //namespace splinekernel
-} // namespace cie
+} //namespace cie::splinekernel

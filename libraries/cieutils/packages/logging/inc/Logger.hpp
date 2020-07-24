@@ -5,7 +5,7 @@
 #include "../../output/inc/FileManager.hpp"
 #include "../../output/inc/fileinfo.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <fstream>
 #include <iostream>
 #include <vector>

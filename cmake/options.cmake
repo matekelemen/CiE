@@ -33,3 +33,8 @@ set( CIE_ENABLE_RUNTIME_GEOMETRY_CHECKS ON CACHE BOOL "" )
 if( ${CIE_ENABLE_RUNTIME_GEOMETRY_CHECKS} )
     add_compile_definitions( CIE_ENABLE_RUNTIME_GEOMETRY_CHECKS )
 endif()
+
+set( CIE_ENABLE_DEBUG_FILE_OUTPUT ON CACHE BOOL "Enable writing debug info to files" )
+if ( ${CIE_ENABLE_DEBUG_FILE_OUTPUT} )
+    add_compile_definitions( CIE_ENABLE_DEBUG_FILE_OUTPUT )
+endif()

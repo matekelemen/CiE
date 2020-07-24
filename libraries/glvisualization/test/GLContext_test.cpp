@@ -6,17 +6,17 @@
 #include "../../drawing/inc/Camera.hpp"
 #include "../inc/DrawManager.hpp"
 #include "../../callbacks/inc/CallbackGroup.hpp"
+#include "cmake_variables.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <iostream>
 
 
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
-GLContext context_global( 4,5,4,"glvisualization_testrunner_log.txt" );
+GLContext context_global( 4,5,4, TEST_OUTPUT_PATH + "/glvisualization_testrunner_log.txt" );
 
 
 struct TestDrawManager : public DrawManager
@@ -66,7 +66,8 @@ struct TestDrawManager : public DrawManager
 
         // Draw buffer
         glDrawElements( GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0 );
-        return true;
+
+        return false;
     }
 };
 
@@ -166,5 +167,4 @@ TEST_CASE( "DrawManager" )
 
 
 
-}
 }

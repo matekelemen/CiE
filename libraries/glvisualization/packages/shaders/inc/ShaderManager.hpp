@@ -9,7 +9,7 @@
 #include "shaders.hpp"
 #include "../../context/inc/AbsContextClass.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <string>
 #include <vector>
 

@@ -1,9 +1,10 @@
 #ifndef CIE_CIEUTILS_BASIC_CONCEPTS_HPP
 #define CIE_CIEUTILS_BASIC_CONCEPTS_HPP
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <concepts>
 #include <type_traits>
+#include <cstdint>
 
 namespace cie {
 namespace concepts {
@@ -66,7 +67,7 @@ concept Multipliable
 
 
 template <class T>
-concept Dividable
+concept Divisible
 = requires ( T instance )
     {
         { instance / instance }     -> std::same_as<T>;
@@ -81,7 +82,55 @@ concept NumericType
     && Addable<T>
     && Subtractable<T>
     && Multipliable<T>
-    && Dividable<T>;
+    && Divisible<T>;
+
+
+template <class T>
+concept UnsignedInteger
+=   std::is_same_v<T,uint8_t>
+    || std::is_same_v<T,uint16_t>
+    || std::is_same_v<T,uint32_t>
+    || std::is_same_v<T,uint64_t>
+    || std::is_same_v<T,uint_fast8_t>
+    || std::is_same_v<T,uint_fast16_t>
+    || std::is_same_v<T,uint_fast32_t>
+    || std::is_same_v<T,uint_fast64_t>
+    || std::is_same_v<T,uint_least8_t>
+    || std::is_same_v<T,uint_least16_t>
+    || std::is_same_v<T,uint_least32_t>
+    || std::is_same_v<T,uint_least64_t>;
+
+
+template <class T>
+concept SignedInteger
+=   std::is_same_v<T,int8_t>
+    || std::is_same_v<T,int16_t>
+    || std::is_same_v<T,int32_t>
+    || std::is_same_v<T,int64_t>
+    || std::is_same_v<T,int_fast8_t>
+    || std::is_same_v<T,int_fast16_t>
+    || std::is_same_v<T,int_fast32_t>
+    || std::is_same_v<T,int_fast64_t>
+    || std::is_same_v<T,int_least8_t>
+    || std::is_same_v<T,int_least16_t>
+    || std::is_same_v<T,int_least32_t>
+    || std::is_same_v<T,int_least64_t>;
+
+
+template <class T>
+concept Integer
+= UnsignedInteger<T> || SignedInteger<T>;
+
+
+// ---------------------------------------------------------
+// CONVERSION
+// ---------------------------------------------------------
+template <class SourceType, class TargetType>
+concept ConvertibleTo
+= requires (SourceType instance)
+{
+    { TargetType(instance) };
+};
 
 
 // ---------------------------------------------------------

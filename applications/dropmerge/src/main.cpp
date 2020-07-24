@@ -4,7 +4,7 @@
 // --- Internal Includes ---
 #include "mergefunction.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <stdlib.h>
 
 namespace cie {

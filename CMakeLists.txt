@@ -40,6 +40,7 @@ include( cmake/vars_install.cmake )
 # ---------------------------------------------------------
 # GLOBAL MACRO DEFINITIONS
 # ---------------------------------------------------------
+include( cmake/macro_global.cmake )
 include( cmake/macro_install.cmake )
 include( cmake/macro_link.cmake )
 include( cmake/macro_add.cmake )
@@ -86,3 +87,11 @@ add_subdirectory( libraries )
 # BUILD APPLICATIONS
 # ---------------------------------------------------------
 add_subdirectory( applications )
+
+# ---------------------------------------------------------
+# TESTRUNNER
+# ---------------------------------------------------------
+add_custom_target( testrunner
+                    COMMAND ${CMAKE_COMMAND} 
+                        "-DVAR=${INSTALL_TEST_PREFIX}" 
+                        -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/testrunner.cmake" )

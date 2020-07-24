@@ -14,7 +14,7 @@
 #include "defaultCallback.hpp"
 #include "cmake_variables.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <functional>
 #include <memory>
 #include <string>
@@ -43,7 +43,7 @@ public:
     GLContext(  uint8_t versionMajor                    = 4,
                 uint8_t versionMinor                    = 5,
                 uint8_t samples                         = 0, 
-                const std::string& logFileName          = BINARY_PATH + "/ContextLogger.txt" );
+                const std::string& logFileName          = OUTPUT_PATH + "/ContextLogger.txt" );
     ~GLContext();
 
     WindowPtr openWindow(   size_t width                    = 800,
