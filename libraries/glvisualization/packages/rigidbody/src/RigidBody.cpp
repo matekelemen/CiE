@@ -6,7 +6,7 @@
 // --- Internal Includes ---
 #include "../inc/RigidBody.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <iostream>
 
 namespace cie {

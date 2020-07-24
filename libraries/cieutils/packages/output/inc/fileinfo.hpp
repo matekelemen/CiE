@@ -1,7 +1,7 @@
 #ifndef CIE_FILEINFO_HPP
 #define CIE_FILEINFO_HPP
 
-// --- STD INCLUDES ---
+// --- STL Includes ---
 #include <string>
 #include <vector>
 

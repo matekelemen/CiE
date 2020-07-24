@@ -1,7 +1,7 @@
 #ifndef GLVISUALIZATION_CALLBACK_GROUP_IMPL_HPP
 #define GLVISUALIZATION_CALLBACK_GROUP_IMPL_HPP
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <sstream>
 
 namespace cie {

@@ -2,8 +2,7 @@
 #include "../inc/gradientestimate.hpp"
 #include <iostream>
 
-namespace cie {
-namespace opt {
+namespace cie::opt {
 
 
 double parabola(const RNRElement<2>& point)
@@ -26,5 +25,4 @@ TEST_CASE("Gradient estimation")
     CHECK( gradient[0] == Approx(gradient[1]) );
 }
 
-}
 }

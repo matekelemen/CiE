@@ -1,7 +1,7 @@
 // --- Internal Includes ---
 #include "../inc/Logger.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <algorithm>
 
 

@@ -2,7 +2,7 @@
 #include "../inc/ShaderManager.hpp"
 #include "../inc/shaders.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <algorithm>
 #include <iostream>
 

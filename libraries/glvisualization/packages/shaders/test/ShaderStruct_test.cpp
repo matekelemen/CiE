@@ -3,21 +3,21 @@
 
 // --- Internal Includes ---
 #include "../inc/shaders.hpp"
+#include "cmake_variables.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <string>
 #include <iostream>
+#include <memory>
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
-TEST_CASE( "ShaderStruct" )
+TEST_CASE( "ShaderStruct", "[shaders]" )
 {
-    ShaderStruct vertexShader( "defaultColorVertexShader.glsl" );
-    vertexShader.print();
+    REQUIRE_NOTHROW( std::make_shared<ShaderStruct>( TEST_OUTPUT_PATH + "/defaultColorVertexShader.glsl" ) );
+    //vertexShader.print();
 }
 
 
-}
 }

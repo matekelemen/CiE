@@ -1,7 +1,7 @@
 #ifndef CIE_FINITEELEMENTS_HPP
 #define CIE_FINITEELEMENTS_HPP
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <vector>
 #include <tuple>
 #include <array>

@@ -1,10 +1,13 @@
+// --- External Includes ---
 #include "pybind11/pybind11.h"
 #include "pybind11/stl.h"
 
-#include "../../clustering/inc/minimumdisc.hpp"
-#include "../../trees/inc/spacetreeutils.hpp"
-#include "../../trees/inc/spacetreenode.hpp"
+// --- Internal Includes ---
+#include "../../packages/clustering/inc/minimumdisc.hpp"
+#include "../../packages/trees/inc/spacetreeutils.hpp"
+#include "../../packages/trees/inc/spacetreenode.hpp"
 #include "csgconversion.hpp"
+
 
 PYBIND11_MODULE( pycsg,m ){
     m.doc() = "Constructive Solid Geometry module";

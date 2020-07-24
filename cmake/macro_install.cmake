@@ -1,15 +1,3 @@
-MACRO(SUBDIRLIST result curdir)
-  FILE(GLOB children RELATIVE ${curdir} ${curdir}/*)
-  SET(dirlist "")
-  FOREACH(child ${children})
-    IF(IS_DIRECTORY "${curdir}/${child}" )
-      LIST(APPEND dirlist ${child})
-    ENDIF()
-  ENDFOREACH()
-  SET(${result} ${dirlist})
-ENDMACRO()
-
-
 MACRO( INSTALL_LIBRARY target )
 
   file( GLOB export_header ${CMAKE_CURRENT_BINARY_DIR}/*.hpp )

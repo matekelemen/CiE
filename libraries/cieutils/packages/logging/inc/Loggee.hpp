@@ -4,7 +4,7 @@
 // --- Internal Includes ---
 #include "Logger.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <string>
 
 

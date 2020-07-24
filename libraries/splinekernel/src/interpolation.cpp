@@ -1,91 +1,84 @@
 // --- Linalg Includes ---
-#include "linalg/linalg.hpp"
+#include <linalg/linalg.hpp>
 
 // --- Internal Includes ---
 #include "interpolation.hpp"
 #include "basisfunctions.hpp"
+#include "cmake_variables.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <string>
 #include <cmath>
 #include <exception>
 #include <fstream>
 
-namespace cie
-{
-namespace splinekernel
-{
 
-	ControlPointsAndKnotVector3D interpolateWithBSplineSurface(
-																const VectorOfMatrices& interpolationPoints,
-																size_t polynomialDegreeR,
-																size_t polynomialDegreeS) {
-		// Get sizes
-		size_t sizeR(interpolationPoints[0].size1());
-		size_t sizeS(interpolationPoints[0].size2());
-		size_t numberOfPoints(sizeR*sizeS);
-		// Get parameter positions at interpolation points
-		std::array<std::vector<double>,2> parameterPositionsRS = centripetalParameterPositions(interpolationPoints);
-		// Get knot vectors
-		std::vector<double> knotVectorR(knotVectorUsingAveraging(parameterPositionsRS[0], polynomialDegreeR));
-		std::vector<double> knotVectorS(knotVectorUsingAveraging(parameterPositionsRS[1], polynomialDegreeS));
-		// Assemble matrix
-		double temp;
-		size_t column, pR, pS;
-		linalg::Matrix shapeFunctionMatrix(numberOfPoints, numberOfPoints);
-		shapeFunctionMatrix(0, 0) = 1.0;
-		for (size_t row = 1; row < numberOfPoints-1; ++row) {
-			pR = row % sizeR;
-			pS = row / sizeR;
-			for (size_t s = 0; s < sizeS; ++s) {
-				temp = evaluateBSplineBasis(parameterPositionsRS[1][pS], s, polynomialDegreeS, knotVectorS);
-				for (size_t r = 0; r < sizeR; ++r) {
+namespace cie::splinekernel {
 
-					column = s * sizeR + r;
-					shapeFunctionMatrix(row, column) = evaluateBSplineBasis(parameterPositionsRS[0][pR], r, polynomialDegreeR, knotVectorR) * temp;
 
-				}
-			}
-		}
-		shapeFunctionMatrix(numberOfPoints-1, numberOfPoints-1) = 1.0;
-		std::ofstream file("matrix.csv");
-		if (file.is_open()) {
-			for (size_t row = 0; row < shapeFunctionMatrix.size1(); ++row) {
-				for (size_t column = 0; column < shapeFunctionMatrix.size2(); ++column) {
-					file << shapeFunctionMatrix(row, column) << ",";
-				}
-				file << "\n";
-			}
-		}
-		// Solve for components
-		VectorOfMatrices controlPoints(3);
-		controlPoints[0] = linalg::Matrix(
-			linalg::solve(shapeFunctionMatrix, interpolationPoints[0].data()),
-			sizeR
-		);
-		controlPoints[1] = linalg::Matrix(
-			linalg::solve(shapeFunctionMatrix, interpolationPoints[1].data()),
-			sizeR
-		);
-		controlPoints[2] = linalg::Matrix(
-			linalg::solve(shapeFunctionMatrix, interpolationPoints[2].data()),
-			sizeR
-		);
-		//
-		VectorPair knotVectors({ knotVectorR,knotVectorS });
-		return std::make_pair(controlPoints,knotVectors);
-	}
+
+ControlPointsAndKnotVector3D interpolateWithBSplineSurface(
+                                                            const VectorOfMatrices& interpolationPoints,
+                                                            size_t polynomialDegreeR,
+                                                            size_t polynomialDegreeS) {
+    // Get sizes
+    size_t sizeR(interpolationPoints[0].size1());
+    size_t sizeS(interpolationPoints[0].size2());
+    size_t numberOfPoints(sizeR*sizeS);
+    // Get parameter positions at interpolation points
+    std::array<std::vector<double>,2> parameterPositionsRS = centripetalParameterPositions(interpolationPoints);
+    // Get knot vectors
+    std::vector<double> knotVectorR(knotVectorUsingAveraging(parameterPositionsRS[0], polynomialDegreeR));
+    std::vector<double> knotVectorS(knotVectorUsingAveraging(parameterPositionsRS[1], polynomialDegreeS));
+    // Assemble matrix
+    double temp;
+    size_t column, pR, pS;
+    linalg::Matrix shapeFunctionMatrix(numberOfPoints, numberOfPoints);
+    shapeFunctionMatrix(0, 0) = 1.0;
+    for (size_t row = 1; row < numberOfPoints-1; ++row) {
+        pR = row % sizeR;
+        pS = row / sizeR;
+        for (size_t s = 0; s < sizeS; ++s) {
+            temp = evaluateBSplineBasis(parameterPositionsRS[1][pS], s, polynomialDegreeS, knotVectorS);
+            for (size_t r = 0; r < sizeR; ++r) {
+
+                column = s * sizeR + r;
+                shapeFunctionMatrix(row, column) = evaluateBSplineBasis(parameterPositionsRS[0][pR], r, polynomialDegreeR, knotVectorR) * temp;
+
+            }
+        }
+    }
+    shapeFunctionMatrix(numberOfPoints-1, numberOfPoints-1) = 1.0;
+
+    // Solve for components
+    VectorOfMatrices controlPoints(3);
+    controlPoints[0] = linalg::Matrix(
+        linalg::solve(shapeFunctionMatrix, interpolationPoints[0].data()),
+        sizeR
+    );
+    controlPoints[1] = linalg::Matrix(
+        linalg::solve(shapeFunctionMatrix, interpolationPoints[1].data()),
+        sizeR
+    );
+    controlPoints[2] = linalg::Matrix(
+        linalg::solve(shapeFunctionMatrix, interpolationPoints[2].data()),
+        sizeR
+    );
+    //
+    VectorPair knotVectors({ knotVectorR,knotVectorS });
+    return std::make_pair(controlPoints,knotVectors);
+}
 
 
 
 ControlPointsAndKnotVector interpolateWithBSplineCurve( const ControlPoints2D& interpolationPoints,
-                                                        size_t polynomialDegree )
+                                                    size_t polynomialDegree )
 {
     size_t numberOfPoints = interpolationPoints[0].size( );
 
     if( interpolationPoints[1].size( ) != numberOfPoints )
     {
-		throw std::runtime_error("Inconsistent sizes in interpolate Curve!");
+        throw std::runtime_error("Inconsistent sizes in interpolate Curve!");
     }
 
     std::vector<double> parameterPositions = centripetalParameterPositions( interpolationPoints );
@@ -116,8 +109,10 @@ ControlPointsAndKnotVector interpolateWithBSplineCurve( const ControlPoints2D& i
     return { controlPoints, knotVector };
 }
 
+
+
 std::vector<double> centripetalParameterPositions( const ControlPoints2D& interpolationPoints )
-{
+    {
     size_t numberOfPoints = interpolationPoints[0].size( );
 
     std::vector<double> parameterPositions( numberOfPoints, 0.0 );
@@ -140,34 +135,39 @@ std::vector<double> centripetalParameterPositions( const ControlPoints2D& interp
     return parameterPositions;
 }
 
-std::array<std::vector<double>, 2> centripetalParameterPositions(const VectorOfMatrices& interpolationPoints) {
-	size_t sizeR(interpolationPoints[0].size1());
-	size_t sizeS(interpolationPoints[0].size2());
-	std::vector<double> parameterPositionsR(sizeR, 0.0);
-	std::vector<double> parameterPositionsS(sizeS, 0.0);
-	double dx, dy, dz, d;
-	for (size_t i = 1; i < sizeR; ++i) {
-		dx = interpolationPoints[0](i, 0) - interpolationPoints[0](i - 1, 0);
-		dy = interpolationPoints[1](i, 0) - interpolationPoints[1](i - 1, 0);
-		dz = interpolationPoints[2](i, 0) - interpolationPoints[2](i - 1, 0);
-		d = std::sqrt(dx*dx + dy*dy + dz*dz);
-		parameterPositionsR[i] = parameterPositionsR[i - 1] + std::sqrt(d);
-	}
-	for (size_t i = 1; i < sizeS; ++i) {
-		dx = interpolationPoints[0](0, i) - interpolationPoints[0](0, i - 1);
-		dy = interpolationPoints[1](0, i) - interpolationPoints[1](0, i - 1);
-		dz = interpolationPoints[2](0, i) - interpolationPoints[2](0, i - 1);
-		d = std::sqrt(dx*dx + dy * dy + dz * dz);
-		parameterPositionsS[i] = parameterPositionsS[i - 1] + std::sqrt(d);
-	}
-	for (auto i = parameterPositionsR.begin(); i != parameterPositionsR.end(); ++i) {
-		*i /= parameterPositionsR.back();
-	}
-	for (auto i = parameterPositionsS.begin(); i != parameterPositionsS.end(); ++i) {
-		*i /= parameterPositionsS.back();
-	}
-	return { parameterPositionsR, parameterPositionsS };
+
+
+std::array<std::vector<double>, 2> centripetalParameterPositions(const VectorOfMatrices& interpolationPoints) 
+    {
+    size_t sizeR(interpolationPoints[0].size1());
+    size_t sizeS(interpolationPoints[0].size2());
+    std::vector<double> parameterPositionsR(sizeR, 0.0);
+    std::vector<double> parameterPositionsS(sizeS, 0.0);
+    double dx, dy, dz, d;
+    for (size_t i = 1; i < sizeR; ++i) {
+        dx = interpolationPoints[0](i, 0) - interpolationPoints[0](i - 1, 0);
+        dy = interpolationPoints[1](i, 0) - interpolationPoints[1](i - 1, 0);
+        dz = interpolationPoints[2](i, 0) - interpolationPoints[2](i - 1, 0);
+        d = std::sqrt(dx*dx + dy*dy + dz*dz);
+        parameterPositionsR[i] = parameterPositionsR[i - 1] + std::sqrt(d);
+    }
+    for (size_t i = 1; i < sizeS; ++i) {
+        dx = interpolationPoints[0](0, i) - interpolationPoints[0](0, i - 1);
+        dy = interpolationPoints[1](0, i) - interpolationPoints[1](0, i - 1);
+        dz = interpolationPoints[2](0, i) - interpolationPoints[2](0, i - 1);
+        d = std::sqrt(dx*dx + dy * dy + dz * dz);
+        parameterPositionsS[i] = parameterPositionsS[i - 1] + std::sqrt(d);
+    }
+    for (auto i = parameterPositionsR.begin(); i != parameterPositionsR.end(); ++i) {
+        *i /= parameterPositionsR.back();
+    }
+    for (auto i = parameterPositionsS.begin(); i != parameterPositionsS.end(); ++i) {
+        *i /= parameterPositionsS.back();
+    }
+    return { parameterPositionsR, parameterPositionsS };
 }
+
+
 
 std::vector<double> knotVectorUsingAveraging( const std::vector<double>& parameterPositions,
                                               size_t polynomialDegree )
@@ -205,5 +205,6 @@ std::vector<double> knotVectorUsingAveraging( const std::vector<double>& paramet
     return knotVector;
 }
 
-} // namespace splinekernel
-} // namespace cie
+
+
+} // namespace cie::splinekernel

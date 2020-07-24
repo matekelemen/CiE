@@ -4,7 +4,7 @@
 // --- Linalg Includes ---
 #include "linalg/linalg.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <array>
 #include <vector>
 

@@ -4,7 +4,7 @@
 // --- External Includes ---
 #include <glm/gtx/rotate_vector.hpp>
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <cmath>
 
 namespace cie {

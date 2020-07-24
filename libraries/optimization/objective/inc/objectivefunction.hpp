@@ -7,7 +7,7 @@
 // --- Internal Includes ---
 #include "../../representation/inc/element.hpp"
 
-// --- STD Includes ---
+// --- STL Includes ---
 #include <memory>
 #include <functional>
 

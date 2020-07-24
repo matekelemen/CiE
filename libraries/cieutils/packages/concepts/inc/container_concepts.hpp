@@ -5,8 +5,7 @@
 #include "iterator_concepts.hpp"
 
 
-namespace cie {
-namespace concepts {
+namespace cie::concepts {
 
 
 namespace detail {
@@ -35,7 +34,7 @@ struct is_container<
             void
             >
         > : public std::true_type {};
-}
+} // namespace detail
 
 
 template <class T>
@@ -73,7 +72,26 @@ concept IteratorContainer
     && IteratorType<typename ContainerType::value_type>;
 
 
-}
-}
+// ---------------------------------------------------------
+// SPECIALIZED STL CONTAINERS
+// ---------------------------------------------------------
+
+template <class ContainerType>
+concept ResizableContainer
+=   STLContainer<ContainerType>
+    && requires ( ContainerType instance )
+{
+    { instance.resize(0) };
+};
+
+
+// TODO: improve definition
+template <class ContainerType>
+concept FixedSizeContainer
+=   STLContainer<ContainerType>
+    && !ResizableContainer<ContainerType>;
+
+
+} // namespace cie::concepts
 
 #endif

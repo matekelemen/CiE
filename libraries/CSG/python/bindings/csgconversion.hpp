@@ -1,10 +1,11 @@
-#ifndef CSG_CSG_CONVERSION_CPP
-#define CSG_CSG_CONVERSION_CPP
+#ifndef CIE_CSG_CSG_CONVERSION_CPP
+#define CIE_CSG_CSG_CONVERSION_CPP
 
-#include "../../trees/inc/spacetreeutils.hpp"
+// --- Internal Includes ---
+#include "../../packages/trees/inc/spacetreeutils.hpp"
 
-namespace cie {
-namespace csg {
+
+namespace cie::csg {
 
 template <uint8_t N>
 using CellGeometry = std::array<DoubleVector,N+1>;
@@ -27,7 +28,6 @@ CellGeometry<N> boundaryCells(const SpaceTreeNode<N,M>& root)
 }
 
 
-}
 }
 
 #endif
