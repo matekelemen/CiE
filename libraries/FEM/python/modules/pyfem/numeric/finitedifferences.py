@@ -188,7 +188,6 @@ def solveAdjointNonlinearHeat1D(    model,
     # Define helper functions
     def updateTime( timeIndex ):
         model.updateTime( timeIndex )
-        #model.integrate( stiffness=True, mass=True, load=False )
     
     # Initialize
     if initialAdjointSolution is not None:
@@ -199,17 +198,17 @@ def solveAdjointNonlinearHeat1D(    model,
     previousState   = massInverse.dot( (model.stiffness+model.nonsymmetricStiffness).dot(timeSeries[-1]) + model.load )
 
     # Loop
-    for i in range( len(model.time)-2, -1, -1 ):
-        updateTime( i )
-        dt              = model.time[i+1] - model.time[i]
+    for i in range( len(model.time)-1, 0, -1 ):
+        updateTime( i-1 )
+        dt              = model.time[i] - model.time[i-1]
         massInverse     = linalg.inv(model.mass)
-        timeSeries[i]   = solveLinearSystem(    1.0/dt*np.identity(model.size)  \
+        timeSeries[i-1] = solveLinearSystem(    1.0/dt*np.identity(model.size)  \
                                                     + theta*massInverse.dot( model.stiffness + model.nonsymmetricStiffness ),
-                                                1.0/dt*timeSeries[i+1]          \
+                                                1.0/dt*timeSeries[i]            \
                                                     - theta*massInverse.dot(model.load) - (1.0-theta)*previousState,
                                                 sparse=False  )
         
         # Update for next iteration
-        previousState   = massInverse.dot( (model.stiffness+model.nonsymmetricStiffness).dot(timeSeries[i]) + model.load )
+        previousState   = massInverse.dot( (model.stiffness+model.nonsymmetricStiffness).dot(timeSeries[i-1]) + model.load )
     
     return timeSeries

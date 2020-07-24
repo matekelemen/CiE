@@ -32,7 +32,7 @@ class AdjointModel(TransientFEModel):
         self.forwardSolution        = forwardTimeSeries
 
         self.timeIndex              = 0
-        self._load                  = np.array(referenceTimeSeries) - np.array(forwardTimeSeries)
+        self._load                  = None
 
         self.nonsymmetricStiffness  = None
 
@@ -47,6 +47,8 @@ class AdjointModel(TransientFEModel):
                                         self.referenceSolution,
                                         ddConductivity ) )
 
+        self.computeLoad()
+
 
     def allocateZeros( self ):
         DoFs = TransientFEModel.allocateZeros(self)
@@ -58,6 +60,27 @@ class AdjointModel(TransientFEModel):
         TransientFEModel.resetMatrices( self, stiffness=stiffness, mass=mass, load=load )
         if stiffness:
             self.nonsymmetricStiffness.data = np.zeros( self.nonsymmetricStiffness.data.shape, dtype=self.nonsymmetricStiffness.data.dtype )
+
+
+    def computeLoad( self ):
+        '''
+        Integrate Ni*Nj*(uref - uforward)
+        '''
+        DoFs = np.transpose( self.getDoFs(), (1,0) )
+        bareMass    = sparse.csr_matrix(    ( np.zeros( DoFs.shape[1] ), DoFs ), 
+                                            shape=self.shape )
+        for element in self.elements:
+            basisCache = [ element.integrator.createCache( element.basisFunctions[i], element.basisFunctions.domain ) for i in range(len(element.basisFunctions)) ]
+            for i in range(len(element.basisFunctions)):
+                for j in range( i, len(element.basisFunctions) ):
+                    value = element._jacobian \
+                            * element.integrator.integrateCached(   lambda x: 1.0, 
+                                                                    basisCache[i]*basisCache[j],
+                                                                    element.basisFunctions.domain )
+                    element.updateGlobalMatrix( bareMass, i, j, value )
+
+        self._load = [ bareMass.dot( reference - forward ) for reference,forward in zip(self.referenceSolution,self.forwardSolution) ]
+        
 
 
     @property

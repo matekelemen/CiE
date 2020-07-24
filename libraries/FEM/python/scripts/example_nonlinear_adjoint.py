@@ -46,13 +46,13 @@ referenceControl            = lambda t: t
 initialControl              = lambda t: 0.0
 
 # Adjoint settings
-numberOfAdjointIterations   = 15
+numberOfAdjointIterations   = 150
 regularization              = 5e0
 
 # Discretization
-time                        = np.linspace(0.0, 1.0, num=30)
+time                        = np.linspace(0.0, 1.0, num=20)
 nElements                   = 10
-polynomialOrder             = 2
+polynomialOrder             = 1
 
 # Integration
 integrationOrder            = 1 * (2*polynomialOrder + 1)
@@ -172,7 +172,7 @@ for i in range(numberOfAdjointIterations):
     #########################################################################
     # Solve the stationary adjoint, and use the solution as the initial one
     adjointModel.updateTime( len(time)-1 )
-    initialAdjointSolution  = solveLinearSystem(    adjointModel.stiffness,
+    initialAdjointSolution  = solveLinearSystem(    model.stiffness,
                                                     timeSeries[-1] - referenceTimeSeries[-1]    )
     #########################################################################
 

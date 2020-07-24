@@ -117,8 +117,9 @@ for i in range(numberOfAdjointIterations):
     initialAdjointSolution=None
     #########################################################################
     # Solve the stationary adjoint, and use the solution as the initial one
-    initialAdjointSolution  = solveLinearSystem(    model.stiffness,
-                                                    timeSeries[-1] - referenceTimeSeries[-1]    )
+    #initialAdjointSolution  = solveLinearSystem(    model.stiffness,
+    #                                                timeSeries[-1] - referenceTimeSeries[-1]    )
+    initialAdjointSolution  = timeSeries[-1] - referenceTimeSeries[-1]
     #########################################################################
 
     # Compute adjoint solution
