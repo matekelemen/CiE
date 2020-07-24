@@ -22,7 +22,7 @@ template <  concepts::NumericContainer PointType,
 using TargetFunction = std::function<ValueType(const PointType&)>;
 
 
-///*
+/*
 template <  class CellType,
             class SamplerType,
             class SplitPolicy,
@@ -67,7 +67,7 @@ public: // Member classes
         Size _counter;
     };
 };
-//*/
+*/
 
 ///*
 // Define node pointer (needs forward declaration)
