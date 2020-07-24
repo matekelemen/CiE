@@ -19,14 +19,14 @@ SpaceTreeIndexConverter<N,M> SpaceTreeNode<N,M>::_dataIndex = SpaceTreeIndexConv
 template <size_t N, size_t M>
 SpaceTreeIndexConverter<N,2> SpaceTreeNode<N,M>::_centerIndex = SpaceTreeIndexConverter<N,2>();
 
-
+/*
 template <class CT,class ST, class SP, concepts::STLContainer VCT>
 template <class ...Args>
 SpaceTreeNode_<CT,ST,SP,VCT>::SpaceTreeNode_( Args&&... args ) :
     SpaceTreeNode_<CT,ST,SP,VCT>::cell_type( std::forward<Args>(args)... )
 {
 }
-
+*/
 
 
 template <size_t N, size_t M>

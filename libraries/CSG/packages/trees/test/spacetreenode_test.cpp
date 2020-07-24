@@ -1,6 +1,6 @@
 // --- External Includes ---
 #include "catch.hpp"
-
+/*
 // --- Internal Includes ---
 #include "../inc/spacetreenode.hpp"
 #include "../inc/primitive_sampler.hpp"
@@ -11,7 +11,7 @@
 // --- STL includes ---
 #include <deque>
 
-/*
+
 namespace cie::csg {
 
 
