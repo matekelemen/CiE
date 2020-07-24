@@ -23,6 +23,12 @@ protected:
 };
 
 
+struct NullPtrException : public Exception
+{
+    NullPtrException( const String& functionName );
+};
+
+
 struct AbstractCallException : public Exception
 {
     AbstractCallException( const String& functionName );

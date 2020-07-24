@@ -4,12 +4,25 @@
 // --- Internal Includes ---
 #include "../../exceptions/inc/exception.hpp"
 #include "cmake_variables.hpp"
+#include "detail.hpp"
 
 // --- STL Includes ---
 #include <sstream>
+#include <experimental/source_location>
 
 
 /* The preprocessor variables can be defined/undefined through CMake */
+
+
+#define CIE_CHECK_POINTER( pointer )                                \
+    if (pointer == nullptr)                                         \
+    {                                                               \
+        std::stringstream message;                                  \
+        message << "In file " << std::source_location::file_name(); \
+        message << "\n\t in function";                              \
+        message << std::source_location::current().function_name(); \
+        throw NullPtrException( message.str() );                    \
+    }
 
 
 #ifdef CIE_ENABLE_OUT_OF_RANGE_TESTS

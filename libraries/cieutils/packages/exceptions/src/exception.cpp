@@ -16,6 +16,12 @@ const char* Exception::what() const noexcept
 }
 
 
+NullPtrException::NullPtrException( const String& functionName ) :
+    Exception( "Attempt to dereference a nullptr:\n\t" + functionName )
+{
+}
+
+
 AbstractCallException::AbstractCallException( const String& functionName ) :
     Exception( "Call to member function of abstact class:\n\t" + functionName )
 {
