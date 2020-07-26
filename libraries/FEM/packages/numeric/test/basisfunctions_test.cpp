@@ -10,6 +10,7 @@
 // --- STL Includes ---
 #include <vector>
 #include <array>
+#include <iostream>
 
 
 namespace cie::fem
@@ -83,6 +84,55 @@ TEST_CASE( "LinearBasisFunctionSet", "numeric" )
                 CHECK( basis( dimensionIndex, i, sampleVector[sampleIndex] ) == reference.margin(1e-16) );
             }
     }
+
+    // Helper functions for checking
+    // the results of batch calls
+    auto checkValueVector = [&referenceValues]( Size functionIndex, const std::vector<Double>& vector )
+    {
+        REQUIRE( vector.size() == referenceValues[functionIndex].size() );
+        auto refIt  = referenceValues[functionIndex].begin();
+        auto valIt  = vector.begin();
+        for ( ; valIt!=vector.end(); ++refIt,++valIt )
+            CHECK( *valIt == *refIt );
+    };
+
+    auto checkValueArray = [&referenceValues]( Size functionIndex, const decltype(sampleArray)& vector )
+    {
+        REQUIRE( vector.size() == referenceValues[functionIndex].size() );
+        auto refIt  = referenceValues[functionIndex].begin();
+        auto valIt  = vector.begin();
+        for ( ; valIt!=vector.end(); ++refIt,++valIt )
+            CHECK( *valIt == *refIt );
+    };
+
+    // Check values - batch call
+    decltype(sampleVector)  valueVector;
+    decltype(sampleArray)   valueArray;
+    functionIndex = 0;
+    for (Size dimension=0; dimension<dim; ++dimension)
+        for (Size i=0; i<basis.functions(dimension).size(); ++i)
+        {
+            valueVector = basis(dimension,i,sampleVector);
+            checkValueVector(functionIndex, valueVector);
+
+            valueArray  = basis(dimension,i,sampleArray);
+            checkValueArray(functionIndex, valueArray);
+
+            valueVector.clear();
+            basis(  dimension, i,
+                    sampleVector,
+                    valueVector );
+            checkValueVector(functionIndex, valueVector);
+
+            valueVector.clear();
+            basis(  dimension, i,
+                    sampleVector.begin(),
+                    sampleVector.end(),
+                    std::back_inserter(valueVector) );
+            checkValueVector(functionIndex, valueVector);
+
+            functionIndex++;
+        }
 
 }
 

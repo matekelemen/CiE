@@ -44,7 +44,7 @@ public:
         _max(1.0) {}
 
     NT operator()( const NT& coordinate ) const
-        { _min<=coordinate && coordinate<=_max ? _function(coordinate) : NT(0.0); }
+        { return _min<=coordinate && coordinate<=_max ? _function(coordinate) : NT(0.0); }
 
 public:
     function_type   _function;
@@ -82,22 +82,21 @@ public:                                                         // <-- main func
                         CoordinateIterator inputBegin,
                         CoordinateIterator inputEnd,
                         OutputIterator outputBegin )
-    requires concepts::ClassIterator<CoordinateIterator,NT>
-                && concepts::ClassIterator<OutputIterator,NT>;
+    requires concepts::ClassIterator<CoordinateIterator,NT>;
 
     template <class CoordinateContainer, class OutputContainer>
     void operator()(    Size dimension,
                         Size functionIndex,
-                        CoordinateContainer coordinates,
-                        OutputContainer outputBegin )
+                        const CoordinateContainer& coordinates,
+                        OutputContainer& outputContainer )
     requires concepts::ClassContainer<CoordinateContainer,NT>
                 && concepts::ClassContainer<OutputContainer,NT>;
 
-    template <template <class ...> class ContainerType, class ValueType, class ...Args>
-    ContainerType<ValueType,Args...> operator()(    Size dimension,
-                                                    Size functionIndex,
-                                                    const ContainerType<ValueType,Args...>& coordinates )
-    requires std::is_same_v<ValueType,NT>;
+    template <class ContainerType>
+    ContainerType operator()(   Size dimension,
+                                Size functionIndex,
+                                const ContainerType& coordinates )
+    requires concepts::ClassContainer<ContainerType,NT>;
 
 public:                                                                         // <-- Set/get
     const domain_container domain() const;

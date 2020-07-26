@@ -20,7 +20,7 @@ struct is_iterator
 };
 
 template<typename T>
-struct is_iterator<T, typename std::enable_if<!std::is_same<typename std::iterator_traits<T>::value_type, void>::value>::type>
+struct is_iterator<T, typename std::enable_if<!std::is_same_v<typename std::iterator_traits<T>::value_type, void>>::type>
 {
    static constexpr bool value = true;
 };

@@ -51,7 +51,6 @@ AbsBasisFunctionSet<Dimension,NT>::operator()(  Size dimension,
                                                 CoordinateIterator inputEnd,
                                                 OutputIterator outputBegin )
 requires concepts::ClassIterator<CoordinateIterator,NT>
-            && concepts::ClassIterator<OutputIterator,NT>
 {
     for ( ; inputBegin!=inputEnd; inputBegin++)
         *outputBegin++ = this->operator()(dimension,functionIndex,*inputBegin);
@@ -64,29 +63,30 @@ template <class CoordinateContainer, class OutputContainer>
 inline void
 AbsBasisFunctionSet<Dimension,NT>::operator()(  Size dimension,
                                                 Size functionIndex,
-                                                CoordinateContainer coordinates,
-                                                OutputContainer outputBegin )
+                                                const CoordinateContainer& coordinates,
+                                                OutputContainer& outputContainer )
 requires concepts::ClassContainer<CoordinateContainer,NT>
                 && concepts::ClassContainer<OutputContainer,NT>
 {
+    utils::setContainerSize(outputContainer,coordinates.size());
     this->operator()(   dimension,
                         functionIndex,
                         coordinates.begin(),
                         coordinates.end(),
-                        outputBegin );
+                        outputContainer.begin() );
 }
 
 
 template <  Size Dimension,
             concepts::NumericType NT>
-template <template <class ...> class ContainerType, class ValueType, class ...Args>
-inline ContainerType<ValueType,Args...>
+template <class ContainerType>
+inline ContainerType
 AbsBasisFunctionSet<Dimension,NT>::operator()(  Size dimension,
                                                 Size functionIndex,
-                                                const ContainerType<ValueType,Args...>& coordinates )
-requires std::is_same_v<ValueType,NT>
+                                                const ContainerType& coordinates )
+requires concepts::ClassContainer<ContainerType,NT>
 {
-    ContainerType<ValueType,Args...> output;
+    ContainerType output;
     utils::setContainerSize(output,coordinates.size());  // compatible with both std::array and dynamic containers
     this->operator()(   dimension,
                         functionIndex,
