@@ -273,6 +273,39 @@ AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::computeDerivatives()
 } // AbsPolynomialBasisFunctionSet::computeDerivatives
 
 
+
+// ---------------------------------------------------------
+// LINEAR SET OF BASIS FUNCTIONS
+// ---------------------------------------------------------
+namespace detail {
+// Helper function for constructing linear basis functions 
+template <class PolynomialBasis>
+inline const typename PolynomialBasis::coefficient_container
+linearPolynomialCoefficients( PolynomialBasis* instance )
+{
+    typedef typename PolynomialBasis::kernel_type::number_type NT;
+
+    typename PolynomialBasis::coefficient_container coefficients;
+    utils::setContainerSize(coefficients,PolynomialBasis::dimension);
+    for (auto& coefficientSet : coefficients)
+    {
+        coefficientSet.emplace_back( std::initializer_list<NT>({ 0.5, 0.5 }) );
+        coefficientSet.emplace_back( std::initializer_list<NT>({ 0.5, -0.5 }) );
+    }
+    return coefficients;
+}
+}
+
+
+template <  Size Dimension,
+            concepts::NumericType NT,
+            class SelfType >
+AbsLinearBasisFunctionSet<Dimension,NT,SelfType>::AbsLinearBasisFunctionSet() :
+    AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>( detail::linearPolynomialCoefficients(this) )
+{
+}
+
+
 }
 
 #endif

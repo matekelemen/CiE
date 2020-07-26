@@ -17,7 +17,7 @@ namespace cie::fem
 {
 
 
-TEST_CASE( "LinearBasisFunctionSet", "numeric" )
+TEST_CASE( "PolynomialBasisFunctionSet", "numeric" )
 {
     const Size dim = 2;
 
@@ -141,7 +141,7 @@ TEST_CASE( "LinearBasisFunctionSet", "numeric" )
     REQUIRE_NOTHROW( basis.derivatives() );
     auto& derivatives = *basis.derivatives();
 
-    // Check polynomial degrees
+    // Check sizes and polynomial degrees
     REQUIRE( derivatives.functions().size() == dim );
     for (Size i=0; i<dim; ++i)
     {
@@ -155,6 +155,98 @@ TEST_CASE( "LinearBasisFunctionSet", "numeric" )
                 CHECK( derivatives.polynomialDegree(i,j) == degree-1 );
         } // for function in functions
     } // for functions in derivatives
+
+    {
+        std::vector<Double> samples = 
+            { -2.0, -1.0, -0.5, 0.0, 0.5, 1.0, 2.0 };
+        std::vector<std::vector<Approx>> ref = 
+        {
+            std::initializer_list<Approx>( { 0.0,   -1.0,   0.0,    1.0,    2.0,    3.0,    0.0 } ),
+            std::initializer_list<Approx>( { 0.0,   -3.0,   -1.0,   1.0,    3.0,    5.0,    0.0 } ),
+            std::initializer_list<Approx>( { 0.0,   1.0,    1.0,    1.0,    1.0,    1.0,    0.0 } ),
+            std::initializer_list<Approx>( { 0.0,   -2.0,   -1.0,   0.0,    1.0,    2.0,    0.0 } ),
+            std::initializer_list<Approx>( { 0.0,   0.0,    0.0,    0.0,    0.0,    0.0,    0.0 } )
+        };
+
+        functionIndex = 0;
+        for (Size d=0; d<dim; ++d)
+            for (Size i=0; i<derivatives.functions(d).size(); ++i)
+            {
+                auto values = derivatives(d,i,samples);
+                for (Size j=0; j<samples.size(); ++j)
+                    CHECK( values[j] == ref[functionIndex][j] );
+                ++functionIndex;
+            }
+    }
+}
+
+
+
+
+TEST_CASE( "LinearBasisFunctionSet", "[numeric]" )
+{
+    const Size dim = 2;
+    typedef LinearBasisFunctionSet<dim,Double> Basis;
+
+    REQUIRE_NOTHROW(Basis());
+    Basis basis;
+
+    // Check sizes and polynomial degrees
+    REQUIRE( basis.functions().size() == dim );
+    for (Size dimension=0; dimension<dim; ++dimension)
+    {
+        REQUIRE( basis.functions(dimension).size() == 2 );
+        for (Size functionIndex=0; functionIndex<2; ++functionIndex)
+            CHECK( basis.polynomialDegree( dimension, functionIndex ) == 1 );
+    }
+
+    // Check values
+    {
+        const std::vector<Double> samples = 
+            { -2.0, -1.0, 0.0, 1.0, 2.0 };
+        const std::vector<std::vector<Approx>> referenceValues = 
+        {
+            std::initializer_list<Approx>({ 0.0, 0.0, 0.5, 1.0, 0.0 }),
+            std::initializer_list<Approx>({ 0.0, 1.0, 0.5, 0.0, 0.0 })
+        };
+        for (Size i=0; i<dim; ++i)
+            for (Size j=0; j<2; ++j)
+            {
+                auto values = basis(i,j,samples);
+                for (Size k=0; k<samples.size(); ++k)
+                    CHECK( values[k] == referenceValues[j][k] );
+            }
+    }
+
+
+    // Check derivatives
+    REQUIRE_NOTHROW( basis.derivatives() );
+    auto derivatives = *basis.derivatives();
+
+    REQUIRE( derivatives.functions().size() == dim );
+    for (Size dimension=0; dimension<dim; ++dimension)
+    {
+        REQUIRE( derivatives.functions(dimension).size() == 2 );
+        for (Size functionIndex=0; functionIndex<2; ++functionIndex)
+            CHECK( derivatives.polynomialDegree( dimension, functionIndex ) == 0 );
+    }
+
+    {
+        const std::vector<Double> samples = 
+            { -2.0, -1.0, 0.0, 1.0, 2.0 };
+        const std::vector<std::vector<Approx>> referenceValues = 
+        {
+            std::initializer_list<Approx>({ 0.0, 0.5, 0.5, 0.5, 0.0 }),
+            std::initializer_list<Approx>({ 0.0, -0.5, -0.5, -0.5, 0.0 })
+        };
+        for (Size i=0; i<dim; ++i)
+            for (Size j=0; j<2; ++j)
+            {
+                auto values = derivatives(i,j,samples);
+                for (Size k=0; k<samples.size(); ++k)
+                    CHECK( values[k] == referenceValues[j][k] );
+            }
+    }
 }
 
 

@@ -137,7 +137,7 @@ class AbsPolynomialBasisFunctionSet : public AbsBasisFunctionSet<Dimension,NT,Se
 public:
     typedef std::vector<NT>                                                     polynomial_coefficients;
     typedef std::vector<polynomial_coefficients>                                polynomial_set;
-    typedef std::array<polynomial_set,AbsPolynomialBasisFunctionSet::dimension>    coefficient_container;
+    typedef std::array<polynomial_set,AbsPolynomialBasisFunctionSet::dimension> coefficient_container;
 
 public:
     AbsPolynomialBasisFunctionSet( const coefficient_container& coefficients );
@@ -160,6 +160,8 @@ protected:
 }; // class AbsPolynomialBasisFunctionSet
 
 
+
+
 // Self-contained polynomial basis function set
 template <  Size Dimension,
             concepts::NumericType NT >
@@ -172,6 +174,31 @@ struct PolynomialBasisFunctionSet final
 
     PolynomialBasisFunctionSet() = delete;
 }; // class PolynomialBasisFunctionSet
+
+
+
+// ---------------------------------------------------------
+// LINEAR SET OF BASIS FUNCTIONS
+// ---------------------------------------------------------
+template <  Size Dimension,
+            concepts::NumericType NT,
+            class SelfType >
+struct AbsLinearBasisFunctionSet : AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>
+{
+    AbsLinearBasisFunctionSet();
+};
+
+
+
+template <  Size Dimension,
+            concepts::NumericType NT >
+struct LinearBasisFunctionSet final : 
+    AbsLinearBasisFunctionSet<Dimension,NT,PolynomialBasisFunctionSet<Dimension,NT>>
+{
+    LinearBasisFunctionSet() :
+        AbsLinearBasisFunctionSet<Dimension,NT,PolynomialBasisFunctionSet<Dimension,NT>>()
+    {}
+};
 
 
 } // namespace cie::fem
