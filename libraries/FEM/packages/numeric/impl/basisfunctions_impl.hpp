@@ -14,17 +14,19 @@ namespace cie::fem
 
 template <  Size Dimension,
             concepts::NumericType NT>
-AbsBasisFunctionSet<Dimension,NT>::AbsBasisFunctionSet( const typename AbsBasisFunctionSet<Dimension,NT>::basis_function_container& functions ) :
+AbsBasisFunctionSet<Dimension,NT>::AbsBasisFunctionSet( const typename AbsBasisFunctionSet<Dimension,NT>::function_container& functions ) :
     _derivatives(nullptr),
     _functions(functions),
     _cache()
 {
-    utils.setContainerSize( this->_domain, this->dimension );
-    for (auto& pair : this->_domain)
-    {
-        pair.first  = NT(-1.0);
-        pair.second = NT(1.0);
-    }
+}
+
+
+template <  Size Dimension,
+            concepts::NumericType NT>
+AbsBasisFunctionSet<Dimension,NT>::AbsBasisFunctionSet() :
+    AbsBasisFunctionSet<Dimension,NT>::AbsBasisFunctionSet( typename AbsBasisFunctionSet<Dimension,NT>::function_container() )
+{
 }
 
 
@@ -35,10 +37,7 @@ AbsBasisFunctionSet<Dimension,NT>::operator()(  Size dimension,
                                                 Size functionIndex, 
                                                 NT coordinate )
 {
-    if ( _domain[dimension].first <= coordinate && coordinate <= _domain[dimension].second )
-        return _functions[dimension][functionIndex](coordinate);
-    else
-        return NT(0.0);
+    return _functions[dimension][functionIndex](coordinate);
 }
 
 
@@ -88,7 +87,7 @@ AbsBasisFunctionSet<Dimension,NT>::operator()(  Size dimension,
 requires std::is_same_v<ValueType,NT>
 {
     ContainerType<ValueType,Args...> output;
-    utils::setContinerSize(output,coordinates.size());  // compatible with both std::array and dynamic containers
+    utils::setContainerSize(output,coordinates.size());  // compatible with both std::array and dynamic containers
     this->operator()(   dimension,
                         functionIndex,
                         coordinates.begin(),
@@ -98,13 +97,29 @@ requires std::is_same_v<ValueType,NT>
 }
 
 
+template <  Size Dimension,
+            concepts::NumericType NT>
+inline const typename AbsBasisFunctionSet<Dimension,NT>::domain_container
+AbsBasisFunctionSet<Dimension,NT>::domain() const
+{
+    typename AbsBasisFunctionSet<Dimension,NT>::domain_container output;
+    utils::setContainerSize(output, this->dimension);
+    for (Size dim=0; dim<this->dimension; ++dim)
+    {
+        assert( !this->_functions[dim].empty() );
+        output[dim] = std::make_pair(this->_functions[dim][0]._min, this->_functions[dim][0]._max );
+    }
+    return output;
+}
+
+
 // ---------------------------------------------------------
 // POLYNOMIAL SET OF BASIS FUNCTIONS
 // ---------------------------------------------------------
 namespace detail{
-template <class ContainerType>
-NT evaluatePolynomial( const ContainerType& coefficients, const NT& coordinate )
-requires concepts::ClassContainer<ContainerType,NT>
+template <template <class ...> class ContainerType, class NT, class ...Args>
+NT evaluatePolynomial( const ContainerType<NT,Args...>& coefficients, const NT& coordinate )
+requires concepts::NumericType<NT>
 {
     NT power = 1.0;
     NT value = 0.0;
@@ -125,15 +140,15 @@ PolynomialBasisFunctionSet<Dimension,NT>::PolynomialBasisFunctionSet( const type
     _coefficients(coefficients)
 {
     // Fill functions
-    for (auto& polynomials : coefficients)
+    auto coefficientIt  = coefficients.begin();
+    auto functionIt     = this->_functions.begin();
+    for ( ; coefficientIt!=coefficients.end(); ++coefficientIt,++functionIt )
     {
-        this->_functions.resize(this->_functions.size()+1);
-        auto& functions = this->_functions.back();
-        for (auto& polynomial : polynomials)
+        for (auto& polynomial : *coefficientIt)
         {
             auto function = [polynomial]( const NT& coordinate ) -> NT
             { return detail::evaluatePolynomial(polynomial,coordinate); };
-            functions.push_back(function);
+            functionIt->push_back( typename PolynomialBasisFunctionSet<Dimension,NT>::function_type(function) );
         } // for polynomial in polynomials
     } // for polynomials in dimensions
 } // constructor
@@ -171,9 +186,18 @@ template <  Size Dimension,
 inline NT
 PolynomialBasisFunctionSet<Dimension,NT>::coefficient(  Size dimensionIndex,
                                                         Size polynomialIndex,
-                                                        Size coefficientIndex )
+                                                        Size coefficientIndex ) const
 {
     return this->_coefficients[dimensionIndex][polynomialIndex][coefficientIndex];
+}
+
+
+template <  Size Dimension,
+            concepts::NumericType NT >
+inline Size
+PolynomialBasisFunctionSet<Dimension,NT>::polynomialDegree( Size dimensionIndex, Size polynomialIndex ) const
+{
+    return this->_coefficients[dimensionIndex][polynomialIndex].size() - 1;
 }
 
 
@@ -192,15 +216,20 @@ PolynomialBasisFunctionSet<Dimension,NT>::computeDerivatives()
         for (const auto& polynomial : polynomials)
         {
             derivatives.resize(derivatives.size()+1);
-            auto& polynomial = derivatives.back();
+            auto& derivative = derivatives.back();
             if (polynomial.size() < 2)
-                polynomial.emplace_back(0.0);
+                derivative.emplace_back(0.0);
             else
             {
-
+                for (Size power=1; power<polynomial.size(); ++power)
+                    derivative.emplace_back( NT(power)*polynomial[power] );
             }
         } // for polynomial in polynomials
     } // for polynomials in dimensions
+
+    this->_derivatives = std::make_shared<PolynomialBasisFunctionSet<Dimension,NT>>(
+        derivativeCoefficients
+    );
 } // PolynomialBasisFunctionSet::computeDerivatives
 
 

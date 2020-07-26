@@ -21,8 +21,36 @@ namespace cie::fem
 {
 
 
+// ---------------------------------------------------------
+// BASIS FUNCTION
+// ---------------------------------------------------------
 template <concepts::NumericType NT>                 // NT: number type
-using BasisFunction = std::function<NT(const NT&)>;
+struct BasisFunction
+{
+public:
+    typedef std::function<NT(const NT&)> function_type;
+
+public:
+    BasisFunction(  function_type function,
+                    const NT& min,
+                    const NT& max ) :
+        _function(function),
+        _min(min),
+        _max(max) {}
+    
+    BasisFunction( function_type function ) :
+        _function(function),
+        _min(-1.0),
+        _max(1.0) {}
+
+    NT operator()( const NT& coordinate ) const
+        { _min<=coordinate && coordinate<=_max ? _function(coordinate) : NT(0.0); }
+
+public:
+    function_type   _function;
+    NT              _min;
+    NT              _max;
+};
 
 
 // ---------------------------------------------------------
@@ -34,15 +62,15 @@ class AbsBasisFunctionSet : Kernel<NT>
 {
 public:                                                         // <-- member typedefs
     static const Size                                           dimension = Dimension;
-    typedef KernelType                                          kernel_type;
+    typedef Kernel<NT>                                          kernel_type;
     typedef std::array<std::pair<NT,NT>,dimension>              domain_container;
     typedef BasisFunction<NT>                                   function_type;
     typedef std::array<std::vector<function_type>,dimension>    function_container;
     typedef utils::Cache<std::vector<NT>,std::vector<NT>>       cache_type;
 
 public:                                                         // <-- main functions 
-    AbsBasisFunctionSet( const basis_function_container& functions );
-    AbsBasisFunctionSet() : _derivatives(nullptr)               {}
+    AbsBasisFunctionSet( const function_container& functions );
+    AbsBasisFunctionSet();
 
     NT operator()(  Size dimension,
                     Size functionIndex, 
@@ -72,21 +100,20 @@ public:                                                         // <-- main func
     requires std::is_same_v<ValueType,NT>;
 
 public:                                                                         // <-- Set/get
-    const domain_container& domain()                                            { return _domain; }
-    const typename domain_container::value_type& domain( Size index )           { return _domain[index]; }
-    NT domain( Size index, bool minmax )                                        { return !minmax ? _domain[index].first : _domain[index].second; }
-    NT domain( Size index, Size minmax )                                        { return minmax==0 ? _domain[index].first : _domain[index].second; }
-    virtual std::unique_ptr<AbsBasisFunctionSet<dimension,NT>>& derivatives()   { return _derivatives; }
-    virtual const function_type& derivative( Size index )                       { CIE_CHECK_POINTER(_derivatives) return _derivatives->operator[](index); }
-    const function_container& functions()                                       { return _functions; }
-    function_type function( Size index )                                        { return _functions[index]; }
-    const function_type& operator[]( Size index )                               { return _functions[index]; }
+    const domain_container domain() const;
+    const typename domain_container::value_type domain( Size index ) const                  { return std::make_pair( _functions[index][0]._min, _functions[index][0]._max ); }
+    NT domain( Size index, bool minmax ) const                                              { return !minmax ? _functions[index][0]._min : _functions[index][0]._max; }
+    NT domain( Size index, Size minmax ) const                                              { return minmax==0 ? _functions[index][0]._min : _functions[index][0]._max; }
+    virtual std::shared_ptr<AbsBasisFunctionSet<dimension,NT>>& derivatives()               { return _derivatives; }
+    virtual const std::shared_ptr<AbsBasisFunctionSet<dimension,NT>> derivatives() const    { return _derivatives; }
+    const function_container& functions() const                                             { return _functions; }
+    const typename function_container::value_type& functions(Size index) const              { return _functions[index]; }
+    const typename function_container::value_type& operator[]( Size index ) const           { return _functions[index]; }
 
 protected:                                                                      // <-- member variables
-    std::unique_ptr<AbsBasisFunctionSet<dimension,NT>>  _derivatives;
-    cache_type                                          _cache;
+    std::shared_ptr<AbsBasisFunctionSet<dimension,NT>>  _derivatives;
     function_container                                  _functions;
-    domain_container                                    _domain;
+    cache_type                                          _cache;
 };
 
 
@@ -94,10 +121,11 @@ protected:                                                                      
 // ---------------------------------------------------------
 // POLYNOMIAL SET OF BASIS FUNCTIONS
 // ---------------------------------------------------------
+
 namespace detail{
-template <class ContainerType>
-NT evaluatePolynomial( const ContainerType& coefficients, const NT& coordinate )
-requires concepts::ClassContainer<ContainerType,NT>;
+template <template <class ...> class ContainerType, class NT, class ...Args>
+NT evaluatePolynomial( const ContainerType<NT,Args...>& coefficients, const NT& coordinate )
+requires concepts::NumericType<NT>;
 }
 
 
@@ -112,12 +140,16 @@ public:
 
 public:
     PolynomialBasisFunctionSet( const coefficient_container& coefficients );
-    PolynomialBasisFunctionSet() = default;
+    PolynomialBasisFunctionSet() = delete;
+
+    Size polynomialDegree( Size dimensionIndex, Size polynomialIndex ) const;
+    //std::shared_ptr<AbsBasisFunctionSet<Dimension,NT>>& derivatives() 
+    const typename PolynomialBasisFunctionSet::function_type& derivative( Size index );
 
     const coefficient_container& coefficients() const;
     const polynomial_set& coefficients( Size dimensionIndex ) const;
     const polynomial_coefficients& coefficients( Size dimensionIndex, Size polynomialIndex ) const;
-    const NT coefficient( Size dimensionIndex, Size polynomialIndex, Size coefficientIndex ) const;
+    NT coefficient( Size dimensionIndex, Size polynomialIndex, Size coefficientIndex ) const;
 
 protected:
     void computeDerivatives();

@@ -14,14 +14,15 @@
 /* The preprocessor variables can be defined/undefined through CMake */
 
 
-#define CIE_CHECK_POINTER( pointer )                                \
-    if (pointer == nullptr)                                         \
-    {                                                               \
-        std::stringstream message;                                  \
-        message << "In file " << std::source_location::file_name(); \
-        message << "\n\t in function";                              \
-        message << std::source_location::current().function_name(); \
-        throw NullPtrException( message.str() );                    \
+#define CIE_CHECK_POINTER( pointer )                                                \
+    if (pointer == nullptr)                                                         \
+    {                                                                               \
+        std::stringstream message;                                                  \
+        auto location = std::experimental::source_location::current();              \
+        message << "In file " << location.file_name();                              \
+        message << "\n\t in function";                                              \
+        message << location.function_name();                                        \
+        throw NullPtrException( message.str() );                                    \
     }
 
 
