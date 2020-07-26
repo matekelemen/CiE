@@ -57,7 +57,8 @@ public:
 // BASE CLASS
 // ---------------------------------------------------------
 template <  Size Dimension,
-            concepts::NumericType NT>
+            concepts::NumericType NT,
+            class SelfType >
 class AbsBasisFunctionSet : Kernel<NT>
 {
 public:                                                         // <-- member typedefs
@@ -100,19 +101,19 @@ public:                                                         // <-- main func
 
 public:                                                                         // <-- Set/get
     const domain_container domain() const;
-    const typename domain_container::value_type domain( Size index ) const                  { return std::make_pair( _functions[index][0]._min, _functions[index][0]._max ); }
-    NT domain( Size index, bool minmax ) const                                              { return !minmax ? _functions[index][0]._min : _functions[index][0]._max; }
-    NT domain( Size index, Size minmax ) const                                              { return minmax==0 ? _functions[index][0]._min : _functions[index][0]._max; }
-    virtual std::shared_ptr<AbsBasisFunctionSet<dimension,NT>>& derivatives()               { return _derivatives; }
-    virtual const std::shared_ptr<AbsBasisFunctionSet<dimension,NT>> derivatives() const    { return _derivatives; }
-    const function_container& functions() const                                             { return _functions; }
-    const typename function_container::value_type& functions(Size index) const              { return _functions[index]; }
-    const typename function_container::value_type& operator[]( Size index ) const           { return _functions[index]; }
+    const typename domain_container::value_type domain( Size index ) const          { return std::make_pair( _functions[index][0]._min, _functions[index][0]._max ); }
+    NT domain( Size index, bool minmax ) const                                      { return !minmax ? _functions[index][0]._min : _functions[index][0]._max; }
+    NT domain( Size index, Size minmax ) const                                      { return minmax==0 ? _functions[index][0]._min : _functions[index][0]._max; }
+    virtual std::shared_ptr<SelfType>& derivatives()                                { return _derivatives; }
+    virtual const std::shared_ptr<SelfType> derivatives() const                     { return _derivatives; }
+    const function_container& functions() const                                     { return _functions; }
+    const typename function_container::value_type& functions(Size index) const      { return _functions[index]; }
+    const typename function_container::value_type& operator[]( Size index ) const   { return _functions[index]; }
 
 protected:                                                                      // <-- member variables
-    std::shared_ptr<AbsBasisFunctionSet<dimension,NT>>  _derivatives;
-    function_container                                  _functions;
-    cache_type                                          _cache;
+    std::shared_ptr<SelfType>   _derivatives;
+    function_container          _functions;
+    cache_type                  _cache;
 };
 
 
@@ -129,21 +130,22 @@ requires concepts::NumericType<NT>;
 
 
 template <  Size Dimension,
-            concepts::NumericType NT >
-class PolynomialBasisFunctionSet : public AbsBasisFunctionSet<Dimension,NT>
+            concepts::NumericType NT,
+            class SelfType >
+class AbsPolynomialBasisFunctionSet : public AbsBasisFunctionSet<Dimension,NT,SelfType>
 {
 public:
     typedef std::vector<NT>                                                     polynomial_coefficients;
     typedef std::vector<polynomial_coefficients>                                polynomial_set;
-    typedef std::array<polynomial_set,PolynomialBasisFunctionSet::dimension>    coefficient_container;
+    typedef std::array<polynomial_set,AbsPolynomialBasisFunctionSet::dimension>    coefficient_container;
 
 public:
-    PolynomialBasisFunctionSet( const coefficient_container& coefficients );
-    PolynomialBasisFunctionSet() = delete;
+    AbsPolynomialBasisFunctionSet( const coefficient_container& coefficients );
+    AbsPolynomialBasisFunctionSet() = delete;
 
     Size polynomialDegree( Size dimensionIndex, Size polynomialIndex ) const;
-    //std::shared_ptr<AbsBasisFunctionSet<Dimension,NT>>& derivatives() 
-    const typename PolynomialBasisFunctionSet::function_type& derivative( Size index );
+    std::shared_ptr<SelfType>& derivatives() override;
+    const std::shared_ptr<SelfType> derivatives() const override;
 
     const coefficient_container& coefficients() const;
     const polynomial_set& coefficients( Size dimensionIndex ) const;
@@ -155,10 +157,24 @@ protected:
     
 protected:
     coefficient_container   _coefficients;
-};
+}; // class AbsPolynomialBasisFunctionSet
 
 
-}
+// Self-contained polynomial basis function set
+template <  Size Dimension,
+            concepts::NumericType NT >
+struct PolynomialBasisFunctionSet final 
+    : AbsPolynomialBasisFunctionSet<Dimension,NT,PolynomialBasisFunctionSet<Dimension,NT>>
+{
+    PolynomialBasisFunctionSet( const typename PolynomialBasisFunctionSet::coefficient_container& coefficients ) :
+        AbsPolynomialBasisFunctionSet<Dimension,NT,PolynomialBasisFunctionSet<Dimension,NT>>::AbsPolynomialBasisFunctionSet(coefficients)
+    {}
+
+    PolynomialBasisFunctionSet() = delete;
+}; // class PolynomialBasisFunctionSet
+
+
+} // namespace cie::fem
 
 #include "../impl/basisfunctions_impl.hpp"
 

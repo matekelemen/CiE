@@ -134,6 +134,27 @@ TEST_CASE( "LinearBasisFunctionSet", "numeric" )
             functionIndex++;
         }
 
+
+    // ---------------------------------------------------------
+    // CHECK DERIVATIVES
+    // ---------------------------------------------------------
+    REQUIRE_NOTHROW( basis.derivatives() );
+    auto& derivatives = *basis.derivatives();
+
+    // Check polynomial degrees
+    REQUIRE( derivatives.functions().size() == dim );
+    for (Size i=0; i<dim; ++i)
+    {
+        REQUIRE( derivatives.functions(i).size() == basis.functions(i).size() );
+        for (Size j=0; j<derivatives.functions(i).size(); ++j)
+        {
+            Size degree = basis.polynomialDegree(i,j);
+            if (degree < 2)
+                CHECK( derivatives.polynomialDegree(i,j) == 0 );
+            else
+                CHECK( derivatives.polynomialDegree(i,j) == degree-1 );
+        } // for function in functions
+    } // for functions in derivatives
 }
 
 
