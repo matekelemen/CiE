@@ -4,24 +4,14 @@
 namespace cie::fem {
 
 
-template <  Size Dimension,
-            concepts::NumericType NT >
-AbsElement<Dimension,NT>::AbsElement() :
-    _basis( std::make_shared<LinearBasisFunctionSet<Dimension,NT>>() )
+template <class BasisType>
+template <class CoefficientContainer>
+typename AbsElement<BasisType>::NT
+AbsElement<BasisType>::operator()(  const CoefficientContainer& coefficients,
+                                    const typename AbsElement<BasisType>::LocalCoordinates& point ) const
 {
-}
-
-
-template <  Size Dimension,
-            concepts::NumericType NT >
-template <class CoefficientContainer, class PointType>
-NT
-AbsElement<Dimension,NT>::operator()(   const CoefficientContainer& coefficients,
-                                        const PointType& point ) const
-requires concepts::ClassContainer<PointType,NT>
-{
-    NT value(1.0);
-    NT temp;
+    typename AbsElement<BasisType>::NT value(1.0);
+    typename AbsElement<BasisType>::NT temp;
     auto cSetIt = coefficients.begin();
 
     for (auto fSetIt=_basis->functions().begin(); fSetIt!=_basis->functions().end(); ++fSetIt,++cSetIt )
@@ -37,21 +27,18 @@ requires concepts::ClassContainer<PointType,NT>
 }
 
 
-template <  Size Dimension,
-            concepts::NumericType NT >
+template <class BasisType>
 template <  class CoefficientContainer,
-            class OutputIterator,
-            template <class ...> class PointContainer, class PointType, class ...Args >
-void AbsElement<Dimension,NT>::operator()(  const CoefficientContainer& coefficients
-                                            const PointContainer<PointType,Args...>& points,
-                                            OutputIterator outputIt )
-requires concepts::ClassContainer<CoefficientContainer,NT>
-            && concepts::ClassContainer<PointType,NT>
-            && concepts::ClassIterator<OutputIterator,NT>
+            class OutputIterator >
+void AbsElement<BasisType>::operator()( const CoefficientContainer& coefficients
+                                        const typename AbsElement<BasisType>::LocalCoordinates& points,
+                                        OutputIterator outputIt )
+requires concepts::ClassContainer<CoefficientContainer,typename AbsElement<BasisType>::NT>
+            && concepts::ClassIterator<OutputIterator,typename AbsElement<BasisType>::NT>
 {
     // TODO
-    NT value(1.0);
-    NT temp;
+    typename AbsElement<BasisType>::NT value(1.0);
+    typename AbsElement<BasisType>::NT temp;
     auto cSetIt = coefficients.begin();
 
     for (auto fSetIt=_basis->functions().begin(); fSetIt!=_basis->functions().end(); ++fSetIt,++cSetIt )

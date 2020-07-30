@@ -5,49 +5,60 @@
 #include <cieutils/concepts.hpp>
 
 // --- Internal Includes ---
-#include "./element.hpp"
+#include "../../numeric/inc/basisfunctions.hpp"
 #include "../../utilities/inc/kernel.hpp"
 
 // --- STL Includes ---
 #include <memory>
 
 
-namespace cie::utils {
+namespace cie::fem {
 
 
-template <  Size Dimension,
-            concepts::NumericType NT >
+
+// ---------------------------------------------------------
+// ABSTRACT BASE ELEMENT
+// ---------------------------------------------------------
+
+template <class BasisType>
 class AbsElement
 {
 public:
-    static const Size                           dimension = Dimension;
-    typedef Kernel<NT>                          kernel_type;
-    typedef AbsBasisFunctionSet<Dimension,NT>   basis_interface;
+    typedef BasisType                           basis_type;
+    static const Size                           dimension = BasisType::dimension;
+    typedef typename BasisType::kernel_type     kernel_type;
+    typedef typename kernel_type::number_type   NT;
+
+public:     // <--- member classes
+    struct LocalCoordinates : public std::array<NT,dimension> {};
 
 public:
-    AbsElement();
-
-    template <class CoefficientContainer, class PointType>
-    NT operator()(  const CoefficientContainer& coefficients
-                    const PointType& point ) const;
-    requires concepts::ClassContainer<PointType,NT>;
+    template <class CoefficientContainer>
+    NT operator()(  const CoefficientContainer& coefficients,
+                    const LocalCoordinates& point ) const;
 
     template <  class CoefficientContainer,
-                class OutputIterator,
-                template <class ...> class PointContainer, class PointType, class ...Args >
-    void operator()(    const CoefficientContainer& coefficients
-                        const PointContainer<PointType,Args...>& points,
+                class OutputIterator >
+    void operator()(    const CoefficientContainer& coefficients,
+                        const LocalCoordinates& points,
                         OutputIterator outputIt )
     requires concepts::ClassContainer<CoefficientContainer,NT>
-                && concepts::ClassContainer<PointType,NT>
                 && concepts::ClassIterator<OutputIterator,NT>;
 
-    std::shared_ptr<basis_interface>& basis()               { return _basis; };
-    const std::shared_ptr<basis_interface> basis() const    { return _basis };
+    virtual void toLocalCoordinates(    const std::array<NT,dimension>& point,
+                                        LocalCoordinates& localCoordinates ) const = 0;
+
+    basis_type& basis()                                 { return _basis; }
+    const basis_type& basis() const                     { return _basis; }
 
 protected:
-    std::shared_ptr<basis_interface>    _basis;
+    static basis_type       _basis = basis_type();
 };
+
+
+// ---------------------------------------------------------
+// 1D BASE SPECIALIZATION
+// ---------------------------------------------------------
 
 
 }
