@@ -233,16 +233,6 @@ AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::derivatives()
 template <  Size Dimension,
             concepts::NumericType NT,
             class SelfType >
-inline const std::shared_ptr<SelfType>
-AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::derivatives() const
-{
-    return this->_derivatives;
-}
-
-
-template <  Size Dimension,
-            concepts::NumericType NT,
-            class SelfType >
 inline void
 AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::computeDerivatives()
 {

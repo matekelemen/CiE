@@ -105,7 +105,6 @@ public:                                                                         
     NT domain( Size index, bool minmax ) const                                      { return !minmax ? _functions[index][0]._min : _functions[index][0]._max; }
     NT domain( Size index, Size minmax ) const                                      { return minmax==0 ? _functions[index][0]._min : _functions[index][0]._max; }
     virtual std::shared_ptr<SelfType>& derivatives()                                { return _derivatives; }
-    virtual const std::shared_ptr<SelfType> derivatives() const                     { return _derivatives; }
     const function_container& functions() const                                     { return _functions; }
     const typename function_container::value_type& functions(Size index) const      { return _functions[index]; }
     const typename function_container::value_type& operator[]( Size index ) const   { return _functions[index]; }
@@ -145,7 +144,6 @@ public:
 
     Size polynomialDegree( Size dimensionIndex, Size polynomialIndex ) const;
     std::shared_ptr<SelfType>& derivatives() override;
-    const std::shared_ptr<SelfType> derivatives() const override;
 
     const coefficient_container& coefficients() const;
     const polynomial_set& coefficients( Size dimensionIndex ) const;
