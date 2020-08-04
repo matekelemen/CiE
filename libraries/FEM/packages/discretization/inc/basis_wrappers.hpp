@@ -3,6 +3,8 @@
 
 // --- Utility Includes ---
 #include <cieutils/concepts.hpp>
+#include <cieutils/macros.hpp>
+#include <cieutils/exceptions.hpp>
 
 // --- STL Includes ---
 #include <algorithm>
@@ -32,6 +34,16 @@ public:
 
     value_type operator*()
     {
+        #ifdef CIE_ENABLE_OUT_OF_RANGE_TESTS
+        {
+            auto stateIt    = _state.begin();
+            auto dimIt      = _array->begin();
+            for ( ; stateIt!=_state.end(); ++stateIt,++dimIt)
+                if ( Size(std::distance( dimIt->begin(), *stateIt )) >= dimIt->size() )
+                    throw OutOfRangeException( "TensorProductBasis::operator*" );
+        }
+        #endif
+
         // Compute product
         value_type value(1.0);
         for (auto valueIt : _state)
@@ -70,10 +82,10 @@ public:
                 --dimIt;
                 --stateIt;
             }
-        } // while (true)
+        } // while
 
         return *this;
-    } // void operator++
+    } // operator++
 
 
 private:
@@ -106,6 +118,24 @@ public:
 
     point_type operator*()
     {
+        #ifdef CIE_ENABLE_OUT_OF_RANGE_TESTS
+        {
+            auto stateIt    = _basisState.begin();
+            auto dimIt      = _basis->begin();
+            for ( ; stateIt!=_basisState.end(); ++stateIt,++dimIt)
+                if ( Size(std::distance( dimIt->begin(), *stateIt )) >= dimIt->size() )
+                    throw OutOfRangeException( "TensorProductDerivative::operator*" );
+        }
+        {
+            auto stateIt    = _derivativeState.begin();
+            auto dimIt      = _derivatives->begin();
+            for ( ; stateIt!=_derivativeState.end(); ++stateIt,++dimIt)
+                if ( Size(std::distance( dimIt->begin(), *stateIt )) >= dimIt->size() )
+                    throw OutOfRangeException( "TensorProductDerivative::operator*" );
+        }
+        #endif
+
+
         point_type derivative;
         std::fill(  derivative.begin(),
                     derivative.end(),
@@ -167,10 +197,10 @@ public:
                 --derivativeIt;
                 --derivativeStateIt;
             }
-        } // while (true)
+        } // while
 
         return *this;
-    } // void operator++
+    } // operator++
 
 
 private:

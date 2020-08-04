@@ -19,6 +19,11 @@ namespace detail {
 template <class BasisType>
 struct TestElement : public AbsElement<BasisType>
 {
+public:
+    TestElement() :
+        AbsElement<BasisType>( typename AbsElement<BasisType>::dof_container({0,1,2,3}) ) 
+    {}
+
 protected:
     void toLocalCoordinates(    const typename TestElement::point_type& point,
                                 TestElement::LocalCoordinates& localPoint ) const override
@@ -81,17 +86,17 @@ TEST_CASE( "AbsElement", "[discretization]" )
                                                 localPoints.begin()) );
 
     // Reference coefficients
-    std::vector<NT> coefficients    = { 1.0, 1.0, 1.0, 1.0 };
+    const std::vector<NT> coefficients    = { 1.0, 2.0, 3.0, 4.0 };
 
     // Test field values
     for (const auto& point : localPoints)
     {
         auto xi     = point[0];
         auto eta    = point[1];
-        auto reference =    coefficients[0] * (1.0-xi)*(1.0-eta)/4.0
+        auto reference =    coefficients[0] * (1.0+xi)*(1.0+eta)/4.0
                             + coefficients[1] * (1.0+xi)*(1.0-eta)/4.0
                             + coefficients[2] * (1.0-xi)*(1.0+eta)/4.0
-                            + coefficients[3] * (1.0+xi)*(1.0+eta)/4.0;
+                            + coefficients[3] * (1.0-xi)*(1.0-eta)/4.0;
         REQUIRE_NOTHROW( element(coefficients, point) );
         CHECK( element(coefficients,point) == Approx(reference) );
     }
@@ -102,22 +107,83 @@ TEST_CASE( "AbsElement", "[discretization]" )
         auto xi     = point[0];
         auto eta    = point[1];
         std::array<NT,Dimension> reference = {
-            coefficients[0] * (eta-1.0)/4.0
+            coefficients[0] * (1.0+eta)/4.0
             + coefficients[1] * (1.0-eta)/4.0
-            + coefficients[2] * -(eta+1.0)/4.0
-            + coefficients[3] * (eta+1.0)/4.0
+            + coefficients[2] * -(1.0+eta)/4.0
+            + coefficients[3] * -(1.0-eta)/4.0
             ,
-            coefficients[0] * (xi-1.0)/4.0
+            coefficients[0] * (1.0+xi)/4.0
             + coefficients[1] * -(1.0+xi)/4.0
             + coefficients[2] * (1.0-xi)/4.0
-            + coefficients[3] * (xi+1.0)/4.0,
+            + coefficients[3] * -(1.0-xi)/4.0,
         };
         REQUIRE_NOTHROW( element.derivative(coefficients,point) );
         auto test = element.derivative(coefficients,point);
         for (Size i=0; i<Dimension; ++i)
             CHECK( test[i] == Approx(reference[i]) );
-        //    std::cout << test[i] << "\t";
-        //std::cout << "\n";
+    }
+} // TEST_CASE AbsElement
+
+
+
+TEST_CASE( "AbsElement1D", "[discretization]" )
+{
+    // General init
+    const Size                                      Dimension = 1;
+    typedef Double                                  NT;
+    typedef LinearBasisFunctionSet<Dimension,NT>    Basis;
+    typedef AbsElement1D<Basis>                     Element;
+
+    const Size                                      resolution = 5;
+
+    // Test constructor
+    REQUIRE_NOTHROW(
+    Element(    std::pair<NT,NT>(0.0,1.0),
+                typename Element::dof_container({0,1}) )
+    );
+
+    Element element(    std::pair<NT,NT>(0.0,1.0),
+                        typename Element::dof_container({0,1}) );
+
+    // Generate reference points
+    std::vector<typename Element::point_type> points;
+    for (Size i=0; i<resolution; ++i)
+        points.push_back( typename Element::point_type({ NT(i)/NT(resolution-1) }) );
+
+    // Basis function coefficients
+    typename Element::coefficient_container coefficients( {2.0,3.0} );
+
+    // Convert points to local coordinates
+    std::vector<typename Element::LocalCoordinates> localPoints;
+    utils::setContainerSize( localPoints, points.size() );
+    REQUIRE_NOTHROW(
+        element.localCoordinates(   points.begin(),
+                                    points.end(),
+                                    localPoints.begin() )
+    );
+
+    // Check field values
+    {
+        for (const auto& point : localPoints)
+        {
+            CHECK(
+                element( coefficients, point ) 
+                == Approx(
+                coefficients[0] * (point[0] + 1.0)/2.0
+                + coefficients[1] * (-point[0] + 1.0)/2.0 )
+            );
+        }
+    }
+
+    // Check field derivatives
+    {
+        for (const auto& point : localPoints)
+        {
+            CHECK(
+                element.derivative( coefficients, point )[0]
+                == Approx( coefficients[0] - coefficients[1] )
+            );
+        }
     }
 }
 

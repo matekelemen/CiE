@@ -15,7 +15,7 @@
 
 // Static assertion
 #define CIE_ASSERT(boolExpression,message)                                  \
-    assert( boolExpression && message );
+    assert( (boolExpression) && message != "" );
 
 // Static assertion
 #define CIE_STATIC_ASSERT(boolExpression)                                   \

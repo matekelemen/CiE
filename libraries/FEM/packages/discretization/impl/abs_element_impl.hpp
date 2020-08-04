@@ -14,6 +14,16 @@ namespace cie::fem {
 // ---------------------------------------------------------
 // COMPUTE FIELD VALUES
 // ---------------------------------------------------------
+template <class BasisType>
+AbsElement<BasisType>::AbsElement( const typename AbsElement<BasisType>::dof_container& dofs ) :
+    DoFMap<typename AbsElement<BasisType>::dof_container>(dofs)
+{
+}
+
+
+// ---------------------------------------------------------
+// COMPUTE FIELD VALUES
+// ---------------------------------------------------------
 
 template <class BasisType>
 template <class CoefficientContainer, class BasisContainer>
@@ -45,7 +55,6 @@ requires concepts::ClassContainer<CoefficientContainer,NT>
         value += (*basis) * coefficient;
         ++basis;
     }
-
     return value;
 }
 
@@ -221,6 +230,79 @@ AbsElement<BasisType>::localCoordinates(  const typename AbsElement<BasisType>::
 }
 
 
+
+
+
+// ---------------------------------------------------------
+// 1D BASE SPECIALIZATION
+// ---------------------------------------------------------
+
+template <class BasisType>
+template <class ...Args>
+AbsElement1D<BasisType>::AbsElement1D(  const std::pair<typename AbsElement1D::NT, typename AbsElement1D::NT>& domain,
+                                        Args&&... args ) :
+    AbsElement<BasisType>( std::forward<Args>(args)... ),
+    _domain(domain),
+    _jacobian( (domain.second-domain.first) / (this->_basis.domain(0,1)-this->_basis.domain(0,0)) ),
+    _invJacobian( 1.0/_jacobian )
+{
+    assert( this->_basis.dimension == 1 );
 }
+
+
+template <class BasisType>
+inline void
+AbsElement1D<BasisType>::toLocalCoordinates(    const typename AbsElement1D::point_type& point,
+                                                typename AbsElement1D::LocalCoordinates& localPoint ) const
+{
+    CIE_ASSERT(
+        (_domain.first <= point[0]) && (point[0] <= _domain.second),
+        "Input coordinate " + std::to_string(point[0]) + " outside element domain ["
+        + std::to_string(_domain.first) + "," + std::to_string(_domain.second) + "]"
+    );
+    localPoint[0] = (point[0] - _domain.first) * _invJacobian - this->_basis.domain(0,1);
+}
+
+
+template <class BasisType>
+inline typename AbsElement1D<BasisType>::NT
+AbsElement1D<BasisType>::toLocalCoordinates( typename AbsElement1D<BasisType>::NT coordinate ) const
+{
+    CIE_ASSERT(
+        _domain.first <= coordinate && coordinate <= _domain.second,
+        "Input coordinate " + std::to_string(coordinate) + " outside element domain ["
+        + std::to_string(_domain.first) + "," + std::to_string(_domain.second) + "]"
+    );
+    return (coordinate - _domain.first) * _invJacobian - this->_basis->domain(0,1);
+}
+
+
+template <class BasisType>
+void 
+AbsElement1D<BasisType>::_derivative(   const typename AbsElement1D::coefficient_container& coefficients,
+                                        const std::array<typename AbsElement1D::basis_value_container,AbsElement1D::dimension>& basisValues,
+                                        const std::array<typename AbsElement1D::basis_value_container,AbsElement1D::dimension>& derivativeValues,
+                                        std::array<typename AbsElement1D::NT,AbsElement1D::dimension>& gradient )
+{
+    std::fill(  gradient.begin(),
+                gradient.end(),
+                0.0 );
+    auto basisDerivatives   = detail::makeTensorProductDerivatives(basisValues, derivativeValues);
+    for (const auto& coefficient : coefficients)
+    {
+        auto basisDerivativeValues  = *basisDerivatives;
+        for (Size dim=0; dim<this->dimension; ++dim)
+            gradient[dim] += basisDerivativeValues[dim] * coefficient;
+
+        ++basisDerivatives;
+    }
+
+    for (auto& component : gradient)
+        component *= _invJacobian;
+}
+
+
+
+} // namespace cie::fem
 
 #endif

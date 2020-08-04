@@ -102,7 +102,6 @@ public:                                                         // <-- main func
 public:                                                                         // <-- Set/get
     const domain_container domain() const;
     const typename domain_container::value_type domain( Size index ) const          { return std::make_pair( _functions[index][0]._min, _functions[index][0]._max ); }
-    NT domain( Size index, bool minmax ) const                                      { return !minmax ? _functions[index][0]._min : _functions[index][0]._max; }
     NT domain( Size index, Size minmax ) const                                      { return minmax==0 ? _functions[index][0]._min : _functions[index][0]._max; }
     virtual std::shared_ptr<SelfType>& derivatives()                                { return _derivatives; }
     const function_container& functions() const                                     { return _functions; }

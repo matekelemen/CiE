@@ -7,6 +7,7 @@
 // --- Internal Includes ---
 #include "../../numeric/inc/basisfunctions.hpp"
 #include "./basis_wrappers.hpp"
+#include "./dof_map.hpp"
 #include "../../utilities/inc/kernel.hpp"
 
 // --- STL Includes ---
@@ -21,8 +22,11 @@ namespace cie::fem {
 // ABSTRACT BASE ELEMENT
 // ---------------------------------------------------------
 
+#define CIE_DOF_CONTAINER_TYPE std::vector<Size>
+
+
 template <class BasisType>
-class AbsElement
+class AbsElement : public DoFMap<CIE_DOF_CONTAINER_TYPE>
 {
     // MEMBER TYPEDEFS -------------------------------------
 public:
@@ -38,6 +42,10 @@ public:
     // MEMBER CLASSES --------------------------------------
 public:
     struct LocalCoordinates : public std::array<NT,dimension> {};
+
+    // CONSTRUCTORS ----------------------------------------
+public:
+    AbsElement( const typename AbsElement::dof_container& dofs );
 
     // COMPUTE FIELD VALUES --------------------------------
 public:
@@ -125,9 +133,38 @@ typename AbsElement<BasisType>::basis_type
 AbsElement<BasisType>::_basis = typename AbsElement<BasisType>::basis_type();
 
 
+
+
+
 // ---------------------------------------------------------
 // 1D BASE SPECIALIZATION
 // ---------------------------------------------------------
+
+template <class BasisType>
+class AbsElement1D : public AbsElement<BasisType>
+{
+public:
+    template <class ...Args>
+    AbsElement1D(   const std::pair<typename AbsElement1D::NT, typename AbsElement1D::NT>& domain,
+                    Args&&... );
+
+protected:
+    virtual void toLocalCoordinates(    const typename AbsElement1D::point_type& point,
+                                        AbsElement1D::LocalCoordinates& localPoint ) const override;
+
+    // Coordinate transformation specialized for 1D cases
+    typename AbsElement1D::NT toLocalCoordinates( typename AbsElement1D::NT coordinate ) const;
+
+    virtual void _derivative(   const typename AbsElement1D::coefficient_container& coefficients,
+                                const std::array<typename AbsElement1D::basis_value_container,AbsElement1D::dimension>& basisValues,
+                                const std::array<typename AbsElement1D::basis_value_container,AbsElement1D::dimension>& derivativeValues,
+                                std::array<typename AbsElement1D::NT,AbsElement1D::dimension>& gradient ) override;
+
+protected:
+    std::pair<typename AbsElement1D::NT, typename AbsElement1D::NT> _domain;
+    typename AbsElement1D::NT                                       _jacobian;
+    typename AbsElement1D::NT                                       _invJacobian;
+};
 
 
 }
