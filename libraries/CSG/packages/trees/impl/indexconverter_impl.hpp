@@ -1,7 +1,9 @@
 #ifndef CSG_NTREE_INDEX_CONVERTER_IMPL_HPP
 #define CSG_NTREE_INDEX_CONVERTER_IMPL_HPP
 
+// --- STL Includes ---
 #include <iterator>
+
 
 namespace cie::csg {
 
@@ -40,7 +42,7 @@ constexpr size_t AbsSpaceTreeIndexConverter<N,M>::numberOfDataPoints()
     return _numberOfDataPoints;
 }
 
-}
+} // namespace detail
 
 
 template <size_t N, size_t M>
@@ -57,6 +59,6 @@ constexpr size_t SpaceTreeIndexConverter<N,M>::convert(const UIntArray<N>& index
 }
 
 
-}
+} // namespace cie::csg
 
 #endif

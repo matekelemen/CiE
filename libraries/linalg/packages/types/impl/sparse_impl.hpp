@@ -1,14 +1,15 @@
 #ifndef LINALG_SPARSE_IMPL_HPP
 #define LINALG_SPARSE_IMPL_HPP
 
+// --- Utility Includes ---
+#include <cieutils/macros.hpp>
+
 // --- STL Includes ---
 #include <algorithm>
 #include <numeric>
 
-namespace cie
-{
-namespace linalg
-{
+namespace cie::linalg {
+
 
 template<concepts::NumericType IndexType, concepts::NumericType ValueType>
 CompressedSparseRowMatrix<IndexType,ValueType>::CompressedSparseRowMatrix( ) :
@@ -23,9 +24,9 @@ std::tuple<IndexType*, IndexType*, ValueType*, Size> CompressedSparseRowMatrix<I
 {
     std::tuple<IndexType*, IndexType*, ValueType*, Size> sparseDataStructure { indices_, indptr_, data_, size1_ };
 
-    indices_ = nullptr;
-    indptr_ = nullptr;
-    data_ = nullptr;
+    indices_    = nullptr;
+    indptr_     = nullptr;
+    data_       = nullptr;
 
     size1_ = 0;
     size2_ = 0;
@@ -84,7 +85,7 @@ template<concepts::NumericType IndexType, concepts::NumericType ValueType>
 std::vector<ValueType> CompressedSparseRowMatrix<IndexType,ValueType>::operator*( const std::vector<ValueType>& vector )
 {
     if (vector.size() != size2_)
-        throw std::runtime_error("Inconsistent sizes in matrix vector multiplication.");
+        CIE_THROW( OutOfRangeException, "Inconsistent sizes in matrix vector multiplication" )
 
     std::vector<ValueType> result( size1_, 0.0 );
 
@@ -141,7 +142,7 @@ void CompressedSparseRowMatrix<IndexType,ValueType>::allocate( const std::vector
     for( Size iDof = 0; iDof < globalNumberOfDofs; ++iDof )
     {
         if (dofToElementCoupling[iDof].size( ) <= 0)
-            throw std::runtime_error("Found dof without connected element!");
+            CIE_THROW( std::runtime_error, "DoF without connected element: " + std::to_string(iDof) )
 
         tmp.resize( 0 );
 
@@ -201,7 +202,7 @@ void CompressedSparseRowMatrix<IndexType,ValueType>::scatter( const linalg::Matr
     Size size = elementMatrix.size1( );
 
     if (size != elementMatrix.size2( ))
-        throw std::runtime_error("Can only scatter square matrix!");
+        CIE_THROW( std::runtime_error, "Can only scatter square matrix!" )
 
     for( Size iRow = 0; iRow < size; ++iRow )
     {
@@ -214,7 +215,7 @@ void CompressedSparseRowMatrix<IndexType,ValueType>::scatter( const linalg::Matr
             auto result = std::find( indices_ + indptr_[rowIndex], indices_ + indptr_[rowIndex + 1], columnIndex );
 
             if (!result)
-                throw std::runtime_error("Entry was not found in sparsity pattern!");
+                CIE_THROW( std::runtime_error, "Entry was not found in sparsity pattern!" )
 
             Size index = std::distance( indices_, result );
 
@@ -224,7 +225,6 @@ void CompressedSparseRowMatrix<IndexType,ValueType>::scatter( const linalg::Matr
     } // iRow
 }
 
-} // splinekernel
-} // cie
+} // cie::splinekernel
 
 #endif // CIE_SPARSE_IMPL_HPP

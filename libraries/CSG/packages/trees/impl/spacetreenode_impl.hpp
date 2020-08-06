@@ -1,7 +1,10 @@
 #ifndef CIE_CSG_SPACETREENODE_IMPL_HPP
 #define CIE_CSG_SPACETREENODE_IMPL_HPP
 
-// --- Internal Imports ---
+// --- Utility Includes ---
+#include <cieutils/macros.hpp>
+
+// --- Internal Includes ---
 #include "cmake_variables.hpp"
 
 // --- STL Includes ---
@@ -254,7 +257,7 @@ const SpaceTreeNode<N, M>& SpaceTreeNode<N, M>::child(size_t index) const
     if (_children[index]!=nullptr)
         return *(_children[index]);
     else
-        throw std::runtime_error("Unable to dereference child node (nullptr)!");
+        CIE_THROW( NullPtrException, "Unable to dereference child node" )
 }
 
 

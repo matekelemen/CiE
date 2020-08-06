@@ -12,7 +12,8 @@ file( GLOB MESHKERNEL_HEADER_FILES inc/*.h* )
 # ---------------------------------------------------------
 # LIBRARIES AND EXECUTABLES
 # ---------------------------------------------------------
-ADD_SHARED_LIBRARY( meshkernel ${MESHKERNEL_SOURCE_FILES} ${MESHKERNEL_HEADER_FILES} ) 
+ADD_SHARED_LIBRARY( meshkernel ${MESHKERNEL_SOURCE_FILES} ${MESHKERNEL_HEADER_FILES} )
+TARGET_LINK_LIBRARIES_INSTALL( meshkernel cieutils )
 
 add_executable( meshkernel_testrunner ${MESHKERNEL_TEST_FILES} ${MESHKERNEL_HEADER_FILES} )
 TARGET_LINK_LIBRARIES_INSTALL( meshkernel_testrunner meshkernel )

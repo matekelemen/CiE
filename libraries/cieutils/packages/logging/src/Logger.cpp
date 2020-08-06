@@ -1,12 +1,12 @@
 // --- Internal Includes ---
 #include "../inc/Logger.hpp"
+#include "../../macros/inc/exceptions.hpp"
 
 // --- STL Includes ---
 #include <algorithm>
 
 
-namespace cie {
-namespace utils {
+namespace cie::utils {
 
 
 namespace detail {
@@ -112,7 +112,7 @@ void Logger::warn( const std::string& message )
 void Logger::error( const std::string& message )
 {
     log( "ERROR: " + message );
-    throw std::runtime_error( message );
+    CIE_THROW( std::runtime_error, message );
 }
 
 
@@ -235,5 +235,4 @@ void Logger::printToStreams( const std::string& message )
 
 
 
-}
-}
+} // namespace cie::utils

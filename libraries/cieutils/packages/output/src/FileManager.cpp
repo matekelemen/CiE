@@ -1,6 +1,7 @@
 // --- Internal Includes ---
 #include "../inc/FileManager.hpp"
 #include "../inc/fileinfo.hpp"
+#include "../../macros/inc/exceptions.hpp"
 #include "cmake_variables.hpp"
 
 // --- STL Includes ---
@@ -8,8 +9,7 @@
 #include <algorithm>
 
 
-namespace cie {
-namespace utils {
+namespace cie::utils {
 
 
 std::vector<std::string> FileManager::_paths = {};
@@ -28,7 +28,7 @@ FileManager::FileManager( const std::string& path ) :
     if (it == _paths.end() )
         _paths.push_back(_path);
     else
-        throw std::runtime_error( "A FileManager is already active in " + _path );
+        CIE_THROW( std::runtime_error, "A FileManager is already active in " + _path )
 }
 
 
@@ -135,5 +135,4 @@ std::string FileManager::filePath( const std::string& fileName )
 }
 
 
-}
-}
+} // namespace cie::utils

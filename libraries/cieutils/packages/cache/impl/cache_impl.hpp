@@ -1,12 +1,14 @@
 #ifndef CIE_UTILITIES_CACHE_IMPL_HPP
 #define CIE_UTILITIES_CACHE_IMPL_HPP
 
+// --- Utility Includes ---
+#include <cieutils/macros.hpp>
+
 // --- Internal Includes ---
 #include "../../exceptions/inc/exception.hpp"
 
 
-namespace cie::utils
-{
+namespace cie::utils {
 
 
 template <  concepts::STLContainer InputContainer,
@@ -37,7 +39,7 @@ Cache<InputContainer,OutputContainer>::operator[]( Size cacheID ) const
 {
     auto mapIt  = _cache.find(cacheID);
     if (mapIt == _cache.end())
-        throw OutOfRangeException( "Cache::operator[]" );
+        CIE_THROW( OutOfRangeException, "Cache::operator[]" )
     
     return mapIt->second;
 }
@@ -56,7 +58,7 @@ Cache<InputContainer,OutputContainer>::hash(    typename Cache<InputContainer,Ou
 }
 
 
-}
+} // namespace cie::utils
 
 
 #endif

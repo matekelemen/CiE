@@ -6,6 +6,7 @@
 #include <cmath>
 #include <numeric>
 
+
 namespace cie::linalg {
 
 template <class ValueType>
@@ -30,7 +31,7 @@ void updatePermutation( const Matrix<ValueType>& matrix,
     std::iter_swap( permutation.begin( ) + index, pivot );
 }
 
-}
+} // cie::linalg
 
 
 

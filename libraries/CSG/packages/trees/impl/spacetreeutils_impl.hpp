@@ -1,12 +1,15 @@
 #ifndef CSG_NTREE_UTILITIES_IMPL_HPP
 #define CSG_NTREE_UTILITIES_IMPL_HPP
 
+// --- Utility Includes ---
+#include <cieutils/macros.hpp>
+
 // --- STL Includes ---
 #include <algorithm>
 #include <string>
 
-namespace cie {
-namespace csg {
+
+namespace cie::csg {
 
 
 constexpr const size_t intPow(int base, size_t exponent)
@@ -32,7 +35,7 @@ constexpr void baseN(size_t base_10, size_t base, UIntArray<M>& base_N)
         }
     }
     if (base_10 != 0)
-        throw std::overflow_error("Error converting to base " + std::to_string(base));
+        throw std::overflow_error( "Error converting to base " + std::to_string(base) );
 }
 
 
@@ -115,7 +118,8 @@ void writeSpaceTree(const SpaceTreeNode<N,M>& node, const std::string& filename)
         // Write data
         node.write(file);
     }
-    else throw std::runtime_error("Unable to write to " + filename);
+    else
+        CIE_THROW( std::runtime_error, "Unable to write to " + filename )
 
     file.close();
 }
@@ -154,8 +158,7 @@ void boundaryNodes(     const SpaceTreeNode<N,M>& root,
 }
 
 
-}
-}
+} // namespace cie::csg
 
 
 #endif

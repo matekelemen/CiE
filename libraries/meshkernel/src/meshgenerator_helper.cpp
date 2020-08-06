@@ -1,3 +1,7 @@
+// --- Utility Includes ---
+#include <cieutils/macros.hpp>
+
+// --- Internal Includes ---
 #include "meshgenerator_helper.hpp"
 
 // --- STL Includes ---
@@ -6,11 +10,10 @@
 #include <algorithm>
 #include <stdexcept>
 
-namespace cie {
-namespace meshkernel
-{
-namespace meshgeneratorhelper
-{
+
+namespace cie::meshkernel {
+namespace meshgeneratorhelper {
+
 
 Vector2D minus( const Vector2D& v1, const Vector2D& v2 )
 {
@@ -115,9 +118,7 @@ void divideRegion( Vertex2DVector& vertices,
   std::reverse( region2.end( ) - numberOfSegments + 1, region2.end( ) );
 
   if( region1.size( ) < 3 || region2.size( ) < 3 )
-  {
-    throw std::runtime_error( "Regions too small after division" );
-  }
+      CIE_THROW( std::runtime_error, "Regions too small after division" )
 } // divideRegion
 
 bool attemptDivision( Vertex2DVector& vertices,
@@ -197,9 +198,7 @@ bool chopTriangle( Triangulation& triangulation,
     return false;
   }
   else if( numberOfVertices < 3 )
-  {
-    throw std::runtime_error( "Region has less than 3 vertices!" );
-  }
+      CIE_THROW( std::runtime_error, "Region has less than 3 vertices" )
 
   for( size_t i = 0; i < numberOfVertices; ++i )
   {
@@ -224,15 +223,12 @@ void prepareForTriangulating( const Vertex2DVector& vertices,
                               TriangulationParameters& parameters )
 {
   if( polygonRegions.empty( ) )
-  {
-    throw std::invalid_argument( "No region was passed." );
-  }
+      CIE_THROW( std::invalid_argument, "No region was passed" )
+
   for( const auto& region : polygonRegions )
   {
     if( region.size( ) < 3 )
-    {
-      throw std::invalid_argument( "Region has less than 3 points." );
-    }
+        CIE_THROW( std::invalid_argument, "Region has less than 3 points!" )
   }
   if( parameters.edgeLength == 0.0 )
   {
@@ -240,6 +236,5 @@ void prepareForTriangulating( const Vertex2DVector& vertices,
   }
 }
 
-} // namespace meshkernel
+} // namespace cie::meshkernel
 } // namespace meshgeneratorhelper
-}

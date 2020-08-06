@@ -1,3 +1,6 @@
+// --- Utility Includes ---
+#include <cieutils/macros.hpp>
+
 // --- Internal Includes ---
 #include "basisfunctions.hpp"
 #include "curve.hpp"
@@ -9,9 +12,7 @@
 #include <string>
 #include <stdexcept>
 
-namespace cie
-{
-namespace splinekernel
+namespace cie::splinekernel
 {
 
 std::array<std::vector<double>, 2> evaluate2DCurve( const std::vector<double>& tCoordinates, 
@@ -25,9 +26,7 @@ std::array<std::vector<double>, 2> evaluate2DCurve( const std::vector<double>& t
     size_t p = m - numberOfPoints - 1;
 
     if( yCoordinates.size( ) != numberOfPoints )
-    {
-        throw std::runtime_error( "Inconsistent size in evaluate2DCurve." );
-    }
+        CIE_THROW( OutOfRangeException, "Inconsistent size in evaluate2DCurve" )
 
     std::vector<double> curveX( numberOfSamples, 0.0 );
     std::vector<double> curveY( numberOfSamples, 0.0 );
@@ -115,9 +114,12 @@ size_t findKnotSpan( double t,
     // Check if t resides within the allowed bounds
     if( t < knotVector.front( ) || t > knotVector.back( ) )
     {
-        throw std::out_of_range( "t out range: t = " + std::to_string( t ) +
+        CIE_THROW( 
+            OutOfRangeException, 
+            "t out range: t = " + std::to_string( t ) +
                                  " but can only be within " + std::to_string( knotVector.front( ) ) +
-                                 " and " + std::to_string( knotVector.back( ) ) + "\n" );
+                                 " and " + std::to_string( knotVector.back( ) ) + "\n" 
+            )
     }
 
     if( std::abs( t - knotVector[numberOfControlPoints + 1] ) < tolerance )
@@ -141,9 +143,7 @@ std::array<std::vector<double>, 2> evaluate2DCurveDeBoor( const std::vector<doub
     size_t p = m - numberOfPoints - 1;
 
     if( yCoordinates.size( ) != numberOfPoints )
-    {
-        throw std::runtime_error( "Inconsistent size in evaluate2DCurveDeBoor." );
-    }
+        CIE_THROW( OutOfRangeException, "Inconsistent size in evaluate2DCurveDeBoor" );
 
     std::vector<double> curveX( numberOfSamples, 0.0 );
     std::vector<double> curveY( numberOfSamples, 0.0 );
@@ -165,5 +165,4 @@ std::array<std::vector<double>, 2> evaluate2DCurveDeBoor( const std::vector<doub
     return { curveX, curveY};
 }
 
-} // namespace splinekernel
-} // namespace cie
+} // namespace cie::splinekernel

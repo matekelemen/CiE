@@ -2,7 +2,8 @@
 #define GLVISUALIZATION_SHADERS_IMPL_HPP
 
 // --- Utility Includes ---
-#include "cieutils/file.hpp"
+#include <cieutils/file.hpp>
+#include <cieutils/macros.hpp>
 
 // --- Internal Includes ---
 #include "../inc/shaders.hpp"
@@ -11,8 +12,8 @@
 #include <string>
 #include <sstream>
 
-namespace cie {
-namespace gl {
+
+namespace cie::gl {
 
 
 ShaderStruct::ShaderStruct( const ShaderCode& source,
@@ -95,7 +96,7 @@ ShaderStruct::ShaderStruct( const std::string& fileName )
             numericContainer    = nullptr;
         }
         else
-            throw std::runtime_error( "Unrecognized shader property: " + name );
+            CIE_THROW( std::runtime_error, "Unrecognized shader property: " + name )
 
         // Convert to stream and parse
         std::istringstream stringStream(values);
@@ -108,7 +109,7 @@ ShaderStruct::ShaderStruct( const std::string& fileName )
                 else if (numericContainer != nullptr)
                     numericContainer->push_back( std::atoi(value.c_str()) );
                 else
-                    throw std::runtime_error( "Unset container pointer!" );
+                    CIE_THROW( NullPtrException, "Unset container pointer!" )
             }
 
         }
@@ -192,8 +193,7 @@ void ShaderStruct::print( std::ostream& stream ) const
 
 
 
-}
-}
+} // namespace cie::gl
 
 
 #endif

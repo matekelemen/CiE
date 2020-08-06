@@ -1,6 +1,9 @@
 // --- Linalg Includes ---
 #include <linalg/linalg.hpp>
 
+// --- Utility Includes ---
+#include <cieutils/macros.hpp>
+
 // --- Internal Include ---
 #include "finiteelements.hpp"
 #include "basisfunctions.hpp"
@@ -10,12 +13,8 @@
 #include <algorithm>
 #include <numeric>
 
-namespace cie
-{
-namespace splinekernel
-{
-namespace detail
-{
+namespace cie::splinekernel {
+namespace detail {
 
 std::array<std::vector<double>, 2> constructOpenKnotVector( std::array<size_t, 2> numberOfElements,
                                                             std::array<size_t, 2> polynomialDegrees,
@@ -129,7 +128,7 @@ std::array<double, 2> BSplineFiniteElementMesh::mapToGlobal( std::array<double, 
 std::vector<size_t> BSplineFiniteElementMesh::boundaryDofIds( size_t normal, bool side ) const
 {
     if (normal >= 2)
-        throw std::runtime_error("Invalid normal!");
+        CIE_THROW( std::runtime_error, "Invalid normal!" )
 
     std::array<size_t, 2> numberOfDofs { knotVectors_[0].size( ) - polynomialDegrees_[0] - 1,
                                          knotVectors_[1].size( ) - polynomialDegrees_[1] - 1 };
@@ -258,5 +257,4 @@ LinearSystem BSplineFiniteElementMesh::assembleLinearSystem( const SpatialFuncti
     return { globalMatrix.release( ), globalSourceVector };
 }
 
-} // namespace splinekernel
-} // namespace cie
+} // namespace cie::splinekernel

@@ -1,6 +1,9 @@
 // --- Linalg Includes ---
 #include <linalg/overloads.hpp>
 
+// --- Utility Includes ---
+#include <cieutils/macros.hpp>
+
 // --- Internal Includes ---
 #include "../inc/minimumdisc.hpp"
 
@@ -16,8 +19,7 @@ std::random_device randomDevice;
 std::mt19937 randomGenerator( randomDevice() );
 
 
-namespace cie {
-namespace csg {
+namespace cie::csg {
 
 
 // Define the necessary permutations to check, possible scenarios (neglecting 0 radius discs):
@@ -159,7 +161,7 @@ Disc::Disc( const DoubleArray<2>& point1,
     // DEBUG: check if the other two points are as far from the center as the first one
     double tolerance = 1e-16;
     if ( std::abs(distance(_center,point2)-_radius2)>tolerance || std::abs(distance(_center,point3)-_radius2)>tolerance )
-        throw std::runtime_error("Disc center calculation failed!");
+        CIE_THROW( std::runtime_error, "Disc center calculation failed!" )
     */
 }
 
@@ -237,7 +239,7 @@ int MinimumEnclosingDisc::build(double tolerance)
 										getPoint(_activeIndices[indices[2]])	);
 				}
 				else
-					throw std::runtime_error("Invalid number of disc points");
+                    CIE_THROW( std::runtime_error, "Invalid number of disc points!" )
 
 				// Check disc
 				enclosed = true;
@@ -272,7 +274,7 @@ int MinimumEnclosingDisc::build(double tolerance)
 				else
 					std::cout << "\t\t" << getPoint(_activeIndices[k])[0] << ", " << getPoint(_activeIndices[k])[1] << "\n";
 			}
-			throw std::runtime_error("Failed to find a new disc!");
+            CIE_THROW( std::runtime_error, "Failed to find a new disc!" )
 		}
 
 		// Find best disc if there are candidates
@@ -374,7 +376,7 @@ int MinimumEnclosingDisc::addActiveIndex(int index)
 			std::cout << "Current disc:\n"
 				<< "\tcenter: " << _disc._center[0] << ", " << _disc._center[1] << "\n"
 				<< "\tradius: " << std::sqrt(_disc._radius2) << "\n";
-			throw std::runtime_error("Failed to add index " + std::to_string(index) + " to the active set!");
+            CIE_THROW( std::runtime_error, "Failed to add index " + std::to_string(index) + " to the active set!" )
 		}
 	}
 
@@ -403,7 +405,7 @@ void MinimumEnclosingDisc::removeActiveIndex(int index)
 			std::cout << "Current disc:\n"
 				<< "\tcenter: " << _disc._center[0] << ", " << _disc._center[1] << "\n"
 				<< "\tradius: " << std::sqrt(_disc._radius2) << "\n";
-			throw std::runtime_error("Failed to remove index " + std::to_string(index) + " from the active set!");
+            CIE_THROW( std::runtime_error, "Failed to remove index " + std::to_string(index) + " from the active set!" )
 		}
 
 		if (swap)
@@ -423,5 +425,4 @@ void MinimumEnclosingDisc::removeActiveIndex(int index)
 }
 
 
-} // namespace csg
-} // namespace cie
+} // namespace cie::csg

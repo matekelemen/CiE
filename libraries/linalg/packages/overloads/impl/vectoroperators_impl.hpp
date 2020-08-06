@@ -239,7 +239,7 @@ template <cie::concepts::NumericContainer ArrayType>
 typename ArrayType::value_type operator*( const ArrayType& lhs, const ArrayType& rhs )
 {
     if (lhs.size() != rhs.size())
-        throw std::runtime_error("Inconsistent vector sizes!");
+        CIE_THROW( cie::OutOfRangeException, "Inconsistent vector sizes!" )
     
     return std::inner_product( lhs.begin(), lhs.end(), rhs.begin(), 0.0 );
 }

@@ -1,6 +1,9 @@
 #ifndef LINALG_MATRIX_OPERATORS_IMPL_HPP
 #define LINALG_MATRIX_OPERATORS_IMPL_HPP
 
+// --- Utility Includes ---
+#include <cieutils/macros.hpp>
+
 // --- STD Incldues ---
 #include <string>
 #include <algorithm>
@@ -43,7 +46,7 @@ Matrix<ValueType> operator+(const Matrix<ValueType>& lhs, const Matrix<ValueType
 {
     // Check sizes
     if (lhs.size1() != rhs.size1()  ||  lhs.size2() != rhs.size2())
-        throw std::runtime_error("Matrix<ValueType> size mismatch!");
+        CIE_THROW( OutOfRangeException, "Matrix size mismatch!" )
     
     std::vector<ValueType> rowMajorData(lhs.size1()*lhs.size2());
     std::transform(
@@ -64,7 +67,7 @@ Matrix<ValueType> operator-(const Matrix<ValueType>& lhs, const Matrix<ValueType
 {
     // Check sizes
     if (lhs.size1() != rhs.size1()  ||  lhs.size2() != rhs.size2())
-        throw std::runtime_error("Matrix<ValueType> size mismatch!");
+        CIE_THROW( OutOfRangeException, "Matrix size mismatch!" )
     
     std::vector<ValueType> rowMajorData(lhs.size1()*lhs.size2());
     std::transform(
@@ -107,7 +110,7 @@ template <concepts::NumericType ValueType, concepts::NumericType ScalarType>
 Matrix<ValueType> operator/(const Matrix<ValueType>& matrix, ScalarType scalar)
 {
     if (std::abs(scalar)==0)
-        throw std::runtime_error("Division by 0!");
+        CIE_THROW( DivisionByZeroException, "" )
     return matrix * (1/scalar);
 }
 
@@ -117,12 +120,13 @@ ContainerType operator*(const ContainerType& vector, const Matrix<ValueType>& ma
 {
     // Check size compatibility
     if (vector.size() != matrix.size1())
-        throw std::runtime_error(
+        CIE_THROW( 
+            OutOfRangeException,
             "Cannot multiply vector of size " + 
             std::to_string(vector.size()) +
             " by matrix of size " + 
-            std::to_string(matrix.size1()) + "x" + std::to_string(matrix.size2()) 
-            );
+            std::to_string(matrix.size1()) + "x" + std::to_string(matrix.size2())
+        )
     
     ContainerType result(matrix.size2());
     std::fill( result.begin(), result.end(), 0 );
@@ -141,12 +145,13 @@ std::array<ValueType,N> operator*(const std::array<ValueType,N>& vector, const M
 {
     // Check size compatibility
     if (vector.size() != matrix.size1())
-        throw std::runtime_error(
+        CIE_THROW(
+            OutOfRangeException,
             "Cannot multiply vector of size " + 
             std::to_string(vector.size()) +
             " by matrix of size " + 
             std::to_string(matrix.size1()) + "x" + std::to_string(matrix.size2()) 
-            );
+        )
     
     std::array<ValueType,N> result;
     std::fill( result.begin(), result.end(), 0 );
@@ -165,12 +170,13 @@ ContainerType operator*(const Matrix<ValueType>& matrix, const ContainerType& ve
 {
     // Check size compatibility
     if (vector.size() != matrix.size2())
-        throw std::runtime_error(
+        CIE_THROW(
+            OutOfRangeException,
             "Cannot multiply matrix of size " + 
             std::to_string(matrix.size1()) + "x" + std::to_string(matrix.size2()) +
             " by vector of size " + 
             std::to_string(vector.size())
-            );
+        )
     
     ContainerType result(matrix.size1());
     std::fill( result.begin(), result.end(), 0 );
@@ -189,12 +195,13 @@ std::array<ValueType,N> operator*(const Matrix<ValueType>& matrix, const std::ar
 {
     // Check size compatibility
     if (vector.size() != matrix.size2())
-        throw std::runtime_error(
+        CIE_THROW(
+            OutOfRangeException,
             "Cannot multiply matrix of size " + 
             std::to_string(matrix.size1()) + "x" + std::to_string(matrix.size2()) +
             " by vector of size " + 
             std::to_string(vector.size())
-            );
+        )
     
     std::array<ValueType,N> result;
     std::fill( result.begin(), result.end(), 0 );
@@ -213,12 +220,13 @@ Matrix<ValueType> operator*(const Matrix<ValueType>& lhs, const Matrix<ValueType
 {
     // Check size compatibility
     if (lhs.size2() != rhs.size1())
-        throw std::runtime_error(
+        CIE_THROW(
+            OutOfRangeException,
             "Cannot multiply matrix of size " + 
             std::to_string(lhs.size1()) + "x" + std::to_string(lhs.size2()) +
             " by matrix of size " + 
             std::to_string(rhs.size1()) + "x" + std::to_string(rhs.size2())
-            );
+        )
 
     Matrix<ValueType> result(lhs.size1(), rhs.size2(), 0.0);
 

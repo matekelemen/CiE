@@ -8,8 +8,8 @@
 #include <vector>
 
 
-namespace cie::splinekernel
-{
+namespace cie::splinekernel {
+
 
 TEST_CASE("Linear interpolation")
 {

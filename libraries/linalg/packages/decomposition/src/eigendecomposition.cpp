@@ -1,18 +1,20 @@
+// --- Utility Includes ---
+#include <cieutils/macros.hpp>
+
 // --- Internal Includes ---
 #include "../inc/eigendecomposition.hpp"
 #include "../../types/inc/typeoperations.hpp"
 #include "../../overloads/inc/vectoroperators.hpp"
 #include "../../overloads/inc/matrixoperators.hpp"
 
-namespace cie {
-namespace linalg {
+namespace cie::linalg {
 
 // Get principal component by the power iteration method
 DoubleVector principalComponent(const Matrix<Double>& matrix, Double tolerance, Size maxIterations)
 {
     // Check if matrix is rectangular
     if (matrix.size1() != matrix.size2())
-        throw std::runtime_error("Cannot perform eigendecomposition on a non-rectangular matrix!");
+        CIE_THROW( std::runtime_error, "Cannot perform eigendecomposition on a non-rectangular matrix!" )
 
     // Create initial vector 
     DoubleVector memory(matrix.size2(), RAND_MAX/2.0);
@@ -36,5 +38,4 @@ DoubleVector principalComponent(const Matrix<Double>& matrix, Double tolerance, 
     return output;
 }
 
-}
-}
+} // namespace cie::linalg

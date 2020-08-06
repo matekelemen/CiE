@@ -40,7 +40,7 @@ public:
             auto dimIt      = _array->begin();
             for ( ; stateIt!=_state.end(); ++stateIt,++dimIt)
                 if ( Size(std::distance( dimIt->begin(), *stateIt )) >= dimIt->size() )
-                    throw OutOfRangeException( "TensorProductBasis::operator*" );
+                    CIE_THROW( OutOfRangeException, "TensorProductBasis::operator*" )
         }
         #endif
 
@@ -124,14 +124,14 @@ public:
             auto dimIt      = _basis->begin();
             for ( ; stateIt!=_basisState.end(); ++stateIt,++dimIt)
                 if ( Size(std::distance( dimIt->begin(), *stateIt )) >= dimIt->size() )
-                    throw OutOfRangeException( "TensorProductDerivative::operator*" );
+                    CIE_THROW( OutOfRangeException, "TensorProductDerivative::operator*" )
         }
         {
             auto stateIt    = _derivativeState.begin();
             auto dimIt      = _derivatives->begin();
             for ( ; stateIt!=_derivativeState.end(); ++stateIt,++dimIt)
                 if ( Size(std::distance( dimIt->begin(), *stateIt )) >= dimIt->size() )
-                    throw OutOfRangeException( "TensorProductDerivative::operator*" );
+                    CIE_THROW( OutOfRangeException, "TensorProductDerivative::operator*" )
         }
         #endif
 

@@ -1,6 +1,9 @@
 #ifndef LINALG_TYPE_OPERATIONS_IMPL_HPP
 #define LINALG_TYPE_OPERATIONS_IMPL_HPP
 
+// --- Utility Includes ---
+#include <cieutils/macros.hpp>
+
 // --- STL Includes ---
 #include <cmath>
 #include <stdexcept>
@@ -33,7 +36,7 @@ void normalize(T& object, NormFunction<T> measure, double tolerance)
     double objectNorm = measure(object);
     if ( std::abs(objectNorm)<tolerance )
     {
-        throw std::runtime_error("Cannot normalize an object with 0 norm!");
+        CIE_THROW( std::runtime_error, "Cannot normalize an object with 0 norm!" )
     }
     else
     {

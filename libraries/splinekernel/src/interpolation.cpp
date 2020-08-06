@@ -1,6 +1,9 @@
 // --- Linalg Includes ---
 #include <linalg/linalg.hpp>
 
+// --- Utility Includes ---
+#include <cieutils/macros.hpp>
+
 // --- Internal Includes ---
 #include "interpolation.hpp"
 #include "basisfunctions.hpp"
@@ -77,9 +80,7 @@ ControlPointsAndKnotVector interpolateWithBSplineCurve( const ControlPoints2D& i
     size_t numberOfPoints = interpolationPoints[0].size( );
 
     if( interpolationPoints[1].size( ) != numberOfPoints )
-    {
-        throw std::runtime_error("Inconsistent sizes in interpolate Curve!");
-    }
+        CIE_THROW( OutOfRangeException, "Inconsistent sizes in interpolate Curve" )
 
     std::vector<double> parameterPositions = centripetalParameterPositions( interpolationPoints );
     std::vector<double> knotVector = knotVectorUsingAveraging( parameterPositions, polynomialDegree );
@@ -177,11 +178,12 @@ std::vector<double> knotVectorUsingAveraging( const std::vector<double>& paramet
     size_t numberOfInnerKnots = numberOfPoints - polynomialDegree - 1;
 
     if( polynomialDegree >= numberOfPoints )
-    {
-        throw std::runtime_error( "Polynomial degree " + std::to_string( polynomialDegree ) +
+        CIE_THROW( 
+            std::runtime_error,
+            "Polynomial degree " + std::to_string( polynomialDegree ) +
                                   " is too high for " + std::to_string( numberOfPoints ) +
-                                  " interpolation points." );
-    }
+                                  " interpolation points."
+        )
 
     std::vector<double> knotVector( numberOfKnots, 0.0 );
 

@@ -1,13 +1,16 @@
+// --- Utility Includes ---
+#include <cieutils/macros.hpp>
+
+// --- Internal Includes ---
 #include "basisfunctions.hpp"
 
+// --- STL Includes ---
 #include <string>
 #include <cmath>
 #include <stdexcept>
 
-namespace cie
-{
-namespace splinekernel
-{
+namespace cie::splinekernel {
+
 
 double evaluateBSplineBasis( double t, size_t i, size_t p, const std::vector<double>& knotVector )
 {
@@ -16,14 +19,10 @@ double evaluateBSplineBasis( double t, size_t i, size_t p, const std::vector<dou
 
   // check if i is in interval 0 <= i <= n. (with n = m-p-1) and if t is in the interval of the knot vector
   if( i > ( m - p - 1 ) )
-  {
-    throw std::range_error( "Index " + std::to_string( i ) + " out of range!");
-  }
+      CIE_THROW( OutOfRangeException, "Index " + std::to_string( i ) + " out of range!" )
 
   if( t < knotVector.front() || t > knotVector.back( ) )
-  {
-    throw std::range_error( "t is not with the interval!" );
-  }
+      CIE_THROW( OutOfRangeException, "t is not within the interval!" )
 
   if( p == 0 )
   {
@@ -58,9 +57,7 @@ double evaluateBSplineBasis( double t, size_t i, size_t p, const std::vector<dou
 double evaluateBSplineDerivative( double t, size_t i, size_t p, const std::vector<double>& knotVector )
 {
     if( p == 0 )
-    {
-        throw std::runtime_error( "Invalid polynomial degree!" );
-    }
+        CIE_THROW( std::runtime_error, "Invalid polynomial degree! (" + std::to_string(p) + ")" )
 
     double factor1 = knotVector[i + p    ] - knotVector[i    ];
     double factor2 = knotVector[i + p + 1] - knotVector[i + 1];
@@ -78,6 +75,4 @@ double evaluateBSplineDerivative( double t, size_t i, size_t p, const std::vecto
     return factor1 - factor2;
 }
 
-} // namespace splinekernel
-} // namespace cie
-
+} // namespace cie::splinekernel

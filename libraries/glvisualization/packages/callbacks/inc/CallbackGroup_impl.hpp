@@ -1,11 +1,13 @@
 #ifndef GLVISUALIZATION_CALLBACK_GROUP_IMPL_HPP
 #define GLVISUALIZATION_CALLBACK_GROUP_IMPL_HPP
 
+// --- Utility Includes ---
+#include <cieutils/macros.hpp>
+
 // --- STL Includes ---
 #include <sstream>
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
     
 
 template <class CallbackType>
@@ -29,7 +31,7 @@ CameraType* CallbackGroup::getCameraPtr( WindowPtr window )
     {
         std::stringstream stream;
         stream << userPtr;
-        throw std::runtime_error( "Unset user pointer for window " + stream.str() );
+        CIE_THROW( std::runtime_error, "Unset user pointer for window " + stream.str() )
     }
 
     // Reinterpret as DrawManager and get camera
@@ -51,7 +53,6 @@ CameraType* CallbackGroup::getCameraPtr( WindowPtr window )
 }
 
 
-}
-}
+} // namespace cie::gl
 
 #endif

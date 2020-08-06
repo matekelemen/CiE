@@ -1,6 +1,8 @@
 
-namespace cie {
-namespace opt {
+// --- Utility Includes ---
+#include <cieutils/macros.hpp>
+
+namespace cie::opt {
 
 
 template<size_t N>
@@ -14,11 +16,11 @@ QuadraticSubstitute<N>::QuadraticSubstitute(const std::vector<const DoubleArray<
 template<size_t N>
 void QuadraticSubstitute<N>::build(const std::vector<const DoubleArray<N>*>& points, const DoubleVector& values) {
     // Check sizes
-    if (points.size()!=3 || values.size()!=3) 
-        throw std::runtime_error("Invalid number of data sites!");
+    if (points.size()!=3 || values.size()!=3)
+        CIE_THROW( std::runtime_error, "Invalid nuumber of data sites!" )
 
     if (points[0]->size()!=points[1]->size() || points[1]->size()!=points[2]->size())
-        throw std::runtime_error("Inconsistent point sizes!");
+        CIE_THROW( OutOfRangeException, "Inconsistent point sizes!" )
     
     auto pts = points;
     auto vls = values;
@@ -58,13 +60,13 @@ void QuadraticSubstitute<N>::build(const std::vector<const DoubleArray<N>*>& poi
     double ratio    = ( (*pts[2])[mainComponent]-(*pts[0])[mainComponent] );
 
     if ( std::abs(ratio)<tolerance )
-        throw std::runtime_error("Repeated end sample point!");
+        CIE_THROW( std::runtime_error, "Duplicate end sample point!" )
 
     ratio           = ( (*pts[1])[mainComponent]-(*pts[0])[mainComponent] ) / ratio;
     double ratio2   = ratio*ratio;
 
     if ( std::abs(ratio)<tolerance || std::abs(ratio-1.0)<tolerance )
-        throw std::runtime_error("Repeated middle sample point!");
+        CIE_THROW( std::runtime_error, "Duplicate middle sample point!" )
 
     this->_coefficients = {
         vls[2],
@@ -79,10 +81,10 @@ std::pair<DoubleArray<N>,double> QuadraticSubstitute<N>::minimum() const {
 
     // Check minimum requirements
     if (std::abs(this->_coefficients[2])<1e-15)
-        throw std::runtime_error("Substitute function is linear!");
+        CIE_THROW( std::runtime_error, "Substitute function is linear!" )
 
     if (this->_coefficients[2]<0.0)
-        throw std::runtime_error("Substitute function does not have a minimum!");
+        CIE_THROW( std::runtime_error, "Substitute function does not have a minimum!" )
 
     // Compute parameter at minimum
     double minParam     = -this->_coefficients[1]/2/this->_coefficients[2];
@@ -108,5 +110,4 @@ double QuadraticSubstitute<N>::operator()(double parameter) const {
 
 
 
-}
-}
+} // namespace cie::opt

@@ -3,8 +3,8 @@
 
 // --- Internal Includes ---
 #include "../../exceptions/inc/exception.hpp"
+#include "./detail.hpp"
 #include "cmake_variables.hpp"
-#include "detail.hpp"
 
 // --- STL Includes ---
 #include <sstream>
@@ -18,11 +18,8 @@
     if (pointer == nullptr)                                                         \
     {                                                                               \
         std::stringstream message;                                                  \
-        auto location = std::experimental::source_location::current();              \
-        message << "In file " << location.file_name();                              \
-        message << "\n\t in function";                                              \
-        message << location.function_name();                                        \
-        throw NullPtrException( message.str() );                                    \
+        message << CIE_CODE_LOCATION                                                \
+        throw cie::NullPtrException( message.str() );                               \
     }
 
 
