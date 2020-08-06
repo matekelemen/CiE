@@ -1,20 +1,75 @@
-#ifndef CSG_NTREENODE_HPP
-#define CSG_NTREENODE_HPP
+#ifndef CIE_CSG_SPACE_TREE_NODE_HPP
+#define CIE_CSG_SPACE_TREE_NODE_HPP
 
 // --- Linalg Includes ---
 #include "linalg/types.hpp"
 
 // --- Internal Includes ---
-#include "indexconverter.hpp"
-#include "spacetreeutils.hpp"
+#include "./cell.hpp"
 
 // --- STL Includes ---
 #include <deque>
 #include <stdint.h>
 #include <memory>
+#include <functional>
 
 namespace cie::csg {
 
+
+// Target function definition
+template <  concepts::NumericContainer PointType,
+            class ValueType >
+using TargetFunction = std::function<ValueType(const PointType&)>;
+
+
+/*
+template <  class CellType,
+            class SamplerType,
+            class SplitPolicy,
+            concepts::STLContainer ValueContainerType = std::vector<typename SplitPolicy::value_type> >
+class SpaceTreeNode_ : public CellType
+{
+public:
+    static const Size                                   resolution = SamplerType::resolution;
+
+    typedef CellType                                    cell_type;
+    typedef ValueContainerType                          value_container_type;
+    typedef typename value_container_type::value_type   value_type;
+    typedef SamplerType                                 sampler_type;
+
+public:
+    template <class ...Args>
+    SpaceTreeNode_( Args&&... args );
+
+    const value_container_type& values() const;
+    value_container_type& values();
+    const value_type& value( Size index ) const;
+    value_type& value( Size index );
+
+protected:
+    value_container_type        _values;
+    static const sampler_type   _sampler = sampler_type();
+
+    
+public: // Member classes
+
+    struct sample_point_iterator
+    {
+        typedef typename SpaceTreeNode_::point_type value_type;
+
+        sample_point_iterator( Size counter ) : _counter(counter) {}
+        sample_point_iterator() : sample_point_iterator(0) {}
+        sample_point_iterator& operator++();
+        value_type operator*() {return };
+        bool operator!=( sample_point_iterator rhs ) {return this->_counter != rhs._counter;}
+
+    private:
+        Size _counter;
+    };
+};
+*/
+
+///*
 // Define node pointer (needs forward declaration)
 template <size_t N, size_t M>
 class SpaceTreeNode;
@@ -77,6 +132,7 @@ protected:
     static SpaceTreeIndexConverter<N,2>                         _centerIndex;
     std::deque<std::pair<coordinate_container_type,double*>>    _evaluationRequests;
 };
+//*/
 
 
 }

@@ -338,23 +338,119 @@ p(\bullet, 0) = 0
 * $`\bar u`$ : forward solution
 * $`u_\Omega`$ : prescribed state
 
+*Note:*
+*The initial condition $`(26)`$ is most likely incorrect, as it would mean that no control is needed at $`\tau=0`$ ($`t=T`$)*.
+
 Keep in mind that the time variable has already been reversed here. 
 
 The DE $`(24)`$ is almost identical to the original one $`(12)`$, save for the coefficients of the adjoint state $`p`$, and the space derivatives. The coefficients are now functions of $`\tau`$ and $`x`$ but not $`p`$, which makes the derivation a bit simpler.
 
 Let's rename the coefficients from $`(24)`$ and reduce the system to 1D:
 ```math
-- \hat c \dot p + \hat \kappa p'' = u_\Omega - \bar u
+- \tilde c \dot p + \tilde \kappa p'' = \tilde f
 \tag{27}
+```
+
+```math
+\tilde c(x) := \frac{\partial c}{\partial u} \bigg \vert_{\bar u} \bar u + c(\bar u)
+\tag{28}
+```
+
+```math
+\tilde \kappa(x) := \frac{ \partial \kappa }{ \partial u} \bigg \vert_{\bar u } \bar u + \kappa (\bar u)
+\tag{29}
+```
+
+```math
+\tilde f(x) := u_\Omega - \bar u
+\tag{30}
 ```
 
 Note that the time derivative is replaced with the derivative of the reversed time variable $`\dot p := \frac{\partial p}{\partial \tau}`$
 
-Most of the derivation is identical to the nonlinear transient one, so it is skipped up to computing the derivatives of the discretized system:
+Following the same line of thought as before:
 ```math
-
+- \int_\Omega \tilde c v \dot p d \Omega
++
+\int_\Omega \tilde \kappa v p'' d\Omega
+=
+\int_\Omega v \tilde f d\Omega
+\tag{31}
 ```
 
+However, integrating by parts yields an extra (non-symmetric) term because $`\tilde \kappa`$ does not depend on $`p`$ :
+```math
+-\int_\Omega \tilde c v \dot p d\Omega
++
+\bigg[ \tilde \kappa v p' \bigg]_{\partial \Omega}
+-
+\int_\Omega \tilde \kappa' v p' d\Omega
+-
+\int_\Omega \tilde \kappa v' p' d\Omega
+-
+\int v \tilde f d\Omega
+=
+0
+\tag{32}
+```
+
+```math
+-\int_\Omega \tilde c N_i N_j d\Omega \dot{\hat p}_j
++
+\bigg[ \tilde \kappa v p' \bigg]_{\partial \Omega}
+-
+\int_\Omega \tilde \kappa' N_i N_j'd\Omega \hat p_j
+-
+\int_\Omega \tilde \kappa N_i' N_j' d\Omega \hat p_j
+-
+\int_\Omega N_i \tilde f d\Omega
+=
+0
+\tag{33}
+```
+
+Similarly introducing the *mass* and *stiffness* matrices, the boundary term $`b_i`$, the load $`\mathfrak{f}_i`$ , plus the new matrix $`L_{ij}`$ resulting from the non-symmetric term:
+```math
+-M_{ij}\dot{\hat p}_j + b_i - \bigg( L_{ij} + K_{ij} \bigg) \hat p_j - \mathfrak{f}_i
+=
+0
+\tag{34}
+```
+
+
+Now we can discretize in time:
+```math
+\dot{\hat p}^{k+1} \approx \frac{ \hat p^{k+1} - \hat p^k }{\Delta t}
+=
+\theta M^{k+1^{-1}}
+\bigg[
+    b^{k+1} - (K^{k+1} + L^{k+1}) \hat p^{k+1} - f^{k+1}
+\bigg]
++
+(1-\theta) M^{k^{-1}}
+\bigg[
+    b^k - (K^k + L^k) p^k - f^k
+\bigg]
+\tag{35}
+```
+
+```math
+\bigg[
+    \frac{1}{\Delta t} I + \theta M^{k+1^{-1}} (K^{k+1} + L^{k+1})
+\bigg] \hat p^{k+1}
+=
+\frac{1}{\Delta t} \hat p^k
++
+\theta M^{k+1^{-1}} (b^{k+1}-f^{k+1})
++
+(1-\theta) M^{k^{-1}}
+\bigg[
+    b^k - (K^k + L^k) \hat p^k - f^k
+\bigg]
+\tag{36}
+```
+
+Nothing depends on $`\hat p^{k+1}`$, so we don't need the derivative of $`(36)`$ (which is why no load factor $`\lambda`$ was included in the derivation).
 
 
 # Module

@@ -31,6 +31,7 @@ class Element:
         self._basisDerivativeCache  = None
         self._basisCache            = None
         self._sampleCache           = Cache()
+        self._derivativeCache       = Cache()
 
     
     def copy( self ):
@@ -137,6 +138,31 @@ class Element1D( Element ):
         return values
 
 
+    def derivative( self, coefficients, positions ):
+        '''
+        Given the solution coefficients, sample and sum the derivative 
+        of the basis functions at the given coordinates
+        '''
+        # Initialize
+        values = None
+        if isNumpyArray( positions ):
+            values = np.zeros( positions.shape, positions.dtype )
+        else:
+            values = 0.0
+
+        # Get basis functions
+        cacheID = self._derivativeCache.hash(positions)
+        if not self._derivativeCache.check(cacheID, hashed=True):
+            localCoordinates = self.toLocalCoordinates(positions)
+            self._derivativeCache.overwrite( cacheID, [self._invJacobian * self.basisDerivatives( basisID, localCoordinates ) for basisID in range(len(self.basisDerivatives)) ], hashed=True )
+        
+
+        # Compute solution
+        for coefficient, derivativeValues in zip( coefficients, self._derivativeCache.get(cacheID, hashed=True) ):
+            values += coefficient * derivativeValues
+
+        return values
+
 
 class LinearHeatElement1D( Element1D ):
     '''
@@ -180,7 +206,7 @@ class LinearHeatElement1D( Element1D ):
         '''
         basisCache  = [ self.integrator.createCache( self.basisFunctions[i], self.basisFunctions.domain ) for i in range(len(self.basisFunctions)) ]
 
-        for i, function in enumerate(self.basisFunctions):
+        for i in range(len(self.basisFunctions)):
             for j in range( i, len(self.basisFunctions) ):
                 value = self._jacobian \
                         * self.integrator.integrateCached(  lambda x: self.capacity, 

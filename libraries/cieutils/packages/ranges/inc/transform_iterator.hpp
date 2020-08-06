@@ -52,7 +52,7 @@ public:
 
 protected:
     virtual reference convert() = 0;
-    virtual self_type* thisPtr()                            { CIE_ASSERT(false); return nullptr; };
+    virtual self_type* thisPtr()                            { CIE_ASSERT(false,"Abstract function call"); return nullptr; };
 
     base_iterator_type  _base;
 

@@ -108,17 +108,10 @@ def solveAdjointLinearHeat1D(   time,
         dt      = time[k] - time[k-1]
 
         # Step
-        sol = solveLinearSystem(    LHSMatrix(dt),
-                                    RHSMatrix(dt).dot( timeSeries[k] )  \
-                                        + theta * adjointRHS[k-1]       \
-                                        + (1.0-theta) * adjointRHS[k]   )
-
-        # Neglect transient adjoint system and solve the stationary one at each time step 
-        #sol     = solveLinearSystem(    model.stiffness,
-        #                                adjointRHS[k]    )
-
-        # Update time series
-        timeSeries[k-1] = sol
+        timeSeries[k-1] = solveLinearSystem(    LHSMatrix(dt),
+                                                RHSMatrix(dt).dot( timeSeries[k] )  \
+                                                    + theta * adjointRHS[k-1]       \
+                                                    + (1.0-theta) * adjointRHS[k]   )
 
     return timeSeries
 
@@ -180,4 +173,42 @@ def solveNonlinearHeat1D(   time,
                                                 time[k] - time[k-1],
                                                 **kwargs    )
 
+    return timeSeries
+
+
+
+def solveAdjointNonlinearHeat1D(    model,
+                                    theta=0.5,
+                                    initialAdjointSolution=None ):
+    '''
+    '''
+    # Allocate
+    timeSeries      = np.zeros( (len(model.time), model.size) )
+
+    # Define helper functions
+    def updateTime( timeIndex ):
+        model.updateTime( timeIndex )
+    
+    # Initialize
+    if initialAdjointSolution is not None:
+        timeSeries[-1]  = initialAdjointSolution.copy()
+
+    updateTime(len(model.time)-1)
+    massInverse     = linalg.inv(model.mass)
+    previousState   = massInverse.dot( (model.stiffness+model.nonsymmetricStiffness).dot(timeSeries[-1]) + model.load )
+
+    # Loop
+    for i in range( len(model.time)-1, 0, -1 ):
+        updateTime( i-1 )
+        dt              = model.time[i] - model.time[i-1]
+        massInverse     = linalg.inv(model.mass)
+        timeSeries[i-1] = solveLinearSystem(    1.0/dt*np.identity(model.size)  \
+                                                    + theta*massInverse.dot( model.stiffness + model.nonsymmetricStiffness ),
+                                                1.0/dt*timeSeries[i]            \
+                                                    - theta*massInverse.dot(model.load) - (1.0-theta)*previousState,
+                                                sparse=False  )
+        
+        # Update for next iteration
+        previousState   = massInverse.dot( (model.stiffness+model.nonsymmetricStiffness).dot(timeSeries[i-1]) + model.load )
+    
     return timeSeries

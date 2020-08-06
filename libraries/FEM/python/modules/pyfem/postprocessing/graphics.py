@@ -113,7 +113,7 @@ class ConvergencePlot:
         if self._yMax < value:
             self._yMax = value
 
-        if self._yMin is None or self._yMin > value:
+        if value !=0.0 and (self._yMin is None or self._yMin > value):
             self._yMin = value
 
         if self._counter <= self.maxPoints:
