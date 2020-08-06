@@ -57,6 +57,19 @@ protected:
 };
 
 
+
+
+
+
+
+namespace detail {
+
+template <concepts::NumericType NT>
+std::vector<NT> gaussLegendreAbscissas( Size polynomialOrder );
+
+} // nnamespace detail
+
+
 } // namespace cie::fem
 
 #include "../impl/integration_impl.hpp"

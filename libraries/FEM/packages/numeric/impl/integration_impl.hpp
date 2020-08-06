@@ -3,6 +3,7 @@
 
 // --- Utility Includes ---
 #include <cieutils/macros.hpp>
+#include <cieutils/exceptions.hpp>
 
 
 namespace cie::fem {
@@ -37,7 +38,24 @@ AbsQuadrature<Dimension,NT>::operator()( typename AbsQuadrature::function_type f
 }
 
 
+
+
+
+
+
+namespace detail {
+
+template <concepts::NumericType NT>
+std::vector<NT> gaussLegendreAbscissas( Size polynomialOrder )
+{
+    if (polynomialOrder > 5)
+        CIE_THROW( NotImplementedException, "Gauss-Legendre integration is only implemented up to order 5!" )
 }
+
+}
+
+
+} // namespace cie::fem
 
 
 #endif
