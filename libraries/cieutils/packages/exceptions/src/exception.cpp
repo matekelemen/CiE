@@ -16,20 +16,32 @@ const char* Exception::what() const noexcept
 }
 
 
-AbstractCallException::AbstractCallException( const String& functionName ) :
-    Exception( "Call to member function of abstact class:\n\t" + functionName )
+NullPtrException::NullPtrException( const String& message ) :
+    Exception( "Attempt to dereference a nullptr:\n" + message )
+{
+}
+
+
+AbstractCallException::AbstractCallException( const String& message ) :
+    Exception( "Call to member function of abstact class:\n" + message )
+{
+}
+
+
+NotImplementedException::NotImplementedException( const String& message ) :
+    Exception( "Call to not implemented function/class:\n" + message )
 {
 }
 
 
 OutOfRangeException::OutOfRangeException( const String& message ) :
-    Exception( "Index out-of-range or size mismatch exception\nin function: " + message )
+    Exception( "Index out-of-range or size mismatch:\n" + message )
 {
 }
 
 
 DivisionByZeroException::DivisionByZeroException( const String& message ) :
-    Exception( "Division by zero exception\nin function: " + message )
+    Exception( "Division by zero:\n" + message )
 {
 }
 
