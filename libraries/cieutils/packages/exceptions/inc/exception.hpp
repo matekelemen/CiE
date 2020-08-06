@@ -25,13 +25,19 @@ protected:
 
 struct NullPtrException : public Exception
 {
-    NullPtrException( const String& functionName );
+    NullPtrException( const String& message );
 };
 
 
 struct AbstractCallException : public Exception
 {
-    AbstractCallException( const String& functionName );
+    AbstractCallException( const String& message );
+};
+
+
+struct NotImplementedException : public Exception
+{
+    NotImplementedException( const String& message );
 };
 
 
