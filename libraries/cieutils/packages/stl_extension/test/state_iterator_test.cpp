@@ -15,17 +15,20 @@ namespace cie::utils {
 
 TEST_CASE( "StateIterator", "[stl_extension]" )
 {
-    typedef std::vector<int>                SubContainer;
-    typedef std::array<std::vector<int>,2>  Container;
-    typedef StateIterator<Container>        State;
+    typedef std::vector<int>                            SubContainer;
+    typedef std::array<std::vector<int>,2>              Container;
 
-    Container container = 
+    const Container container = 
     {
         SubContainer({ 0, 1, 2 }),
         SubContainer({ 3, 4 })
     };
 
-    State state(container);
+    REQUIRE_NOTHROW( makeStateIterator( container.begin(), container.end() ) );
+    REQUIRE_NOTHROW( makeStateIterator( container ) );
+
+    auto state = makeStateIterator(container);
+    //StateIterator<typename Container::const_iterator> state(container);
     REQUIRE_NOTHROW( *state );
     REQUIRE_NOTHROW( ++state );
     REQUIRE_NOTHROW( state.reset() );

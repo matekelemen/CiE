@@ -12,39 +12,52 @@
 namespace cie::utils {
 
 
-template <concepts::STLContainer ContainerType>
-requires concepts::STLContainer<typename ContainerType::value_type>
-StateIterator<ContainerType>::StateIterator( const ContainerType& container ) :
-    _container(&container)
+template <class IteratorType>
+requires concepts::STLContainer<typename std::iterator_traits<IteratorType>::value_type>
+StateIterator<IteratorType>::StateIterator( IteratorType begin,
+                                            IteratorType end ) :
+    _begin(begin),
+    _end(end)
 {
     this->reset();
 }
 
 
+template <class IteratorType>
+requires concepts::STLContainer<typename std::iterator_traits<IteratorType>::value_type>
 template <concepts::STLContainer ContainerType>
-requires concepts::STLContainer<typename ContainerType::value_type>
-inline void
-StateIterator<ContainerType>::reset()
+StateIterator<IteratorType>::StateIterator( const ContainerType& container )
+requires concepts::ClassContainer<ContainerType,subcontainer_type> :
+    StateIterator( container.begin(), container.end() )
 {
-    utils::setContainerSize( _state, _container->size() );
-    std::transform( _container->begin(),
-                    _container->end(),
-                    _state.begin(),
-                    [](const auto& container) { return container.begin(); } );
 }
 
 
-template <concepts::STLContainer ContainerType>
-requires concepts::STLContainer<typename ContainerType::value_type>
-inline StateIterator<ContainerType>& 
-StateIterator<ContainerType>::operator++()
+template <class IteratorType>
+requires concepts::STLContainer<typename std::iterator_traits<IteratorType>::value_type>
+inline void
+StateIterator<IteratorType>::reset()
 {
-    assert( _state.size() == _container->size() );
+    utils::setContainerSize( _state, std::distance(_begin,_end) );
+    std::transform( _begin,
+                    _end,
+                    _state.begin(),
+                    [](const auto& container) -> subiterator_type
+                    { return container.begin(); } );
+}
+
+
+template <class IteratorType>
+requires concepts::STLContainer<typename std::iterator_traits<IteratorType>::value_type>
+inline StateIterator<IteratorType>& 
+StateIterator<IteratorType>::operator++()
+{
+    assert( _state.size() == std::distance(_begin,_end) );
 
     auto stateIt        = _state.begin();
-    auto subContainerIt = _container->begin();
+    auto subContainerIt = _begin;
 
-    while( subContainerIt != _container->end() )
+    while( subContainerIt != _end )
     {
         if ( (*stateIt)+1 != subContainerIt->end() )    // Found the place to increment
         {
@@ -63,12 +76,36 @@ StateIterator<ContainerType>::operator++()
 }
 
 
-template <concepts::STLContainer ContainerType>
-requires concepts::STLContainer<typename ContainerType::value_type>
-inline const typename StateIterator<ContainerType>::state_container&
-StateIterator<ContainerType>::operator*() const
+template <class IteratorType>
+requires concepts::STLContainer<typename std::iterator_traits<IteratorType>::value_type>
+inline const typename StateIterator<IteratorType>::state_container&
+StateIterator<IteratorType>::operator*() const
 {
     return _state;
+}
+
+
+
+// ---------------------------------------------------------
+// CONVENIENCE FUNCTIONS
+// ---------------------------------------------------------
+
+template <class IteratorType>
+StateIterator<IteratorType>
+makeStateIterator(  IteratorType begin,
+                    IteratorType end )
+requires concepts::STLContainer<typename std::iterator_traits<IteratorType>::value_type>
+{
+    return StateIterator<IteratorType>(begin,end);
+}
+
+
+template <concepts::STLContainer ContainerType>
+StateIterator<typename ContainerType::const_iterator>
+makeStateIterator( const ContainerType& container )
+requires concepts::STLContainer<typename ContainerType::value_type>
+{
+    return StateIterator<typename ContainerType::const_iterator>( container );
 }
 
 
