@@ -2,15 +2,14 @@
 #define CIE_UTILS_CONCEPTS_STL_EXTENSION_HPP
 
 // --- Internal Includes ---
-#include "./iterator_concepts.hpp"
-#include "./container_concepts.hpp"
+#include "../../concepts/inc/iterator_concepts.hpp"
+#include "../../concepts/inc/container_concepts.hpp"
 
 // --- STL Includes ---
 #include <iterator>
 
 
-namespace cie::utils
-{
+namespace cie::util {
 
 
 template <concepts::STLContainer ContainerType>
@@ -26,7 +25,7 @@ public:
 
     value_type& operator*() 
         { this->container->emplace_back(); return *(this->container->end()-1); }
-};
+}; // class back_insert_iterator
 
 
 template <concepts::STLContainer ContainerType>

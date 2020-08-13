@@ -17,8 +17,7 @@
 #include <memory>
 
 
-namespace cie::fem
-{
+namespace cie::fem {
 
 
 // ---------------------------------------------------------

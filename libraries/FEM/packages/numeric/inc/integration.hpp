@@ -58,6 +58,19 @@ protected:
 
 
 
+template <  Size Dimension,
+            concepts::NumericType NT >
+class GaussLegendreQuadrature : public AbsQuadrature<Dimension,NT>
+{
+public:
+    GaussLegendreQuadrature( Size integrationOrder );
+
+protected:
+    Size _integrationOrder;
+};
+
+
+
 
 
 
@@ -65,9 +78,23 @@ protected:
 namespace detail {
 
 template <concepts::NumericType NT>
-std::vector<NT> gaussLegendreAbscissas( Size polynomialOrder );
+std::pair
+<
+    std::vector<NT>,
+    std::vector<NT>
+>
+gaussLegendreParameters( Size polynomialOrder );
 
-} // nnamespace detail
+template <  Size Dimension,
+            concepts::NumericType NT >
+std::pair
+<
+    std::vector<typename AbsIntegrator<Dimension,NT>::point_type>,
+    std::vector<NT>
+>
+gaussLegendrePoints( Size polynomialOrder );
+
+} // namespace detail
 
 
 } // namespace cie::fem

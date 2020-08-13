@@ -37,7 +37,7 @@ TEST_CASE( "AbsQuadrature", "[numeric]" )
     REQUIRE_NOTHROW( integrator(function) );
     CHECK( integrator(function) == Approx(6.0) );
 
-    detail::gaussLegendreAbscissas<NT>(6);
+    //detail::gaussLegendreAbscissas<NT>(6);
 }
 
 
