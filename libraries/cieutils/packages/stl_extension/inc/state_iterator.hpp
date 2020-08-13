@@ -13,31 +13,27 @@ namespace cie::utils {
 
 template <concepts::STLContainer ContainerType>
 requires concepts::STLContainer<typename ContainerType::value_type>
-class StateIncrementer
+class StateIterator
 {
 public:
     typedef ContainerType                               container_type;
     typedef typename ContainerType::value_type          subcontainer_type;
     typedef typename ContainerType::const_iterator      iterator_type;
     typedef typename subcontainer_type::const_iterator  subiterator_type;
-
     typedef std::vector<subiterator_type>               state_container;
-    typedef typename state_container::iterator          state_iterator;
 
 public:
-    StateIncrementer( const container_type& container );
+    StateIterator( const container_type& container );
 
     void reset();
 
-    StateIncrementer& operator++();
-    StateIncrementer& operator++(int);
-    const state_container& operator*() const;
+    virtual StateIterator& operator++();
+    virtual const state_container& operator*() const;
 
 protected:
     const container_type* const     _container;
     state_container                 _state;
-    state_iterator                  _stateIt;
-}; // class StateIncrementer
+}; // class StateIterator
 
 
 } // namespace cie::utils
