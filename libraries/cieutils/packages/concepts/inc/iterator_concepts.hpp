@@ -7,8 +7,7 @@
 // --- STL Includes ---
 #include <iterator>
 
-namespace cie {
-namespace concepts {
+namespace cie::concepts {
 
 
 namespace detail {
@@ -39,7 +38,6 @@ concept ClassIterator
     && std::is_same_v<ValueType, typename std::iterator_traits<ItType>::value_type>;
 
 
-}
-}
+} // namespace cie::concepts
 
 #endif

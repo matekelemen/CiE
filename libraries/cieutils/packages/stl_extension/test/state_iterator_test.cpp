@@ -66,4 +66,20 @@ TEST_CASE( "StateIterator", "[stl_extension]" )
 } // TEST_CASE( "StateIterator")
 
 
+TEST_CASE( "InternalStateIterator", "[stl_extension]" )
+{
+    const Size dimension        = 2;
+    std::array<int,3> container = { 0, 1, 2 };
+    auto state                  = makeInternalStateIterator( container, dimension );
+
+    for (Size i=0; i<container.size(); ++i)
+        for (Size j=0; j<container.size(); ++j)
+        {
+            REQUIRE( (*state).size() == dimension );
+            CHECK( *(*state)[0] == container[j] );     CHECK( *(*state)[1] == container[i] );
+            CHECK_NOTHROW( ++state );
+        }
+} // TEST_CASE( "InternalStateIterator")
+
+
 } // namespace cie::utils

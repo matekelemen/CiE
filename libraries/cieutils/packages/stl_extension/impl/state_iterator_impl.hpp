@@ -6,7 +6,8 @@
 
 // --- STL Includes ---
 #include <algorithm>
-#include <iostream>
+#include <functional>
+#include <vector>
 
 
 namespace cie::utils {
@@ -20,16 +21,6 @@ StateIterator<IteratorType>::StateIterator( IteratorType begin,
     _end(end)
 {
     this->reset();
-}
-
-
-template <class IteratorType>
-requires concepts::STLContainer<typename std::iterator_traits<IteratorType>::value_type>
-template <concepts::STLContainer ContainerType>
-StateIterator<IteratorType>::StateIterator( const ContainerType& container )
-requires concepts::ClassContainer<ContainerType,subcontainer_type> :
-    StateIterator( container.begin(), container.end() )
-{
 }
 
 
@@ -86,6 +77,26 @@ StateIterator<IteratorType>::operator*() const
 
 
 
+
+template <concepts::STLContainer ContainerType>
+InternalStateIterator<ContainerType>::InternalStateIterator(    const ContainerType& container,
+                                                                Size size ) :
+    StateIterator<typename std::vector<detail::container_reference_wrapper<const ContainerType>>::const_iterator>(
+        _dummyContainer.begin(),
+        _dummyContainer.begin()
+    )
+{
+    for (Size i=0; i<size; ++i)
+        _dummyContainer.emplace_back(container);
+
+    this->_begin    = _dummyContainer.begin();
+    this->_end      = _dummyContainer.end();
+    this->reset();
+}
+
+
+
+
 // ---------------------------------------------------------
 // CONVENIENCE FUNCTIONS
 // ---------------------------------------------------------
@@ -105,7 +116,16 @@ StateIterator<typename ContainerType::const_iterator>
 makeStateIterator( const ContainerType& container )
 requires concepts::STLContainer<typename ContainerType::value_type>
 {
-    return StateIterator<typename ContainerType::const_iterator>( container );
+    return StateIterator<typename ContainerType::const_iterator>( container.begin(), container.end() );
+}
+
+
+template <concepts::STLContainer ContainerType>
+InternalStateIterator<const ContainerType>
+makeInternalStateIterator(  const ContainerType& container,
+                            Size size )
+{
+    return InternalStateIterator<const ContainerType>( container, size );
 }
 
 
