@@ -22,10 +22,10 @@ template <  Size Dimension,
 class AbsIntegrator
 {
 public:
-    static const Size                       dimension = Dimension;
-    typedef Kernel<NT>                      kernel_type;
-    typedef std::array<NT,dimension>        point_type;
-    typedef std::function<NT(point_type)>   function_type;
+    static const Size                               dimension = Dimension;
+    typedef Kernel<NT>                              kernel_type;
+    typedef std::array<NT,dimension>                point_type;
+    typedef std::function<NT(const point_type&)>    function_type;
 
 public:
     virtual NT operator()( function_type function ) = 0;
@@ -52,8 +52,12 @@ public:
     const weight_container& weights() const             { return _weights; }
 
 protected:
+    AbsQuadrature() = default;
+
+protected:
     point_container         _integrationPoints;
     weight_container        _weights;
+    Size                    _integrationOrder;
 };
 
 
@@ -64,9 +68,15 @@ class GaussLegendreQuadrature : public AbsQuadrature<Dimension,NT>
 {
 public:
     GaussLegendreQuadrature( Size integrationOrder );
+};
 
-protected:
-    Size _integrationOrder;
+
+template <  Size Dimension,
+            concepts::NumericType NT >
+class GaussLobattoQuadrature : public AbsQuadrature<Dimension,NT>
+{
+public:
+    GaussLobattoQuadrature( Size integrationOrder );
 };
 
 
@@ -75,7 +85,9 @@ protected:
 
 
 
+// Helper functions for computing integration points and weights
 namespace detail {
+
 
 template <concepts::NumericType NT>
 std::pair
@@ -83,7 +95,17 @@ std::pair
     std::vector<NT>,
     std::vector<NT>
 >
-gaussLegendreParameters( Size polynomialOrder );
+gaussLegendreNodes( Size integrationOrder );
+
+
+template <concepts::NumericType NT>
+std::pair
+<
+    std::vector<NT>,
+    std::vector<NT>
+>
+gaussLobattoNodes( Size integrationOrder );
+
 
 template <  Size Dimension,
             concepts::NumericType NT >
@@ -92,9 +114,10 @@ std::pair
     std::vector<typename AbsIntegrator<Dimension,NT>::point_type>,
     std::vector<NT>
 >
-gaussLegendrePoints( Size polynomialOrder );
+tensorProductQuadratureNodes( const std::pair<std::vector<NT>,std::vector<NT>>& abscissaeAndWeights );
 
 } // namespace detail
+
 
 
 } // namespace cie::fem

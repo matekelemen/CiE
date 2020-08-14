@@ -106,7 +106,7 @@ requires concepts::STLContainer<typename ContainerType::value_type>;
 
 /** Create a state iterator structure with 'size' components
  *  that has |container.size()|^size number of states.
- *  This basically iterator through the permutations
+ *  This basically iterator through all possible combinations
  *  of the container values.
  */
 template <concepts::STLContainer ContainerType>
