@@ -17,8 +17,7 @@ template <  Size Dimension,
             class SelfType >
 AbsBasisFunctionSet<Dimension,NT,SelfType>::AbsBasisFunctionSet( const typename AbsBasisFunctionSet<Dimension,NT,SelfType>::function_container& functions ) :
     _derivatives(nullptr),
-    _functions(functions),
-    _cache()
+    _functions(functions)
 {
 }
 

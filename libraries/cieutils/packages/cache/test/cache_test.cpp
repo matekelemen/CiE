@@ -13,11 +13,11 @@ namespace cie::utils
 {
 
 
-TEST_CASE( "Cache", "[cache]" )
+TEST_CASE( "ContainerCache", "[cache]" )
 {
-    typedef std::array<int,3>                       InputContainer;
-    typedef std::vector<std::pair<int,int>>         OutputContainer;
-    typedef Cache<InputContainer,OutputContainer>   TestCache;
+    typedef std::array<int,3>                               InputContainer;
+    typedef std::vector<std::pair<int,int>>                 OutputContainer;
+    typedef ContainerCache<InputContainer,OutputContainer>  TestCache;
 
     std::vector<InputContainer> inputs =
     {
@@ -37,12 +37,19 @@ TEST_CASE( "Cache", "[cache]" )
 
     REQUIRE_NOTHROW( TestCache() );
     TestCache cache;
+    auto generator = [](const InputContainer& input) -> OutputContainer
+    {
+        OutputContainer output;
+        for (const auto& value : input)
+            output.emplace_back( 2*value,value*value );
+        return output;
+    };
 
     CHECK_THROWS( cache[0] );
 
     REQUIRE( inputs.size() == outputs.size() );
     for (Size i=0; i<inputs.size(); ++i)
-        CHECK_NOTHROW( cache.insert(inputs[i],outputs[i]) );
+        CHECK_NOTHROW( cache.insert(inputs[i],generator) );
 
     for (Size i=0; i<inputs.size(); ++i)
     {

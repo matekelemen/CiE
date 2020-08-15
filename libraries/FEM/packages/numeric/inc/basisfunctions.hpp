@@ -66,7 +66,6 @@ public:                                                         // <-- member ty
     typedef std::array<std::pair<NT,NT>,dimension>              domain_container;
     typedef BasisFunction<NT>                                   function_type;
     typedef std::array<std::vector<function_type>,dimension>    function_container;
-    typedef utils::Cache<std::vector<NT>,std::vector<NT>>       cache_type;
 
 public:                                                         // <-- main functions 
     AbsBasisFunctionSet( const function_container& functions );
@@ -110,7 +109,6 @@ public:                                                                         
 protected:                                                                      // <-- member variables
     std::shared_ptr<SelfType>   _derivatives;
     function_container          _functions;
-    cache_type                  _cache;
 };
 
 

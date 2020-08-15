@@ -7,43 +7,49 @@
 
 // --- STL Includes ---
 #include <unordered_map>
+#include <functional>
 
 
-namespace cie::utils
+namespace cie::utils {
+
+
+template <  class InputType,
+            class StoredType >
+class AbsCache
 {
+public:
+    using input_type            = InputType;
+    using stored_type           = StoredType;
+    using internal_type         = std::unordered_map<Size,StoredType>;
+    using internal_iterator     = typename internal_type::const_iterator;
+    using generator_function    = std::function<stored_type(const input_type&)>;
+
+public:
+    virtual Size hash( const input_type& input ) const = 0;
+    internal_iterator insert(   const input_type& input,
+                                generator_function generator );
+    const stored_type& operator[]( Size inputID ) const;
+    const stored_type& operator[]( const input_type& input ) const;
+
+    Size size() const                                           { return _map.size(); }
+    internal_iterator begin() const                             { return _map.begin(); }
+    internal_iterator end() const                               { return _map.end(); }
+
+protected:
+    internal_type   _map;
+};
 
 
 template <  concepts::STLContainer InputContainer,
             concepts::STLContainer OutputContainer>
-class Cache
+class ContainerCache : public AbsCache<InputContainer,OutputContainer>
 {
 public:
-    typedef InputContainer                              input_container;
-    typedef typename input_container::const_iterator    input_iterator;
-    typedef typename input_container::value_type        input_type;
-    typedef OutputContainer                             output_container;
-    typedef typename output_container::const_iterator   output_iterator;
-    typedef typename output_container::value_type       output_type;
-    typedef std::unordered_map<Size,output_container>   internal_type;
-    typedef typename internal_type::iterator            internal_iterator;
-
-    bool insert(    const input_container& input,
-                    const output_container& output );
-    const output_container& operator[]( const input_container& input ) const;
-    const output_container& operator[]( Size cacheID ) const;
-
-    internal_iterator begin()                       { return _cache.begin(); }
-    internal_iterator end()                         { return _cache.end(); }
-
-    virtual Size hash(  input_iterator begin,
-                        input_iterator end ) const;
-
-protected:
-    internal_type _cache;
+    virtual Size hash( const InputContainer& input) const override;
 };
 
 
-}
+} // namespace cie::utils
 
 #include "../impl/cache_impl.hpp"
 

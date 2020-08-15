@@ -11,49 +11,57 @@
 namespace cie::utils {
 
 
-template <  concepts::STLContainer InputContainer,
-            concepts::STLContainer OutputContainer >
-inline bool
-Cache<InputContainer,OutputContainer>::insert(  const InputContainer& input,
-                                                const OutputContainer& output )
+template <  class InputType,
+            class StoredType >
+inline typename AbsCache<InputType,StoredType>::internal_iterator
+AbsCache<InputType,StoredType>::insert( const InputType& input,
+                                        typename AbsCache::generator_function generator )
 {
-    auto id = this->hash( input.begin(), input.end() );
-    return _cache.emplace( id, output ).second;
+    // Hash input and check if it's inserted
+    Size id     = this->hash(input);
+    auto mapIt  = _map.find(id);
+
+    if (mapIt == _map.end())
+        mapIt = _map.emplace( id, generator(input) ).first;
+
+    return mapIt;
 }
 
 
-template <  concepts::STLContainer InputContainer,
-            concepts::STLContainer OutputContainer >
-inline const OutputContainer&
-Cache<InputContainer,OutputContainer>::operator[]( const InputContainer& input ) const
+template <  class InputType,
+            class StoredType >
+inline const typename AbsCache<InputType,StoredType>::stored_type&
+AbsCache<InputType,StoredType>::operator[]( Size inputID ) const
 {
-    auto id     = this->hash( input.begin(), input.end() );
-    return this->operator[](id);
-}
-
-
-template <  concepts::STLContainer InputContainer,
-            concepts::STLContainer OutputContainer >
-inline const OutputContainer&
-Cache<InputContainer,OutputContainer>::operator[]( Size cacheID ) const
-{
-    auto mapIt  = _cache.find(cacheID);
-    if (mapIt == _cache.end())
-        CIE_THROW( OutOfRangeException, "Cache::operator[]" )
-    
+    auto mapIt = _map.find(inputID);
+    if (mapIt == _map.end())
+    {
+        CIE_THROW(
+            OutOfRangeException,
+            "Input with ID " + std::to_string(inputID) + " does not have a recorded value in the cache"
+        )
+    }
     return mapIt->second;
+}
+
+
+template <  class InputType,
+            class StoredType >
+inline const typename AbsCache<InputType,StoredType>::stored_type&
+AbsCache<InputType,StoredType>::operator[]( const InputType& input ) const
+{
+    return this->operator[]( this->hash(input) );
 }
 
 
 template <  concepts::STLContainer InputContainer,
             concepts::STLContainer OutputContainer >
 inline Size
-Cache<InputContainer,OutputContainer>::hash(    typename Cache<InputContainer,OutputContainer>::input_iterator begin,
-                                                typename Cache<InputContainer,OutputContainer>::input_iterator end ) const
+ContainerCache<InputContainer,OutputContainer>::hash( const InputContainer& container ) const
 {
-    Size seed = Size(std::distance(begin,end));
-    for ( ; begin!=end; begin++ )
-        seed ^= Size(&(*begin)) + 0x9e3779b9 + (seed<<6) + (seed>>2);
+    Size seed = container.size();
+    for ( auto it=container.begin(); it!=container.end(); it++ )
+        seed ^= Size(&(*it)) + 0x9e3779b9 + (seed<<6) + (seed>>2);
     return seed;
 }
 
