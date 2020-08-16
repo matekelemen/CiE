@@ -9,6 +9,7 @@
 #include "./basis_wrappers.hpp"
 #include "./dof_map.hpp"
 #include "../../utilities/inc/kernel.hpp"
+#include "../../numeric/inc/integration.hpp"
 
 // --- STL Includes ---
 #include <memory>
@@ -30,14 +31,15 @@ class AbsElement : public DoFMap<CIE_DOF_CONTAINER_TYPE>
 {
     // MEMBER TYPEDEFS -------------------------------------
 public:
-    typedef BasisType                           basis_type;
-    static const Size                           dimension = BasisType::dimension;
-    typedef typename BasisType::kernel_type     kernel_type;
-    typedef typename kernel_type::number_type   NT;
-    typedef std::array<NT,dimension>            point_type;
+    typedef BasisType                                       basis_type;
+    static const Size                                       dimension = BasisType::dimension;
+    typedef typename BasisType::kernel_type                 kernel_type;
+    typedef typename kernel_type::number_type               NT;
+    typedef std::array<NT,dimension>                        point_type;
 
-    typedef std::vector<NT>                     coefficient_container;
-    typedef std::vector<NT>                     basis_value_container;
+    typedef std::vector<NT>                                 coefficient_container;
+    typedef std::vector<NT>                                 basis_value_container;
+    typedef std::unique_ptr<AbsQuadrature<dimension,NT>>    integrator_ptr;         
 
     // MEMBER CLASSES --------------------------------------
 public:
@@ -124,10 +126,12 @@ public:
 
     // MEMBER VARIABLES ----------------------------------------
 protected:
-    static basis_type _basis;
-};
+    integrator_ptr      _integratorPtr;
+    static basis_type   _basis;
+}; // class AbsElement
 
 
+// Initialize static members
 template <class BasisType>
 typename AbsElement<BasisType>::basis_type 
 AbsElement<BasisType>::_basis = typename AbsElement<BasisType>::basis_type();
@@ -164,10 +168,10 @@ protected:
     std::pair<typename AbsElement1D::NT, typename AbsElement1D::NT> _domain;
     typename AbsElement1D::NT                                       _jacobian;
     typename AbsElement1D::NT                                       _invJacobian;
-};
+}; // class AbsElement1D
 
 
-}
+} // namespace cie::fem
 
 #include "../impl/abs_element_impl.hpp"
 

@@ -26,6 +26,6 @@ protected:
 };
 
 
-}
+} // namespace cie::fem
 
 #endif

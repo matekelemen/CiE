@@ -5,92 +5,39 @@
 #include <cieutils/concepts.hpp>
 #include <cieutils/macros.hpp>
 #include <cieutils/exceptions.hpp>
+#include <cieutils/stl_extension.hpp>
 
 // --- STL Includes ---
 #include <algorithm>
 
 
-namespace cie::fem {
-
+namespace cie::fem::detail {
 
 // Helper class for accessing basis values
-namespace detail {
 template <  concepts::STLContainer ContainerType,
             Size Dimension >
-class TensorProductBasis
+class TensorProductBasis 
+    : public utils::StateIterator<typename std::array<ContainerType,Dimension>::const_iterator>
 {
-private:
+public:
     typedef std::array<ContainerType,Dimension>     container_array;
     typedef typename container_array::value_type    container_type;
     typedef typename container_type::value_type     value_type;
-    typedef typename container_type::const_iterator iterator_type;
 
 public:
     TensorProductBasis( const container_array& array ) :
-        _array(&array)
+        utils::StateIterator<typename std::array<ContainerType,Dimension>::const_iterator>( array.begin(), array.end() )
+    {}
+
+    // Product of all current state components
+    value_type product() const
     {
-        this->reset();
+        value_type output = 1.0;
+        for (auto it : this->_state)
+            output *= (*it);
+        return output;
     }
-
-    value_type operator*()
-    {
-        #ifdef CIE_ENABLE_OUT_OF_RANGE_TESTS
-        {
-            auto stateIt    = _state.begin();
-            auto dimIt      = _array->begin();
-            for ( ; stateIt!=_state.end(); ++stateIt,++dimIt)
-                if ( Size(std::distance( dimIt->begin(), *stateIt )) >= dimIt->size() )
-                    CIE_THROW( OutOfRangeException, "TensorProductBasis::operator*" )
-        }
-        #endif
-
-        // Compute product
-        value_type value(1.0);
-        for (auto valueIt : _state)
-            value *= *valueIt;
-
-        return value;
-    }
-
-    void reset()
-    {
-        std::transform( _array->begin(),
-                        _array->end(),
-                        _state.begin(),
-                        [](const auto& container)
-                        {
-                            return container.begin();
-                        });
-    }
-
-    TensorProductBasis& operator++()
-    {
-        auto stateIt    = _state.end()-1;
-        auto dimIt      = _array->end()-1;
-
-        // Increment state
-        while ( stateIt != _state.begin()-1 )
-        {
-            if ( (*stateIt)+1 != dimIt->end() )
-            {
-                (*stateIt)++;
-                break;
-            }
-            else
-            {
-                *stateIt = dimIt->begin();
-                --dimIt;
-                --stateIt;
-            }
-        } // while
-
-        return *this;
-    } // operator++
-
-
-private:
-    const container_array* const        _array;
-    std::array<iterator_type,Dimension> _state;
+    
 };
 
 
@@ -99,43 +46,25 @@ template <  concepts::STLContainer ContainerType,
             Size Dimension >
 class TensorProductDerivatives
 {
-private:
-    static const Size                               dimension = Dimension;
-    typedef std::array<ContainerType,Dimension>     container_array;
-    typedef typename container_array::value_type    container_type;
-    typedef typename container_type::value_type     value_type;
-    typedef typename container_type::const_iterator iterator_type;
-    typedef std::array<value_type,Dimension>        point_type;
+public:
+    static const Size                                                       dimension = Dimension;
+    typedef std::array<ContainerType,Dimension>                             container_array;
+    typedef typename container_array::value_type                            container_type;
+    typedef typename container_type::value_type                             value_type;
+    typedef std::array<value_type,Dimension>                                point_type;
+    typedef utils::StateIterator<typename container_array::const_iterator>  state_iterator;
 
 public:
     TensorProductDerivatives(   const container_array& basisValues,
                                 const container_array& derivativeValues ) :
-        _basis(&basisValues),
-        _derivatives(&derivativeValues)
+        _basisState( basisValues.begin(), basisValues.end() ),
+        _derivativeState( derivativeValues.begin(), derivativeValues.end() )
     {
         this->reset();
     }
 
-    point_type operator*()
+    point_type product() const
     {
-        #ifdef CIE_ENABLE_OUT_OF_RANGE_TESTS
-        {
-            auto stateIt    = _basisState.begin();
-            auto dimIt      = _basis->begin();
-            for ( ; stateIt!=_basisState.end(); ++stateIt,++dimIt)
-                if ( Size(std::distance( dimIt->begin(), *stateIt )) >= dimIt->size() )
-                    CIE_THROW( OutOfRangeException, "TensorProductDerivative::operator*" )
-        }
-        {
-            auto stateIt    = _derivativeState.begin();
-            auto dimIt      = _derivatives->begin();
-            for ( ; stateIt!=_derivativeState.end(); ++stateIt,++dimIt)
-                if ( Size(std::distance( dimIt->begin(), *stateIt )) >= dimIt->size() )
-                    CIE_THROW( OutOfRangeException, "TensorProductDerivative::operator*" )
-        }
-        #endif
-
-
         point_type derivative;
         std::fill(  derivative.begin(),
                     derivative.end(),
@@ -146,9 +75,9 @@ public:
             for (Size dimensionIndex=0; dimensionIndex<dimension; ++dimensionIndex)
             {
                 if (componentIndex == dimensionIndex)
-                    derivative[componentIndex] *= *_derivativeState[dimensionIndex];
+                    derivative[componentIndex] *= *(*_derivativeState)[dimensionIndex];
                 else
-                    derivative[componentIndex] *= *_basisState[dimensionIndex];
+                    derivative[componentIndex] *= *(*_basisState)[dimensionIndex];
             }
 
         return derivative;
@@ -156,58 +85,21 @@ public:
 
     void reset()
     {
-        std::transform( _basis->begin(),
-                        _basis->end(),
-                        _basisState.begin(),
-                        [](const auto& container)
-                        {
-                            return container.begin();
-                        });
-        std::transform( _derivatives->begin(),
-                        _derivatives->end(),
-                        _derivativeState.begin(),
-                        [](const auto& container)
-                        {
-                            return container.begin();
-                        });
+        _basisState.reset();
+        _derivativeState.reset();
     }
 
     TensorProductDerivatives& operator++()
     {
-        auto basisStateIt       = _basisState.end()-1;
-        auto basisIt            = _basis->end()-1;
-        auto derivativeStateIt  = _derivativeState.end()-1;
-        auto derivativeIt       = _derivatives->end()-1;
-
-        // Increment state
-        while ( basisStateIt != _basisState.begin()-1 )
-        {
-            if ( (*basisStateIt)+1 != basisIt->end() )
-            {
-                (*basisStateIt)++;
-                (*derivativeStateIt)++;
-                break;
-            }
-            else
-            {
-                *basisStateIt       = basisIt->begin();
-                *derivativeStateIt  = derivativeIt->begin();
-                --basisIt;
-                --basisStateIt;
-                --derivativeIt;
-                --derivativeStateIt;
-            }
-        } // while
-
+        ++_basisState;
+        ++_derivativeState;
         return *this;
     } // operator++
 
 
 private:
-    const container_array* const        _basis;
-    const container_array* const        _derivatives;
-    std::array<iterator_type,Dimension> _basisState;
-    std::array<iterator_type,Dimension> _derivativeState;
+    state_iterator  _basisState;
+    state_iterator  _derivativeState;
 }; // class TensorProductDerivatives
 
 
@@ -230,10 +122,7 @@ makeTensorProductDerivatives(   const std::array<ContainerType,Dimension>& basis
 
 
 
-} // namespace detail
-
-
-} // namespace cie::fem
+} // namespace cie::fem::detail
 
 
 #endif

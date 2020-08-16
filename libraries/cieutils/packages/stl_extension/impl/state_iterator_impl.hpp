@@ -43,7 +43,7 @@ requires concepts::STLContainer<typename std::iterator_traits<IteratorType>::val
 inline StateIterator<IteratorType>& 
 StateIterator<IteratorType>::operator++()
 {
-    assert( _state.size() == std::distance(_begin,_end) );
+    assert( _state.size() == Size(std::distance(_begin,_end)) );
 
     auto stateIt        = _state.begin();
     auto subContainerIt = _begin;

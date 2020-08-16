@@ -44,7 +44,7 @@ protected:
         auto basisDerivatives   = detail::makeTensorProductDerivatives(basisValues, derivativeValues);
         for (const auto& coefficient : coefficients)
         {
-            auto basisDerivativeValues  = *basisDerivatives;
+            auto basisDerivativeValues  = basisDerivatives.product();
             for (Size dim=0; dim<this->dimension; ++dim)
                 gradient[dim] += basisDerivativeValues[dim] * coefficient;
 
@@ -89,39 +89,45 @@ TEST_CASE( "AbsElement", "[discretization]" )
     const std::vector<NT> coefficients    = { 1.0, 2.0, 3.0, 4.0 };
 
     // Test field values
-    for (const auto& point : localPoints)
+    SECTION( "field values" )
     {
-        auto xi     = point[0];
-        auto eta    = point[1];
-        auto reference =    coefficients[0] * (1.0+xi)*(1.0+eta)/4.0
-                            + coefficients[1] * (1.0+xi)*(1.0-eta)/4.0
-                            + coefficients[2] * (1.0-xi)*(1.0+eta)/4.0
-                            + coefficients[3] * (1.0-xi)*(1.0-eta)/4.0;
-        REQUIRE_NOTHROW( element(coefficients, point) );
-        CHECK( element(coefficients,point) == Approx(reference) );
-    }
-
+        for (const auto& point : localPoints)
+        {
+            auto xi     = point[0];
+            auto eta    = point[1];
+            auto reference =    coefficients[0] * (1.0+xi)*(1.0+eta)/4.0
+                                + coefficients[1] * (1.0-xi)*(1.0+eta)/4.0
+                                + coefficients[2] * (1.0+xi)*(1.0-eta)/4.0
+                                + coefficients[3] * (1.0-xi)*(1.0-eta)/4.0;
+            REQUIRE_NOTHROW( element(coefficients, point) );
+            CHECK( element(coefficients,point) == Approx(reference) );
+        }
+    } // SECTION field values
+    
     // Test field derivatives
-    for (const auto& point : localPoints)
+    SECTION( "field derivatives" )
     {
-        auto xi     = point[0];
-        auto eta    = point[1];
-        std::array<NT,Dimension> reference = {
-            coefficients[0] * (1.0+eta)/4.0
-            + coefficients[1] * (1.0-eta)/4.0
-            + coefficients[2] * -(1.0+eta)/4.0
-            + coefficients[3] * -(1.0-eta)/4.0
-            ,
-            coefficients[0] * (1.0+xi)/4.0
-            + coefficients[1] * -(1.0+xi)/4.0
-            + coefficients[2] * (1.0-xi)/4.0
-            + coefficients[3] * -(1.0-xi)/4.0,
-        };
-        REQUIRE_NOTHROW( element.derivative(coefficients,point) );
-        auto test = element.derivative(coefficients,point);
-        for (Size i=0; i<Dimension; ++i)
-            CHECK( test[i] == Approx(reference[i]) );
-    }
+        for (const auto& point : localPoints)
+        {
+            auto xi     = point[0];
+            auto eta    = point[1];
+            std::array<NT,Dimension> reference = {
+                coefficients[0] * (1.0+eta)/4.0
+                + coefficients[1] * -(1.0+eta)/4.0
+                + coefficients[2] * (1.0-eta)/4.0
+                + coefficients[3] * -(1.0-eta)/4.0
+                ,
+                coefficients[0] * (1.0+xi)/4.0
+                + coefficients[1] * (1.0-xi)/4.0
+                + coefficients[2] * -(1.0+xi)/4.0
+                + coefficients[3] * -(1.0-xi)/4.0,
+            };
+            REQUIRE_NOTHROW( element.derivative(coefficients,point) );
+            auto test = element.derivative(coefficients,point);
+            for (Size i=0; i<Dimension; ++i)
+                CHECK( test[i] == Approx(reference[i]) );
+        }
+    } // SECTION field derivatives
 } // TEST_CASE AbsElement
 
 
@@ -163,6 +169,7 @@ TEST_CASE( "AbsElement1D", "[discretization]" )
     );
 
     // Check field values
+    SECTION( "field values" )
     {
         for (const auto& point : localPoints)
         {
@@ -173,9 +180,10 @@ TEST_CASE( "AbsElement1D", "[discretization]" )
                 + coefficients[1] * (-point[0] + 1.0)/2.0 )
             );
         }
-    }
+    } // SECTION field values
 
     // Check field derivatives
+    SECTION( "field derivatives" )
     {
         for (const auto& point : localPoints)
         {
@@ -184,8 +192,8 @@ TEST_CASE( "AbsElement1D", "[discretization]" )
                 == Approx( coefficients[0] - coefficients[1] )
             );
         }
-    }
-}
+    } // SECTION field derivatives
+} // TEST_CASE AbsElement1D
 
 
 } // namespace cie::fem

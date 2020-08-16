@@ -16,7 +16,8 @@ namespace cie::fem {
 // ---------------------------------------------------------
 template <class BasisType>
 AbsElement<BasisType>::AbsElement( const typename AbsElement<BasisType>::dof_container& dofs ) :
-    DoFMap<typename AbsElement<BasisType>::dof_container>(dofs)
+    DoFMap<typename AbsElement<BasisType>::dof_container>(dofs),
+    _integratorPtr(nullptr)
 {
 }
 
@@ -52,7 +53,7 @@ requires concepts::ClassContainer<CoefficientContainer,NT>
     auto basis = detail::makeTensorProductBasis(basisValues);
     for (const auto& coefficient : coefficients)
     {
-        value += (*basis) * coefficient;
+        value += basis.product() * coefficient;
         ++basis;
     }
     return value;
@@ -290,7 +291,7 @@ AbsElement1D<BasisType>::_derivative(   const typename AbsElement1D::coefficient
     auto basisDerivatives   = detail::makeTensorProductDerivatives(basisValues, derivativeValues);
     for (const auto& coefficient : coefficients)
     {
-        auto basisDerivativeValues  = *basisDerivatives;
+        auto basisDerivativeValues  = basisDerivatives.product();
         for (Size dim=0; dim<this->dimension; ++dim)
             gradient[dim] += basisDerivativeValues[dim] * coefficient;
 
