@@ -46,7 +46,7 @@ AbsElementPhysics<ElementType>::setIntegrator( Args&&... integratorArgs )
     typename ElementType::ansatz_value_container                    ansatzDerivativeValues;
     typename AbsElementPhysics::basis_set_container                 basisSet;
     typename AbsElementPhysics::basis_derivative_set_container      basisDerivativeSet;
-    auto ansatzDerivatives = this->_basis.derivatives();
+    auto ansatzDerivatives = this->_ansatzSet.derivatives();
 
     for (const auto& point : integrationPoints)
     {
@@ -59,7 +59,7 @@ AbsElementPhysics<ElementType>::setIntegrator( Args&&... integratorArgs )
             ansatzIt->clear();
             ansatzDerivativeIt->clear();
             const auto& coordinate = point[dim];
-            for (const auto& function : this->_basis.functions(dim))
+            for (const auto& function : this->_ansatzSet.functions(dim))
                 ansatzIt->push_back( function(coordinate) );
             for (const auto& function : ansatzDerivatives->functions(dim))
                 ansatzDerivativeIt->push_back( function(coordinate) );
@@ -69,11 +69,11 @@ AbsElementPhysics<ElementType>::setIntegrator( Args&&... integratorArgs )
         basisSet.emplace_back();
         basisDerivativeSet.emplace_back();
 
-        this->basisProducts(    ansatzValues,
-                                basisSet.back() );
-        this->basisDerivativeProducts(  ansatzValues,
-                                        ansatzDerivativeValues,
-                                        basisDerivativeSet.back() );
+        this->basis(    ansatzValues,
+                        basisSet.back() );
+        this->basisDerivatives( ansatzValues,
+                                ansatzDerivativeValues,
+                                basisDerivativeSet.back() );
     }
 
     // Store computed values

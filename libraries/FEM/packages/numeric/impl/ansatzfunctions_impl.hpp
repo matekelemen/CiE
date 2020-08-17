@@ -1,5 +1,5 @@
-#ifndef CIE_FEM_BASIS_FUNCTIONS_IMPL_HPP
-#define CIE_FEM_BASIS_FUNCTIONS_IMPL_HPP
+#ifndef CIE_FEM_ANSATZ_FUNCTIONS_IMPL_HPP
+#define CIE_FEM_ANSATZ_FUNCTIONS_IMPL_HPP
 
 // --- Utility Includes ---
 #include <cieutils/concepts.hpp>
@@ -15,7 +15,7 @@ namespace cie::fem
 template <  Size Dimension,
             concepts::NumericType NT,
             class SelfType >
-AbsBasisFunctionSet<Dimension,NT,SelfType>::AbsBasisFunctionSet( const typename AbsBasisFunctionSet<Dimension,NT,SelfType>::function_container& functions ) :
+AbsAnsatzFunctionSet<Dimension,NT,SelfType>::AbsAnsatzFunctionSet( const typename AbsAnsatzFunctionSet<Dimension,NT,SelfType>::function_container& functions ) :
     _derivatives(nullptr),
     _functions(functions)
 {
@@ -25,8 +25,8 @@ AbsBasisFunctionSet<Dimension,NT,SelfType>::AbsBasisFunctionSet( const typename 
 template <  Size Dimension,
             concepts::NumericType NT,
             class SelfType >
-AbsBasisFunctionSet<Dimension,NT,SelfType>::AbsBasisFunctionSet() :
-    AbsBasisFunctionSet<Dimension,NT,SelfType>::AbsBasisFunctionSet( typename AbsBasisFunctionSet<Dimension,NT,SelfType>::function_container() )
+AbsAnsatzFunctionSet<Dimension,NT,SelfType>::AbsAnsatzFunctionSet() :
+    AbsAnsatzFunctionSet<Dimension,NT,SelfType>::AbsAnsatzFunctionSet( typename AbsAnsatzFunctionSet<Dimension,NT,SelfType>::function_container() )
 {
 }
 
@@ -35,7 +35,7 @@ template <  Size Dimension,
             concepts::NumericType NT,
             class SelfType >
 inline NT 
-AbsBasisFunctionSet<Dimension,NT,SelfType>::operator()( Size dimension,
+AbsAnsatzFunctionSet<Dimension,NT,SelfType>::operator()( Size dimension,
                                                         Size functionIndex, 
                                                         NT coordinate )
 {
@@ -48,7 +48,7 @@ template <  Size Dimension,
             class SelfType >
 template <class CoordinateIterator, class OutputIterator>
 inline void
-AbsBasisFunctionSet<Dimension,NT,SelfType>::operator()( Size dimension,
+AbsAnsatzFunctionSet<Dimension,NT,SelfType>::operator()( Size dimension,
                                                         Size functionIndex,
                                                         CoordinateIterator inputBegin,
                                                         CoordinateIterator inputEnd,
@@ -65,7 +65,7 @@ template <  Size Dimension,
             class SelfType >
 template <class CoordinateContainer, class OutputContainer>
 inline void
-AbsBasisFunctionSet<Dimension,NT,SelfType>::operator()( Size dimension,
+AbsAnsatzFunctionSet<Dimension,NT,SelfType>::operator()( Size dimension,
                                                         Size functionIndex,
                                                         const CoordinateContainer& coordinates,
                                                         OutputContainer& outputContainer )
@@ -86,7 +86,7 @@ template <  Size Dimension,
             class SelfType >
 template <class ContainerType>
 inline ContainerType
-AbsBasisFunctionSet<Dimension,NT,SelfType>::operator()( Size dimension,
+AbsAnsatzFunctionSet<Dimension,NT,SelfType>::operator()( Size dimension,
                                                         Size functionIndex,
                                                         const ContainerType& coordinates )
 requires concepts::ClassContainer<ContainerType,NT>
@@ -105,10 +105,10 @@ requires concepts::ClassContainer<ContainerType,NT>
 template <  Size Dimension,
             concepts::NumericType NT,
             class SelfType >
-inline const typename AbsBasisFunctionSet<Dimension,NT,SelfType>::domain_container
-AbsBasisFunctionSet<Dimension,NT,SelfType>::domain() const
+inline const typename AbsAnsatzFunctionSet<Dimension,NT,SelfType>::domain_container
+AbsAnsatzFunctionSet<Dimension,NT,SelfType>::domain() const
 {
-    typename AbsBasisFunctionSet<Dimension,NT,SelfType>::domain_container output;
+    typename AbsAnsatzFunctionSet<Dimension,NT,SelfType>::domain_container output;
     utils::setContainerSize(output, this->dimension);
     for (Size dim=0; dim<this->dimension; ++dim)
     {
@@ -142,8 +142,8 @@ requires concepts::NumericType<NT>
 template <  Size Dimension,
             concepts::NumericType NT,
             class SelfType >
-AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::AbsPolynomialBasisFunctionSet( const typename AbsPolynomialBasisFunctionSet::coefficient_container& coefficients ) :
-    AbsBasisFunctionSet<Dimension,NT,SelfType>(),
+AbsPolynomialAnsatzFunctionSet<Dimension,NT,SelfType>::AbsPolynomialAnsatzFunctionSet( const typename AbsPolynomialAnsatzFunctionSet::coefficient_container& coefficients ) :
+    AbsAnsatzFunctionSet<Dimension,NT,SelfType>(),
     _coefficients(coefficients)
 {
     // Fill functions
@@ -155,7 +155,7 @@ AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::AbsPolynomialBasisFunction
         {
             auto function = [polynomial]( const NT& coordinate ) -> NT
             { return detail::evaluatePolynomial(polynomial,coordinate); };
-            functionIt->push_back( typename AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::function_type(function) );
+            functionIt->push_back( typename AbsPolynomialAnsatzFunctionSet<Dimension,NT,SelfType>::function_type(function) );
         } // for polynomial in polynomials
     } // for polynomials in dimensions
 } // constructor
@@ -164,8 +164,8 @@ AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::AbsPolynomialBasisFunction
 template <  Size Dimension,
             concepts::NumericType NT,
             class SelfType >
-inline const typename AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::coefficient_container&
-AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::coefficients() const
+inline const typename AbsPolynomialAnsatzFunctionSet<Dimension,NT,SelfType>::coefficient_container&
+AbsPolynomialAnsatzFunctionSet<Dimension,NT,SelfType>::coefficients() const
 {
     return this->_coefficients;
 }
@@ -174,8 +174,8 @@ AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::coefficients() const
 template <  Size Dimension,
             concepts::NumericType NT,
             class SelfType >
-inline const typename AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::polynomial_set&
-AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::coefficients( Size dimensionIndex ) const
+inline const typename AbsPolynomialAnsatzFunctionSet<Dimension,NT,SelfType>::polynomial_set&
+AbsPolynomialAnsatzFunctionSet<Dimension,NT,SelfType>::coefficients( Size dimensionIndex ) const
 {
     return this->coefficients[dimensionIndex];
 }
@@ -184,8 +184,8 @@ AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::coefficients( Size dimensi
 template <  Size Dimension,
             concepts::NumericType NT,
             class SelfType >
-inline const typename AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::polynomial_coefficients&
-AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::coefficients( Size dimensionIndex, Size polynomialIndex ) const
+inline const typename AbsPolynomialAnsatzFunctionSet<Dimension,NT,SelfType>::polynomial_coefficients&
+AbsPolynomialAnsatzFunctionSet<Dimension,NT,SelfType>::coefficients( Size dimensionIndex, Size polynomialIndex ) const
 {
     return this->_coefficients[dimensionIndex][polynomialIndex];
 }
@@ -195,7 +195,7 @@ template <  Size Dimension,
             concepts::NumericType NT,
             class SelfType >
 inline NT
-AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::coefficient(  Size dimensionIndex,
+AbsPolynomialAnsatzFunctionSet<Dimension,NT,SelfType>::coefficient(  Size dimensionIndex,
                                                         Size polynomialIndex,
                                                         Size coefficientIndex ) const
 {
@@ -207,7 +207,7 @@ template <  Size Dimension,
             concepts::NumericType NT,
             class SelfType >
 inline Size
-AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::polynomialDegree( Size dimensionIndex, Size polynomialIndex ) const
+AbsPolynomialAnsatzFunctionSet<Dimension,NT,SelfType>::polynomialDegree( Size dimensionIndex, Size polynomialIndex ) const
 {
     return this->_coefficients[dimensionIndex][polynomialIndex].size() - 1;
 }
@@ -217,7 +217,7 @@ template <  Size Dimension,
             concepts::NumericType NT,
             class SelfType >
 inline std::shared_ptr<SelfType>&
-AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::derivatives()
+AbsPolynomialAnsatzFunctionSet<Dimension,NT,SelfType>::derivatives()
 {
     // Check if derivatives were computed
     if (this->_derivatives != nullptr)
@@ -233,9 +233,9 @@ template <  Size Dimension,
             concepts::NumericType NT,
             class SelfType >
 inline void
-AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::computeDerivatives()
+AbsPolynomialAnsatzFunctionSet<Dimension,NT,SelfType>::computeDerivatives()
 {
-    typename AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::coefficient_container derivativeCoefficients;
+    typename AbsPolynomialAnsatzFunctionSet<Dimension,NT,SelfType>::coefficient_container derivativeCoefficients;
     utils::setContainerSize( derivativeCoefficients, this->dimension );
     
     for (Size dim=0; dim<this->dimension; ++dim)
@@ -259,7 +259,7 @@ AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::computeDerivatives()
     this->_derivatives = std::make_shared<SelfType>(
         derivativeCoefficients
     );
-} // AbsPolynomialBasisFunctionSet::computeDerivatives
+} // AbsPolynomialAnsatzFunctionSet::computeDerivatives
 
 
 
@@ -289,8 +289,8 @@ linearPolynomialCoefficients( PolynomialBasis* instance )
 template <  Size Dimension,
             concepts::NumericType NT,
             class SelfType >
-AbsLinearBasisFunctionSet<Dimension,NT,SelfType>::AbsLinearBasisFunctionSet() :
-    AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>( detail::linearPolynomialCoefficients(this) )
+AbsLinearAnsatzFunctionSet<Dimension,NT,SelfType>::AbsLinearAnsatzFunctionSet() :
+    AbsPolynomialAnsatzFunctionSet<Dimension,NT,SelfType>( detail::linearPolynomialCoefficients(this) )
 {
 }
 

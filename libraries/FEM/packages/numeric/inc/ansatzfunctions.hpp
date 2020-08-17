@@ -1,5 +1,5 @@
-#ifndef CIE_FEM_BASIS_FUNCTIONS_HPP
-#define CIE_FEM_BASIS_FUNCTIONS_HPP
+#ifndef CIE_FEM_ANSATZ_FUNCTIONS_HPP
+#define CIE_FEM_ANSATZ_FUNCTIONS_HPP
 
 // --- Utility Includes ---
 #include <cieutils/cache.hpp>
@@ -24,20 +24,20 @@ namespace cie::fem {
 // BASIS FUNCTION
 // ---------------------------------------------------------
 template <concepts::NumericType NT>                 // NT: number type
-struct BasisFunction
+struct AnsatzFunction
 {
 public:
     typedef std::function<NT(const NT&)> function_type;
 
 public:
-    BasisFunction(  function_type function,
+    AnsatzFunction(  function_type function,
                     const NT& min,
                     const NT& max ) :
         _function(function),
         _min(min),
         _max(max) {}
     
-    BasisFunction( function_type function ) :
+    AnsatzFunction( function_type function ) :
         _function(function),
         _min(-1.0),
         _max(1.0) {}
@@ -58,18 +58,18 @@ public:
 template <  Size Dimension,
             concepts::NumericType NT,
             class SelfType >
-class AbsBasisFunctionSet : Kernel<NT>
+class AbsAnsatzFunctionSet : Kernel<NT>
 {
 public:                                                         // <-- member typedefs
     static const Size                                           dimension = Dimension;
     typedef Kernel<NT>                                          kernel_type;
     typedef std::array<std::pair<NT,NT>,dimension>              domain_container;
-    typedef BasisFunction<NT>                                   function_type;
+    typedef AnsatzFunction<NT>                                   function_type;
     typedef std::array<std::vector<function_type>,dimension>    function_container;
 
 public:                                                         // <-- main functions 
-    AbsBasisFunctionSet( const function_container& functions );
-    AbsBasisFunctionSet();
+    AbsAnsatzFunctionSet( const function_container& functions );
+    AbsAnsatzFunctionSet();
 
     NT operator()(  Size dimension,
                     Size functionIndex, 
@@ -127,16 +127,16 @@ requires concepts::NumericType<NT>;
 template <  Size Dimension,
             concepts::NumericType NT,
             class SelfType >
-class AbsPolynomialBasisFunctionSet : public AbsBasisFunctionSet<Dimension,NT,SelfType>
+class AbsPolynomialAnsatzFunctionSet : public AbsAnsatzFunctionSet<Dimension,NT,SelfType>
 {
 public:
     typedef std::vector<NT>                                                     polynomial_coefficients;
     typedef std::vector<polynomial_coefficients>                                polynomial_set;
-    typedef std::array<polynomial_set,AbsPolynomialBasisFunctionSet::dimension> coefficient_container;
+    typedef std::array<polynomial_set,AbsPolynomialAnsatzFunctionSet::dimension> coefficient_container;
 
 public:
-    AbsPolynomialBasisFunctionSet( const coefficient_container& coefficients );
-    AbsPolynomialBasisFunctionSet() = delete;
+    AbsPolynomialAnsatzFunctionSet( const coefficient_container& coefficients );
+    AbsPolynomialAnsatzFunctionSet() = delete;
 
     Size polynomialDegree( Size dimensionIndex, Size polynomialIndex ) const;
     std::shared_ptr<SelfType>& derivatives() override;
@@ -151,7 +151,7 @@ protected:
     
 protected:
     coefficient_container   _coefficients;
-}; // class AbsPolynomialBasisFunctionSet
+}; // class AbsPolynomialAnsatzFunctionSet
 
 
 
@@ -159,15 +159,15 @@ protected:
 // Self-contained polynomial basis function set
 template <  Size Dimension,
             concepts::NumericType NT >
-struct PolynomialBasisFunctionSet final 
-    : AbsPolynomialBasisFunctionSet<Dimension,NT,PolynomialBasisFunctionSet<Dimension,NT>>
+struct PolynomialAnsatzFunctionSet final 
+    : AbsPolynomialAnsatzFunctionSet<Dimension,NT,PolynomialAnsatzFunctionSet<Dimension,NT>>
 {
-    PolynomialBasisFunctionSet( const typename PolynomialBasisFunctionSet::coefficient_container& coefficients ) :
-        AbsPolynomialBasisFunctionSet<Dimension,NT,PolynomialBasisFunctionSet<Dimension,NT>>::AbsPolynomialBasisFunctionSet(coefficients)
+    PolynomialAnsatzFunctionSet( const typename PolynomialAnsatzFunctionSet::coefficient_container& coefficients ) :
+        AbsPolynomialAnsatzFunctionSet<Dimension,NT,PolynomialAnsatzFunctionSet<Dimension,NT>>::AbsPolynomialAnsatzFunctionSet(coefficients)
     {}
 
-    PolynomialBasisFunctionSet() = delete;
-}; // class PolynomialBasisFunctionSet
+    PolynomialAnsatzFunctionSet() = delete;
+}; // class PolynomialAnsatzFunctionSet
 
 
 
@@ -177,26 +177,26 @@ struct PolynomialBasisFunctionSet final
 template <  Size Dimension,
             concepts::NumericType NT,
             class SelfType >
-struct AbsLinearBasisFunctionSet : AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>
+struct AbsLinearAnsatzFunctionSet : AbsPolynomialAnsatzFunctionSet<Dimension,NT,SelfType>
 {
-    AbsLinearBasisFunctionSet();
+    AbsLinearAnsatzFunctionSet();
 };
 
 
 
 template <  Size Dimension,
             concepts::NumericType NT >
-struct LinearBasisFunctionSet final : 
-    AbsLinearBasisFunctionSet<Dimension,NT,PolynomialBasisFunctionSet<Dimension,NT>>
+struct LinearAnsatzFunctionSet final : 
+    AbsLinearAnsatzFunctionSet<Dimension,NT,PolynomialAnsatzFunctionSet<Dimension,NT>>
 {
-    LinearBasisFunctionSet() :
-        AbsLinearBasisFunctionSet<Dimension,NT,PolynomialBasisFunctionSet<Dimension,NT>>()
+    LinearAnsatzFunctionSet() :
+        AbsLinearAnsatzFunctionSet<Dimension,NT,PolynomialAnsatzFunctionSet<Dimension,NT>>()
     {}
 };
 
 
 } // namespace cie::fem
 
-#include "../impl/basisfunctions_impl.hpp"
+#include "../impl/ansatzfunctions_impl.hpp"
 
 #endif

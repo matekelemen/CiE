@@ -69,23 +69,23 @@ public:
      * Convenience function for accessing basis values for to the current
      * integration points.
     */
-   const basis_set_container& basisValues() const           { return _basisCache[_cacheID]; }
+   const basis_set_container& basisValues() const                       { return _basisCache[_cacheID]; }
 
    /**
      * Convenience function for accessing basis derivatives for to the current
      * integration points.
     */
-   const basis_derivative_set_container& basisDerivatives() const       { return _basisDerivativeCache[_cacheID]; }
+   const basis_derivative_set_container& basisDerivativeValues() const  { return _basisDerivativeCache[_cacheID]; }
    
 
-    void clearCache()                                       { _basisCache.clear(); _basisDerivativeCache.clear(); }
-    integrator_const_reference integrator() const           { return *_integratorPtr; }
+    void clearCache()                                                   { _basisCache.clear(); _basisDerivativeCache.clear(); }
+    integrator_const_reference integrator() const                       { return *_integratorPtr; }
 
     /**
      * Call operator() of the integrator directly.
     */
     template <class ...Args>
-    NT integrator( Args&&... args ) const                   { return _integratorPtr->operator()(std::forward<Args>(args)...); }
+    NT integrator( Args&&... args ) const                               { return _integratorPtr->operator()(std::forward<Args>(args)...); }
 
 private:
     integrator_ptr                  _integratorPtr;

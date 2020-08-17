@@ -5,7 +5,7 @@
 #include <cieutils/concepts.hpp>
 
 // --- Internal Includes ---
-#include "../inc/basisfunctions.hpp"
+#include "../inc/ansatzfunctions.hpp"
 
 // --- STL Includes ---
 #include <vector>
@@ -17,11 +17,11 @@ namespace cie::fem
 {
 
 
-TEST_CASE( "PolynomialBasisFunctionSet", "numeric" )
+TEST_CASE( "PolynomialAnsatzFunctionSet", "numeric" )
 {
     const Size dim = 2;
 
-    typedef PolynomialBasisFunctionSet<dim,Double> Basis;
+    typedef PolynomialAnsatzFunctionSet<dim,Double> Basis;
 
     typename Basis::coefficient_container coefficients;
     utils::setContainerSize(coefficients, dim);
@@ -183,10 +183,10 @@ TEST_CASE( "PolynomialBasisFunctionSet", "numeric" )
 
 
 
-TEST_CASE( "LinearBasisFunctionSet", "[numeric]" )
+TEST_CASE( "LinearAnsatzFunctionSet", "[numeric]" )
 {
     const Size dim = 2;
-    typedef LinearBasisFunctionSet<dim,Double> Basis;
+    typedef LinearAnsatzFunctionSet<dim,Double> Basis;
 
     REQUIRE_NOTHROW(Basis());
     Basis basis;

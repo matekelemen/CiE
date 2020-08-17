@@ -19,7 +19,7 @@ TEST_CASE( "AbsElementPhysics", "[physics]" )
     const Size Dimension            = 1;
     const Size integrationOrder     = 5;
     using NT                        = Double;
-    using Basis                     = LinearBasisFunctionSet<Dimension,NT>;
+    using Basis                     = LinearAnsatzFunctionSet<Dimension,NT>;
     using ElementBase               = AbsElement1D<Basis>;
     using Element                   = AbsElementPhysics<ElementBase>;
 
@@ -37,11 +37,11 @@ TEST_CASE( "AbsElementPhysics", "[physics]" )
 
     // Check cache
     REQUIRE_NOTHROW( element.basisValues() );
-    REQUIRE_NOTHROW( element.basisDerivatives() );
+    REQUIRE_NOTHROW( element.basisDerivativeValues() );
 
     // Check sizes of stored containers
     const auto& basisValues         = element.basisValues();
-    const auto& basisDerivatives    = element.basisDerivatives();
+    const auto& basisDerivatives    = element.basisDerivativeValues();
     REQUIRE( basisValues.size() == integrationOrder );
     REQUIRE( basisDerivatives.size() == integrationOrder );
     for (Size pointIndex=0; pointIndex<integrationOrder; ++pointIndex)
@@ -80,7 +80,7 @@ TEST_CASE( "AbsElementPhysics", "[physics]" )
     // Check cache clearing
     REQUIRE_NOTHROW( element.clearCache() );
     CHECK_THROWS( element.basisValues() );
-    CHECK_THROWS( element.basisDerivatives() );
+    CHECK_THROWS( element.basisDerivativeValues() );
 } // TEST_CASE AbsElementPhysics
 
 

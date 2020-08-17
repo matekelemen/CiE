@@ -6,7 +6,7 @@
 
 // --- Internal Includes ---
 #include "../inc/abs_element.hpp"
-#include "../../numeric/inc/basisfunctions.hpp"
+#include "../../numeric/inc/ansatzfunctions.hpp"
 
 // --- STL Includes ---
 #include <iostream>
@@ -39,9 +39,9 @@ protected:
                         typename TestElement::point_type& gradient ) override
     {
         typename TestElement::point_container basisDerivativeProducts;
-        this->basisDerivativeProducts(  ansatzValues,
-                                        ansatzDerivativeValues,
-                                        basisDerivativeProducts );
+        this->basisDerivatives( ansatzValues,
+                                ansatzDerivativeValues,
+                                basisDerivativeProducts );
 
         CIE_ASSERT(
             basisDerivativeProducts.size() == coefficients.size(),
@@ -72,7 +72,7 @@ TEST_CASE( "AbsElement", "[discretization]" )
     // General init
     const Size                                      Dimension = 2;
     typedef Double                                  NT;
-    typedef LinearBasisFunctionSet<Dimension,NT>    Basis;
+    typedef LinearAnsatzFunctionSet<Dimension,NT>    Basis;
     typedef detail::TestElement<Basis>              Element;
 
     // Test constructor
@@ -148,7 +148,7 @@ TEST_CASE( "AbsElement1D", "[discretization]" )
     // General init
     const Size                                      Dimension = 1;
     typedef Double                                  NT;
-    typedef LinearBasisFunctionSet<Dimension,NT>    Basis;
+    typedef LinearAnsatzFunctionSet<Dimension,NT>    Basis;
     typedef AbsElement1D<Basis>                     Element;
 
     const Size                                      resolution = 5;

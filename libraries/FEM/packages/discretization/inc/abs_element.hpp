@@ -5,7 +5,7 @@
 #include <cieutils/concepts.hpp>
 
 // --- Internal Includes ---
-#include "../../numeric/inc/basisfunctions.hpp"
+#include "../../numeric/inc/ansatzfunctions.hpp"
 #include "./basis_wrappers.hpp"
 #include "./dof_map.hpp"
 #include "../../utilities/inc/kernel.hpp"
@@ -23,14 +23,14 @@ namespace cie::fem {
 #define CIE_DOF_CONTAINER_TYPE std::vector<Size>
 
 
-template <class BasisType>
+template <class AnsatzType>
 class AbsElement : public DoFMap<CIE_DOF_CONTAINER_TYPE>
 {
     // MEMBER TYPEDEFS -------------------------------------
 public:
-    typedef BasisType                                       basis_type;
-    static const Size                                       dimension = BasisType::dimension;
-    typedef typename BasisType::kernel_type                 kernel_type;
+    typedef AnsatzType                                      ansatz_type;
+    static const Size                                       dimension = AnsatzType::dimension;
+    typedef typename AnsatzType::kernel_type                kernel_type;
     typedef typename kernel_type::number_type               NT;
     typedef std::array<NT,dimension>                        point_type;
 
@@ -54,16 +54,16 @@ public:
      * Construct basis function values from ansatz values
      *  - default implementation computes the tensor product
     */
-    virtual void basisProducts( const ansatz_value_container& ansatzValues,
-                                value_container& outputContainer ) const;
+    virtual void basis( const ansatz_value_container& ansatzValues,
+                        value_container& outputContainer ) const;
 
     /**
      * Compute basis function derivatives from ansatz and ansatz derivative values
      * - default implementation computes the derivatives of the tensor product
     */
-    virtual void basisDerivativeProducts(   const ansatz_value_container& ansatzValues,
-                                            const ansatz_value_container& ansatzDerivativeValues,
-                                            point_container& outputContainer ) const;
+    virtual void basisDerivatives(  const ansatz_value_container& ansatzValues,
+                                    const ansatz_value_container& ansatzDerivativeValues,
+                                    point_container& outputContainer ) const;
 
     // COMPUTE FIELD VALUES --------------------------------
 public:
@@ -100,7 +100,7 @@ public:
     // Duplicate of AbsElement::_derivative to avoid unintentional shadowing when overriding it
     // in derived classes
     void derivative(    const coefficient_container& coefficients,
-                        const ansatz_value_container& basisValues,
+                        const ansatz_value_container& ansatzValues,
                         const ansatz_value_container& derivativeValues,
                         point_type& gradient );
 
@@ -138,18 +138,18 @@ protected:
 
     // OTHER MEMBER FUNCTIONS ----------------------------------
 public:
-    const basis_type& basis() const                     { return _basis; }
+    const ansatz_type& basis() const                     { return _ansatzSet; }
 
     // MEMBER VARIABLES ----------------------------------------
 protected:
-    static basis_type   _basis;
+    static ansatz_type   _ansatzSet;
 }; // class AbsElement
 
 
 // Initialize static members
-template <class BasisType>
-typename AbsElement<BasisType>::basis_type 
-AbsElement<BasisType>::_basis = typename AbsElement<BasisType>::basis_type();
+template <class AnsatzType>
+typename AbsElement<AnsatzType>::ansatz_type 
+AbsElement<AnsatzType>::_ansatzSet = typename AbsElement<AnsatzType>::ansatz_type();
 
 
 
@@ -159,8 +159,8 @@ AbsElement<BasisType>::_basis = typename AbsElement<BasisType>::basis_type();
 // 1D BASE SPECIALIZATION
 // ---------------------------------------------------------
 
-template <class BasisType>
-class AbsElement1D : public AbsElement<BasisType>
+template <class AnsatzType>
+class AbsElement1D : public AbsElement<AnsatzType>
 {
 public:
     template <class ...Args>
