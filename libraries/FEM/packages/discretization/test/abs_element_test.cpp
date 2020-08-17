@@ -38,14 +38,14 @@ protected:
                         const typename TestElement::ansatz_value_container& ansatzDerivativeValues,
                         typename TestElement::point_type& gradient ) override
     {
-        typename TestElement::point_container jacobian;
-        this->jacobian( ansatzValues,
-                        ansatzDerivativeValues,
-                        jacobian );
+        typename TestElement::point_container basisDerivativeProducts;
+        this->basisDerivativeProducts(  ansatzValues,
+                                        ansatzDerivativeValues,
+                                        basisDerivativeProducts );
 
         CIE_ASSERT(
-            jacobian.size() == coefficients.size(),
-            "basis coefficient - jacobian size mismatch"
+            basisDerivativeProducts.size() == coefficients.size(),
+            "basis coefficient - basis derivative size mismatch"
         )
 
         utils::setContainerSize(gradient,this->dimension);
@@ -53,13 +53,13 @@ protected:
                     gradient.end(),
                     0.0 );
 
-        auto jacobianIt     = jacobian.begin();
+        auto basisDerivativeProductsIt     = basisDerivativeProducts.begin();
         auto coefficientIt  = coefficients.begin();
-        for ( ; jacobianIt!=jacobian.end(); ++jacobianIt,++coefficientIt )
+        for ( ; basisDerivativeProductsIt!=basisDerivativeProducts.end(); ++basisDerivativeProductsIt,++coefficientIt )
         {
             const auto& coefficient = *coefficientIt;
             for (Size dim=0; dim<this->dimension; ++dim)
-                gradient[dim] += coefficient * jacobianIt->at(dim);
+                gradient[dim] += coefficient * basisDerivativeProductsIt->at(dim);
         }
     }
 }; // class TestElement

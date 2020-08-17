@@ -45,7 +45,7 @@ AbsElementPhysics<ElementType>::setIntegrator( Args&&... integratorArgs )
     typename ElementType::ansatz_value_container                    ansatzValues;
     typename ElementType::ansatz_value_container                    ansatzDerivativeValues;
     typename AbsElementPhysics::basis_set_container                 basisSet;
-    typename AbsElementPhysics::jacobian_container                  jacobianSet;
+    typename AbsElementPhysics::basis_derivative_set_container      basisDerivativeSet;
     auto ansatzDerivatives = this->_basis.derivatives();
 
     for (const auto& point : integrationPoints)
@@ -65,22 +65,22 @@ AbsElementPhysics<ElementType>::setIntegrator( Args&&... integratorArgs )
                 ansatzDerivativeIt->push_back( function(coordinate) );
         }
 
-        // Compute basis and jacobian values
+        // Compute basis and basis derivative values
         basisSet.emplace_back();
-        jacobianSet.emplace_back();
+        basisDerivativeSet.emplace_back();
 
         this->basisProducts(    ansatzValues,
                                 basisSet.back() );
-        this->jacobian( ansatzValues,
-                        ansatzDerivativeValues,
-                        jacobianSet.back() );
+        this->basisDerivativeProducts(  ansatzValues,
+                                        ansatzDerivativeValues,
+                                        basisDerivativeSet.back() );
     }
 
     // Store computed values
     this->_cacheID = this->_basisCache.insert(  integrationPoints,
                                                 basisSet )->first;
-    this->_jacobianCache.insert(    integrationPoints,
-                                    jacobianSet );
+    this->_basisDerivativeCache.insert(    integrationPoints,
+                                    basisDerivativeSet );
 
 
     return *_integratorPtr;

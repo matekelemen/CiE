@@ -47,9 +47,9 @@ AbsElement<BasisType>::basisProducts(   const typename AbsElement::ansatz_value_
 
 template <class BasisType>
 inline void
-AbsElement<BasisType>::jacobian(    const typename AbsElement::ansatz_value_container& ansatzValues,
-                                    const typename AbsElement::ansatz_value_container& ansatzDerivativeValues,
-                                    typename AbsElement::point_container& outputContainer ) const
+AbsElement<BasisType>::basisDerivativeProducts( const typename AbsElement::ansatz_value_container& ansatzValues,
+                                                const typename AbsElement::ansatz_value_container& ansatzDerivativeValues,
+                                                typename AbsElement::point_container& outputContainer ) const
 {
     Size numberOfBasisValues    = std::accumulate(  ansatzValues.begin(),
                                                     ansatzValues.end(),

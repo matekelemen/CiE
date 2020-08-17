@@ -61,9 +61,9 @@ public:
      * Compute basis function derivatives from ansatz and ansatz derivative values
      * - default implementation computes the derivatives of the tensor product
     */
-    virtual void jacobian(  const ansatz_value_container& ansatzValues,
-                            const ansatz_value_container& ansatzDerivativeValues,
-                            point_container& outputContainer ) const;
+    virtual void basisDerivativeProducts(   const ansatz_value_container& ansatzValues,
+                                            const ansatz_value_container& ansatzDerivativeValues,
+                                            point_container& outputContainer ) const;
 
     // COMPUTE FIELD VALUES --------------------------------
 public:

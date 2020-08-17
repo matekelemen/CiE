@@ -43,16 +43,16 @@ template <class ElementType>
 class AbsElementPhysics : public ElementType
 {
 public:
-    using element_type                  = ElementType;
-    using NT                            = typename ElementType::kernel_type::number_type;
-    using basis_set_container           = std::vector<typename ElementType::value_container>;
-    using jacobian_container            = std::vector<typename ElementType::point_container>;
-    using basis_cache                   = NestedCache<typename ElementType::point_container, basis_set_container>;
-    using jacobian_cache                = NestedCache<typename ElementType::point_container, jacobian_container>;
+    using element_type                      = ElementType;
+    using NT                                = typename ElementType::kernel_type::number_type;
+    using basis_set_container               = std::vector<typename ElementType::value_container>;
+    using basis_derivative_set_container    = std::vector<typename ElementType::point_container>;
+    using basis_cache                       = NestedCache<typename ElementType::point_container, basis_set_container>;
+    using basis_derivative_cache            = NestedCache<typename ElementType::point_container, basis_derivative_set_container>;
     
-    using integrator_interface          = AbsQuadrature<ElementType::dimension,NT>;
-    using integrator_ptr                = std::shared_ptr<integrator_interface>;
-    using integrator_const_reference    = const integrator_interface&;
+    using integrator_interface              = AbsQuadrature<ElementType::dimension,NT>;
+    using integrator_ptr                    = std::shared_ptr<integrator_interface>;
+    using integrator_const_reference        = const integrator_interface&;
 
 public:
     template <class ...Args>
@@ -66,19 +66,19 @@ public:
     integrator_const_reference setIntegrator( Args&&... integratorArgs );
 
     /**
-     * Convenience function for accessing basis values related to the current
+     * Convenience function for accessing basis values for to the current
      * integration points.
     */
    const basis_set_container& basisValues() const           { return _basisCache[_cacheID]; }
 
    /**
-     * Convenience function for accessing jacobians related to the current
+     * Convenience function for accessing basis derivatives for to the current
      * integration points.
     */
-   const jacobian_container& jacobians() const              { return _jacobianCache[_cacheID]; }
+   const basis_derivative_set_container& basisDerivatives() const       { return _basisDerivativeCache[_cacheID]; }
    
 
-    void clearCache()                                       { _basisCache.clear(); _jacobianCache.clear(); }
+    void clearCache()                                       { _basisCache.clear(); _basisDerivativeCache.clear(); }
     integrator_const_reference integrator() const           { return *_integratorPtr; }
 
     /**
@@ -93,7 +93,7 @@ private:
 protected:
     Size                            _cacheID;               // <-- cache ID for the current integration points
     static basis_cache              _basisCache;
-    static jacobian_cache           _jacobianCache;
+    static basis_derivative_cache   _basisDerivativeCache;
 
 }; // class AbsElementPhysics
 
@@ -104,8 +104,8 @@ typename AbsElementPhysics<ElementType>::basis_cache
 AbsElementPhysics<ElementType>::_basisCache;
 
 template <class ElementType>
-typename AbsElementPhysics<ElementType>::jacobian_cache 
-AbsElementPhysics<ElementType>::_jacobianCache;
+typename AbsElementPhysics<ElementType>::basis_derivative_cache 
+AbsElementPhysics<ElementType>::_basisDerivativeCache;
 
 
 } // namespace cie::fem

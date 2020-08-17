@@ -37,18 +37,18 @@ TEST_CASE( "AbsElementPhysics", "[physics]" )
 
     // Check cache
     REQUIRE_NOTHROW( element.basisValues() );
-    REQUIRE_NOTHROW( element.jacobians() );
+    REQUIRE_NOTHROW( element.basisDerivatives() );
 
     // Check sizes of stored containers
-    const auto& basisValues     = element.basisValues();
-    const auto& jacobians       = element.jacobians();
+    const auto& basisValues         = element.basisValues();
+    const auto& basisDerivatives    = element.basisDerivatives();
     REQUIRE( basisValues.size() == integrationOrder );
-    REQUIRE( jacobians.size() == integrationOrder );
+    REQUIRE( basisDerivatives.size() == integrationOrder );
     for (Size pointIndex=0; pointIndex<integrationOrder; ++pointIndex)
     {
         REQUIRE( basisValues[pointIndex].size() == 2 );
-        REQUIRE( jacobians[pointIndex].size() == 2 );
-        for (const auto& row : jacobians[pointIndex])
+        REQUIRE( basisDerivatives[pointIndex].size() == 2 );
+        for (const auto& row : basisDerivatives[pointIndex])
             REQUIRE( row.size() == 1 );
     }
 
@@ -80,7 +80,7 @@ TEST_CASE( "AbsElementPhysics", "[physics]" )
     // Check cache clearing
     REQUIRE_NOTHROW( element.clearCache() );
     CHECK_THROWS( element.basisValues() );
-    CHECK_THROWS( element.jacobians() );
+    CHECK_THROWS( element.basisDerivatives() );
 } // TEST_CASE AbsElementPhysics
 
 
