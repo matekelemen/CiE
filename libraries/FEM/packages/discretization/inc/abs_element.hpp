@@ -11,9 +11,6 @@
 #include "../../utilities/inc/kernel.hpp"
 #include "../../numeric/inc/integration.hpp"
 
-// --- STL Includes ---
-#include <memory>
-
 
 namespace cie::fem {
 
@@ -38,24 +35,43 @@ public:
     typedef std::array<NT,dimension>                        point_type;
 
     typedef std::vector<NT>                                 coefficient_container;
-    typedef std::vector<NT>                                 basis_value_container;
-    typedef std::unique_ptr<AbsQuadrature<dimension,NT>>    integrator_ptr;         
+    typedef std::vector<NT>                                 value_container;
+    typedef std::vector<point_type>                         point_container;
+    typedef std::array<value_container,dimension>           ansatz_value_container;
 
     // MEMBER CLASSES --------------------------------------
 public:
-    struct LocalCoordinates : public std::array<NT,dimension> {};
+    // TODO: introduce a type-safe version of LocalCoordinates
+    using LocalCoordinates = std::array<NT,dimension>;
 
     // CONSTRUCTORS ----------------------------------------
 public:
     AbsElement( const typename AbsElement::dof_container& dofs );
 
+    // BASIS -----------------------------------------------
+public:
+    /**
+     * Construct basis function values from ansatz values
+     *  - default implementation computes the tensor product
+    */
+    virtual void basisProducts( const ansatz_value_container& ansatzValues,
+                                value_container& outputContainer ) const;
+
+    /**
+     * Compute basis function derivatives from ansatz and ansatz derivative values
+     * - default implementation computes the derivatives of the tensor product
+    */
+    virtual void jacobian(  const ansatz_value_container& ansatzValues,
+                            const ansatz_value_container& ansatzDerivativeValues,
+                            point_container& outputContainer ) const;
+
     // COMPUTE FIELD VALUES --------------------------------
 public:
-    template <class CoefficientContainer, class BasisContainer>
+    template <class CoefficientContainer, concepts::STLContainer AnsatzContainer>
     NT operator()(  const CoefficientContainer& coefficients,
-                    const std::array<BasisContainer,dimension>& basisValues ) const
+                    const AnsatzContainer& ansatzValues ) const
     requires concepts::ClassContainer<CoefficientContainer,NT>
-                && concepts::ClassContainer<BasisContainer,NT>;
+                && concepts::ClassContainer<typename AnsatzContainer::value_type,NT>;
 
     template <class CoefficientContainer>
     NT operator()(  const CoefficientContainer& coefficients,
@@ -76,16 +92,16 @@ public:
     // COMPUTE FIELD DERIVATIVES -------------------------------
 protected:
     virtual void _derivative(   const coefficient_container& coefficients,
-                                const std::array<basis_value_container,dimension>& basisValues,
-                                const std::array<basis_value_container,dimension>& derivativeValues,
-                                std::array<NT,dimension>& gradient );
+                                const ansatz_value_container& ansatzValues,
+                                const ansatz_value_container& ansatzDerivativeValues,
+                                point_type& gradient );
 
 public:
     // Duplicate of AbsElement::_derivative to avoid unintentional shadowing when overriding it
     // in derived classes
     void derivative(    const coefficient_container& coefficients,
-                        const std::array<basis_value_container,dimension>& basisValues,
-                        const std::array<basis_value_container,dimension>& derivativeValues,
+                        const ansatz_value_container& basisValues,
+                        const ansatz_value_container& derivativeValues,
                         point_type& gradient );
 
     point_type derivative(  const coefficient_container& coefficients,
@@ -126,7 +142,6 @@ public:
 
     // MEMBER VARIABLES ----------------------------------------
 protected:
-    integrator_ptr      _integratorPtr;
     static basis_type   _basis;
 }; // class AbsElement
 
@@ -160,9 +175,9 @@ protected:
     typename AbsElement1D::NT toLocalCoordinates( typename AbsElement1D::NT coordinate ) const;
 
     virtual void _derivative(   const typename AbsElement1D::coefficient_container& coefficients,
-                                const std::array<typename AbsElement1D::basis_value_container,AbsElement1D::dimension>& basisValues,
-                                const std::array<typename AbsElement1D::basis_value_container,AbsElement1D::dimension>& derivativeValues,
-                                std::array<typename AbsElement1D::NT,AbsElement1D::dimension>& gradient ) override;
+                                const typename AbsElement1D::ansatz_value_container& ansatzValues,
+                                const typename AbsElement1D::ansatz_value_container& ansatzDerivativeValues,
+                                typename AbsElement1D::point_type& gradient ) override;
 
 protected:
     std::pair<typename AbsElement1D::NT, typename AbsElement1D::NT> _domain;

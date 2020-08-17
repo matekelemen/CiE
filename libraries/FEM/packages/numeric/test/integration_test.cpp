@@ -37,6 +37,14 @@ TEST_CASE( "AbsQuadrature", "[numeric]" )
 
     REQUIRE_NOTHROW( integrator(function) );
     CHECK( integrator(function) == Approx(6.0) );
+
+    // Test "integration" with precomputed values
+    std::vector<NT> functionValues;
+    for (const auto& point : integrationPoints)
+        functionValues.push_back(function(point));
+
+    REQUIRE_NOTHROW( integrator(functionValues.begin()) );
+    CHECK( integrator(functionValues.begin()) == Approx(6.0) );
 } // TEST_CASE AbsQuadrature
 
 

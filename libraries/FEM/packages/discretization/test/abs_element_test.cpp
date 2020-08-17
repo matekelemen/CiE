@@ -34,25 +34,36 @@ protected:
     }
 
     void _derivative(   const typename TestElement::coefficient_container& coefficients,
-                        const std::array<typename TestElement::basis_value_container,TestElement::dimension>& basisValues,
-                        const std::array<typename TestElement::basis_value_container,TestElement::dimension>& derivativeValues,
+                        const typename TestElement::ansatz_value_container& ansatzValues,
+                        const typename TestElement::ansatz_value_container& ansatzDerivativeValues,
                         typename TestElement::point_type& gradient ) override
     {
+        typename TestElement::point_container jacobian;
+        this->jacobian( ansatzValues,
+                        ansatzDerivativeValues,
+                        jacobian );
+
+        CIE_ASSERT(
+            jacobian.size() == coefficients.size(),
+            "basis coefficient - jacobian size mismatch"
+        )
+
+        utils::setContainerSize(gradient,this->dimension);
         std::fill(  gradient.begin(),
                     gradient.end(),
                     0.0 );
-        auto basisDerivatives   = detail::makeTensorProductDerivatives(basisValues, derivativeValues);
-        for (const auto& coefficient : coefficients)
-        {
-            auto basisDerivativeValues  = basisDerivatives.product();
-            for (Size dim=0; dim<this->dimension; ++dim)
-                gradient[dim] += basisDerivativeValues[dim] * coefficient;
 
-            ++basisDerivatives;
+        auto jacobianIt     = jacobian.begin();
+        auto coefficientIt  = coefficients.begin();
+        for ( ; jacobianIt!=jacobian.end(); ++jacobianIt,++coefficientIt )
+        {
+            const auto& coefficient = *coefficientIt;
+            for (Size dim=0; dim<this->dimension; ++dim)
+                gradient[dim] += coefficient * jacobianIt->at(dim);
         }
     }
-};
-}
+}; // class TestElement
+} // namespace detail
 
 
 

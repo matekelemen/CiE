@@ -18,6 +18,34 @@ concept CopyConstructible
 = std::copy_constructible<T>;
 
 
+namespace detail {
+template<typename T>
+struct void_ { typedef void type; };
+
+template<typename T, typename = void>
+struct CanBeDerivedFrom {
+  static const bool value = false;
+};
+
+template<typename T>
+struct CanBeDerivedFrom<T, typename void_<int T::*>::type> {
+  static const bool value = true;
+};
+} // namespace detail
+
+
+template <class T>
+concept Deriveable
+= detail::CanBeDerivedFrom<T>::value
+    && !std::is_integral_v<T>
+    && !std::is_floating_point_v<T>;
+
+
+template <class T>
+concept NonDeriveable
+= !Deriveable<T>;
+
+
 // ---------------------------------------------------------
 // NUMERICS
 // ---------------------------------------------------------

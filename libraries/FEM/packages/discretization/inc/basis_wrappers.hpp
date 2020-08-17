@@ -60,6 +60,19 @@ public:
         _basisState( basisValues.begin(), basisValues.end() ),
         _derivativeState( derivativeValues.begin(), derivativeValues.end() )
     {
+        #ifdef CIE_ENABLE_OUT_OF_RANGE_CHECKS
+            CIE_ASSERT(
+                basisValues.size() == derivativeValues.size(),
+                "dimension of basis functions and their derivatives must be identical"
+            )
+            for (Size i=0; i<basisValues.size(); ++i)
+            {
+                CIE_ASSERT(
+                    basisValues[i].size() == derivativeValues[i].size(),
+                    "number of ansatz function values and their derivatives must match"
+                )
+            }
+        #endif
         this->reset();
     }
 

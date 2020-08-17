@@ -12,13 +12,57 @@
 
 namespace cie::fem {
 // ---------------------------------------------------------
-// COMPUTE FIELD VALUES
+// CONSTRUCTORS
 // ---------------------------------------------------------
 template <class BasisType>
 AbsElement<BasisType>::AbsElement( const typename AbsElement<BasisType>::dof_container& dofs ) :
-    DoFMap<typename AbsElement<BasisType>::dof_container>(dofs),
-    _integratorPtr(nullptr)
+    DoFMap<typename AbsElement<BasisType>::dof_container>(dofs)
 {
+}
+
+
+// ---------------------------------------------------------
+// BASIS
+// ---------------------------------------------------------
+template <class BasisType>
+inline void
+AbsElement<BasisType>::basisProducts(   const typename AbsElement::ansatz_value_container& ansatzValues,
+                                        typename AbsElement::value_container& outputContainer ) const
+{
+    Size numberOfBasisValues    = std::accumulate(  ansatzValues.begin(),
+                                                    ansatzValues.end(),
+                                                    Size(1),
+                                                    [](auto lhs, const auto& rhs) -> Size
+                                                    {
+                                                        return lhs * rhs.size();
+                                                    } );
+
+    auto basisIt                = detail::makeTensorProductBasis(ansatzValues);
+    utils::setContainerSize( outputContainer, numberOfBasisValues );
+    for (auto outputIt=outputContainer.begin(); outputIt!=outputContainer.end(); ++outputIt,++basisIt)
+        *outputIt = basisIt.product();
+}
+
+
+
+template <class BasisType>
+inline void
+AbsElement<BasisType>::jacobian(    const typename AbsElement::ansatz_value_container& ansatzValues,
+                                    const typename AbsElement::ansatz_value_container& ansatzDerivativeValues,
+                                    typename AbsElement::point_container& outputContainer ) const
+{
+    Size numberOfBasisValues    = std::accumulate(  ansatzValues.begin(),
+                                                    ansatzValues.end(),
+                                                    Size(1),
+                                                    [](auto lhs, const auto& rhs) -> Size
+                                                    {
+                                                        return lhs * rhs.size();
+                                                    } );
+    auto basisDerivativeIt = detail::makeTensorProductDerivatives(ansatzValues, ansatzDerivativeValues);
+
+    utils::setContainerSize( outputContainer, numberOfBasisValues );
+    for (Size basisIndex=0; basisIndex<numberOfBasisValues; ++basisIndex,++basisDerivativeIt)
+        outputContainer[basisIndex]    = basisDerivativeIt.product();
 }
 
 
@@ -27,36 +71,27 @@ AbsElement<BasisType>::AbsElement( const typename AbsElement<BasisType>::dof_con
 // ---------------------------------------------------------
 
 template <class BasisType>
-template <class CoefficientContainer, class BasisContainer>
+template <class CoefficientContainer, concepts::STLContainer AnsatzContainer>
 inline typename AbsElement<BasisType>::NT
 AbsElement<BasisType>::operator()(  const CoefficientContainer& coefficients,
-                                    const std::array<BasisContainer,dimension>& basisValues ) const
+                                    const AnsatzContainer& ansatzValues ) const
 requires concepts::ClassContainer<CoefficientContainer,NT>
-            && concepts::ClassContainer<BasisContainer,NT>
+            && concepts::ClassContainer<typename AnsatzContainer::value_type,NT>
 {
+    // Get basis values
+    typename AbsElement::value_container basis;
+    this->basisProducts( ansatzValues, basis );
+
     CIE_OUT_OF_RANGE_ASSERT(
-        coefficients.size()
-        ==
-        std::accumulate(    basisValues.begin(),
-                            basisValues.end(),
-                            Size(1),
-                            [](auto lhs, const auto& rhs) -> Size
-                            {
-                                return lhs * rhs.size();
-                            } )
-        ,
+        coefficients.size() == basis.size(),
         "AbsElement::operator()"
     )
 
-    NT value(0.0);
-
-    auto basis = detail::makeTensorProductBasis(basisValues);
-    for (const auto& coefficient : coefficients)
-    {
-        value += basis.product() * coefficient;
-        ++basis;
-    }
-    return value;
+    // Compute inner product
+    return std::inner_product(  basis.begin(),
+                                basis.end(),
+                                coefficients.begin(),
+                                0.0 );
 }
 
 
@@ -105,8 +140,8 @@ requires concepts::ClassContainer<CoefficientContainer,NT>
 template <class BasisType>
 inline void
 AbsElement<BasisType>::_derivative( const coefficient_container& coefficients,
-                                    const std::array<basis_value_container,dimension>& basisValues,
-                                    const std::array<basis_value_container,dimension>& derivativeValues,
+                                    const ansatz_value_container& basisValues,
+                                    const ansatz_value_container& derivativeValues,
                                     point_type& gradient )
 {
     throw AbstractCallException( "AbsElement::derivative" );
@@ -116,8 +151,8 @@ AbsElement<BasisType>::_derivative( const coefficient_container& coefficients,
 template <class BasisType>
 inline void
 AbsElement<BasisType>::derivative( const coefficient_container& coefficients,
-                                    const std::array<basis_value_container,dimension>& basisValues,
-                                    const std::array<basis_value_container,dimension>& derivativeValues,
+                                    const ansatz_value_container& basisValues,
+                                    const ansatz_value_container& derivativeValues,
                                     point_type& gradient )
 {
     return this->_derivative(   coefficients,
@@ -281,14 +316,14 @@ AbsElement1D<BasisType>::toLocalCoordinates( typename AbsElement1D<BasisType>::N
 template <class BasisType>
 void 
 AbsElement1D<BasisType>::_derivative(   const typename AbsElement1D::coefficient_container& coefficients,
-                                        const std::array<typename AbsElement1D::basis_value_container,AbsElement1D::dimension>& basisValues,
-                                        const std::array<typename AbsElement1D::basis_value_container,AbsElement1D::dimension>& derivativeValues,
-                                        std::array<typename AbsElement1D::NT,AbsElement1D::dimension>& gradient )
+                                        const typename AbsElement1D::ansatz_value_container& ansatzValues,
+                                        const typename AbsElement1D::ansatz_value_container& ansatzDerivativeValues,
+                                        typename AbsElement1D::point_type& gradient )
 {
     std::fill(  gradient.begin(),
                 gradient.end(),
                 0.0 );
-    auto basisDerivatives   = detail::makeTensorProductDerivatives(basisValues, derivativeValues);
+    auto basisDerivatives   = detail::makeTensorProductDerivatives(ansatzValues, ansatzDerivativeValues);
     for (const auto& coefficient : coefficients)
     {
         auto basisDerivativeValues  = basisDerivatives.product();

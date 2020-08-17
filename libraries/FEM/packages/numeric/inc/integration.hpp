@@ -28,7 +28,7 @@ public:
     typedef std::function<NT(const point_type&)>    function_type;
 
 public:
-    virtual NT operator()( function_type function ) = 0;
+    virtual NT operator()( function_type function ) const = 0;
 };
 
 
@@ -46,7 +46,21 @@ public:
     AbsQuadrature(  const point_container& integrationPoints,
                     const weight_container& weights );
 
-    virtual NT operator()( typename AbsQuadrature::function_type function ) override;
+    /**
+     * Compute an approximation of the definite integral of the input
+     * scalar function (defined by a function pointer) on [-1,1].
+    */
+    virtual NT operator()( typename AbsQuadrature::function_type function ) const override;
+
+    /**
+     * Compute an approximation of the definite integral of a
+     * scalar function (defined by a function pointer) on [-1,1],
+     * whose values at the integration points are provided by the
+     * specified iterator.
+    */
+    template <class IteratorType>
+    NT operator()( IteratorType functionValueIt ) const
+    requires concepts::ClassIterator<IteratorType,NT>;
 
     const point_container& integrationPoints() const    { return _integrationPoints; }
     const weight_container& weights() const             { return _weights; }

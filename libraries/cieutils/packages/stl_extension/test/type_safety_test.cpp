@@ -1,0 +1,67 @@
+// --- External Includes ---
+#include "catch.hpp"
+
+// --- Internal Includes ---
+#include "../inc/type_safety.hpp"
+
+// --- STL Includes ---
+#include <vector>
+
+
+namespace cie::utils {
+
+
+// Define overloaded functions to check types
+namespace test {
+
+using Type0         = std::vector<int>;
+STRONG_TYPEDEF( Type0, Type1 )
+STRONG_TYPEDEF( Type0, Type2 )
+
+int testFunction( Type0 )       { return 0; }
+int testFunction( Type1 )       { return 1; }
+int testFunction( Type2 )       { return 2; }
+
+
+template <class T, class TT>
+concept ConvertibleTo
+= requires ( T a, TT b )
+{
+    { TT(a) };
+    { b = a };
+};
+
+template <class T, class TT>
+bool convertibleTo( T a, TT b )
+requires ConvertibleTo<T,TT>
+{
+    return true;
+}
+
+template <class T, class TT>
+bool convertibleTo( T a, TT b )
+requires (!ConvertibleTo<T,TT>)
+{
+    return false;
+}
+
+} // namespace test
+
+
+
+TEST_CASE( "STRONG_TYPEDEF", "[stl_extension]" )
+{
+    test::Type0 type0;
+    test::Type1 type1;
+    test::Type2 type2;
+
+    CHECK( test::testFunction(type0) == 0 );
+    CHECK( test::testFunction(type1) == 1 );
+    CHECK( test::testFunction(type2) == 2 );
+
+    // TODO: typedefs are still interconvertible -> this check fails
+    //CHECK( !test::convertibleTo(type2,type1) );
+} // TEST_CASE STRONG_TYPEDEF
+
+
+} // namespace cie::utils

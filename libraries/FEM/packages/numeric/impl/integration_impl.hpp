@@ -35,7 +35,7 @@ AbsQuadrature<Dimension,NT>::AbsQuadrature( const point_container& integrationPo
 template <  Size Dimension,
             concepts::NumericType NT >
 inline NT
-AbsQuadrature<Dimension,NT>::operator()( typename AbsQuadrature::function_type function )
+AbsQuadrature<Dimension,NT>::operator()( typename AbsQuadrature::function_type function ) const
 {
     NT value(0.0);
     auto pointIt    = _integrationPoints.begin();
@@ -44,6 +44,20 @@ AbsQuadrature<Dimension,NT>::operator()( typename AbsQuadrature::function_type f
         value += function(*pointIt) * (*weightIt);
 
     return value;
+}
+
+
+template <  Size Dimension,
+            concepts::NumericType NT >
+template <class IteratorType>
+inline NT
+AbsQuadrature<Dimension,NT>::operator()( IteratorType functionValueIt ) const
+requires concepts::ClassIterator<IteratorType,NT>
+{
+    return std::inner_product(  _weights.begin(),
+                                _weights.end(),
+                                functionValueIt,
+                                0.0 );
 }
 
 
@@ -247,21 +261,18 @@ tensorProductQuadratureNodes( const std::pair<std::vector<NT>,std::vector<NT>>& 
     // Compute tensor product components
     for (Size i=0; i<numberOfPoints; ++i)
     {
-        points.emplace_back();
-        utils::setContainerSize( points.back(), Dimension );
+        utils::setContainerSize( points[i], Dimension );
         std::transform( (*abscissaState).begin(),
                         (*abscissaState).end(),
-                        points.back().begin(),
+                        points[i].begin(),
                         [](auto it) ->NT 
                             {return *it;} );
 
-        weights.emplace_back(
-            std::accumulate(    (*weightState).begin(),
-                                (*weightState).end(),
-                                NT(1.0),
-                                [](NT lhs, const auto& rhs) -> NT
-                                    { return lhs * (*rhs); } )
-        );
+        weights[i] = std::accumulate(   (*weightState).begin(),
+                                        (*weightState).end(),
+                                        NT(1.0),
+                                        [](NT lhs, const auto& rhs) -> NT
+                                            { return lhs * (*rhs); } );
 
         ++abscissaState;
         ++weightState;

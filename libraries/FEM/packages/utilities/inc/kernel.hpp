@@ -5,8 +5,7 @@
 #include <cieutils/concepts.hpp>
 
 
-namespace cie::fem
-{
+namespace cie::fem {
 
 
 template <concepts::NumericType NT>
@@ -16,7 +15,7 @@ struct Kernel
 };
 
 
-}
+} // namespace cie::fem
 
 
 #endif

@@ -30,6 +30,23 @@ AbsCache<InputType,StoredType>::insert( const InputType& input,
 
 template <  class InputType,
             class StoredType >
+inline typename AbsCache<InputType,StoredType>::internal_iterator
+AbsCache<InputType,StoredType>::insert( const InputType& input,
+                                        const StoredType& value )
+{
+    // Hash input and check if it's inserted
+    Size id     = this->hash(input);
+    auto mapIt  = _map.find(id);
+
+    if (mapIt == _map.end())
+        mapIt = _map.emplace( id, value ).first;
+
+    return mapIt;
+}
+
+
+template <  class InputType,
+            class StoredType >
 inline const typename AbsCache<InputType,StoredType>::stored_type&
 AbsCache<InputType,StoredType>::operator[]( Size inputID ) const
 {
@@ -51,6 +68,37 @@ inline const typename AbsCache<InputType,StoredType>::stored_type&
 AbsCache<InputType,StoredType>::operator[]( const InputType& input ) const
 {
     return this->operator[]( this->hash(input) );
+}
+
+
+template <  class InputType,
+            class StoredType >
+inline bool
+AbsCache<InputType,StoredType>::cached( Size id ) const
+{
+    if (_map.find(id) != _map.end())
+        return true;
+    return false;
+}
+
+
+template <  class InputType,
+            class StoredType >
+inline bool
+AbsCache<InputType,StoredType>::cached( const InputType& input ) const
+{
+    return this->cached( this->hash(input) );
+}
+
+
+template <  class InputType,
+            class StoredType >
+inline void
+AbsCache<InputType,StoredType>::erase( Size id )
+{
+    auto mapIt = _map.find(id);
+    if (mapIt != _map.end())
+        _map.erase(mapIt);
 }
 
 

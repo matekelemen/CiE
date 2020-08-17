@@ -28,9 +28,16 @@ public:
     virtual Size hash( const input_type& input ) const = 0;
     internal_iterator insert(   const input_type& input,
                                 generator_function generator );
+    internal_iterator insert(   const input_type& input,
+                                const StoredType& value );
     const stored_type& operator[]( Size inputID ) const;
     const stored_type& operator[]( const input_type& input ) const;
 
+    bool cached( Size id ) const;
+    bool cached( const InputType& input ) const;
+
+    void erase( Size id );
+    void clear()                                                { _map.clear(); }
     Size size() const                                           { return _map.size(); }
     internal_iterator begin() const                             { return _map.begin(); }
     internal_iterator end() const                               { return _map.end(); }
