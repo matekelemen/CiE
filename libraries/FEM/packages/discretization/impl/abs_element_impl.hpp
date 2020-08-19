@@ -282,7 +282,7 @@ AbsElement1D<AnsatzType>::AbsElement1D(  const std::pair<typename AbsElement1D::
     _jacobian( (domain.second-domain.first) / (this->_ansatzSet.domain(0,1)-this->_ansatzSet.domain(0,0)) ),
     _invJacobian( 1.0/_jacobian )
 {
-    assert( this->_ansatzSet.dimension == 1 );
+    CIE_STATIC_ASSERT( AnsatzType::dimension == 1 )
 }
 
 

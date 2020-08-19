@@ -9,13 +9,21 @@ namespace cie::fem {
 
 
 template <class ElementType>
-class StaticLinearHeatPhysics : AbsElementPhysics<ElementType>
+class StaticLinearHeatPhysics1D : public AbsElementPhysics<ElementType>
 {
 public:
-    using NT = typename AbsElementPhysics<ElementType>::NT;
+    using NT                        = typename AbsElementPhysics<ElementType>::NT;
+    using matrix_update_function    = typename AbsElementPhysics<ElementType>::matrix_update_function;
+    using vector_update_function    = typename AbsElementPhysics<ElementType>::vector_update_function;
 
 public:
-    StaticLinearHeatPhysics( NT conductivity );
+    template <class ...Args>
+    StaticLinearHeatPhysics1D(  NT conductivity,
+                                Args&&... args );
+
+    virtual void integrateStiffness( matrix_update_function updateFunction );
+    virtual void integrateLoad( vector_update_function updateFunction );
+
     NT& conductivity()          { return _conductivity; }
     NT conductivity() const     { return _conductivity; }
 

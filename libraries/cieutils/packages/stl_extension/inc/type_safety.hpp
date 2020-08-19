@@ -7,7 +7,6 @@
 
 namespace cie::utils {
 
-
 template <concepts::Deriveable T, class TypeTag>
 struct TypeDefBase : public T, public TypeTag
 {
@@ -17,7 +16,6 @@ struct TypeDefBase : public T, public TypeTag
     {}
 }; // struct TypeDefBase (non-integral type)
 
-
 } // namespace cie::utils
 
 
@@ -25,11 +23,8 @@ struct TypeDefBase : public T, public TypeTag
  * TODO: this implementation doesn't work as intended
 */
 #define STRONG_TYPEDEF( type_definition, type_name )                    \
-    namespace detail::type_tag {                                        \
-        struct type_name {};                                            \
-    }                                                                   \
+    struct type_tag ## type_name {};                                    \
     typedef cie::utils::TypeDefBase<                                    \
         type_definition,                                                \
-        detail::type_tag::type_name>    type_name;
-
+        type_tag ## type_name>    type_name;
 #endif

@@ -12,6 +12,7 @@
 // --- STL Includes ---
 #include <memory>
 #include <vector>
+#include <functional>
 
 
 namespace cie::fem {
@@ -53,6 +54,9 @@ public:
     using integrator_interface              = AbsQuadrature<ElementType::dimension,NT>;
     using integrator_ptr                    = std::shared_ptr<integrator_interface>;
     using integrator_const_reference        = const integrator_interface&;
+
+    using vector_update_function            = std::function<void(Size,NT)>;
+    using matrix_update_function            = std::function<void(Size,Size,NT)>;
 
 public:
     template <class ...Args>

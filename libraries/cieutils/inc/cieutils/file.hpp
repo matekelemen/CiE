@@ -3,5 +3,6 @@
 
 #include "../packages/output/inc/fileinfo.hpp"
 #include "../packages/output/inc/FileManager.hpp"
+#include "../packages/output/inc/write.hpp"
 
 #endif

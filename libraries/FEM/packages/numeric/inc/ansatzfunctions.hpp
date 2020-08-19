@@ -21,7 +21,7 @@ namespace cie::fem {
 
 
 // ---------------------------------------------------------
-// BASIS FUNCTION
+// ANSATZ FUNCTION
 // ---------------------------------------------------------
 template <concepts::NumericType NT>                 // NT: number type
 struct AnsatzFunction
@@ -114,10 +114,11 @@ protected:                                                                      
 
 
 // ---------------------------------------------------------
-// POLYNOMIAL SET OF BASIS FUNCTIONS
+// POLYNOMIAL SET OF ANSATZ FUNCTIONS
 // ---------------------------------------------------------
 
 namespace detail{
+// Helper function for evaluating polynomials defined by their coefficients
 template <template <class ...> class ContainerType, class NT, class ...Args>
 NT evaluatePolynomial( const ContainerType<NT,Args...>& coefficients, const NT& coordinate )
 requires concepts::NumericType<NT>;
@@ -156,7 +157,7 @@ protected:
 
 
 
-// Self-contained polynomial basis function set
+// Self-contained polynomial ansatz function set
 template <  Size Dimension,
             concepts::NumericType NT >
 struct PolynomialAnsatzFunctionSet final 
@@ -172,7 +173,7 @@ struct PolynomialAnsatzFunctionSet final
 
 
 // ---------------------------------------------------------
-// LINEAR SET OF BASIS FUNCTIONS
+// LINEAR SET OF ANSATZ FUNCTIONS
 // ---------------------------------------------------------
 template <  Size Dimension,
             concepts::NumericType NT,

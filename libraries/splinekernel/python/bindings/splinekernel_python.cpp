@@ -1,8 +1,10 @@
+// --- External Includes ---
 #include "pybind11/pybind11.h"
 #include "pybind11/stl.h"
 #include "pybind11/numpy.h"
 #include "pybind11/functional.h"
 
+// --- Internal Includes ---
 #include "basisfunctions.hpp"
 #include "curve.hpp"
 #include "surface.hpp"
@@ -11,7 +13,6 @@
 
 // This header defines how to convert between numpy array and linalg::Matrix
 #include "denseMatrixConversion.hpp"
-
 #include "sparseMatrixConversion.hpp"
 
 PYBIND11_MODULE( pysplinekernel, m ) 

@@ -72,7 +72,7 @@ TEST_CASE( "AbsElement", "[discretization]" )
     // General init
     const Size                                      Dimension = 2;
     typedef Double                                  NT;
-    typedef LinearAnsatzFunctionSet<Dimension,NT>    Basis;
+    typedef LinearAnsatzFunctionSet<Dimension,NT>   Basis;
     typedef detail::TestElement<Basis>              Element;
 
     // Test constructor
