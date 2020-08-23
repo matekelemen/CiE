@@ -28,14 +28,16 @@ TEST_CASE( "StaticLinearHeatPhysics1D", "[physics]" )
     using Matrix                = std::array<Row,2>;
 
     // Define element parameters
-    const NT materialParameter              = 2.0;
+    auto materialParameter                  = [](NT localCoordinate){ return 2.0; };
+    auto load                               = [](NT localCoordinate){ return 1.0; };
     typename Element::dof_container dofs    = { 0, 1 };
     std::pair<NT,NT> domain                 = { 0.0, 1.0 };
     const Size integrationOrder             = 5;
 
     // Element constructor
-    REQUIRE_NOTHROW( Element(materialParameter, domain, dofs) );
+    REQUIRE_NOTHROW( Element(materialParameter, load, domain, dofs) );
     Element element(    materialParameter,
+                        load,
                         domain,
                         dofs );
     REQUIRE_NOTHROW( element.setIntegrator<GaussLegendreQuadrature<1,NT>>(integrationOrder) );
@@ -54,10 +56,10 @@ TEST_CASE( "StaticLinearHeatPhysics1D", "[physics]" )
 
     // Integration
     REQUIRE_NOTHROW( element.integrateStiffness(updateStiffness) );
-    CHECK( stiffness[0][0] == Approx(materialParameter) );
-    CHECK( stiffness[0][1] == Approx(-materialParameter) );
-    CHECK( stiffness[1][0] == Approx(-materialParameter) );
-    CHECK( stiffness[1][1] == Approx(materialParameter) );
+    CHECK( stiffness[0][0] == Approx(materialParameter(0.0)) );
+    CHECK( stiffness[0][1] == Approx(-materialParameter(0.0)) );
+    CHECK( stiffness[1][0] == Approx(-materialParameter(0.0)) );
+    CHECK( stiffness[1][1] == Approx(materialParameter(0.0)) );
 
 } // TEST_CASE StaticLinearHeatPhysics1D
 

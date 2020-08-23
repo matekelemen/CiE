@@ -15,7 +15,8 @@ template <  class InputType,
             class StoredType >
 inline typename AbsCache<InputType,StoredType>::internal_iterator
 AbsCache<InputType,StoredType>::insert( const InputType& input,
-                                        typename AbsCache::generator_function generator )
+                                        typename AbsCache::generator_function generator,
+                                        bool force )
 {
     // Hash input and check if it's inserted
     Size id     = this->hash(input);
@@ -23,6 +24,8 @@ AbsCache<InputType,StoredType>::insert( const InputType& input,
 
     if (mapIt == _map.end())
         mapIt = _map.emplace( id, generator(input) ).first;
+    else if ( force )
+        mapIt->second = generator(input);
 
     return mapIt;
 }
@@ -32,7 +35,8 @@ template <  class InputType,
             class StoredType >
 inline typename AbsCache<InputType,StoredType>::internal_iterator
 AbsCache<InputType,StoredType>::insert( const InputType& input,
-                                        const StoredType& value )
+                                        const StoredType& value,
+                                        bool force )
 {
     // Hash input and check if it's inserted
     Size id     = this->hash(input);
@@ -40,6 +44,8 @@ AbsCache<InputType,StoredType>::insert( const InputType& input,
 
     if (mapIt == _map.end())
         mapIt = _map.emplace( id, value ).first;
+    else if ( force )
+        mapIt->second = value;
 
     return mapIt;
 }

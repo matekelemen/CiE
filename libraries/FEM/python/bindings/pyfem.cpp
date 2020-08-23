@@ -10,6 +10,7 @@
 #include "../../packages/numeric/inc/ansatzfunctions.hpp"
 
 #include "./convenience_functions.hpp"
+#include "./material_functions.hpp"
 
 
 // ---------------------------------------------------------
@@ -36,23 +37,49 @@ using StaticLinearHeatElement1DLinear   = cie::fem::StaticLinearHeatPhysics1D<Li
 PYBIND11_MODULE( pyfem, module )
 {
     /* --- ELEMENT TYPES --- */
+
+    // Static linear heat element in 1D with linear basis functions
     pybind11::class_<StaticLinearHeatElement1DLinear> staticLinearHeatElement1DLinear( module, "StaticLinearHeatElement1DLinear" );
-    staticLinearHeatElement1DLinear.def( pybind11::init<    typename StaticLinearHeatElement1DLinear::NT,
-                                                            std::pair<  typename StaticLinearHeatElement1DLinear::NT,
-                                                                        typename StaticLinearHeatElement1DLinear::NT >,
-                                                            typename StaticLinearHeatElement1DLinear::dof_container>() )
-    .def( "integrateStiffness", &StaticLinearHeatElement1DLinear::integrateStiffness );
+    staticLinearHeatElement1DLinear
+        .def( pybind11::init<   typename StaticLinearHeatElement1DLinear::coefficient_function,
+                                typename StaticLinearHeatElement1DLinear::load_function,
+                                std::pair<  typename StaticLinearHeatElement1DLinear::NT,
+                                            typename StaticLinearHeatElement1DLinear::NT >,
+                                typename StaticLinearHeatElement1DLinear::dof_container>() )
+        .def( "integrateStiffness", &StaticLinearHeatElement1DLinear::integrateStiffness )
+        .def( "integrateLoad", &StaticLinearHeatElement1DLinear::integrateLoad )
+        ;
 
     /* --- CONVENIENCE FUNCTIONS --- */
-    pybind11::class_<cie::fem::ElementList<StaticLinearHeatElement1DLinear>> staticLinearHeatElement1DLinear_List( module, "StaticLinearHeatElement1DLinear_List" );
+    pybind11::class_<cie::fem::ElementContainer<StaticLinearHeatElement1DLinear>> staticLinearHeatElement1DLinear_List( module, "StaticLinearHeatElement1DLinear_List" );
     staticLinearHeatElement1DLinear_List
         .def( pybind11::init<>() )
-        .def( "emplace_back", &cie::fem::ElementList<StaticLinearHeatElement1DLinear>::emplace_back<    typename StaticLinearHeatElement1DLinear::NT,
-                                                                                                        std::pair<  typename StaticLinearHeatElement1DLinear::NT,
-                                                                                                                    typename StaticLinearHeatElement1DLinear::NT >,
-                                                                                                        typename StaticLinearHeatElement1DLinear::dof_container> );
+        .def( "emplace_back", &cie::fem::ElementContainer<StaticLinearHeatElement1DLinear>::emplace_back<   typename StaticLinearHeatElement1DLinear::coefficient_function,
+                                                                                                            typename StaticLinearHeatElement1DLinear::load_function,
+                                                                                                            std::pair<  typename StaticLinearHeatElement1DLinear::NT,
+                                                                                                                        typename StaticLinearHeatElement1DLinear::NT >,
+                                                                                                            typename StaticLinearHeatElement1DLinear::dof_container> )
+        ;
     
     module.def( "integrateStiffness", &cie::fem::integrateStiffness<StaticLinearHeatElement1DLinear> );
+    module.def( "integrateLoad", &cie::fem::integrateLoad<StaticLinearHeatElement1DLinear> );
+
+    /* --- MATERIAL FUNCTIONS --- */
+    /**
+     * Function objects passed from python can't be evaluated in parallel (at least not with OpenMP)
+     * and cause the process to seemingly lock up in an unresponsive state. As painful as it is, the
+     * solution is to write the functions themselves in C++ and wrap specialized generators for each
+     * type of desired function.
+    */
+   
+    pybind11::class_<cie::fem::utils::ScalarMap<double>> scalarMap( module, "ScalarMap" );
+    scalarMap
+        .def( pybind11::init<std::function<double(double)>>() )
+        .def( "__call__", &cie::fem::utils::ScalarMap<double>::operator() )
+        .def( "get", &cie::fem::utils::ScalarMap<double>::get )
+        ;
+
+    module.def( "makeConstantFunction", &cie::fem::makeConstantFunction<double> );
                                                                                                 
 
 

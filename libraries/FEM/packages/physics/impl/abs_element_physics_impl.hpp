@@ -33,8 +33,17 @@ template <class IntegratorType, class ...Args>
 typename AbsElementPhysics<ElementType>::integrator_const_reference
 AbsElementPhysics<ElementType>::setIntegrator( Args&&... integratorArgs )
 {
-    // Construct new integrator and get integration points
     _integratorPtr = std::make_shared<IntegratorType>( std::forward<Args>(integratorArgs)... );
+    this->recache();
+    return *_integratorPtr;
+}
+
+
+template <class ElementType>
+void
+AbsElementPhysics<ElementType>::recache()
+{
+    // Get integration points
     typename ElementType::point_container integrationPoints;
     utils::setContainerSize( integrationPoints, _integratorPtr->integrationPoints().size() );
     std::copy(  _integratorPtr->integrationPoints().begin(),
@@ -78,13 +87,12 @@ AbsElementPhysics<ElementType>::setIntegrator( Args&&... integratorArgs )
 
     // Store computed values
     this->_cacheID = this->_basisCache.insert(  integrationPoints,
-                                                basisSet )->first;
-    this->_basisDerivativeCache.insert(    integrationPoints,
-                                    basisDerivativeSet );
-
-
-    return *_integratorPtr;
-}
+                                                basisSet,
+                                                true )->first;
+    this->_basisDerivativeCache.insert( integrationPoints,
+                                        basisDerivativeSet,
+                                        true );
+} // void recache()
 
 
 } // namespace cie::fem

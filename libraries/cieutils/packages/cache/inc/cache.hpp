@@ -27,9 +27,11 @@ public:
 public:
     virtual Size hash( const input_type& input ) const = 0;
     internal_iterator insert(   const input_type& input,
-                                generator_function generator );
+                                generator_function generator,
+                                bool force = false );
     internal_iterator insert(   const input_type& input,
-                                const StoredType& value );
+                                const StoredType& value,
+                                bool force = false );
     const stored_type& operator[]( Size inputID ) const;
     const stored_type& operator[]( const input_type& input ) const;
 

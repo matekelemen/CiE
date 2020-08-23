@@ -9,7 +9,8 @@ import numpy as np
 class StaticLinearHeatElement1DLinear(unittest.TestCase):
 
     def test_integrateStiffness( self ):
-        ''' '''
+        ''' Test stiffness integration for a single element '''
+        # Define stiffness matrix
         stiffness = [
             [ 0.0, 0.0, 0.0 ],
             [ 0.0, 0.0, 0.0 ],
@@ -21,10 +22,12 @@ class StaticLinearHeatElement1DLinear(unittest.TestCase):
             stiffness[i][j] += value
 
         # Instantiate an element
-        materialParameter   = 2.0
+        materialParameter   = fem.makeConstantFunction(2.0)
+        loadFunction        = fem.makeConstantFunction(1.0)
         domain              = [ 0.0, 1.0 ]
         DoFs                = [ 0, 2 ]
-        element             = fem.StaticLinearHeatElement1DLinear(  materialParameter,
+        element             = fem.StaticLinearHeatElement1DLinear(  materialParameter.get(),
+                                                                    loadFunction.get(),
                                                                     domain,
                                                                     DoFs )
 
@@ -35,27 +38,36 @@ class StaticLinearHeatElement1DLinear(unittest.TestCase):
                 if not (i in DoFs) or not (j in DoFs):
                     self.assertEqual( value, 0.0 )
                 elif i==j:
-                    self.assertEqual( value, materialParameter )
+                    self.assertEqual( value, materialParameter(0) )
                 else:
-                    self.assertEqual( value, -materialParameter )
+                    self.assertEqual( value, -materialParameter(0) )
 
     
     def test_integrateStiffness_list( self ):
-        ''' '''
+        ''' Test parallel stiffness integration for a list of elements '''
+        # Define elements
         numberOfElements    = 150
-        stiffness           = np.zeros( (numberOfElements+1,numberOfElements+1) )
         elements            = fem.StaticLinearHeatElement1DLinear_List()
-        materialParameter   = 2.0
+        materialParameter   = fem.makeConstantFunction(2.0)
+        loadFunction        = fem.makeConstantFunction(1.0)
+        loads               = [ loadFunction for i in range(numberOfElements) ]
         domains             = [ [float(i),float(i)+1.0] for i in range(numberOfElements) ]
         DoFs                = [ [i,i+1] for i in range(numberOfElements) ]
         for elementIndex in range(numberOfElements):
-            elements.emplace_back(  materialParameter,
+            elements.emplace_back(  materialParameter.get(),
+                                    loads[elementIndex].get(),
                                     domains[elementIndex],
                                     DoFs[elementIndex] )
 
+        # Define stiffness matrix
+        stiffness           = np.zeros( (numberOfElements+1,numberOfElements+1) )
+
+        # Define updater
         def updateStiffness( i, j, value ):
             stiffness[i][j] += value
+        print("List integrate")
         fem.integrateStiffness( elements, updateStiffness )
+        print("List integrate end")
         
         for i,row in enumerate(stiffness):
             for j,value in enumerate(row):

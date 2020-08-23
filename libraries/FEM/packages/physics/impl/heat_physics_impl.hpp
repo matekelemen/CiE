@@ -8,33 +8,24 @@ namespace cie::fem {
 
 
 template <class ElementType>
-template <class ...Args>
-StaticLinearHeatPhysics1D<ElementType>::StaticLinearHeatPhysics1D(  typename StaticLinearHeatPhysics1D::NT conductivity,
-                                                                    Args&&... args ) :
-    AbsElementPhysics<ElementType>( std::forward<Args>(args)... ),
-    _conductivity(conductivity)
-{
-    CIE_STATIC_ASSERT( ElementType::dimension == 1 )
-}
-
-
-template <class ElementType>
 void
 StaticLinearHeatPhysics1D<ElementType>::integrateStiffness( typename StaticLinearHeatPhysics1D::matrix_update_function updateFunction )
 {
     const auto& basisDerivatives        = this->basisDerivativeValues();
     const Size numberOfBasisFunctions   = basisDerivatives[0].size();
 
+    auto conductivity = this->_conductivity(0.0);                       // <-- constant material params
+
     std::vector<NT> integrandValues;
     integrandValues.reserve(basisDerivatives.size());                   // <-- number of integration points
 
-    for (Size i=0; i<numberOfBasisFunctions; ++i)        
+    for (Size i=0; i<numberOfBasisFunctions; ++i)
         for (Size j=i; j<numberOfBasisFunctions; ++j)
         {
             integrandValues.clear();
             for (const auto& basisDerivative : basisDerivatives)
                 integrandValues.push_back(
-                    this->_conductivity
+                    conductivity
                     * basisDerivative[i][0] * basisDerivative[j][0]     // dN_i * dN_j
                     * this->_invJacobian
                 );

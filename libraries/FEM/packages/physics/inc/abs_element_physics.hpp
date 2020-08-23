@@ -70,6 +70,11 @@ public:
     integrator_const_reference setIntegrator( Args&&... integratorArgs );
 
     /**
+     * Recompute and update all caches.
+    */
+    virtual void recache();
+
+    /**
      * Convenience function for accessing basis values for to the current
      * integration points.
     */
