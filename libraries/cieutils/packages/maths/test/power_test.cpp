@@ -2,8 +2,8 @@
 #include "catch.hpp"
 
 // --- Internal Includes ---
-#include "../inc/power.hpp"
-#include "../../types/inc/types.hpp"
+#include "cieutils/packages/maths/inc/power.hpp"
+#include "cieutils/packages/types/inc/types.hpp"
 
 
 namespace cie {

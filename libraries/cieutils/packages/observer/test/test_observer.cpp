@@ -2,15 +2,14 @@
 #include "catch.hpp"
 
 // --- Internal Imports ---
-#include "../inc/AbsObserver.hpp"
-#include "../inc/AbsSubject.hpp"
+#include "cieutils/packages/observer/inc/AbsObserver.hpp"
+#include "cieutils/packages/observer/inc/AbsSubject.hpp"
 
 // --- STD Imports ---
 #include <iostream>
 #include <typeinfo>
 
-namespace cie {
-namespace utils {
+namespace cie::utils {
 
 
 // Observer wrapper
@@ -104,5 +103,4 @@ TEST_CASE( "AbsObserver" )
 }
 
 
-}
-}
+} // namespace cie::utils

@@ -2,8 +2,8 @@
 #define CIE_CIEUTILS_LOGGER_HPP
 
 // --- Internal Includes ---
-#include "../../output/inc/FileManager.hpp"
-#include "../../output/inc/fileinfo.hpp"
+#include "cieutils/packages/output/inc/FileManager.hpp"
+#include "cieutils/packages/output/inc/fileinfo.hpp"
 
 // --- STL Includes ---
 #include <fstream>
@@ -15,8 +15,7 @@
 #include <ctime>
 
 
-namespace cie {
-namespace utils {
+namespace cie::utils {
 
 
 // Clock definition
@@ -84,7 +83,6 @@ protected:
 };
 
 
-}
-}
+} // namespace cie::utils
 
 #endif

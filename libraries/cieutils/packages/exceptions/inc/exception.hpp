@@ -2,7 +2,7 @@
 #define CIE_CIEUTILS_EXCEPTIONS_HPP
 
 // --- Utility Includes ---
-#include <cieutils/types.hpp>
+#include "cieutils/packages/types/inc/types.hpp"
 
 // --- STL Includes ---
 #include <stdexcept>

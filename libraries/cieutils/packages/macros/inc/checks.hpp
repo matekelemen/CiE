@@ -2,8 +2,8 @@
 #define CIE_CIEUTILS_CHECK_MACROS_HPP
 
 // --- Internal Includes ---
-#include "../../exceptions/inc/exception.hpp"
-#include "./detail.hpp"
+#include "cieutils/packages/exceptions/inc/exception.hpp"
+#include "cieutils/packages/macros/inc/detail.hpp"
 #include "cmake_variables.hpp"
 
 // --- STL Includes ---

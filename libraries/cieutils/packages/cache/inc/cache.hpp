@@ -2,8 +2,8 @@
 #define CIE_UTILITIES_CACHE_HPP
 
 // --- Ínternal Includes ---
-#include "../../types/inc/types.hpp"
-#include "../../concepts/inc/container_concepts.hpp"
+#include "cieutils/packages/types/inc/types.hpp"
+#include "cieutils/packages/concepts/inc/container_concepts.hpp"
 
 // --- STL Includes ---
 #include <unordered_map>
@@ -51,6 +51,6 @@ public:
 
 } // namespace cie::utils
 
-#include "../impl/cache_impl.hpp"
+#include "cieutils/packages/cache/impl/cache_impl.hpp"
 
 #endif

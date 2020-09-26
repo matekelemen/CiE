@@ -2,7 +2,7 @@
 #define CIE_UTILS_MATHS_POWER_HPP
 
 // --- Internal Includes ---
-#include "../../concepts/inc/basic_concepts.hpp"
+#include "cieutils/packages/concepts/inc/basic_concepts.hpp"
 
 
 namespace cie {
@@ -14,6 +14,6 @@ constexpr NT intPow( NT base, NT exponent );
 
 } // namespace cie
 
-#include "../impl/power_impl.hpp"
+#include "cieutils/packages/maths/impl/power_impl.hpp"
 
 #endif

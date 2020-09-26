@@ -1,8 +1,7 @@
 #ifndef CIEUTILS_ABSOBSERVER_IMPL_HPP
 #define CIEUTILS_ABSOBSERVER_IMPL_HPP
 
-namespace cie {
-namespace utils {
+namespace cie::utils {
 
 
 template <class DerivedObserver>
@@ -12,7 +11,6 @@ std::shared_ptr<DerivedObserver> AbsObserver::as()
 }
 
 
-}
-}
+} // namespace cie::utils
 
 #endif

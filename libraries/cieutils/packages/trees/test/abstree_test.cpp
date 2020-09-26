@@ -2,7 +2,7 @@
 #include "catch.hpp"
 
 // --- Internal Includes ---
-#include "../inc/abstree.hpp"
+#include "cieutils/packages/trees/inc/abstree.hpp"
 
 // --- STL Includes ---
 #include <vector>

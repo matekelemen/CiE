@@ -1,8 +1,7 @@
 #ifndef CIEUTILS_ABSSUBJECT_IMPL_HPP
 #define CIEUTILS_ABSSUBJECT_IMPL_HPP
 
-namespace cie {
-namespace utils{
+namespace cie::utils{
 
 
 template <class DerivedSubject>
@@ -12,7 +11,6 @@ std::shared_ptr<DerivedSubject> AbsSubject::as()
 }
 
 
-}
-}
+} // namespace cie::utils
 
 #endif

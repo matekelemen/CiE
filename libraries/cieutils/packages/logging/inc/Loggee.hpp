@@ -2,7 +2,7 @@
 #define CIE_CIEUTILS_LOGGEE_HPP
 
 // --- Internal Includes ---
-#include "Logger.hpp"
+#include "cieutils/packages/logging/inc/Logger.hpp"
 
 // --- STL Includes ---
 #include <string>
@@ -16,8 +16,7 @@ const size_t LOG_TYPE_ERROR     = 2;
 }
 
 
-namespace cie {
-namespace utils {
+namespace cie::utils {
 
 
 class Loggee
@@ -54,8 +53,7 @@ private:
 };
 
 
-}
-}
+} // namespace cie::utils
 
 
 #endif

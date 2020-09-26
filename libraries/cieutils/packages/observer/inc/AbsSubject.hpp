@@ -2,15 +2,14 @@
 #define CIEUTILS_ABSSUBJECT_HPP
 
 // --- Internal Includes ---
-#include "AbsObserver.hpp"
+#include "cieutils/packages/observer/inc/AbsObserver.hpp"
 
 // --- STL Includes ---
 #include <memory>
 #include <vector>
 
 
-namespace cie {
-namespace utils {
+namespace cie::utils {
 
 
 class AbsSubject : public std::enable_shared_from_this<AbsSubject>
@@ -36,9 +35,8 @@ protected:
 };
 
 
-}
-}
+} // namespace cie::utils
 
-#include "AbsSubject_impl.hpp"
+#include "cieutils/packages/observer/impl/AbsSubject_impl.hpp"
 
 #endif

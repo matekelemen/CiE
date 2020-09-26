@@ -1,5 +1,5 @@
 // --- Internal Includes ---
-#include "../inc/exception.hpp"
+#include "cieutils/packages/exceptions/inc/exception.hpp"
 
 namespace cie {
 

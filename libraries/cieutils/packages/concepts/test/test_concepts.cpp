@@ -2,9 +2,9 @@
 #include "catch.hpp"
 
 // --- Internal Includes ---
-#include "../inc/container_concepts.hpp"
-#include "../inc/iterator_concepts.hpp"
-#include "../inc/basic_concepts.hpp"
+#include "cieutils/packages/concepts/inc/container_concepts.hpp"
+#include "cieutils/packages/concepts/inc/iterator_concepts.hpp"
+#include "cieutils/packages/concepts/inc/basic_concepts.hpp"
 
 // --- STL Includes ---
 #include <vector>

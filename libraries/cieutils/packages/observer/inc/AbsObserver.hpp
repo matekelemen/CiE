@@ -5,8 +5,7 @@
 #include <memory>
 
 
-namespace cie {
-namespace utils {
+namespace cie::utils {
 
 class AbsObserver;
 class AbsSubject;
@@ -38,9 +37,8 @@ protected:
 };
 
 
-}
-}
+} // namespace cie::utils
 
-#include "AbsObserver_impl.hpp"
+#include "cieutils/packages/observer/impl/AbsObserver_impl.hpp"
 
 #endif

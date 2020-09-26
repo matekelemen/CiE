@@ -1,12 +1,11 @@
 // --- Internal Includes ---
-#include "../inc/Loggee.hpp"
+#include "cieutils/packages/logging/inc/Loggee.hpp"
 
 // --- STL Includes ---
 #include <string>
 
 
-namespace cie {
-namespace utils {
+namespace cie::utils {
 
 
 Loggee::Loggee( Logger& logger,
@@ -98,5 +97,4 @@ Logger& Loggee::logger()
 }
 
 
-}
-}
+} // namespace cie::utils

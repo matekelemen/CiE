@@ -10,9 +10,6 @@ COLLECT_PACKAGES(   CIEUTILS_INCLUDE_DIRECTORIES
 file( GLOB CIEUTILS_TEST_DRIVERS ${CMAKE_CURRENT_SOURCE_DIR}/test/*.cpp )
 list( APPEND CIEUTILS_TEST_FILES ${CIEUTILS_TEST_DRIVERS} )
 
-include_directories( "${CIEUTILS_INCLUDE_DIRECTORIES}" )
-include_directories( "${CMAKE_CURRENT_SOURCE_DIR}" )
-
 # ---------------------------------------------------------
 # LIBRARIES AND EXECUTABLES
 # ---------------------------------------------------------

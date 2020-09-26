@@ -5,7 +5,7 @@
 #include <cieutils/macros.hpp>
 
 // --- Internal Includes ---
-#include "../../exceptions/inc/exception.hpp"
+#include "cieutils/packages/exceptions/inc/exception.hpp"
 
 
 namespace cie::utils {

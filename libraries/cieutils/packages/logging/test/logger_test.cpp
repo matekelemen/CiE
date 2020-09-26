@@ -2,7 +2,7 @@
 #include "catch.hpp"
 
 // --- Internal Includes ---
-#include "../inc/Logger.hpp"
+#include "cieutils/packages/logging/inc/Logger.hpp"
 #include "cmake_variables.hpp"
 
 
