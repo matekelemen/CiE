@@ -3,8 +3,7 @@ project( FEM CXX )
 # ---------------------------------------------------------
 # GATHER FILES AND INCLUDE DIRECTORIES
 # ---------------------------------------------------------
-COLLECT_PACKAGES(   FEM_INCLUDE_DIRECTORIES
-                    FEM_HEADER_FILES
+COLLECT_PACKAGES(   FEM_HEADER_FILES
                     FEM_SOURCE_FILES
                     FEM_TEST_FILES )
 

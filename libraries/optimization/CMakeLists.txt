@@ -3,8 +3,7 @@ project( optimization CXX )
 # ---------------------------------------------------------
 # GATHER FILES AND INCLUDE DIRECTORIES
 # ---------------------------------------------------------
-COLLECT_PACKAGES(   OPTIMIZATION_INCLUDE_DIRECTORIES
-                    OPTIMIZATION_HEADER_FILES
+COLLECT_PACKAGES(   OPTIMIZATION_HEADER_FILES
                     OPTIMIZATION_LIBRARY_SOURCE_FILES
                     OPTIMIZATION_TEST_SOURCE_FILES )
 

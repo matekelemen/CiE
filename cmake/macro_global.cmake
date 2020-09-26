@@ -17,14 +17,12 @@ ENDMACRO()
 #       - impl
 #       - src
 #       - test
-MACRO(COLLECT_PACKAGE directory includeDirs headers sources tests)
+MACRO(COLLECT_PACKAGE directory headers sources tests)
     FILE( GLOB temp_headers ${directory}/inc/*.hpp )
     FILE( GLOB temp_impl ${directory}/impl/*.hpp )
     FILE( GLOB temp_sources ${directory}/src/*.cpp )
     FILE( GLOB temp_tests ${directory}/test/*.cpp )
-    LIST( APPEND temp_headers ${temp_impl} )
 
-    SET( ${includeDirs} "${directory}/inc" )
     SET( ${headers} ${temp_headers} )
     LIST( APPEND headers ${temp_impl} )
     SET( ${sources} ${temp_sources} )
@@ -32,13 +30,11 @@ MACRO(COLLECT_PACKAGE directory includeDirs headers sources tests)
 ENDMACRO()
 
 
-MACRO( COLLECT_PACKAGES includeDirs headers sources tests )
+MACRO( COLLECT_PACKAGES headers sources tests )
     SUBDIRLIST( packageNames "${CMAKE_CURRENT_SOURCE_DIR}/packages" )
     foreach( packageName ${packageNames} )
         COLLECT_PACKAGE(    "${CMAKE_CURRENT_SOURCE_DIR}/packages/${packageName}"
-                            _includeDirs
                             _headers _sources _tests )
-        LIST( APPEND ${includeDirs} ${_includeDirs} )
         LIST( APPEND ${headers} ${_headers} )
         LIST( APPEND ${sources} ${_sources} )
         LIST( APPEND ${tests} ${_tests} )

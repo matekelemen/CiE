@@ -3,8 +3,7 @@ project( linalg CXX )
 # ---------------------------------------------------------
 # GATHER FILES AND INCLUDE DIRECTORIES
 # ---------------------------------------------------------
-COLLECT_PACKAGES(   LINALG_INCLUDE_DIRECTORIES
-                    LINALG_HEADER_FILES
+COLLECT_PACKAGES(   LINALG_HEADER_FILES
                     LINALG_LIBRARY_SOURCE_FILES
                     LINALG_TEST_SOURCE_FILES )
 

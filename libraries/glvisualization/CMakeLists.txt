@@ -6,8 +6,7 @@ include_directories( "../../external/glm" )
 # ---------------------------------------------------------
 # GATHER FILES AND INCLUDE DIRECTORIES
 # ---------------------------------------------------------
-COLLECT_PACKAGES(   GLVISUALIZATION_INCLUDE_DIRECTORIES
-                    GLVISUALIZATION_HEADER_FILES
+COLLECT_PACKAGES(   GLVISUALIZATION_HEADER_FILES
                     GLVISUALIZATION_SOURCE_FILES
                     GLVISUALIZATION_TEST_FILES )
 
