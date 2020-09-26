@@ -2,18 +2,18 @@
 #define CIE_CSG_PRIMITIVES_IMPL_HPP
 
 // --- Utility Includes ---
-#include <cieutils/macros.hpp>
+#include "cieutils/packages/macros/inc/checks.hpp"
 
 // --- STL Includes ---
 #include <algorithm>
 
-namespace cie {
-namespace csg {
+namespace cie::csg {
 
 
 // ---------------------------------------------------------
 // ABSTRACT PRIMITIVES
 // ---------------------------------------------------------
+
 template <  Size N, 
             concepts::NumericType CoordinateType   >
 template <class ContainerType>
@@ -125,6 +125,7 @@ Box<N,CoordinateType>::lengths()
 // ---------------------------------------------------------
 // SPECIALIZED BOOLEAN PRIMITIVES
 // ---------------------------------------------------------
+
 namespace boolean {
 
 
@@ -181,10 +182,9 @@ CSGBox<N,CoordinateType>::at( const typename CSGBox<N,CoordinateType>::point_typ
     return true;
 }
 
-}
+} // namespace boolean
 
 
-}
-}
+} // namespace cie::csg
 
 #endif

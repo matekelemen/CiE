@@ -2,12 +2,12 @@
 #define CIE_CSG_CELL_HPP
 
 // --- Internal Includes ---
-#include "../../primitives/inc/primitives.hpp"
+#include "CSG/packages/primitives/inc/primitives.hpp"
 
 // --- Utility Includes ---
-#include <cieutils/trees.hpp>
-#include <cieutils/concepts.hpp>
-#include <cieutils/types.hpp>
+#include "cieutils/packages/trees/inc/abstree.hpp"
+#include "cieutils/packages/concepts/inc/container_concepts.hpp"
+#include "cieutils/packages/types/inc/types.hpp"
 
 // --- STL Includes ---
 #include <memory>
@@ -119,6 +119,6 @@ public:
 
 }
 
-#include "../impl/cell_impl.hpp"
+#include "CSG/packages/trees/impl/cell_impl.hpp"
 
 #endif

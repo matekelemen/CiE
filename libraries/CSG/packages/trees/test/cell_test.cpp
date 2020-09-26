@@ -2,7 +2,7 @@
 #include "catch.hpp"
 
 // --- Internal Includes ---
-#include "../inc/cell.hpp"
+#include "CSG/packages/trees/inc/cell.hpp"
 
 
 namespace cie::csg {
@@ -78,4 +78,4 @@ TEST_CASE( "boolean::BoxCell", "[trees]" )
     CHECK( std::abs(cell.children()[3]->base()[1] - 2.0) < 1e-16 );
 }
 
-}
+} // namespace cie::csg

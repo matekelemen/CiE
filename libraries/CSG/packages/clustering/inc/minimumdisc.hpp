@@ -2,15 +2,16 @@
 #define CSG_MINIMUM_DISC_HPP
 
 // --- Linalg Includes ---
-#include "linalg/types.hpp"
+#include "linalg/packages/types/inc/vectortypes.hpp"
+#include "linalg/packages/types/inc/arraytypes.hpp"
+#include "linalg/packages/types/inc/typeoperations.hpp"
 
 // --- STL Includes ---
 #include <vector>
 #include <array>
 #include <memory>
 
-namespace cie {
-namespace csg {
+namespace cie::csg {
 
 
 // Type aliases -----------------------------------------------------------------
@@ -59,7 +60,6 @@ private:
 };
 
 
-} // namespace csg
-} // namespace cie
+} // namespace cie::csg
 
 #endif

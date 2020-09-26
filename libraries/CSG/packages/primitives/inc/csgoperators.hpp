@@ -2,15 +2,15 @@
 #define CIE_CSG_CSG_OPERATORS_HPP
 
 // --- Internal Includes ---
-#include "csgobject.hpp"
+#include "CSG/packages/primitives/inc/csgobject.hpp"
 
-namespace cie {
-namespace csg {
+namespace cie::csg {
 
 
 // ---------------------------------------------------------
 // ABSTRACT OPERATORS
 // ---------------------------------------------------------
+
 template <  Size N, 
             concepts::CopyConstructible ValueType = Bool,
             concepts::NumericType CoordinateType = Double   >
@@ -75,6 +75,7 @@ protected:
 // ---------------------------------------------------------
 // BOOLEAN OPERATORS
 // ---------------------------------------------------------
+
 template <Size N, concepts::NumericType CoordinateType = Double>
 class BooleanComplement : public UnaryOperator<N,Bool,CoordinateType>
 {
@@ -107,9 +108,8 @@ protected:
 };
 
 
-}
-}
+} // namespace cie::csg
 
-#include "../impl/csgoperators_impl.hpp"
+#include "CSG/packages/primitives/impl/csgoperators_impl.hpp"
 
 #endif

@@ -2,11 +2,11 @@
 #define CIE_CSG_PRIMITIVE_SAMPLER_HPP
 
 // --- Utility Includes ---
-#include <cieutils/macros.hpp>
+#include "cieutils/packages/macros/inc/assertions.hpp"
 
 // --- Internal Includes ---
-#include "../../primitives/inc/primitives.hpp"
-#include "./spacetreeutils.hpp"
+#include "CSG/packages/primitives/inc/primitives.hpp"
+#include "CSG/packages/trees/inc/spacetreeutils.hpp"
 
 
 namespace cie::csg {
@@ -78,6 +78,6 @@ public:
 
 }
 
-#include "../impl/primitive_sampler_impl.hpp"
+#include "CSG/packages/trees/impl/primitive_sampler_impl.hpp"
 
 #endif

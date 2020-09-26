@@ -3,9 +3,9 @@
 #include "pybind11/stl.h"
 
 // --- Internal Includes ---
-#include "../../packages/clustering/inc/minimumdisc.hpp"
-#include "../../packages/trees/inc/spacetreeutils.hpp"
-#include "../../packages/trees/inc/spacetreenode.hpp"
+#include "CSG/packages/clustering/inc/minimumdisc.hpp"
+#include "CSG/packages/trees/inc/spacetreeutils.hpp"
+#include "CSG/packages/trees/inc/spacetreenode.hpp"
 #include "csgconversion.hpp"
 
 

@@ -2,10 +2,11 @@
 #include "catch.hpp"
 
 // --- Linalg Includes ---
-#include <linalg/types.hpp>
+#include "linalg/packages/types/inc/vectortypes.hpp"
+#include "linalg/packages/types/inc/arraytypes.hpp"
 
 // --- Internal Includes ---
-#include "../inc/primitives.hpp"
+#include "CSG/packages/primitives/inc/primitives.hpp"
 
 namespace cie::csg {
 
@@ -48,7 +49,7 @@ TEST_CASE( "boolean::CSGBox", "[primitives]" )
 }
 
 
-}
+} // namespace boolean
 
 
-}
+} // namespace cie::csg

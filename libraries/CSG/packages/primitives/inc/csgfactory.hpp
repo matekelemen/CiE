@@ -5,13 +5,12 @@
 #include "csgobject.hpp"
 
 // --- Utility Includes ---
-#include <cieutils/concepts.hpp>
+#include "cieutils/packages/concepts/inc/basic_concepts.hpp"
 
 // --- STL Includes ---
 #include <memory>
 
-namespace cie{
-namespace csg {
+namespace cie::csg {
 
 
 template <  Size N, 
@@ -25,9 +24,8 @@ struct CSGFactory
 };
 
 
-}
-}
+} // namespace cie::csg
 
-#include "../impl/csgfactory_impl.hpp"
+#include "CSG/packages/primitives/impl/csgfactory_impl.hpp"
 
 #endif

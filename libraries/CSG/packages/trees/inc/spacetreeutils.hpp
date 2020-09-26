@@ -2,7 +2,7 @@
 #define CSG_NTREEUTILS_HPP
 
 // --- Linalg Includes ---
-#include "linalg/types.hpp"
+#include "linalg/packages/types/inc/arraytypes.hpp"
 
 // --- STL Includes ---
 #include <stdint.h>
@@ -65,6 +65,6 @@ void boundaryNodes( const SpaceTreeNode<N,M>& root,
 
 }
 
-#include "../impl/spacetreeutils_impl.hpp"
+#include "CSG/packages/trees/impl/spacetreeutils_impl.hpp"
 
 #endif

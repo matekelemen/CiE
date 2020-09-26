@@ -1,12 +1,16 @@
+// --- External Includes ---
 #include "catch.hpp"
-#include "../inc/minimumdisc.hpp"
+
+// --- Internal Includes ---
+#include "CSG/packages/clustering/inc/minimumdisc.hpp"
+
+// --- STL Includes ---
 #include <cmath>
 
 
-namespace cie {
-namespace csg {
+namespace cie::csg {
 
-TEST_CASE("Disc constructors")
+TEST_CASE( "Disc", "[clustering]" )
 {
     // Disc defined by center and radius
     Disc disc( {0.1,0.2}, 0.5 );
@@ -25,17 +29,13 @@ TEST_CASE("Disc constructors")
     CHECK( disc._center[0]     == Approx(2.0) );
     CHECK( disc._center[1]     == Approx(1.0) );
     CHECK( disc._radius2       == Approx(1.0) );
-}
 
-
-TEST_CASE("Disc constructors - extreme cases")
-{
-    // Disc with 2 equal points
+    // Extreme cases
     DoubleArray<2> point1   = {1.0,1.0};
     DoubleArray<2> point2   = {1.0,1.0};
     DoubleArray<2> point3   = {1.0,2.0};
 
-    Disc disc(point1,point2);
+    disc =  Disc(point1,point2);
     CHECK( disc._center[0]  == Approx( 1.0 ) );
     CHECK( disc._center[1]  == Approx( 1.0 ) );
     CHECK( disc._radius2    == Approx( 0.0 ) );
@@ -88,5 +88,4 @@ TEST_CASE("Minimum enclosing disc")
 */
 
 
-}
-}
+} // namespace cie::csg

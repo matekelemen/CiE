@@ -2,17 +2,16 @@
 #include "catch.hpp"
 
 // --- Linalg Includes ---
-#include "linalg/types.hpp"
+#include "linalg/packages/types/inc/vectortypes.hpp"
 
 // --- Internal Includes ---
-#include "../inc/csgobject.hpp"
+#include "CSG/packages/primitives/inc/csgobject.hpp"
 
 // --- STL Includes ---
 #include <vector>
 #include <deque>
 
-namespace cie {
-namespace csg {
+namespace cie::csg {
 
 
 template <  Size N, 
@@ -95,5 +94,4 @@ TEST_CASE( "CSGObject", "[primitives]" )
 }
 
 
-}
-}
+} // namespace cie::csg

@@ -2,10 +2,10 @@
 #define CIE_CSG_SPLIT_POLICY_HPP
 
 // --- Utility Includes ---
-#include <cieutils/concepts.hpp>
+#include "cieutils/packages/concepts/inc/iterator_concepts.hpp"
 
 // --- Internal Includes ---
-#include "./primitive_sampler.hpp"
+#include "CSG/packages/trees/inc/primitive_sampler.hpp"
 
 // --- STL Includes ---
 #include <functional>

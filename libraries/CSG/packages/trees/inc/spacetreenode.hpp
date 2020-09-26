@@ -2,10 +2,10 @@
 #define CIE_CSG_SPACE_TREE_NODE_HPP
 
 // --- Linalg Includes ---
-#include "linalg/types.hpp"
+#include "linalg/packages/types/inc/arraytypes.hpp"
 
 // --- Internal Includes ---
-#include "./cell.hpp"
+#include "CSG/packages/trees/inc/cell.hpp"
 
 // --- STL Includes ---
 #include <deque>
@@ -135,8 +135,8 @@ protected:
 //*/
 
 
-}
+} // namespace cie::csg
 
-#include "../impl/spacetreenode_impl.hpp"
+#include "CSG/packages/trees/impl/spacetreenode_impl.hpp"
 
 #endif

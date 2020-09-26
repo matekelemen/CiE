@@ -2,8 +2,8 @@
 #define CIE_CSG_CSG_OBJECT_HPP
 
 // --- Utility Includes ---
-#include "cieutils/types.hpp"
-#include "cieutils/concepts.hpp"
+#include "cieutils/packages/concepts/inc/container_concepts.hpp"
+#include "cieutils/packages/types/inc/types.hpp"
 
 // --- STL Includes ---
 #include <memory>
@@ -53,6 +53,6 @@ using CSGObjectPtr = std::shared_ptr<CSGObject<N,ValueType,CoordinateType>>;
 
 } // namespace cie::csg
 
-#include "../impl/csgobject_impl.hpp"
+#include "CSG/packages/primitives/impl/csgobject_impl.hpp"
 
 #endif

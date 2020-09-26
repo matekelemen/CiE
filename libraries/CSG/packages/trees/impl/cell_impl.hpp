@@ -2,16 +2,20 @@
 #define CIE_CSG_CELL_IMPL_HPP
 
 // --- Utility Includes ---
-#include <cieutils/exceptions.hpp>
+#include "cieutils/packages/exceptions/inc/exception.hpp"
 
 // --- Internal Includes ---
-#include "../inc/indexconverter.hpp"
+#include "CSG/packages/trees/inc/indexconverter.hpp"
+
+// --- STL Includes ---
+#include <iostream>
 
 namespace cie::csg {
 
 // ---------------------------------------------------------
 // ABSTRACT CELL
 // ---------------------------------------------------------
+
 template <class PrimitiveType, class SelfType>
 template <class ...Args>
 AbsCell<PrimitiveType,SelfType>::AbsCell( Args&&... args ) :
@@ -144,10 +148,10 @@ BoxCellTemplate<dimension,SelfType,CoordinateType>::split_internal( const typena
 }
 
 
-}
+} // namespace boolean
 
 
 
-}
+} // namespace cie::csg
 
 #endif

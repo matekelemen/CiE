@@ -2,10 +2,10 @@
 #include "catch.hpp"
 /*
 // --- Internal Includes ---
-#include "../inc/spacetreenode.hpp"
-#include "../inc/primitive_sampler.hpp"
-#include "../inc/split_policy.hpp"
-#include "../inc/cell.hpp"
+#include "CSG/packages/trees/inc/spacetreenode.hpp"
+#include "CSG/packages/trees/inc/primitive_sampler.hpp"
+#include "CSG/packages/trees/inc/split_policy.hpp"
+#include "CSG/packages/trees/inc/cell.hpp"
 #include "cmake_variables.hpp"
 
 // --- STL includes ---

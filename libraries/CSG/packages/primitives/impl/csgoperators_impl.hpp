@@ -1,13 +1,13 @@
 #ifndef CIE_CSG_CSG_OPERATORS_IMPL_HPP
 #define CIE_CSG_CSG_OPERATORS_IMPL_HPP
 
-namespace cie {
-namespace csg {
+namespace cie::csg {
 
 
 // ---------------------------------------------------------
 // ABSTRACT OPERATORS
 // ---------------------------------------------------------
+
 template <  Size N, 
             concepts::CopyConstructible ValueType,
             concepts::NumericType CoordinateType   >
@@ -111,6 +111,7 @@ BinaryOperator<N,ValueType,CoordinateType>::lhs()
 // ---------------------------------------------------------
 // BOOLEAN OPERATORS
 // ---------------------------------------------------------
+
 template <Size N, concepts::NumericType CoordinateType>
 Bool BooleanComplement<N,CoordinateType>::at( const typename BooleanComplement<N,CoordinateType>::point_type& point ) const
 {
@@ -139,7 +140,6 @@ Bool BooleanIntersection<N,CoordinateType>::at( const typename BooleanIntersecti
 }
 
 
-}
-}
+} // namespace cie::csg
 
 #endif

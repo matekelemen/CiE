@@ -2,7 +2,7 @@
 #define CSG_NTREE_UTILITIES_IMPL_HPP
 
 // --- Utility Includes ---
-#include <cieutils/macros.hpp>
+#include "cieutils/packages/macros/inc/exceptions.hpp"
 
 // --- STL Includes ---
 #include <algorithm>
