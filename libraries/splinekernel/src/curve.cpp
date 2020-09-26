@@ -1,9 +1,9 @@
 // --- Utility Includes ---
-#include <cieutils/macros.hpp>
+#include "cieutils/packages/macros/inc/exceptions.hpp"
 
 // --- Internal Includes ---
-#include "basisfunctions.hpp"
-#include "curve.hpp"
+#include "splinekernel/inc/basisfunctions.hpp"
+#include "splinekernel/inc/curve.hpp"
 
 // --- STL Includes ---
 #include <algorithm>

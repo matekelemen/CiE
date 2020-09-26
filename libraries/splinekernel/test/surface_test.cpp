@@ -2,7 +2,7 @@
 #include "catch.hpp"
 
 // --- Internal Includes ---
-#include "surface.hpp"
+#include "splinekernel/inc/surface.hpp"
 
 // --- STL Includes ---
 #include <array>

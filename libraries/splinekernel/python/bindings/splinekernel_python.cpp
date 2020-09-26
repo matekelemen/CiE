@@ -1,18 +1,17 @@
+// --- External Includes ---
 #include "pybind11/pybind11.h"
 #include "pybind11/stl.h"
 #include "pybind11/numpy.h"
 #include "pybind11/functional.h"
 
-#include "basisfunctions.hpp"
-#include "curve.hpp"
-#include "surface.hpp"
-#include "interpolation.hpp"
-#include "finiteelements.hpp"
-
-// This header defines how to convert between numpy array and linalg::Matrix
-#include "denseMatrixConversion.hpp"
-
-#include "sparseMatrixConversion.hpp"
+// --- Internal Includes ---
+#include "splinekernel/inc/basisfunctions.hpp"
+#include "splinekernel/inc/curve.hpp"
+#include "splinekernel/inc/surface.hpp"
+#include "splinekernel/inc/interpolation.hpp"
+#include "splinekernel/inc/finiteelements.hpp"
+#include "splinekernel/python/bindings/denseMatrixConversion.hpp"
+#include "splinekernel/python/bindings/sparseMatrixConversion.hpp"
 
 PYBIND11_MODULE( pysplinekernel, m ) 
 {

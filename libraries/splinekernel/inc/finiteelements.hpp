@@ -1,5 +1,5 @@
-#ifndef CIE_FINITEELEMENTS_HPP
-#define CIE_FINITEELEMENTS_HPP
+#ifndef CIE_SPLINEKERNEL_FINITEELEMENTS_HPP
+#define CIE_SPLINEKERNEL_FINITEELEMENTS_HPP
 
 // --- STL Includes ---
 #include <vector>
@@ -8,10 +8,7 @@
 #include <functional>
 #include <cstdint>
 
-namespace cie
-{
-namespace splinekernel
-{
+namespace cie::splinekernel {
 
 using ScipyIndexType = std::int32_t;
 using SparseDataStructure = std::tuple<ScipyIndexType*, ScipyIndexType*, double*, size_t>;
@@ -58,7 +55,6 @@ private:
                           std::vector<double>& shapesDyTarget ) const;
 };
 
-} // namespace splinekernel
-} // namespace cie
+} // namespace cie::splinekernel
 
 #endif // CIE_FINITEELEMENTS_HPP

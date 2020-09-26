@@ -2,10 +2,10 @@
 #define CIE_SPLINEKERNEL_SURFACE_HPP
 
 // --- Linalg Includes ---
-#include <linalg/linalg.hpp>
+#include "linalg/packages/types/inc/matrix.hpp"
 
 // --- Utility Includes ---
-#include <cieutils/types.hpp>
+#include "cieutils/packages/types/inc/types.hpp"
 
 // --- STL Includes ---
 #include <vector>
@@ -13,9 +13,7 @@
 #include <algorithm>
 
 
-namespace cie
-{
-namespace splinekernel
+namespace cie::splinekernel
 {
 
 using VectorOfMatrices = std::vector<linalg::Matrix<Double>>;
@@ -38,7 +36,6 @@ VectorOfMatrices evaluateSurface( const std::array<std::vector<double>, 2>& knot
                                   const VectorOfMatrices& controlPoints,
                                   std::array<size_t, 2> numberOfSamplePoints );
 
-} // namespace splinekernel
-} // namespace cie
+} // namespace cie::splinekernel
 
 #endif // CIE_SURFACE_HPP
