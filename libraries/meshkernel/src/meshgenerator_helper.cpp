@@ -1,8 +1,8 @@
 // --- Utility Includes ---
-#include <cieutils/macros.hpp>
+#include "cieutils/packages/macros/inc/exceptions.hpp"
 
 // --- Internal Includes ---
-#include "meshgenerator_helper.hpp"
+#include "meshkernel/inc/meshgenerator_helper.hpp"
 
 // --- STL Includes ---
 #include <cmath>
@@ -236,5 +236,5 @@ void prepareForTriangulating( const Vertex2DVector& vertices,
   }
 }
 
-} // namespace cie::meshkernel
 } // namespace meshgeneratorhelper
+} // namespace cie::meshkernel

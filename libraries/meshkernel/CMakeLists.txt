@@ -3,8 +3,6 @@ project( meshkernel CXX )
 # ---------------------------------------------------------
 # GATHER FILES AND INCLUDE DIRECTORIES
 # ---------------------------------------------------------
-include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/inc" )
-
 file( GLOB MESHKERNEL_SOURCE_FILES src/*.cpp)
 file( GLOB MESHKERNEL_TEST_FILES test/*.cpp)
 file( GLOB MESHKERNEL_HEADER_FILES inc/*.h* )

@@ -1,12 +1,13 @@
+// --- Internal Includes ---
 #include "meshgenerator.hpp"
 #include "meshgenerator_helper.hpp"
 
+// --- STL Includes ---
 #include <cmath>
 #include <numeric>
 #include <algorithm>
 
-namespace cie {
-namespace meshkernel
+namespace cie::meshkernel
 {
 
 Triangulation triangulate( const Vertex2DVector& polygon,
@@ -48,5 +49,4 @@ Triangulation triangulate( const Vertex2DVector& vertices,
 }
 
 
-}// namespace meshkernel
-}
+}// namespace cie::meshkernel

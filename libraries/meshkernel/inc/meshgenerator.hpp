@@ -1,12 +1,12 @@
 #ifndef MESHGENERATOR_HPP
 #define MESHGENERATOR_HPP
 
+// --- STL Includes ---
 #include <vector>
 #include <array>
 #include <tuple>
 
-namespace cie {
-namespace meshkernel
+namespace cie::meshkernel
 {
 
 // Define aliases (equivalent to typedefs)
@@ -34,7 +34,6 @@ Triangulation triangulate( const Vertex2DVector& vertices,
                            const std::vector<IndexVector>& polygonRegions,
                            TriangulationParameters parameters );
 
-} // namespace meshkernel
-}
+} // namespace cie::meshkernel
 
 #endif // MESHGENERATOR_HPP

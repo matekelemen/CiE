@@ -1,7 +1,9 @@
+// --- External Includes ---
 #include "pybind11/pybind11.h"
 #include "pybind11/stl.h"
 
-#include "meshgenerator.hpp"
+// --- Internal Includes ---
+#include "meshkernel/inc/meshgenerator.hpp"
 
 
 PYBIND11_MODULE( pymeshkernel, m )
