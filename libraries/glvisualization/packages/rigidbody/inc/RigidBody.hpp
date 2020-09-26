@@ -6,8 +6,7 @@
 #include <glm/gtc/quaternion.hpp>
 
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 class RigidBody
@@ -47,8 +46,7 @@ protected:
 };
 
 
-}
-}
+} // namespace cie::gl
 
 
 #endif

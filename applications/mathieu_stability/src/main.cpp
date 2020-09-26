@@ -2,7 +2,7 @@
 #include <csg/trees.hpp>
 
 // --- GL Includes ---
-#include "csgvisualization.hpp"
+#include <glvisualization/csgvisualization.hpp>
 
 // --- Internal Includes ---
 #include "../inc/hilbert_determinant.hpp"

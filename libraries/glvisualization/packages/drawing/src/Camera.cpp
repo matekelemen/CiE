@@ -1,5 +1,5 @@
 // --- Internal Includes ---
-#include "../inc/Camera.hpp"
+#include "glvisualization/packages/drawing/inc/Camera.hpp"
 
 // --- External Includes ---
 #include <glm/gtx/rotate_vector.hpp>
@@ -7,8 +7,7 @@
 // --- STL Includes ---
 #include <cmath>
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 Camera::Camera( GLContext& context, const std::string& className ) :
@@ -340,5 +339,4 @@ const glm::dvec3& ArcballCamera::center() const
 }
 
 
-}
-}
+} // namespace cie::gl

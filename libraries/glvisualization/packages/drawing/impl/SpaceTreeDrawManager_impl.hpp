@@ -1,9 +1,8 @@
 // --- Internal Includes ---
-#include "../inc/SpaceTreeDrawManager.hpp"
+#include "glvisualization/packages/drawing/inc/SpaceTreeDrawManager.hpp"
 
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 template <size_t M>
@@ -105,5 +104,4 @@ void SpaceTreeDrawManager<M>::setDrawFunction( const std::function<bool()>& func
 }
 
 
-}
-}
+} // namespace cie::gl

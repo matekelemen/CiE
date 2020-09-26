@@ -1,11 +1,12 @@
-#include "../inc/GLContext.hpp"
-#include "../inc/defaultCallback.hpp"
+// --- Internal Includes ---
+#include "glvisualization/packages/context/inc/GLContext.hpp"
+#include "glvisualization/packages/context/inc/defaultCallback.hpp"
 
+// --- STL Includes ---
 #include <string>
 #include <iostream>
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 
@@ -229,5 +230,4 @@ const WindowPtr GLContext::window() const
 
 
 
-}
-}
+} // namespace cie::gl

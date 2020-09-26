@@ -5,14 +5,13 @@
 #include <csg/trees.hpp>
 
 // --- Internal Includes ---
-#include "DrawManager.hpp"
+#include "glvisualization/packages/drawing/inc/DrawManager.hpp"
 
 // --- STL Includes ---
 #include <functional>
 
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 template <size_t M>
@@ -33,9 +32,8 @@ private:
     std::function<bool()>       _drawFunction;
 };
 
-}
-}
+} // namespace cie::gl
 
-#include "SpaceTreeDrawManager_impl.hpp"
+#include "glvisualization/packages/drawing/impl/SpaceTreeDrawManager_impl.hpp"
 
 #endif

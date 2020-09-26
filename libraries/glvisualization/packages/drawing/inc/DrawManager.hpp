@@ -3,11 +3,10 @@
 
 // --- Internal Includes ---
 #include "ProgramManager.hpp"
-#include "../../shaders/inc/ShaderManager.hpp"
-#include "../../drawing/inc/Camera.hpp"
+#include "glvisualization/packages/shaders/inc/ShaderManager.hpp"
+#include "glvisualization/packages/drawing/inc/Camera.hpp"
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 class DrawManager : public ProgramManager
@@ -39,7 +38,6 @@ private:
 };
 
 
-}
-}
+} // namespace cie::gl
 
 #endif

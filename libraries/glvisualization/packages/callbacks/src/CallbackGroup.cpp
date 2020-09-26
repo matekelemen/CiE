@@ -1,9 +1,8 @@
 // --- Internal Includes ---
-#include "../inc/CallbackGroup.hpp"
+#include "glvisualization/packages/callbacks/inc/CallbackGroup.hpp"
 
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 void CallbackGroup::keyCallback(    WindowPtr window,
@@ -193,5 +192,4 @@ void ArcballCallbacks::cursorCallback(  WindowPtr window,
 }
 
 
-}
-}
+} // namespace cie::gl

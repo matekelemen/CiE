@@ -1,8 +1,7 @@
 #ifndef GLVISUALIZATION_ABS_CONTEXT_CLASS_IMPL_HPP
 #define GLVISUALIZATION_ABS_CONTEXT_CLASS_IMPL_HPP
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 //template <class T>
@@ -14,7 +13,6 @@ namespace gl {
 //}
 
 
-}
-}
+} // namespace cie::gl
 
 #endif

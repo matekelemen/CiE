@@ -1,7 +1,7 @@
-#include "../inc/BufferHandler.hpp"
+// --- Internal Includes ---
+#include "glvisualization/packages/buffer/inc/BufferHandler.hpp"
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 BufferHandler::BufferHandler(   GLContext& context,
@@ -78,5 +78,4 @@ void BufferHandler::setDrawMode( GLuint drawMode )
 }
 
 
-}
-}
+} // namespace cie::gl

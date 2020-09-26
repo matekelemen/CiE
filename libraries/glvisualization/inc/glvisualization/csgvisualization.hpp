@@ -5,6 +5,6 @@
 #include "glvisualization.hpp"
 
 // --- Specialized Includes ---
-#include "../packages/drawing/inc/SpaceTreeDrawManager.hpp"
+#include "glvisualization/packages/drawing/inc/SpaceTreeDrawManager.hpp"
 
 #endif

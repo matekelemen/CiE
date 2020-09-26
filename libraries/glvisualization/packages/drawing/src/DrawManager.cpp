@@ -1,7 +1,7 @@
-#include "../inc/DrawManager.hpp"
+// --- Internal Includes ---
+#include "glvisualization/packages/drawing/inc/DrawManager.hpp"
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 DrawManager::DrawManager( GLContext& context, const std::string& className ) :
@@ -203,5 +203,4 @@ const CameraPtr& DrawManager::camera() const
 }
 
 
-}
-}
+} // namespace cie::gl

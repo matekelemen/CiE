@@ -6,15 +6,14 @@
 #include <GLFW/glfw3.h>
 
 // --- Internal Includes ---
-#include "shaders.hpp"
-#include "../../context/inc/AbsContextClass.hpp"
+#include "glvisualization/packages/shaders/inc/shaders.hpp"
+#include "glvisualization/packages/context/inc/AbsContextClass.hpp"
 
 // --- STL Includes ---
 #include <string>
 #include <vector>
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 using Shader    = char;
 using ShaderPtr = Shader*;
@@ -60,7 +59,6 @@ private:
 };
 
 
-}
-}
+} // namespace cie::gl
 
 #endif

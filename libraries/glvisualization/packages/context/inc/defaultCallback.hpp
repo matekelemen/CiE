@@ -8,8 +8,7 @@
 // --- STL Includes ---
 #include <functional>
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 using KeyCallbackFunction       = GLFWkeyfun;
@@ -47,7 +46,6 @@ void frameBufferResizeCallback( GLFWwindow* window,
                                 int height  );
 
 
-}
-}
+} // namespace cie::gl
 
 #endif
