@@ -26,7 +26,7 @@ MACRO(COLLECT_PACKAGE directory includeDirs headers sources tests)
 
     SET( ${includeDirs} "${directory}/inc" )
     SET( ${headers} ${temp_headers} )
-    SET( ${headers} ${temp_impl} )
+    LIST( APPEND headers ${temp_impl} )
     SET( ${sources} ${temp_sources} )
     SET( ${tests} ${temp_tests} )
 ENDMACRO()
