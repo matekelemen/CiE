@@ -2,13 +2,14 @@
 #include "catch.hpp"
 
 // --- Linalg Includes ---
-#include "linalg/linalg.hpp"
+#include "linalg/packages/types/inc/matrix.hpp"
+#include "linalg/packages/utilities/inc/linalghelper.hpp"
 
 // --- Utility Includes ---
-#include <cieutils/macros.hpp>
+#include "cieutils/packages/macros/inc/fileio.hpp"
 
 // --- Internal Includes ---
-#include "interpolation.hpp"
+#include "splinekernel/inc/interpolation.hpp"
 
 // --- STL Includes ---
 #include <algorithm>

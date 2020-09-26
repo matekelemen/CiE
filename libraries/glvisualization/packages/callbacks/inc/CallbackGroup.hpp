@@ -2,12 +2,11 @@
 #define GLVISUALIZATION_CALLBACK_GROUP_HPP
 
 // --- Internal Includes ---
-#include "../../context/inc/GLContext.hpp"
-#include "../../drawing/inc/DrawManager.hpp"
+#include "glvisualization/packages/context/inc/GLContext.hpp"
+#include "glvisualization/packages/drawing/inc/DrawManager.hpp"
 
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 
@@ -52,9 +51,8 @@ struct ArcballCallbacks : CallbackGroup
 };
 
 
-}
-}
+} // namespace cie::gl
 
-#include "CallbackGroup_impl.hpp"
+#include "glvisualization/packages/callbacks/impl/CallbackGroup_impl.hpp"
 
 #endif

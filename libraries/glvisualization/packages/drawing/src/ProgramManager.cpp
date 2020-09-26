@@ -1,7 +1,7 @@
-#include "../inc/ProgramManager.hpp"
+// --- Internal Includes ---
+#include "glvisualization/packages/drawing/inc/ProgramManager.hpp"
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 ProgramManager::ProgramManager( GLContext& context, const std::string& className ) :
@@ -118,5 +118,4 @@ const std::vector<GLuint>& ProgramManager::shaders() const
 
 
 
-}
-}
+} // namespace cie::gl

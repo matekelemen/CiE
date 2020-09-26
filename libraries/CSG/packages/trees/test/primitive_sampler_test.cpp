@@ -2,7 +2,7 @@
 #include "catch.hpp"
 
 // --- Internal Inludes ---
-#include "../inc/primitive_sampler.hpp"
+#include "CSG/packages/trees/inc/primitive_sampler.hpp"
 
 // --- STL Includes ---
 #include <memory>

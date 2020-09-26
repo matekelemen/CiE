@@ -2,8 +2,8 @@
 #define CIE_UTILS_STL_EXTENSION_STATE_ITERATOR_HPP
 
 // --- Internal Includes ---
-#include "../../concepts/inc/container_concepts.hpp"
-#include "../../types/inc/types.hpp"
+#include "cieutils/packages/concepts/inc/container_concepts.hpp"
+#include "cieutils/packages/types/inc/types.hpp"
 
 // --- STL Includes ---
 #include <vector>
@@ -117,6 +117,6 @@ makeInternalStateIterator(  const ContainerType& container,
 
 } // namespace cie::utils
 
-#include "../impl/state_iterator_impl.hpp"
+#include "cieutils/packages/stl_extension/impl/state_iterator_impl.hpp"
 
 #endif

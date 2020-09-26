@@ -1,12 +1,13 @@
+// --- External Includes ---
 #include "catch.hpp"
-#include "sparse.hpp"
+
+// --- Internal Includes ---
+#include "linalg/packages/types/inc/sparse.hpp"
+
+// --- STL Includes ---
 #include <vector>
 
-#include <iostream> // <-------- remove
-
-namespace cie
-{
-namespace linalg
+namespace cie::linalg
 {
 
 /*
@@ -35,7 +36,7 @@ namespace linalg
  *    [ 27, 29, 28, 30, 37, 36, 35, 26, 32, 31, 25, 22, 19, 21, 20 ]]
  */
 
-TEST_CASE("allocateSparseMatrix_test")
+TEST_CASE( "allocateSparseMatrix_test", "[types]" )
 {
     std::vector<std::vector<size_t>> locationMaps
     {
@@ -124,6 +125,4 @@ TEST_CASE("allocateSparseMatrix_test")
 
 } // allocateSparseMatrix_test
 
-} // namespace cie
-} // namespace splinekernel
-
+} // namespace cie::linalg

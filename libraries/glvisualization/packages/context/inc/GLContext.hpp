@@ -6,12 +6,12 @@
 #include <GLFW/glfw3.h>
 
 // --- Utility Includes ---
-#include "cieutils/logging.hpp"
-#include "cieutils/observer.hpp"
+#include <cieutils/logging.hpp>
+#include <cieutils/observer.hpp>
 
 // --- Internal Includes ---
-#include "windowutilities.hpp"
-#include "defaultCallback.hpp"
+#include "glvisualization/packages/context/inc/windowutilities.hpp"
+#include "glvisualization/packages/context/inc/defaultCallback.hpp"
 #include "cmake_variables.hpp"
 
 // --- STL Includes ---
@@ -19,8 +19,7 @@
 #include <memory>
 #include <string>
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 // Define type aliases
@@ -73,7 +72,6 @@ private:
 };
 
 
-}
-}
+} // namespace cie::gl
 
 #endif

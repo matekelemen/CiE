@@ -5,9 +5,7 @@
 #include <filesystem>
 
 
-namespace cie {
-namespace utils {
-namespace detail {
+namespace cie::utils::detail {
 
 
 const std::string fileExtension( const std::string& fileName )
@@ -106,6 +104,4 @@ bool isDirectory( const std::string& fileName )
 }
 
 
-}
-}
-}
+} // namespace cie::utils::detail

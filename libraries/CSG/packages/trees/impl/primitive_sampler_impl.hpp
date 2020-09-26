@@ -1,11 +1,8 @@
 #ifndef CIE_CSG_PRIMITIVE_SAMPLER_IMPL_HPP
 #define CIE_CSG_PRIMITIVE_SAMPLER_IMPL_HPP
 
-// --- Utility Includes ---
-#include <cieutils/macros.hpp>
-
 // --- Internal Includes ---
-#include "../inc/indexconverter.hpp"
+#include "CSG/packages/trees/inc/indexconverter.hpp"
 
 namespace cie::csg {
 

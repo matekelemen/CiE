@@ -2,7 +2,7 @@
 #define CIE_UTILS_MATHS_POWER_IMPL_HPP
 
 // --- Internal Includes ---
-#include "../../macros/inc/assertions.hpp"
+#include "cieutils/packages/macros/inc/assertions.hpp"
 
 
 namespace cie {

@@ -5,17 +5,13 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-// --- Linalg Includes ---
-#include "linalg/types.hpp"
-
 // --- Internal Includes ---
-#include "../../context/inc/AbsContextClass.hpp"
+#include "glvisualization/packages/context/inc/AbsContextClass.hpp"
 
 // --- STL Includes ---
 #include <vector>
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 class BufferHandler : AbsContextClass
@@ -45,9 +41,8 @@ private:
 };
 
 
-}
-}
+} // namespace cie::gl
 
-#include "BufferHandler_impl.hpp"
+#include "glvisualization/packages/buffer/impl/BufferHandler_impl.hpp"
 
 #endif

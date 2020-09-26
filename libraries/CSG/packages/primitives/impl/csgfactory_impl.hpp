@@ -1,8 +1,7 @@
 #ifndef CIE_CSG_CSGFACTORY_IMPL_HPP
 #define CIE_CSG_CSGFACTORY_IMPL_HPP
 
-namespace cie{
-namespace csg {
+namespace cie::csg {
 
 
 template <  Size N, 
@@ -17,7 +16,6 @@ CSGFactory<N,ValueType,CoordinateType>::make( Args&&... args )
 }
 
 
-}
-}
+} // namespace cie::csg
 
 #endif

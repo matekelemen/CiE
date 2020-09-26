@@ -5,6 +5,6 @@ namespace cie {
 
 typedef unsigned int uint;
 
-}
+} // namespace cie
 
 #endif

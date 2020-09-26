@@ -2,8 +2,7 @@
 #include "catch.hpp"
 
 // --- Internal Includes ---
-#include "../inc/integration.hpp"
-#include <iostream>
+#include "FEM/packages/numeric/inc/integration.hpp"
 
 
 namespace cie::fem {

@@ -2,8 +2,8 @@
 #include "catch.hpp"
 
 // --- Internal Includes ---
-#include "../inc/Loggee.hpp"
-#include "../inc/Logger.hpp"
+#include "cieutils/packages/logging/inc/Loggee.hpp"
+#include "cieutils/packages/logging/inc/Logger.hpp"
 #include "cmake_variables.hpp"
 
 // --- STL Includes ---

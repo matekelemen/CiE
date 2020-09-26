@@ -2,7 +2,7 @@
 #define CIE_CSG_PRIMITIVES_HPP
 
 // --- Internal Includes ---
-#include "csgobject.hpp"
+#include "CSG/packages/primitives/inc/csgobject.hpp"
 
 namespace cie::csg {
 
@@ -102,6 +102,6 @@ namespace numeric {
 
 } // namespace cie::csg
 
-#include "../impl/primitives_impl.hpp"
+#include "CSG/packages/primitives/impl/primitives_impl.hpp"
 
 #endif

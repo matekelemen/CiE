@@ -2,8 +2,8 @@
 #define GLVISUALIZATION_CAMERA_HPP
 
 // --- Internal Imports ---
-#include "../../context/inc/AbsContextClass.hpp"
-#include "../../rigidbody/inc/RigidBody.hpp"
+#include "glvisualization/packages/context/inc/AbsContextClass.hpp"
+#include "glvisualization/packages/rigidbody/inc/RigidBody.hpp"
 
 // --- External Imports ---
 #include <glm/glm.hpp>
@@ -13,8 +13,7 @@
 // --- STD Imports ---
 #include <memory>
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 class Camera;
@@ -117,7 +116,6 @@ protected:
 };
 
 
-}
-}
+} // namespace cie::gl
 
 #endif

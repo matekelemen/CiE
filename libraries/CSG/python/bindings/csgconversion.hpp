@@ -2,7 +2,7 @@
 #define CIE_CSG_CSG_CONVERSION_CPP
 
 // --- Internal Includes ---
-#include "../../packages/trees/inc/spacetreeutils.hpp"
+#include "CSG/packages/trees/inc/spacetreeutils.hpp"
 
 
 namespace cie::csg {
@@ -28,6 +28,6 @@ CellGeometry<N> boundaryCells(const SpaceTreeNode<N,M>& root)
 }
 
 
-}
+} // namespace cie::csg
 
 #endif

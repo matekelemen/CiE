@@ -1,6 +1,6 @@
 // --- Internal Includes ---
-#include "basisfunctions.hpp"
-#include "surface.hpp"
+#include "splinekernel/inc/basisfunctions.hpp"
+#include "splinekernel/inc/surface.hpp"
 
 namespace cie::splinekernel
 {

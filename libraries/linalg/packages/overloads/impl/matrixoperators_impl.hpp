@@ -2,7 +2,7 @@
 #define LINALG_MATRIX_OPERATORS_IMPL_HPP
 
 // --- Utility Includes ---
-#include <cieutils/macros.hpp>
+#include "cieutils/packages/macros/inc/exceptions.hpp"
 
 // --- STD Incldues ---
 #include <string>

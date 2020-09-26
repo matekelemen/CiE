@@ -2,12 +2,10 @@
 #define CIE_DENSE_MATRIX_CONVERSION
 
 // --- Utility Includes ---
-#include <cieutils/types.hpp>
+#include "cieutils/packages/types/inc/types.hpp"
 
-namespace pybind11
-{
-namespace detail
-{
+namespace pybind11 {
+namespace detail {
 
 // Template specialization for pybind11::detail::type_caster, see
 // https://pybind11.readthedocs.io/en/stable/advanced/cast/custom.html

@@ -2,7 +2,7 @@
 #include "catch.hpp"
 
 // --- Internal Includes ---
-#include "../inc/spacetreenode.hpp"
+#include "CSG/packages/trees/inc/spacetreenode.hpp"
 #include "cmake_variables.hpp"
 
 // --- STL Includes ---
@@ -128,4 +128,4 @@ TEST_CASE("Boundary nodes")
 }
 
 
-}
+} // namespace cie::csg

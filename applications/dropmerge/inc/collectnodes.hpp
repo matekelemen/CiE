@@ -1,6 +1,10 @@
 #ifndef DROPMERGE_COLLECT_NODES_HPP
 #define DROPMERGE_COLLECT_NODES_HPP
 
+// --- Linalg Includes ---
+#include <linalg/types.hpp>
+
+// --- Internal Includes ---
 #include "dynamictree.hpp"
 
 namespace cie {

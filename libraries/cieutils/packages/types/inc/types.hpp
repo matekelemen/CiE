@@ -15,7 +15,7 @@ using Double    = double;
 
 using String    = std::string;
 
-}
+} // namespace cie
 
 
 #endif

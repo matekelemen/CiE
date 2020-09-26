@@ -2,7 +2,7 @@
 #define CIE_FEM_UTILITIES_KERNEL_HPP
 
 // --- Utility Includes ---
-#include <cieutils/concepts.hpp>
+#include "cieutils/packages/concepts/inc/basic_concepts.hpp"
 
 
 namespace cie::fem {

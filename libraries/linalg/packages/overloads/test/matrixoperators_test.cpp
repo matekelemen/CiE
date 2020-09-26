@@ -1,8 +1,10 @@
+// --- External Includes ---
 #include "catch.hpp"
-#include "../../overloads/inc/matrixoperators.hpp"
 
-namespace cie {
-namespace linalg {
+// --- Internal Includes ---
+#include "linalg/packages/overloads/inc/matrixoperators.hpp"
+
+namespace cie::linalg {
 
 TEST_CASE("Matrix - scalar operator overloads"){
     Matrix matrix( 
@@ -172,5 +174,4 @@ TEST_CASE("Matrix - matrix operator overloads"){
     REQUIRE_THROWS( result = m4x4 * m2x3 );
 }
 
-}
-}
+} // namespace cie::linalg

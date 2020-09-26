@@ -2,14 +2,13 @@
 #define GLVISUALIZATION_ABS_CONTEXT_CLASS_HPP
 
 // --- Internal Includes ---
-#include "GLContext.hpp"
+#include "glvisualization/packages/context/inc/GLContext.hpp"
 
 // --- STL Includes ---
 #include <string>
 
 
-namespace cie{
-namespace gl {
+namespace cie::gl {
 
 
 class AbsContextClass : public utils::Loggee
@@ -28,9 +27,8 @@ protected:
 };
 
 
-}
-}
+} // namespace cie::gl
 
-#include "AbsContextClass_impl.hpp"
+#include "glvisualization/packages/context/impl/AbsContextClass_impl.hpp"
 
 #endif

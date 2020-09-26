@@ -2,7 +2,7 @@
 #include "catch.hpp"
 
 // --- Internal Includes ---
-#include "../inc/cache.hpp"
+#include "cieutils/packages/cache/inc/cache.hpp"
 
 // --- STL Includes ---
 #include <vector>

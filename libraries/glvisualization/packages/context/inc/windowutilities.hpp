@@ -9,16 +9,14 @@
 #include <utility>
 #include <cstddef>
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 std::pair<size_t, size_t> getMonitorResolution( GLFWmonitor* monitor=glfwGetPrimaryMonitor() );
 std::pair<size_t, size_t> getPrimaryMonitorResolution();
 
 
-}
-}
+} // namespace cie::gl
 
 
 #endif

@@ -2,7 +2,7 @@
 #include "catch.hpp"
 
 // --- Internal Includes ---
-#include "../inc/fileinfo.hpp"
+#include "cieutils/packages/output/inc/fileinfo.hpp"
 #include "cmake_variables.hpp"
 
 // --- STL Includes ---
@@ -113,5 +113,5 @@ TEST_CASE( "File Info" )
 }
 
 
-}
-}
+} // namespace detail
+} // namespace cie::utils

@@ -1,12 +1,13 @@
 // --- Linalg Includes ---
-#include <linalg/linalg.hpp>
+#include "linalg/packages/types/inc/matrix.hpp"
+#include "linalg/packages/solvers/inc/gaussiansolver.hpp"
 
 // --- Utility Includes ---
-#include <cieutils/macros.hpp>
+#include "cieutils/packages/macros/inc/exceptions.hpp"
 
 // --- Internal Includes ---
-#include "interpolation.hpp"
-#include "basisfunctions.hpp"
+#include "splinekernel/inc/interpolation.hpp"
+#include "splinekernel/inc/basisfunctions.hpp"
 #include "cmake_variables.hpp"
 
 // --- STL Includes ---

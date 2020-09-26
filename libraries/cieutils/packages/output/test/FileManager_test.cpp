@@ -2,16 +2,15 @@
 #include "catch.hpp"
 
 // --- Internal Includes ---
-#include "../inc/FileManager.hpp"
-#include "../inc/fileinfo.hpp"
+#include "cieutils/packages/output/inc/FileManager.hpp"
+#include "cieutils/packages/output/inc/fileinfo.hpp"
 #include "cmake_variables.hpp"
 
 // --- STL Includes ---
 #include <iostream>
 
 
-namespace cie {
-namespace utils {
+namespace cie::utils {
 
 
 std::string testDir = TEST_OUTPUT_PATH + "/test";
@@ -97,5 +96,4 @@ TEST_CASE( "FileManager - file handling" )
 }
 
 
-}
-}
+} // namespace cie::detail

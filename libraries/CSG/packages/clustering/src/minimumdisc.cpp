@@ -1,11 +1,13 @@
 // --- Linalg Includes ---
-#include <linalg/overloads.hpp>
+#include "linalg/packages/types/inc/matrix.hpp"
+#include "linalg/packages/overloads/inc/matrixoperators.hpp"
+#include "linalg/packages/overloads/inc/vectoroperators.hpp"
 
 // --- Utility Includes ---
-#include <cieutils/macros.hpp>
+#include "cieutils/packages/macros/inc/exceptions.hpp"
 
 // --- Internal Includes ---
-#include "../inc/minimumdisc.hpp"
+#include "CSG/packages/clustering/inc/minimumdisc.hpp"
 
 // --- STL Includes ---
 #include <algorithm>

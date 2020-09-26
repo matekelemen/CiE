@@ -2,7 +2,7 @@
 #include "catch.hpp"
 
 // --- Internal Includes ---
-#include "basisfunctions.hpp" 
+#include "splinekernel/inc/basisfunctions.hpp" 
 
 // --- STL Includes ---
 #include <vector>

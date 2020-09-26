@@ -2,11 +2,11 @@
 #define CIE_LINALG_SPARSE_HPP
 
 // --- Internal Includes ---
-#include "./matrix.hpp"
+#include "linalg/packages/types/inc/matrix.hpp"
 
 // --- Utility Includes ---
-#include <cieutils/types.hpp>
-#include <cieutils/concepts.hpp>
+#include "cieutils/packages/concepts/inc/basic_concepts.hpp"
+#include "cieutils/packages/types/inc/types.hpp"
 
 // --- STL Includes ---
 #include <vector>

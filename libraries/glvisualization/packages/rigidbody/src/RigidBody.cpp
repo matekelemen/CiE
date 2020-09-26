@@ -4,13 +4,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 // --- Internal Includes ---
-#include "../inc/RigidBody.hpp"
+#include "glvisualization/packages/rigidbody/inc/RigidBody.hpp"
 
 // --- STL Includes ---
 #include <iostream>
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 RigidBody::RigidBody(   const glm::dvec3& position,
@@ -95,5 +94,4 @@ void RigidBody::rotate( double radians,
 
 
 
-}
-}
+} // namespace cie::gl

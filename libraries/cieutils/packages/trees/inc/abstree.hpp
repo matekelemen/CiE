@@ -2,7 +2,7 @@
 #define CIE_CIEUTILS_ABS_TREE_HPP
 
 // --- Internal Includes ---
-#include "../../types/inc/types.hpp"
+#include "cieutils/packages/types/inc/types.hpp"
 
 // --- STL Includes ---
 #include <functional>
@@ -45,6 +45,6 @@ protected:
 
 }
 
-#include "abstree_impl.hpp"
+#include "cieutils/packages/trees/impl/abstree_impl.hpp"
 
 #endif

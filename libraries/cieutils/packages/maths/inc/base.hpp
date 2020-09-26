@@ -2,8 +2,8 @@
 #define CIE_UTILS_MATHS_BASE_HPP
 
 // --- Internal Includes ---
-#include "../../concepts/inc/basic_concepts.hpp"
-#include "../../types/inc/types.hpp"
+#include "cieutils/packages/concepts/inc/basic_concepts.hpp"
+#include "cieutils/packages/types/inc/types.hpp"
 
 // --- STL Includes ---
 #include <array>
@@ -44,6 +44,6 @@ reinterpretBase(    const std::array<NT,NDigits>& base_N,
 
 } // namespace cie::utils
 
-#include "../impl/base_impl.hpp"
+#include "cieutils/packages/maths/impl/base_impl.hpp"
 
 #endif

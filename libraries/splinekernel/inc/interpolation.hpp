@@ -1,17 +1,15 @@
-#ifndef CIE_INTERPOLATION_HPP
-#define CIE_INTERPOLATION_HPP
+#ifndef CIE_SPLINEKERNEL_INTERPOLATION_HPP
+#define CIE_SPLINEKERNEL_INTERPOLATION_HPP
 
 // --- Linalg Includes ---
-#include "linalg/linalg.hpp"
+#include "linalg/packages/types/inc/matrix.hpp"
 
 // --- STL Includes ---
 #include <array>
 #include <vector>
 
-namespace cie
-{
-namespace splinekernel
-{
+namespace cie::splinekernel {
+
 
 using ControlPoints2D = std::array<std::vector<double>, 2>;
 using ControlPointsAndKnotVector = std::pair<ControlPoints2D, std::vector<double>>;
@@ -35,7 +33,6 @@ std::array<std::vector<double>, 2> centripetalParameterPositions(const VectorOfM
 std::vector<double> knotVectorUsingAveraging( const std::vector<double>& parameterPositions,
                                               size_t polynomialDegree );
 
-} // namespace splinekernel
-} // namespace cie
+} // namespace cie::splinekernel
 
 #endif // CIE_INTERPOLATION_HPP

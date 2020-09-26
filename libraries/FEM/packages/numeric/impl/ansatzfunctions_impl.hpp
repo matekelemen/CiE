@@ -2,7 +2,8 @@
 #define CIE_FEM_ANSATZ_FUNCTIONS_IMPL_HPP
 
 // --- Utility Includes ---
-#include <cieutils/concepts.hpp>
+#include "cieutils/packages/concepts/inc/container_concepts.hpp"
+#include "cieutils/packages/stl_extension/inc/resize.hpp"
 
 namespace cie::fem
 {
@@ -72,7 +73,7 @@ AbsAnsatzFunctionSet<Dimension,NT,SelfType>::operator()( Size dimension,
 requires concepts::ClassContainer<CoordinateContainer,NT>
                 && concepts::ClassContainer<OutputContainer,NT>
 {
-    utils::setContainerSize(outputContainer,coordinates.size());
+    utils::resize(outputContainer,coordinates.size());
     this->operator()(   dimension,
                         functionIndex,
                         coordinates.begin(),
@@ -92,7 +93,7 @@ AbsAnsatzFunctionSet<Dimension,NT,SelfType>::operator()( Size dimension,
 requires concepts::ClassContainer<ContainerType,NT>
 {
     ContainerType output;
-    utils::setContainerSize(output,coordinates.size());  // compatible with both std::array and dynamic containers
+    utils::resize(output,coordinates.size());  // compatible with both std::array and dynamic containers
     this->operator()(   dimension,
                         functionIndex,
                         coordinates.begin(),
@@ -108,8 +109,8 @@ template <  Size Dimension,
 inline const typename AbsAnsatzFunctionSet<Dimension,NT,SelfType>::domain_container
 AbsAnsatzFunctionSet<Dimension,NT,SelfType>::domain() const
 {
-    typename AbsAnsatzFunctionSet<Dimension,NT,SelfType>::domain_container output;
-    utils::setContainerSize(output, this->dimension);
+    typename AbsBasisFunctionSet<Dimension,NT,SelfType>::domain_container output;
+    utils::resize(output, this->dimension);
     for (Size dim=0; dim<this->dimension; ++dim)
     {
         assert( !this->_functions[dim].empty() );
@@ -235,8 +236,8 @@ template <  Size Dimension,
 inline void
 AbsPolynomialAnsatzFunctionSet<Dimension,NT,SelfType>::computeDerivatives()
 {
-    typename AbsPolynomialAnsatzFunctionSet<Dimension,NT,SelfType>::coefficient_container derivativeCoefficients;
-    utils::setContainerSize( derivativeCoefficients, this->dimension );
+    typename AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::coefficient_container derivativeCoefficients;
+    utils::resize( derivativeCoefficients, this->dimension );
     
     for (Size dim=0; dim<this->dimension; ++dim)
     {
@@ -275,7 +276,7 @@ linearPolynomialCoefficients( PolynomialBasis* instance )
     typedef typename PolynomialBasis::kernel_type::number_type NT;
 
     typename PolynomialBasis::coefficient_container coefficients;
-    utils::setContainerSize(coefficients,PolynomialBasis::dimension);
+    utils::resize(coefficients,PolynomialBasis::dimension);
     for (auto& coefficientSet : coefficients)
     {
         coefficientSet.emplace_back( std::initializer_list<NT>({ 0.5, 0.5 }) );
@@ -295,6 +296,6 @@ AbsLinearAnsatzFunctionSet<Dimension,NT,SelfType>::AbsLinearAnsatzFunctionSet() 
 }
 
 
-}
+} // namespace cie::fem
 
 #endif

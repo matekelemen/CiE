@@ -2,10 +2,10 @@
 #include "catch.hpp"
 
 // --- Internal Includes ---
-#include "../inc/GLContext.hpp"
-#include "../../drawing/inc/Camera.hpp"
-#include "../inc/DrawManager.hpp"
-#include "../../callbacks/inc/CallbackGroup.hpp"
+#include "glvisualization/packages/context/inc/GLContext.hpp"
+#include "glvisualization/packages/drawing/inc/Camera.hpp"
+#include "glvisualization/packages/drawing/inc/DrawManager.hpp"
+#include "glvisualization/packages/callbacks/inc/CallbackGroup.hpp"
 #include "cmake_variables.hpp"
 
 // --- STL Includes ---
@@ -167,4 +167,4 @@ TEST_CASE( "DrawManager" )
 
 
 
-}
+} // namespace cie::gl

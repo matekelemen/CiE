@@ -1,9 +1,6 @@
 #ifndef CIE_CSG_SPACETREENODE_IMPL_HPP
 #define CIE_CSG_SPACETREENODE_IMPL_HPP
 
-// --- Utility Includes ---
-#include <cieutils/macros.hpp>
-
 // --- Internal Includes ---
 #include "cmake_variables.hpp"
 

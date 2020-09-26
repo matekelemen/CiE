@@ -2,13 +2,12 @@
 #define CIE_LINALG_MATRIX_IMPL_HPP
 
 // --- Utility Includes ---
-#include <cieutils/macros.hpp>
+#include "cieutils/packages/macros/inc/checks.hpp"
 
 // --- STL Includes ---
 #include <string>
 
-namespace cie {
-namespace linalg {
+namespace cie::linalg {
 
 
 template <concepts::NumericType ValueType>
@@ -161,7 +160,6 @@ inline void Matrix<ValueType>::checkIndices(Size i, Size j) const
                             "Matrix::checkIndices" )
 }
 
-} // namespace linalg
-}
+} // namespace cie::linalg
 
 #endif

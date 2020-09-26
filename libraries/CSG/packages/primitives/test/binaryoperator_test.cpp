@@ -2,14 +2,13 @@
 #include "catch.hpp"
 
 // --- Linalg Includes ---
-#include <linalg/types.hpp>
+#include "linalg/packages/types/inc/arraytypes.hpp"
 
 // --- Internal Includes ---
-#include "../inc/csgoperators.hpp"
-#include "../inc/csgobject.hpp"
+#include "CSG/packages/primitives/inc/csgoperators.hpp"
+#include "CSG/packages/primitives/inc/csgobject.hpp"
 
-namespace cie {
-namespace csg {
+namespace cie::csg {
 
 
 class CSGTestObject_true : public CSGObject<2,Bool,Double>
@@ -61,5 +60,4 @@ TEST_CASE( "BinaryOperator", "[primitives]" )
 }
 
 
-}
-}
+} // namespace cie::csg

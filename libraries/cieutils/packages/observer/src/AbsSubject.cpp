@@ -1,13 +1,12 @@
 // --- Internal Includes ---
-#include "../inc/AbsSubject.hpp"
+#include "cieutils/packages/observer/inc/AbsSubject.hpp"
 
 // --- STL Includes ---
 #include <memory>
 #include <vector>
 
 
-namespace cie {
-namespace utils{
+namespace cie::utils{
 
 
 AbsSubject::AbsSubject( const AbsSubjectPtr& copy )
@@ -82,5 +81,4 @@ const std::vector<AbsObserverPtr>& AbsSubject::observers() const
 }
 
 
-}
-}
+} // namespace cie::utils

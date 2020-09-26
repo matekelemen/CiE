@@ -6,14 +6,13 @@
 #include <GLFW/glfw3.h>
 
 // --- Internal Includes ---
-#include "../../context/inc/AbsContextClass.hpp"
-#include "../../buffer/inc/BufferHandler.hpp"
+#include "glvisualization/packages/context/inc/AbsContextClass.hpp"
+#include "glvisualization/packages/buffer/inc/BufferHandler.hpp"
 
 // --- Standard Includes ---
 #include <string>
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 class ProgramManager : public AbsContextClass
@@ -42,7 +41,6 @@ protected:
 };
 
 
-}
-}
+} // namespace cie::gl
 
 #endif

@@ -2,9 +2,9 @@
 #define CIE_CIEUTILS_ASSERTION_MACROS_HPP
 
 // --- Internal Includes ---
-#include "../../exceptions/inc/exception.hpp"
+#include "cieutils/packages/exceptions/inc/exception.hpp"
+#include "cieutils/packages/macros/inc/detail.hpp"
 #include "cmake_variables.hpp"
-#include "detail.hpp"
 
 // --- STL Includes ---
 #include <sstream>

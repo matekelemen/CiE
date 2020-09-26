@@ -1,8 +1,7 @@
 // --- Internal Includes ---
-#include "../inc/AbsContextClass.hpp"
+#include "glvisualization/packages/context/inc/AbsContextClass.hpp"
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 AbsContextClass::AbsContextClass(   GLContext& context,
@@ -42,5 +41,4 @@ void AbsContextClass::checkGLErrors( const std::string& errorMessage )
 }
 
 
-}
-}
+} // namespace cie::gl

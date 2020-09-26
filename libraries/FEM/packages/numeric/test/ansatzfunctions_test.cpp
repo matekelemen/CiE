@@ -2,10 +2,11 @@
 #include "catch.hpp"
 
 // --- Utility Includes ---
-#include <cieutils/concepts.hpp>
+#include "cieutils/packages/concepts/inc/container_concepts.hpp"
+#include "cieutils/packages/stl_extension/inc/resize.hpp"
 
 // --- Internal Includes ---
-#include "../inc/ansatzfunctions.hpp"
+#include "FEM/packages/numeric/inc/basisfunctions.hpp"
 
 // --- STL Includes ---
 #include <vector>
@@ -24,7 +25,7 @@ TEST_CASE( "PolynomialAnsatzFunctionSet", "numeric" )
     typedef PolynomialAnsatzFunctionSet<dim,Double> Basis;
 
     typename Basis::coefficient_container coefficients;
-    utils::setContainerSize(coefficients, dim);
+    utils::resize(coefficients, dim);
 
     coefficients[0] =
         typename Basis::polynomial_set({
@@ -250,4 +251,4 @@ TEST_CASE( "LinearAnsatzFunctionSet", "[numeric]" )
 }
 
 
-}
+} // namespace cie::fem

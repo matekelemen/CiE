@@ -7,8 +7,7 @@
 #include <string>
 #include <memory>
 
-namespace cie {
-namespace utils {
+namespace cie::utils {
 
 using File      = std::fstream;
 using FilePtr   = std::shared_ptr<File>;
@@ -40,8 +39,7 @@ private:
 };
 
 
-}
-}
+} // namespace cie::utils
 
 
 #endif

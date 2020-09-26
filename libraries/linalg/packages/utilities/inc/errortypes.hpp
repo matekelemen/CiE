@@ -2,11 +2,11 @@
 #define CIE_LINALG_ERROR_TYPES_HPP
 
 // --- Utility Includes ---
-#include <cieutils/exceptions.hpp>
-#include <cieutils/types.hpp>
+#include "cieutils/packages/exceptions/inc/exception.hpp"
+#include "cieutils/packages/types/inc/types.hpp"
 
 // --- Internal Includes ---
-#include "linalghelper.hpp"
+#include "linalg/packages/utilities/inc/linalghelper.hpp"
 
 namespace cie::linalg {
 
@@ -18,6 +18,6 @@ public:
 
 }
 
-#include "../impl/errortypes_impl.hpp"
+#include "linalg/packages/utilities/impl/errortypes_impl.hpp"
 
 #endif

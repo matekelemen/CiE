@@ -2,10 +2,10 @@
 #define CSG_NTREE_INDEX_CONVERTER_HPP
 
 // --- Linalg Includes ---
-#include "linalg/types.hpp"
+#include "linalg/packages/types/inc/arraytypes.hpp"
 
 // --- Internal Includes ---
-#include "spacetreeutils.hpp"
+#include "CSG/packages/trees/inc/spacetreeutils.hpp"
 
 namespace cie::csg {
 namespace detail {
@@ -52,6 +52,6 @@ protected:
 
 } // namespace cie::csg
 
-#include "../impl/indexconverter_impl.hpp"
+#include "CSG/packages/trees/impl/indexconverter_impl.hpp"
 
 #endif

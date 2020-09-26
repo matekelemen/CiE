@@ -1,10 +1,10 @@
 #ifndef MESHGENERATOR_HELPER_HPP_
 #define MESHGENERATOR_HELPER_HPP_
 
-#include "meshgenerator.hpp"
+// --- Internal Includes ---
+#include "meshkernel/inc/meshgenerator.hpp"
 
-namespace cie {
-namespace meshkernel
+namespace cie::meshkernel
 {
 namespace meshgeneratorhelper
 {
@@ -107,7 +107,6 @@ void prepareForTriangulating( const Vertex2DVector& vertices,
                               TriangulationParameters& parameters );
 
 } // namespace meshgeneratorhelper
-} // namespace meshkernel
-}
+} // namespace cie::meshkernel
 
 #endif // MESHGENERATOR_HELPER_HPP_

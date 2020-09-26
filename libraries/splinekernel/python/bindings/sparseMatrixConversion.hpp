@@ -1,10 +1,8 @@
 #ifndef CIE_SPARSE_MATRIX_CONVERSION
 #define CIE_SPARSE_MATRIX_CONVERSION
 
-namespace pybind11
-{
-namespace detail
-{
+namespace pybind11 {
+namespace detail {
 
 // Template specialization for pybind11::detail::type_caster, see
 // https://pybind11.readthedocs.io/en/stable/advanced/cast/custom.html

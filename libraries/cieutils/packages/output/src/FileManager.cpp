@@ -1,7 +1,7 @@
 // --- Internal Includes ---
-#include "../inc/FileManager.hpp"
-#include "../inc/fileinfo.hpp"
-#include "../../macros/inc/exceptions.hpp"
+#include "cieutils/packages/output/inc/FileManager.hpp"
+#include "cieutils/packages/output/inc/fileinfo.hpp"
+#include "cieutils/packages/macros/inc/exceptions.hpp"
 #include "cmake_variables.hpp"
 
 // --- STL Includes ---

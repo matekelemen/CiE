@@ -2,12 +2,11 @@
 #define CIE_FEM_ANSATZ_FUNCTIONS_HPP
 
 // --- Utility Includes ---
-#include <cieutils/cache.hpp>
-#include <cieutils/concepts.hpp>
-#include <cieutils/macros.hpp>
+#include "cieutils/packages/cache/inc/cache.hpp"
+#include "cieutils/packages/concepts/inc/iterator_concepts.hpp"
 
 // --- Internal Includes ---
-#include "../../utilities/inc/kernel.hpp"
+#include "FEM/packages/utilities/inc/kernel.hpp"
 
 // --- STL Includes ---
 #include <functional>
@@ -198,6 +197,6 @@ struct LinearAnsatzFunctionSet final :
 
 } // namespace cie::fem
 
-#include "../impl/ansatzfunctions_impl.hpp"
+#include "FEM/packages/numeric/impl/basisfunctions_impl.hpp"
 
 #endif

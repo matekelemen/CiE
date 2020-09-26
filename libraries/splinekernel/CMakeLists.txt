@@ -3,9 +3,6 @@ project( splinekernel CXX )
 # ---------------------------------------------------------
 # GATHER FILES AND INCLUDE DIRECTORIES
 # ---------------------------------------------------------
-include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/inc" )
-include_directories( "../linalg/inc" )
-
 file( GLOB SPLINEKERNEL_SOURCE_FILES src/*.cpp)
 file( GLOB SPLINEKERNEL_TEST_FILES test/*.cpp)
 file( GLOB SPLINEKERNEL_HEADER_FILES inc/*.h* )

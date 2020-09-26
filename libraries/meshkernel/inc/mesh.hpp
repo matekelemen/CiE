@@ -2,13 +2,12 @@
 #define MESHKERNEL_MESH_HPP
 
 // --- Linalg Includes ---
-#include "linalg/types.hpp"
+#include "linalg/packages/types/inc/vectortypes.hpp"
 
 // --- STL Includes ---
 #include <memory>
 
-namespace cie {
-namespace meshkernel {
+namespace cie::meshkernel {
 
 
 using VertexGrid        = std::array<linalg::Matrix, 3>;
@@ -31,7 +30,6 @@ private:
 
 };
 
-}
-}
+} // namespace cie::meshkernel
 
 #endif

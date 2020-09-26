@@ -2,7 +2,7 @@
 #include "catch.hpp"
 
 // --- Internal Includes ---
-#include "../inc/base.hpp"
+#include "cieutils/packages/maths/inc/base.hpp"
 
 
 namespace cie::utils {

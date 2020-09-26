@@ -1,12 +1,12 @@
 // --- Linalg Includes ---
-#include <linalg/linalg.hpp>
+#include "linalg/packages/types/inc/sparse.hpp"
 
 // --- Utility Includes ---
-#include <cieutils/macros.hpp>
+#include "cieutils/packages/macros/inc/exceptions.hpp"
 
 // --- Internal Include ---
-#include "finiteelements.hpp"
-#include "basisfunctions.hpp"
+#include "splinekernel/inc/finiteelements.hpp"
+#include "splinekernel/inc/basisfunctions.hpp"
 
 // --- STL Includes ---
 #include <cmath>

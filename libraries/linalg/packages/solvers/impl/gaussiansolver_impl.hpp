@@ -2,15 +2,14 @@
 #define CIE_LINALG_GAUSSIAN_SOLVER_IMPL_HPP
 
 // --- Internal Includes ---
-#include "../../types/inc/typeoperations.hpp"
+#include "linalg/packages/types/inc/typeoperations.hpp"
 
 // --- STL Includes ---
 #include <cmath>
 #include <numeric>
 #include <algorithm>
 
-namespace cie {
-namespace linalg {
+namespace cie::linalg {
 
 
 template <class ValueType, concepts::NumericContainer ContainerType>
@@ -86,7 +85,6 @@ ContainerType solve(    const Matrix<ValueType>& matrix,
     return x;
 }
 
-}
-}
+} // namespace cie::linalg
 
 #endif

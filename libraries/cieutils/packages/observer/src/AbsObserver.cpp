@@ -1,9 +1,8 @@
 // --- Internal Ipmorts ---
-#include "../inc/AbsObserver.hpp"
-#include "../inc/AbsSubject.hpp"
+#include "cieutils/packages/observer/inc/AbsObserver.hpp"
+#include "cieutils/packages/observer/inc/AbsSubject.hpp"
 
-namespace cie {
-namespace utils {
+namespace cie::utils {
 
 
 AbsObserver::AbsObserver() :
@@ -65,5 +64,4 @@ const AbsSubjectPtr AbsObserver::subject() const
 }
 
 
-}
-}
+} // namespace cie::utils

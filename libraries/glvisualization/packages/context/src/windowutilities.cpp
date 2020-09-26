@@ -1,11 +1,10 @@
 // --- Internal Includes ---
-#include "../inc/windowutilities.hpp"
+#include "glvisualization/packages/context/inc/windowutilities.hpp"
 
 // --- STL Includes ---
 #include <utility>
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 std::pair<size_t, size_t> getMonitorResolution( GLFWmonitor* monitor )
@@ -22,5 +21,4 @@ std::pair<size_t, size_t> getPrimaryMonitorResolution()
 }
 
 
-}
-}
+} // namespace cie::gl

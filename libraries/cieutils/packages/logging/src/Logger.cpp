@@ -1,6 +1,6 @@
 // --- Internal Includes ---
-#include "../inc/Logger.hpp"
-#include "../../macros/inc/exceptions.hpp"
+#include "cieutils/packages/logging/inc/Logger.hpp"
+#include "cieutils/packages//macros/inc/exceptions.hpp"
 
 // --- STL Includes ---
 #include <algorithm>
@@ -22,7 +22,7 @@ std::string getDate()
     return std::string(std::ctime(&t));
 }
 
-}
+} // namespace detail
 
 
 Logger::Logger( const std::string& fileName ) :

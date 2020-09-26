@@ -1,13 +1,11 @@
-#ifndef CIE_BSPLINE_HPP
-#define CIE_BSPLINE_HPP
+#ifndef CIE_SPLINEKERNEL_BSPLINE_HPP
+#define CIE_SPLINEKERNEL_BSPLINE_HPP
 
+// --- STL Includes ---
 #include <vector>
 #include "stddef.h"
 
-namespace cie
-{
-namespace splinekernel
-{
+namespace cie::splinekernel {
 
 /*! Evaluates one B-Spline basis function.
  *  @param t The parametric coordinate
@@ -21,7 +19,6 @@ double evaluateBSplineBasis( double t, size_t i, size_t p, const std::vector<dou
 //! Computes derivative of evaluateBSplineBasis, otherwise equivalent.
 double evaluateBSplineDerivative( double t, size_t i, size_t p, const std::vector<double>& knotVector );
 
-} // namespace splinekernel
-} // namespace cie
+} // namespace cie::splinekernel
 
 #endif // CIE_BSPLINE_HPP

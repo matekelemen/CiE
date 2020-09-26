@@ -2,9 +2,10 @@
 #define CIE_FEM_ELEMENT_IMPL_HPP
 
 // --- Utility Includes ---
-#include <cieutils/macros.hpp>
-#include <cieutils/exceptions.hpp>
-#include <cieutils/concepts.hpp>
+#include "cieutils/packages/macros/inc/checks.hpp"
+#include "cieutils/packages/exceptions/inc/exception.hpp"
+#include "cieutils/packages/concepts/inc/container_concepts.hpp"
+#include "cieutils/packages/stl_extension/inc/resize.hpp"
 
 // --- STL Includes ---
 #include <numeric>
@@ -233,7 +234,7 @@ inline void
 AbsElement<AnsatzType>::localCoordinates(    const typename AbsElement<AnsatzType>::point_type& point,
                                             typename AbsElement<AnsatzType>::LocalCoordinates& localPoint ) const
 {
-    utils::setContainerSize(localPoint,dimension);
+    utils::resize(localPoint,dimension);
     this->toLocalCoordinates( point, localPoint );
 }
 
@@ -259,8 +260,8 @@ template <class AnsatzType>
 inline AbsElement<AnsatzType>::LocalCoordinates
 AbsElement<AnsatzType>::localCoordinates(  const typename AbsElement<AnsatzType>::point_type& point ) const
 {
-    AbsElement<AnsatzType>::LocalCoordinates output;
-    utils::setContainerSize(output,dimension);
+    AbsElement<BasisType>::LocalCoordinates output;
+    utils::resize(output,dimension);
     this->toLocalCoordinates( point, output );
     return output;
 }

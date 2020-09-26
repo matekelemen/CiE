@@ -1,9 +1,6 @@
 #ifndef CIE_UTILS_MATHS_BASE_IMPL_HPP
 #define CIE_UTILS_MATHS_BASE_IMPL_HPP
 
-// --- Utility Includes ---
-#include <cieutils/macros.hpp>
-
 // --- STL Includes ---
 #include <string>
 

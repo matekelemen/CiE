@@ -2,13 +2,12 @@
 #define CIE_CSG_CSG_OBJECT_IMPL_HPP
 
 // --- Utility Includes ---
-#include <cieutils/macros.hpp>
+#include "cieutils/packages/macros/inc/checks.hpp"
 
 // --- STL Includes ---
 #include <utility>
 
-namespace cie {
-namespace csg {
+namespace cie::csg {
 
 // ---------------------------------------------------------
 // ABSTRACT BASE
@@ -49,7 +48,6 @@ CSGObject<N,ValueType,CoordinateType>::evaluate( ContainerType&& point ) const
 }
 
 
-}
-}
+} // namespace cie::csg
 
 #endif

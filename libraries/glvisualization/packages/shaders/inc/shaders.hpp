@@ -14,8 +14,7 @@
 #include <iostream>
 #include <ostream>
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 using ShaderCode                = std::string;
@@ -47,7 +46,6 @@ struct ShaderStruct
 };
 
 
-}
-}
+} // namespace cie::gl
 
 #endif

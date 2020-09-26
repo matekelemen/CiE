@@ -3,12 +3,10 @@ project( CSG CXX )
 # ---------------------------------------------------------
 # GATHER FILES AND INCLUDE DIRECTORIES
 # ---------------------------------------------------------
-COLLECT_PACKAGES(   CSG_INCLUDE_DIRECTORIES
-                    CSG_HEADER_FILES
+COLLECT_PACKAGES(   CSG_HEADER_FILES
                     CSG_SOURCE_FILES
                     CSG_TEST_FILES )
 
-include_directories( ${CSG_INCLUDE_DIRECTORIES} ) 
 FILE( GLOB CSG_TEST_DRIVER ${CMAKE_CURRENT_SOURCE_DIR}/test/*.cpp )
 LIST( INSERT CSG_TEST_FILES 0 ${CSG_TEST_DRIVER} )
 

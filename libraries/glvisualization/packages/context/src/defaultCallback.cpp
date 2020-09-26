@@ -1,12 +1,11 @@
 // --- Internal Includes ---
-#include "../inc/defaultCallback.hpp"
+#include "glvisualization/packages/context/inc/defaultCallback.hpp"
 
 // --- STL Includes ---
 #include <iostream>
 #include <string>
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 void callback_keyExit(  GLFWwindow* window, 
@@ -69,5 +68,4 @@ void frameBufferResizeCallback( GLFWwindow* window,
 }
 
 
-}
-}
+} // namespace cie::gl

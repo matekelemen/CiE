@@ -2,11 +2,11 @@
 #define CIE_LINALG_VECTOR_OPERATORS
 
 // --- Utility Includes ---
-#include <cieutils/concepts.hpp>
+#include "cieutils/packages/concepts/inc/container_concepts.hpp"
 
 // --- Internal Includes ---
-#include "../../types/inc/vectortypes.hpp"
-#include "../../types/inc/arraytypes.hpp"
+#include "linalg/packages/types/inc/vectortypes.hpp"
+#include "linalg/packages/types/inc/arraytypes.hpp"
 
 
 // ---------------------------------------------------------
@@ -49,6 +49,6 @@ template <cie::concepts::NumericContainer ArrayType>
 typename ArrayType::value_type operator*( const ArrayType& lhs, const ArrayType& rhs );
 
 
-#include "../impl/vectoroperators_impl.hpp"
+#include "linalg/packages/overloads/impl/vectoroperators_impl.hpp"
 
 #endif

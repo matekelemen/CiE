@@ -1,13 +1,11 @@
-#ifndef CIE_CURVE_HPP
-#define CIE_CURVE_HPP
+#ifndef CIE_SPLINEKERNEL_CURVE_HPP
+#define CIE_SPLINEKERNEL_CURVE_HPP
 
+// --- STL Includes ---
 #include <vector>
 #include <array>
 
-namespace cie
-{
-namespace splinekernel
-{
+namespace cie::splinekernel {
 
 /*! Evaluate B-Spline curve by summing up basis functions times control points.
  *  @param tCoordinates The parametric coordinates at which the curve shall be evaluated
@@ -50,7 +48,6 @@ size_t findKnotSpan( double t,
                      size_t numberOfControlPoints,
                      const std::vector<double>& knotVector );
 
-} // namespace splinekernel
-} // namespace cie
+} // namespace cie::splinekernel
 
 #endif // CIE_CURVE_HPP

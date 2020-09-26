@@ -3,7 +3,7 @@
 
 // --- Internal Includes ---
 #include <linalg/linalg.hpp>
-#include "../packages/utilities/inc/linalghelper.hpp"
+#include "linalg/packages/utilities/inc/linalghelper.hpp"
 #include "cmake_variables.hpp"
 
 // --- STL Includes ---

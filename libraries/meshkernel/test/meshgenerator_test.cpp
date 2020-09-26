@@ -1,13 +1,16 @@
-#include "meshgenerator.hpp"
-#include "meshgenerator_helper.hpp"
+// --- External Includes ---
 #include "catch.hpp"
 
+// --- Internal Includes ---
+#include "meshkernel/inc/meshgenerator.hpp"
+#include "meshkernel/inc/meshgenerator_helper.hpp"
+
+// --- STL Includes ---
 #include <vector>
 #include <cmath>
 #include <numeric>
 
-namespace cie {
-namespace meshkernel
+namespace cie::meshkernel
 {
 
 const double PI = 3.141592653589793;
@@ -460,5 +463,4 @@ TEST_CASE_METHOD( CircularRegionFixture, "triangulate" )
   CHECK( triangulationArea( triangulation ) == Approx( 7.0 ) );
 } // triangulate
 
-} // namespace meshkernel
-}
+} // namespace cie::meshkernel

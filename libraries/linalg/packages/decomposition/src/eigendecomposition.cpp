@@ -2,10 +2,10 @@
 #include <cieutils/macros.hpp>
 
 // --- Internal Includes ---
-#include "../inc/eigendecomposition.hpp"
-#include "../../types/inc/typeoperations.hpp"
-#include "../../overloads/inc/vectoroperators.hpp"
-#include "../../overloads/inc/matrixoperators.hpp"
+#include "linalg/packages/decomposition/inc/eigendecomposition.hpp"
+#include "linalg/packages/types/inc/typeoperations.hpp"
+#include "linalg/packages/overloads/inc/vectoroperators.hpp"
+#include "linalg/packages/overloads/inc/matrixoperators.hpp"
 
 namespace cie::linalg {
 

@@ -1,9 +1,6 @@
 #ifndef CIE_CSG_SPLIT_POLICY_IMPL_HPP
 #define CIE_CSG_SPLIT_POLICY_IMPL_HPP
 
-// --- Utility Includes ---
-#include <cieutils/concepts.hpp>
-
 // --- STL Includes ---
 #include <algorithm>
 

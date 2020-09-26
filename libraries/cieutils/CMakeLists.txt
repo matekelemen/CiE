@@ -3,14 +3,11 @@ project( cieutils CXX )
 # ---------------------------------------------------------
 # GATHER FILES AND INCLUDE DIRECTORIES
 # ---------------------------------------------------------
-COLLECT_PACKAGES(   CIEUTILS_INCLUDE_DIRECTORIES
-                    CIEUTILS_HEADER_FILES
+COLLECT_PACKAGES(   CIEUTILS_HEADER_FILES
                     CIEUTILS_SOURCE_FILES
                     CIEUTILS_TEST_FILES )
 file( GLOB CIEUTILS_TEST_DRIVERS ${CMAKE_CURRENT_SOURCE_DIR}/test/*.cpp )
 list( APPEND CIEUTILS_TEST_FILES ${CIEUTILS_TEST_DRIVERS} )
-
-include_directories( "${CIEUTILS_INCLUDE_DIRECTORIES}" )
 
 # ---------------------------------------------------------
 # LIBRARIES AND EXECUTABLES

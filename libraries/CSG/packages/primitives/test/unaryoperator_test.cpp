@@ -2,15 +2,14 @@
 #include "catch.hpp"
 
 // --- Linalg Includes ---
-#include <linalg/types.hpp>
+#include "linalg/packages/types/inc/arraytypes.hpp"
 
 // --- Internal Includes ---
-#include "../inc/csgoperators.hpp"
-#include "../inc/csgfactory.hpp"
-#include "../inc/csgobject.hpp"
+#include "CSG/packages/primitives/inc/csgoperators.hpp"
+#include "CSG/packages/primitives/inc/csgfactory.hpp"
+#include "CSG/packages/primitives/inc/csgobject.hpp"
 
-namespace cie {
-namespace csg {
+namespace cie::csg {
 
 
 // Helper classes
@@ -78,5 +77,4 @@ TEST_CASE( "UnaryOperator", "[primitives]" )
 }
 
 
-}
-}
+} // namespace cie::csg
