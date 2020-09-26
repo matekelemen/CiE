@@ -12,8 +12,6 @@ file( GLOB LINALG_SOURCE_DRIVERS ${CMAKE_CURRENT_SOURCE_DIR}/test/*.cpp )
 list( INSERT LINALG_TEST_SOURCE_FILES 0 ${LINALG_SOURCE_DRIVERS} )
 
 include_directories( ${LINALG_INCLUDE_DIRECTORIES} )
-include_directories( "../cieutils/inc" )
-include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/inc" )
 
 # ---------------------------------------------------------
 # LIBRARIES AND EXECUTABLES

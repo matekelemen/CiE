@@ -2,6 +2,7 @@
 #define CIE_FEM_INTEGRATION_HPP
 
 // --- Utility Includes ---
+#include <cieutils/types.hpp>
 #include <cieutils/concepts.hpp>
 
 // --- Internal Includes ---

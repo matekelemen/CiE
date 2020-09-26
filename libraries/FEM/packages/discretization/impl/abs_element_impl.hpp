@@ -5,6 +5,7 @@
 #include <cieutils/macros.hpp>
 #include <cieutils/exceptions.hpp>
 #include <cieutils/concepts.hpp>
+#include "cieutils/packages/stl_extension/inc/resize.hpp"
 
 // --- STL Includes ---
 #include <numeric>
@@ -197,7 +198,7 @@ inline void
 AbsElement<BasisType>::localCoordinates(    const typename AbsElement<BasisType>::point_type& point,
                                             typename AbsElement<BasisType>::LocalCoordinates& localPoint ) const
 {
-    utils::setContainerSize(localPoint,dimension);
+    utils::resize(localPoint,dimension);
     this->toLocalCoordinates( point, localPoint );
 }
 
@@ -224,7 +225,7 @@ inline AbsElement<BasisType>::LocalCoordinates
 AbsElement<BasisType>::localCoordinates(  const typename AbsElement<BasisType>::point_type& point ) const
 {
     AbsElement<BasisType>::LocalCoordinates output;
-    utils::setContainerSize(output,dimension);
+    utils::resize(output,dimension);
     this->toLocalCoordinates( point, output );
     return output;
 }

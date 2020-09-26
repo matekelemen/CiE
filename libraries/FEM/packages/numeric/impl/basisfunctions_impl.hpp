@@ -3,6 +3,7 @@
 
 // --- Utility Includes ---
 #include <cieutils/concepts.hpp>
+#include "cieutils/packages/stl_extension/inc/resize.hpp"
 
 namespace cie::fem
 {
@@ -72,7 +73,7 @@ AbsBasisFunctionSet<Dimension,NT,SelfType>::operator()( Size dimension,
 requires concepts::ClassContainer<CoordinateContainer,NT>
                 && concepts::ClassContainer<OutputContainer,NT>
 {
-    utils::setContainerSize(outputContainer,coordinates.size());
+    utils::resize(outputContainer,coordinates.size());
     this->operator()(   dimension,
                         functionIndex,
                         coordinates.begin(),
@@ -92,7 +93,7 @@ AbsBasisFunctionSet<Dimension,NT,SelfType>::operator()( Size dimension,
 requires concepts::ClassContainer<ContainerType,NT>
 {
     ContainerType output;
-    utils::setContainerSize(output,coordinates.size());  // compatible with both std::array and dynamic containers
+    utils::resize(output,coordinates.size());  // compatible with both std::array and dynamic containers
     this->operator()(   dimension,
                         functionIndex,
                         coordinates.begin(),
@@ -109,7 +110,7 @@ inline const typename AbsBasisFunctionSet<Dimension,NT,SelfType>::domain_contain
 AbsBasisFunctionSet<Dimension,NT,SelfType>::domain() const
 {
     typename AbsBasisFunctionSet<Dimension,NT,SelfType>::domain_container output;
-    utils::setContainerSize(output, this->dimension);
+    utils::resize(output, this->dimension);
     for (Size dim=0; dim<this->dimension; ++dim)
     {
         assert( !this->_functions[dim].empty() );
@@ -236,7 +237,7 @@ inline void
 AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::computeDerivatives()
 {
     typename AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::coefficient_container derivativeCoefficients;
-    utils::setContainerSize( derivativeCoefficients, this->dimension );
+    utils::resize( derivativeCoefficients, this->dimension );
     
     for (Size dim=0; dim<this->dimension; ++dim)
     {
@@ -275,7 +276,7 @@ linearPolynomialCoefficients( PolynomialBasis* instance )
     typedef typename PolynomialBasis::kernel_type::number_type NT;
 
     typename PolynomialBasis::coefficient_container coefficients;
-    utils::setContainerSize(coefficients,PolynomialBasis::dimension);
+    utils::resize(coefficients,PolynomialBasis::dimension);
     for (auto& coefficientSet : coefficients)
     {
         coefficientSet.emplace_back( std::initializer_list<NT>({ 0.5, 0.5 }) );

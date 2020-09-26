@@ -2,7 +2,7 @@
 #define CIE_UTILS_STL_EXTENSION_STATE_ITERATOR_IMPL_HPP
 
 // --- Internal Includes ---
-#include "../../concepts/inc/utility.hpp"
+#include "cieutils/packages/stl_extension/inc/resize.hpp"
 
 // --- STL Includes ---
 #include <algorithm>
@@ -29,7 +29,7 @@ requires concepts::STLContainer<typename std::iterator_traits<IteratorType>::val
 inline void
 StateIterator<IteratorType>::reset()
 {
-    utils::setContainerSize( _state, std::distance(_begin,_end) );
+    utils::resize( _state, std::distance(_begin,_end) );
     std::transform( _begin,
                     _end,
                     _state.begin(),

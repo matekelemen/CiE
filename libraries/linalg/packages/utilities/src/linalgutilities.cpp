@@ -5,7 +5,7 @@
 #include <cieutils/macros.hpp>
 
 // --- Internal Includes ---
-#include "../inc/linalgutilities.hpp"
+#include "linalg/packages/utilities/inc/linalgutilities.hpp"
 
 
 namespace cie::linalg {

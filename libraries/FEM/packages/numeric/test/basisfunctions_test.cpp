@@ -3,6 +3,7 @@
 
 // --- Utility Includes ---
 #include <cieutils/concepts.hpp>
+#include "cieutils/packages/stl_extension/inc/resize.hpp"
 
 // --- Internal Includes ---
 #include "../inc/basisfunctions.hpp"
@@ -24,7 +25,7 @@ TEST_CASE( "PolynomialBasisFunctionSet", "numeric" )
     typedef PolynomialBasisFunctionSet<dim,Double> Basis;
 
     typename Basis::coefficient_container coefficients;
-    utils::setContainerSize(coefficients, dim);
+    utils::resize(coefficients, dim);
 
     coefficients[0] =
         typename Basis::polynomial_set({

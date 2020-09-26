@@ -2,8 +2,8 @@
 #define CIE_CIEUTILS_CONCEPTS_UTILITY_HPP
 
 // --- Internal Includes ---
-#include "./container_concepts.hpp"
-#include "../../types/inc/types.hpp"
+#include "cieutils/packages/concepts/inc/container_concepts.hpp"
+#include "cieutils/packages/types/inc/types.hpp"
 
 // --- STL Includes ---
 #include <cassert>
@@ -13,15 +13,15 @@ namespace cie::utils {
 
 
 template <concepts::ResizableContainer ContainerType>
-inline void setContainerSize( ContainerType& container, Size size )
+inline void resize( ContainerType& container, Size size )
 { container.resize(size); }
 
 
 template <concepts::FixedSizeContainer ContainerType>
-inline void setContainerSize( ContainerType& container, Size size )
+inline void resize( ContainerType& container, Size size )
 { assert(container.size() == size); }
 
 
-}
+} // namespace cie::utils
 
 #endif

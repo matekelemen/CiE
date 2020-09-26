@@ -4,6 +4,9 @@
 // --- Linalg Includes ---
 #include <linalg/overloads.hpp>
 
+// --- Utility Includes ---
+#include "cieutils/packages/stl_extension/inc/resize.hpp"
+
 // --- Internal Includes ---
 #include "../inc/abs_element.hpp"
 #include "../../numeric/inc/basisfunctions.hpp"
@@ -80,7 +83,7 @@ TEST_CASE( "AbsElement", "[discretization]" )
 
     // Transform reference points to local coordinates
     std::vector<Element::LocalCoordinates> localPoints;
-    utils::setContainerSize(localPoints,points.size());
+    utils::resize(localPoints,points.size());
     CHECK_NOTHROW( element.localCoordinates(    points.begin(),
                                                 points.end(),
                                                 localPoints.begin()) );
@@ -155,7 +158,7 @@ TEST_CASE( "AbsElement1D", "[discretization]" )
 
     // Convert points to local coordinates
     std::vector<typename Element::LocalCoordinates> localPoints;
-    utils::setContainerSize( localPoints, points.size() );
+    utils::resize( localPoints, points.size() );
     REQUIRE_NOTHROW(
         element.localCoordinates(   points.begin(),
                                     points.end(),

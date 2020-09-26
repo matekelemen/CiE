@@ -2,7 +2,7 @@
 #include "catch.hpp"
 
 // --- Internal Includes ---
-#include "../inc/state_iterator.hpp"
+#include "cieutils/packages/stl_extension/inc/state_iterator.hpp"
 
 // --- STL Includes ---
 #include <vector>

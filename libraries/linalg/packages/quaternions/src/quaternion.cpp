@@ -1,6 +1,6 @@
 // --- Internal Includes ---
-#include "../inc/quaternion.hpp"
-#include "../../overloads/inc/vectoroperators.hpp"
+#include "linalg/packages/quaternions/inc/quaternion.hpp"
+#include "linalg/packages/overloads/inc/vectoroperators.hpp"
 
 
 namespace cie::linalg {

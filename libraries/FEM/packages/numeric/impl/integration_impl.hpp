@@ -19,8 +19,8 @@ namespace cie::fem {
 
 template <  Size Dimension,
             concepts::NumericType NT >
-AbsQuadrature<Dimension,NT>::AbsQuadrature( const point_container& integrationPoints,
-                                            const weight_container& weights ) :
+AbsQuadrature<Dimension,NT>::AbsQuadrature( const typename AbsQuadrature::point_container& integrationPoints,
+                                            const typename AbsQuadrature::weight_container& weights ) :
     _integrationPoints(integrationPoints),
     _weights(weights),
     _integrationOrder(weights.size())
@@ -108,8 +108,8 @@ gaussLegendreNodes( Size integrationOrder )
     auto& abscissae = output.first;
     auto& weights   = output.second;
 
-    utils::setContainerSize( abscissae, integrationOrder );
-    utils::setContainerSize( weights, integrationOrder );
+    utils::resize( abscissae, integrationOrder );
+    utils::resize( weights, integrationOrder );
     
     switch ( integrationOrder )
     {
@@ -170,8 +170,8 @@ gaussLobattoNodes( Size integrationOrder )
     auto& abscissae = output.first;
     auto& weights   = output.second;
 
-    utils::setContainerSize( abscissae, integrationOrder );
-    utils::setContainerSize( weights, integrationOrder );
+    utils::resize( abscissae, integrationOrder );
+    utils::resize( weights, integrationOrder );
     
     switch ( integrationOrder )
     {
@@ -237,8 +237,8 @@ tensorProductQuadratureNodes( const std::pair<std::vector<NT>,std::vector<NT>>& 
     auto& weights               = output.second;
 
     Size numberOfPoints         = intPow( abscissae.size(), Dimension );
-    utils::setContainerSize( points, numberOfPoints );
-    utils::setContainerSize( weights, numberOfPoints );
+    utils::resize( points, numberOfPoints );
+    utils::resize( weights, numberOfPoints );
 
     // Create iterators the loop through all combinations of the abscissae and weights
     auto abscissaState          = utils::makeInternalStateIterator(abscissae, Dimension);
@@ -248,7 +248,7 @@ tensorProductQuadratureNodes( const std::pair<std::vector<NT>,std::vector<NT>>& 
     for (Size i=0; i<numberOfPoints; ++i)
     {
         points.emplace_back();
-        utils::setContainerSize( points.back(), Dimension );
+        utils::resize( points.back(), Dimension );
         std::transform( (*abscissaState).begin(),
                         (*abscissaState).end(),
                         points.back().begin(),
