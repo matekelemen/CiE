@@ -5,8 +5,8 @@
 #include <cieutils/types.hpp>
 
 // --- Internal includes ---
-#include "../../types/inc/matrix.hpp"
-#include "errortypes.hpp"
+#include "linalg/packages/types/inc/matrix.hpp"
+#include "linalg/packages/utilities/inc/errortypes.hpp"
 
 namespace cie::linalg {
 
@@ -24,6 +24,6 @@ void runtime_check( bool result, const char message[] );
 
 } // namespace cie::linalg
 
-#include "../impl/linalgutilities_impl.hpp"
+#include "linalg/packages/utilities/impl/linalgutilities_impl.hpp"
 
 #endif

@@ -2,12 +2,12 @@
 #define CIE_LINALG_HELPER_HPP
 
 // --- Utility Includes ---
-#include <cieutils/concepts.hpp>
-#include <cieutils/types.hpp>
+#include "cieutils/packages/concepts/inc/container_concepts.hpp"
+#include "cieutils/packages/types/inc/types.hpp"
 
 // --- Internal Includes ---
-#include "../../types/inc/vectortypes.hpp"
-#include "../../types/inc/matrix.hpp"
+#include "linalg/packages/types/inc/vectortypes.hpp"
+#include "linalg/packages/types/inc/matrix.hpp"
 
 // --- STL Includes ---
 #include <iomanip>
@@ -31,6 +31,6 @@ void write( const Matrix<ValueType>& matrix, std::ostream& out = std::cout );
 } // namespace linalghelper
 } // namespace cie::linalg
 
-#include "../impl/linalghelper_impl.hpp"
+#include "linalg/packages/utilities/impl/linalghelper_impl.hpp"
 
 #endif

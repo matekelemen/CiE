@@ -1,5 +1,8 @@
+// --- External Includes ---
 #include "catch.hpp"
-#include "../inc/vectoroperators.hpp"
+
+// --- Internal Includes ---
+#include "linalg/packages/overloads/inc/vectoroperators.hpp"
 
 namespace cie {
 
@@ -142,4 +145,4 @@ TEST_CASE("DoubleArray operator overloads"){
     CHECK( resultScalar == v1[0]*v2[0]+v1[1]*v2[1]+v1[2]*v2[2] );
 }
 
-}
+} // namespace cie

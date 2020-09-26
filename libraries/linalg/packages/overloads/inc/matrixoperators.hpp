@@ -2,12 +2,12 @@
 #define LINALG_MATRIX_OPERATORS
 
 // --- Utility Includes ---
-#include <cieutils/concepts.hpp>
+#include "cieutils/packages/concepts/inc/container_concepts.hpp"
 
 // --- Internal Includes ---
-#include "../../types/inc/arraytypes.hpp"
-#include "../../types/inc/vectortypes.hpp"
-#include "../../types/inc/matrix.hpp"
+#include "linalg/packages/types/inc/arraytypes.hpp"
+#include "linalg/packages/types/inc/vectortypes.hpp"
+#include "linalg/packages/types/inc/matrix.hpp"
 
 namespace cie::linalg {
 
@@ -46,6 +46,6 @@ Matrix<ValueType> operator*(const Matrix<ValueType>& lhs, const Matrix<ValueType
 
 } // namespace linalg
 
-#include "../impl/matrixoperators_impl.hpp"
+#include "linalg/packages/overloads/impl/matrixoperators_impl.hpp"
 
 #endif

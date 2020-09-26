@@ -1,11 +1,13 @@
 #ifndef LINALG_QUATERNION_HPP
 #define LINALG_QUATERNION_HPP
 
-#include "../../types/inc/arraytypes.hpp"
+// ---- Internal Includes ---
+#include "linalg/packages/types/inc/arraytypes.hpp"
+
+// --- STL Includes ---
 #include <iterator>
 
-namespace cie {
-namespace linalg {
+namespace cie::linalg {
 
 
 class Quaternion
@@ -35,7 +37,6 @@ private:
 };
 
 
-}
-}
+} // namespace cie::linalg
 
 #endif

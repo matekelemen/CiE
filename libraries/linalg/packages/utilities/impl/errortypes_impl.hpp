@@ -21,6 +21,6 @@ MatrixError<MatrixType>::MatrixError(const String& message, const MatrixType& ma
     }
 }
 
-}
+} // namespace cie::linalg
 
 #endif

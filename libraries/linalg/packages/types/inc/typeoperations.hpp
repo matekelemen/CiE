@@ -1,10 +1,10 @@
 #ifndef LINALG_TYPE_OPERATIONS_HPP
 #define LINALG_TYPE_OPERATIONS_HPP
 
-#include "functiontypes.hpp"
+// --- Internal Includes ---
+#include "linalg/packages/types/inc/functiontypes.hpp"
 
-namespace cie {
-namespace linalg {
+namespace cie::linalg {
 
 template <typename T>
 double norm2(const T& object);
@@ -15,9 +15,8 @@ double norm(const T& object);
 template <typename T>
 void normalize(T& object, NormFunction<T> measure=&norm<T>, double tolerance=1e-15);
 
-} // namespace linalg
-}
+} // namespace cie::linalg
 
-#include "../impl/typeoperations_impl.hpp"
+#include "linalg/packages/types/impl/typeoperations_impl.hpp"
 
 #endif

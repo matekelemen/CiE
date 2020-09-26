@@ -2,11 +2,10 @@
 #define LINALG_QR_FACTORIZATION_IMPL_HPP
 
 // --- Internal Includes ---
-#include "../inc/QRFactorization.hpp"
-#include "../../types/inc/typeoperations.hpp"
+#include "linalg/packages/decomposition/inc/QRFactorization.hpp"
+#include "linalg/packages/types/inc/typeoperations.hpp"
 
-namespace cie {
-namespace linalg {
+namespace cie::linalg {
 
 
 template <class ValueType>
@@ -44,7 +43,6 @@ std::pair<MatrixPtr<ValueType>,MatrixPtr<ValueType>> QRFactorization(const Matri
 }
 
 
-}
-}
+} // namespace cie::linalg
 
 #endif

@@ -2,10 +2,11 @@
 #include "catch.hpp"
 
 // --- Internal Includes ---
-#include "linalg/linalg.hpp"
+#include "linalg/packages/types/inc/matrix.hpp"
+#include "linalg/packages/types/inc/vectortypes.hpp"
+#include "linalg/packages/types/inc/typeoperations.hpp"
 
-namespace cie {
-namespace linalg {
+namespace cie::linalg {
 
 TEST_CASE("Norms and normalization")
 {
@@ -35,5 +36,4 @@ TEST_CASE("Norms and normalization")
     CHECK( matrix(1,1) == Approx( -5/6.0 ) );
 }
 
-}
-}
+} // namespace cie::linalg

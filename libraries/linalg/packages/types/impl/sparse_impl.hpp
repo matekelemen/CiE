@@ -2,7 +2,7 @@
 #define LINALG_SPARSE_IMPL_HPP
 
 // --- Utility Includes ---
-#include <cieutils/macros.hpp>
+#include "cieutils/packages/macros/inc/exceptions.hpp"
 
 // --- STL Includes ---
 #include <algorithm>

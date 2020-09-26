@@ -1,12 +1,16 @@
+// --- External Includes ---
 #include "catch.hpp"
-#include "../inc/quaternion.hpp"
+
+// --- Internal Includes ---
+#include "linalg/packages/quaternions/inc/quaternion.hpp"
+
+// --- STL Includes ---
 #include <memory>
 
-namespace cie {
-namespace linalg {
+namespace cie::linalg {
 
 
-TEST_CASE("Quaternion")
+TEST_CASE( "Quaternion", "[quaternions]" )
 {
     std::unique_ptr<Quaternion> q;
 
@@ -71,5 +75,4 @@ TEST_CASE("Quaternion operator overloads")
 }
 
 
-}
-}
+} // namespace cie::linalg

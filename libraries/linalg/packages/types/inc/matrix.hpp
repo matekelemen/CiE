@@ -2,11 +2,11 @@
 #define CIE_LINALG_MATRIX_HPP
 
 // --- Utility Includes ---
-#include <cieutils/concepts.hpp>
-#include <cieutils/types.hpp>
+#include "cieutils/packages/concepts/inc/basic_concepts.hpp"
+#include "cieutils/packages/types/inc/types.hpp"
 
 // --- Internal Includes ---
-#include "./vectortypes.hpp"
+#include "linalg/packages/types/inc/vectortypes.hpp"
 
 // --- STL Includes ---
 #include <vector>
@@ -63,6 +63,6 @@ using MatrixPtr = std::shared_ptr<Matrix<ValueType>>;
 
 } // namespace cie::linalg
 
-#include "../impl/matrix_impl.hpp"
+#include "linalg/packages/types/impl/matrix_impl.hpp"
 
 #endif
