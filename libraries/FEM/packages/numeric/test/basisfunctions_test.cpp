@@ -2,11 +2,11 @@
 #include "catch.hpp"
 
 // --- Utility Includes ---
-#include <cieutils/concepts.hpp>
+#include "cieutils/packages/concepts/inc/container_concepts.hpp"
 #include "cieutils/packages/stl_extension/inc/resize.hpp"
 
 // --- Internal Includes ---
-#include "../inc/basisfunctions.hpp"
+#include "FEM/packages/numeric/inc/basisfunctions.hpp"
 
 // --- STL Includes ---
 #include <vector>
@@ -251,4 +251,4 @@ TEST_CASE( "LinearBasisFunctionSet", "[numeric]" )
 }
 
 
-}
+} // namespace cie::fem

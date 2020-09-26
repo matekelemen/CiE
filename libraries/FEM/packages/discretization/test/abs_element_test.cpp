@@ -2,14 +2,14 @@
 #include "catch.hpp"
 
 // --- Linalg Includes ---
-#include <linalg/overloads.hpp>
+#include "linalg/packages/overloads/inc/vectoroperators.hpp"
 
 // --- Utility Includes ---
 #include "cieutils/packages/stl_extension/inc/resize.hpp"
 
 // --- Internal Includes ---
-#include "../inc/abs_element.hpp"
-#include "../../numeric/inc/basisfunctions.hpp"
+#include "FEM/packages/discretization/inc/abs_element.hpp"
+#include "FEM/packages/numeric/inc/basisfunctions.hpp"
 
 // --- STL Includes ---
 #include <iostream>

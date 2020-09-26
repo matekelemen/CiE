@@ -2,10 +2,12 @@
 #define CIE_FEM_INTEGRATION_IMPL_HPP
 
 // --- Utility Includes ---
-#include <cieutils/macros.hpp>
-#include <cieutils/exceptions.hpp>
-#include <cieutils/stl_extension.hpp>
-#include <cieutils/maths.hpp>
+#include "cieutils/packages/macros/inc/assertions.hpp"
+#include "cieutils/packages/macros/inc/exceptions.hpp"
+#include "cieutils/packages/exceptions/inc/exception.hpp"
+#include "cieutils/packages/stl_extension/inc/resize.hpp"
+#include "cieutils/packages/stl_extension/inc/state_iterator.hpp"
+#include "cieutils/packages/maths/inc/power.hpp"
 
 // --- STL Includes ---
 #include <algorithm>

@@ -2,11 +2,11 @@
 #define CIE_FEM_INTEGRATION_HPP
 
 // --- Utility Includes ---
-#include <cieutils/types.hpp>
-#include <cieutils/concepts.hpp>
+#include "cieutils/packages/concepts/inc/basic_concepts.hpp"
+#include "cieutils/packages/types/inc/types.hpp"
 
 // --- Internal Includes ---
-#include "../../utilities/inc/kernel.hpp"
+#include "FEM/packages/utilities/inc/kernel.hpp"
 
 // --- STL Includes ---
 #include <functional>

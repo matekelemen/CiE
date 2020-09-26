@@ -2,13 +2,13 @@
 #define CIE_FEM_ABS_ELEMENT_HPP
 
 // --- Utility Includes ---
-#include <cieutils/concepts.hpp>
+#include "cieutils/packages/concepts/inc/container_concepts.hpp"
 
 // --- Internal Includes ---
-#include "../../numeric/inc/basisfunctions.hpp"
-#include "./basis_wrappers.hpp"
-#include "./dof_map.hpp"
-#include "../../utilities/inc/kernel.hpp"
+#include "FEM/packages/discretization/inc/basis_wrappers.hpp"
+#include "FEM/packages/discretization/inc/dof_map.hpp"
+#include "FEM/packages/numeric/inc/basisfunctions.hpp"
+#include "FEM/packages/utilities/inc/kernel.hpp"
 
 // --- STL Includes ---
 #include <memory>
@@ -167,8 +167,8 @@ protected:
 };
 
 
-}
+} // namespace cie::fem
 
-#include "../impl/abs_element_impl.hpp"
+#include "FEM/packages/discretization/impl/abs_element_impl.hpp"
 
 #endif

@@ -2,9 +2,9 @@
 #define CIE_FEM_DISCRETIZATION_BASIS_WRAPPERS_HPP
 
 // --- Utility Includes ---
-#include <cieutils/concepts.hpp>
-#include <cieutils/macros.hpp>
-#include <cieutils/exceptions.hpp>
+#include "cieutils/packages/concepts/inc/container_concepts.hpp"
+#include "cieutils/packages/macros/inc/checks.hpp"
+#include "cieutils/packages/exceptions/inc/exception.hpp"
 
 // --- STL Includes ---
 #include <algorithm>

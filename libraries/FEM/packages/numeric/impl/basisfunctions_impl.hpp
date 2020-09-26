@@ -2,7 +2,7 @@
 #define CIE_FEM_BASIS_FUNCTIONS_IMPL_HPP
 
 // --- Utility Includes ---
-#include <cieutils/concepts.hpp>
+#include "cieutils/packages/concepts/inc/container_concepts.hpp"
 #include "cieutils/packages/stl_extension/inc/resize.hpp"
 
 namespace cie::fem
@@ -296,6 +296,6 @@ AbsLinearBasisFunctionSet<Dimension,NT,SelfType>::AbsLinearBasisFunctionSet() :
 }
 
 
-}
+} // namespace cie::fem
 
 #endif

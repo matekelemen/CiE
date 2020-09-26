@@ -8,9 +8,6 @@ COLLECT_PACKAGES(   FEM_INCLUDE_DIRECTORIES
                     FEM_SOURCE_FILES
                     FEM_TEST_FILES )
 
-include_directories( FEM_INCLUDE_DIRECTORIES )
-include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/../cieutils/inc" )
-include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/../linalg/inc" )
 FILE( GLOB FEM_TEST_DRIVER ${CMAKE_CURRENT_SOURCE_DIR}/test/*.cpp )
 LIST( INSERT FEM_TEST_FILES 0 ${FEM_TEST_DRIVER} )
 
