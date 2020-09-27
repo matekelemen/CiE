@@ -34,7 +34,7 @@ if ( CMAKE_CXX_COMPILER_ID STREQUAL "GNU" )
 	endif()
 
 # -------------------------------------------------
-# GCC
+# MSVC
 # -------------------------------------------------
 elseif( CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" )
 
