@@ -38,7 +38,7 @@ double randomUniformDouble(double minVal, double maxVal){
 }
 
 
-std::unique_ptr<DoubleVector> randomUniformDoubleVector(double minVal, double maxVal, uint size){
+std::unique_ptr<DoubleVector> randomUniformDoubleVector(double minVal, double maxVal, Size size){
     std::uniform_real_distribution<double> distribution(minVal,maxVal);
     std::unique_ptr<DoubleVector>  vector(std::make_unique<DoubleVector>(size));
     for(auto it=vector->begin(); it!=vector->end(); ++it){
@@ -54,7 +54,7 @@ double randomNormalDouble(double mean, double deviation){
 }
 
 
-std::unique_ptr<DoubleVector> randomNormalDoubleVector(double mean, double deviation, uint size){
+std::unique_ptr<DoubleVector> randomNormalDoubleVector(double mean, double deviation, Size size){
     std::normal_distribution<double> distribution(mean,deviation);
     std::unique_ptr<DoubleVector>  vector(std::make_unique<DoubleVector>(size));
     for(auto it=vector->begin(); it!=vector->end(); ++it){

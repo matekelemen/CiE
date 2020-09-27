@@ -5,6 +5,7 @@
 #include "cieutils/packages/concepts/inc/container_concepts.hpp"
 #include "cieutils/packages/concepts/inc/iterator_concepts.hpp"
 #include "cieutils/packages/concepts/inc/basic_concepts.hpp"
+#include "cieutils/packages/types/inc/types.hpp"
 
 // --- STL Includes ---
 #include <vector>
@@ -70,7 +71,7 @@ void iteratorContainerTest( ContainerType container )
 TEST_CASE( "Numeric Concepts", "[concepts]" )
 {
     int     a = 0;
-    uint    b = 0;
+    Size    b = 0;
     float   c = 0;
     double  d = 0;
 

@@ -35,14 +35,14 @@ double ObjectiveSubstitute<N>::operator()(double parameter) const
 
 
 template <size_t N>
-double ObjectiveSubstitute<N>::getCoefficient(uint index) const 
+double ObjectiveSubstitute<N>::getCoefficient(Size index) const 
 {
     return _coefficients[index];
 }
 
 
 template <size_t N>
-void ObjectiveSubstitute<N>::setCoefficient(uint index, double coefficient) 
+void ObjectiveSubstitute<N>::setCoefficient(Size index, double coefficient) 
 {
     _coefficients[index] = coefficient;
 }

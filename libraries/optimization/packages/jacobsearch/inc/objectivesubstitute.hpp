@@ -4,6 +4,9 @@
 // --- Linalg Includes ---
 #include "linalg/packages/types/inc/arraytypes.hpp"
 
+// --- Utility Includes ---
+#include "cieutils/packages/types/inc/types.hpp"
+
 // --- STL Includes ---
 #include <utility>
 
@@ -19,8 +22,8 @@ public:
     virtual std::pair<DoubleArray<N>,double> minimum() const =0;
     virtual double operator()(double parameter) const;
 
-    double getCoefficient(uint index) const;
-    void setCoefficient(uint index, double coefficient);
+    double getCoefficient(Size index) const;
+    void setCoefficient(Size index, double coefficient);
 
     const DoubleArray<N>& getDirection() const;
     void setDirection(const DoubleArray<N>& direction);

@@ -8,6 +8,7 @@
 #include "CSG/packages/primitives/inc/csgobject.hpp"
 
 // --- STL Includes ---
+#include <array>
 #include <vector>
 #include <deque>
 

@@ -8,7 +8,6 @@
 
 // --- STL Includes ---
 #include <sstream>
-#include <experimental/source_location>
 
 
 /* The preprocessor variables can be defined/undefined through CMake */
