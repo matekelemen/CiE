@@ -9,6 +9,7 @@
 
 // --- STL Includes ---
 #include <algorithm>
+#include <array>
 
 
 namespace cie::fem::detail {

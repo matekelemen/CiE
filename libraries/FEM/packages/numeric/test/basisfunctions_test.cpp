@@ -60,14 +60,12 @@ TEST_CASE( "PolynomialBasisFunctionSet", "numeric" )
     // Define samples
     std::vector<Double> sampleVector = { -2.0, -1.0, -0.5, 0.0, 0.5, 1.0, 2.0 };
     std::array<Double,7> sampleArray = { -2.0, -1.0, -0.5, 0.0, 0.5, 1.0, 2.0 };
-    std::vector<std::vector<Approx>> referenceValues = 
-    {
-        std::initializer_list<Approx>( { 0.0,   1.0,    0.75,   1.0,    1.75,   3.0,    0.0 } ),
-        std::initializer_list<Approx>( { 0.0,   1.0,    0.0,    0.0,    1.0,    3.0,    0.0 } ),
-        std::initializer_list<Approx>( { 0.0,   1.0,    1.5,    2.0,    2.5,    3.0,    0.0 } ),
-        std::initializer_list<Approx>( { 0.0,   2.0,    1.25,   1.0,    1.25,   2.0,    0.0 } ),
-        std::initializer_list<Approx>( { 0.0,   1.0,    1.0,    1.0,    1.0,    1.0,    0.0 } )
-    };
+    std::vector<std::vector<Approx>> referenceValues;
+    referenceValues.emplace_back( std::vector<Approx>({ Approx(0.0),   Approx(1.0),    Approx(0.75),   Approx(1.0),    Approx(1.75),   Approx(3.0),    Approx(0.0) }));
+    referenceValues.emplace_back(std::vector<Approx>({ Approx(0.0),   Approx(1.0),    Approx(0.0),    Approx(0.0),    Approx(1.0),    Approx(3.0),    Approx(0.0) }));
+    referenceValues.emplace_back(std::vector<Approx>({ Approx(0.0),   Approx(1.0),    Approx(1.5),    Approx(2.0),    Approx(2.5),    Approx(3.0),    Approx(0.0) }));
+    referenceValues.emplace_back(std::vector<Approx>({ Approx(0.0),   Approx(2.0),    Approx(1.25),   Approx(1.0),    Approx(1.25),   Approx(2.0),    Approx(0.0) }));
+    referenceValues.emplace_back(std::vector<Approx>({ Approx(0.0),   Approx(1.0),    Approx(1.0),    Approx(1.0),    Approx(1.0),    Approx(1.0),    Approx(0.0) }));
 
     // Check values - single calls
     REQUIRE( basis.functions().size() == 2 );
@@ -162,11 +160,11 @@ TEST_CASE( "PolynomialBasisFunctionSet", "numeric" )
             { -2.0, -1.0, -0.5, 0.0, 0.5, 1.0, 2.0 };
         std::vector<std::vector<Approx>> ref = 
         {
-            std::initializer_list<Approx>( { 0.0,   -1.0,   0.0,    1.0,    2.0,    3.0,    0.0 } ),
-            std::initializer_list<Approx>( { 0.0,   -3.0,   -1.0,   1.0,    3.0,    5.0,    0.0 } ),
-            std::initializer_list<Approx>( { 0.0,   1.0,    1.0,    1.0,    1.0,    1.0,    0.0 } ),
-            std::initializer_list<Approx>( { 0.0,   -2.0,   -1.0,   0.0,    1.0,    2.0,    0.0 } ),
-            std::initializer_list<Approx>( { 0.0,   0.0,    0.0,    0.0,    0.0,    0.0,    0.0 } )
+            std::initializer_list<Approx>( { Approx(0.0),   Approx(-1.0),  Approx(0.0),    Approx(1.0),    Approx(2.0),    Approx(3.0),    Approx(0.0) }),
+            std::initializer_list<Approx>({ Approx(0.0),   Approx(-3.0),   Approx(-1.0),   Approx(1.0),    Approx(3.0),    Approx(5.0),    Approx(0.0) }),
+            std::initializer_list<Approx>({ Approx(0.0),   Approx(1.0),    Approx(1.0),    Approx(1.0),    Approx(1.0),    Approx(1.0),    Approx(0.0) }),
+            std::initializer_list<Approx>({ Approx(0.0),   Approx(-2.0),   Approx(-1.0),   Approx(0.0),    Approx(1.0),    Approx(2.0),    Approx(0.0) }),
+            std::initializer_list<Approx>({ Approx(0.0),   Approx(0.0),    Approx(0.0),    Approx(0.0),    Approx(0.0),    Approx(0.0),    Approx(0.0) } )
         };
 
         functionIndex = 0;
@@ -207,8 +205,8 @@ TEST_CASE( "LinearBasisFunctionSet", "[numeric]" )
             { -2.0, -1.0, 0.0, 1.0, 2.0 };
         const std::vector<std::vector<Approx>> referenceValues = 
         {
-            std::initializer_list<Approx>({ 0.0, 0.0, 0.5, 1.0, 0.0 }),
-            std::initializer_list<Approx>({ 0.0, 1.0, 0.5, 0.0, 0.0 })
+            std::initializer_list<Approx>({ Approx(0.0), Approx(0.0), Approx(0.5), Approx(1.0), Approx(0.0) }),
+            std::initializer_list<Approx>({ Approx(0.0), Approx(1.0), Approx(0.5), Approx(0.0), Approx(0.0) })
         };
         for (Size i=0; i<dim; ++i)
             for (Size j=0; j<2; ++j)
@@ -237,8 +235,8 @@ TEST_CASE( "LinearBasisFunctionSet", "[numeric]" )
             { -2.0, -1.0, 0.0, 1.0, 2.0 };
         const std::vector<std::vector<Approx>> referenceValues = 
         {
-            std::initializer_list<Approx>({ 0.0, 0.5, 0.5, 0.5, 0.0 }),
-            std::initializer_list<Approx>({ 0.0, -0.5, -0.5, -0.5, 0.0 })
+            std::initializer_list<Approx>({ Approx(0.0), Approx(0.5), Approx(0.5), Approx(0.5), Approx(0.0) }),
+            std::initializer_list<Approx>({ Approx(0.0), Approx(-0.5), Approx(-0.5), Approx(-0.5), Approx(0.0) })
         };
         for (Size i=0; i<dim; ++i)
             for (Size j=0; j<2; ++j)

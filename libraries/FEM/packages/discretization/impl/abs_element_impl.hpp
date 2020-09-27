@@ -257,7 +257,7 @@ requires concepts::ClassIterator<PointIterator,point_type>
 
 
 template <class BasisType>
-inline AbsElement<BasisType>::LocalCoordinates
+inline typename AbsElement<BasisType>::LocalCoordinates
 AbsElement<BasisType>::localCoordinates(  const typename AbsElement<BasisType>::point_type& point ) const
 {
     AbsElement<BasisType>::LocalCoordinates output;
