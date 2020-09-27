@@ -97,9 +97,10 @@ TEST_CASE( "Quadratures", "[numeric]" )
 
     SECTION( "GaussLegendreQuadrature" )
     {
+        typedef GaussLegendreQuadrature<Dimension, NT> Integrator;
+
         for (Size integrationOrder=3; integrationOrder<6; ++integrationOrder)
         {
-            typedef GaussLegendreQuadrature<Dimension,NT>   Integrator;
             REQUIRE_NOTHROW(Integrator(integrationOrder));
             Integrator integrator(integrationOrder);
             REQUIRE_NOTHROW( integrator(testFunction) );
@@ -109,9 +110,10 @@ TEST_CASE( "Quadratures", "[numeric]" )
 
     SECTION( "GaussLobattoQuadrature" )
     {
+        typedef GaussLobattoQuadrature<Dimension, NT> Integrator;
+
         for (Size integrationOrder=3; integrationOrder<6; ++integrationOrder)
         {
-            typedef GaussLobattoQuadrature<Dimension,NT>   Integrator;
             REQUIRE_NOTHROW(Integrator(integrationOrder));
             Integrator integrator(integrationOrder);
             REQUIRE_NOTHROW( integrator(testFunction) );

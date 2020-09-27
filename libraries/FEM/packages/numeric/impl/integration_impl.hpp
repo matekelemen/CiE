@@ -263,8 +263,7 @@ tensorProductQuadratureNodes( const std::pair<std::vector<NT>,std::vector<NT>>& 
     // Compute tensor product components
     for (Size i=0; i<numberOfPoints; ++i)
     {
-        points.emplace_back();
-        utils::resize( points.back(), Dimension );
+        utils::resize( points[i], Dimension );
         std::transform( (*abscissaState).begin(),
                         (*abscissaState).end(),
                         points[i].begin(),

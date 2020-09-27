@@ -76,15 +76,19 @@ StateIterator<IteratorType>::operator*() const
 }
 
 
+template <class IteratorType>
+requires concepts::STLContainer<typename std::iterator_traits<IteratorType>::value_type>
+StateIterator<IteratorType>::StateIterator()
+{
+}
+
+
 
 
 template <concepts::STLContainer ContainerType>
 InternalStateIterator<ContainerType>::InternalStateIterator(    const ContainerType& container,
                                                                 Size size ) :
-    StateIterator<typename std::vector<detail::container_reference_wrapper<const ContainerType>>::const_iterator>(
-        _dummyContainer.begin(),
-        _dummyContainer.begin()
-    )
+    StateIterator<typename std::vector<detail::container_reference_wrapper<const ContainerType>>::const_iterator>()
 {
     for (Size i=0; i<size; ++i)
         _dummyContainer.emplace_back(container);

@@ -25,7 +25,6 @@ public:
     typedef std::vector<subiterator_type>                               state_container;
 
 public:
-    StateIterator() = delete;
     StateIterator( const StateIterator& copy ) = delete;
     StateIterator& operator=( const StateIterator& copy ) = delete;
 
@@ -36,6 +35,9 @@ public:
 
     virtual StateIterator& operator++();
     virtual const state_container& operator*() const;
+
+protected:
+    explicit StateIterator(); // <-- for initialization of derived classes only
 
 protected:
     IteratorType        _begin;
