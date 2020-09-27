@@ -2,7 +2,7 @@
 #include "catch.hpp"
 
 // --- Internal Includes ---
-#include "../inc/type_safety.hpp"
+#include "cieutils/packages/stl_extension/inc/type_safety.hpp"
 
 // --- STL Includes ---
 #include <vector>

@@ -48,6 +48,6 @@ public:
 
 }
 
-#include "../impl/split_policy_impl.hpp"
+#include "CSG/packages/trees/impl/split_policy_impl.hpp"
 
 #endif

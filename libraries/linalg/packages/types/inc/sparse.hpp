@@ -58,6 +58,6 @@ public:
 
 }
 
-#include "../impl/sparse_impl.hpp"
+#include "linalg/packages/types/impl/sparse_impl.hpp"
 
 #endif // CIE_SPARSE_HPP

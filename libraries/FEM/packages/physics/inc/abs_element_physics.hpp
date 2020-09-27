@@ -2,7 +2,7 @@
 #define CIE_FEM_ABS_ELEMENT_PHYSICS_HPP
 
 // --- Internal Includes ---
-#include "../../numeric/inc/integration.hpp"
+#include "FEM/packages/numeric/inc/integration.hpp"
 
 // --- Utility Includes ---
 #include <cieutils/types.hpp>
@@ -119,6 +119,6 @@ AbsElementPhysics<ElementType>::_basisDerivativeCache;
 
 } // namespace cie::fem
 
-#include "../impl/abs_element_physics_impl.hpp"
+#include "FEM/packages/physics/impl/abs_element_physics_impl.hpp"
 
 #endif

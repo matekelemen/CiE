@@ -2,7 +2,7 @@
 #include "catch.hpp"
 
 // --- Internal Includes ---
-#include "../inc/basis_wrappers.hpp"
+#include "FEM/packages/discretization/inc/basis_wrappers.hpp"
 
 // --- STL Includes ---
 #include <vector>

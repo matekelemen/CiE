@@ -1,13 +1,12 @@
 // --- Internal Includes ---
-#include "../inc/ShaderManager.hpp"
-#include "../inc/shaders.hpp"
+#include "glvisualization/packages/shaders/inc/ShaderManager.hpp"
+#include "glvisualization/packages/shaders/inc/shaders.hpp"
 
 // --- STL Includes ---
 #include <algorithm>
 #include <iostream>
 
-namespace cie {
-namespace gl {
+namespace cie::gl {
 
 
 ShaderManager::ShaderManager( GLContext& context ) :
@@ -168,5 +167,4 @@ const ShaderStruct ShaderManager::fragmentShader() const
 }
 
 
-}
-}
+} // namespace cie::gl

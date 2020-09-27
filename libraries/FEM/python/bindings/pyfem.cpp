@@ -5,12 +5,12 @@
 #include "pybind11/functional.h"
 
 // --- Internal Includes ---
-#include "../../packages/physics/inc/heat_physics.hpp"
-#include "../../packages/discretization/inc/abs_element.hpp"
-#include "../../packages/numeric/inc/basisfunctions.hpp"
+#include "FEM/packages/physics/inc/heat_physics.hpp"
+#include "FEM/packages/discretization/inc/abs_element.hpp"
+#include "FEM/packages/numeric/inc/basisfunctions.hpp"
 
-#include "./convenience_functions.hpp"
-#include "./material_functions.hpp"
+#include "FEM/python/bindings/convenience_functions.hpp"
+#include "FEM/python/bindings/material_functions.hpp"
 
 
 // ---------------------------------------------------------
@@ -21,7 +21,7 @@
 using Double                            = cie::Double;
 
 // Basis sets
-using LinearBasisSet1D                 = cie::fem::LinearBasisFunctionSet<1,Double>;
+using LinearBasisSet1D                  = cie::fem::LinearBasisFunctionSet<1,Double>;
 
 // Element bases
 using LinearElementBase1D               = cie::fem::AbsElement1D<LinearBasisSet1D>;

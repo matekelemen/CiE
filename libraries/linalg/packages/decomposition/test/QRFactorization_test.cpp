@@ -2,8 +2,8 @@
 #include "catch.hpp"
 
 // --- Internal Includes ---
-#include "../inc/QRFactorization.hpp"
-#include "../../utilities/inc/linalghelper.hpp"
+#include "linalg/packages/decomposition/inc/QRFactorization.hpp"
+#include "linalg/packages/utilities/inc/linalghelper.hpp"
 #include "cmake_variables.hpp"
 
 // --- STL Includes ---

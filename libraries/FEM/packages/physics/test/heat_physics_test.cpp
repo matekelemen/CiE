@@ -5,8 +5,8 @@
 #include <cieutils/file.hpp>
 
 // --- Internal Includes ---
-#include "../inc/heat_physics.hpp"
-#include "../../discretization/inc/abs_element.hpp"
+#include "FEM/packages/physics/inc/heat_physics.hpp"
+#include "FEM/packages/discretization/inc/abs_element.hpp"
 
 // --- STL Includes ---
 #include <algorithm>

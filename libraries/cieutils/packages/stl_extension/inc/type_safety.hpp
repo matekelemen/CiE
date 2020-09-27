@@ -2,7 +2,7 @@
 #define CIE_UTILS_STL_EXTENSION_TYPE_SAFETY_HPP
 
 // --- Internal Includes ---
-#include "../../concepts/inc/basic_concepts.hpp"
+#include "cieutils/packages/concepts/inc/basic_concepts.hpp"
 
 
 namespace cie::utils {

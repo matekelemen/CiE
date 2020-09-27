@@ -137,7 +137,7 @@ tensorProductQuadratureNodes( const std::pair<std::vector<NT>,std::vector<NT>>& 
 
 } // namespace cie::fem
 
-#include "../impl/integration_impl.hpp"
+#include "FEM/packages/numeric/impl/integration_impl.hpp"
 
 
 #endif

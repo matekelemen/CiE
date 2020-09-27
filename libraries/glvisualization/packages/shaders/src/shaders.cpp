@@ -6,7 +6,7 @@
 #include <cieutils/macros.hpp>
 
 // --- Internal Includes ---
-#include "../inc/shaders.hpp"
+#include "glvisualization/packages/shaders/inc/shaders.hpp"
 
 // --- STL Includes ---
 #include <string>

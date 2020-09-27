@@ -2,7 +2,7 @@
 #include "catch.hpp"
 
 // --- Internal Includes ---
-#include "../inc/shaders.hpp"
+#include "glvisualization/packages/shaders/inc/shaders.hpp"
 #include "cmake_variables.hpp"
 
 // --- STL Includes ---
@@ -20,4 +20,4 @@ TEST_CASE( "ShaderStruct", "[shaders]" )
 }
 
 
-}
+} // namespace cie::gl

@@ -2,7 +2,7 @@
 #define CIE_FEM_PHYSICS_HEAT_PHYSICS_HPP
 
 // --- Internal Includes ---
-#include "./abs_element_physics.hpp"
+#include "FEM/packages/physics/inc/abs_element_physics.hpp"
 
 
 namespace cie::fem {
@@ -66,6 +66,6 @@ public:
 
 } // namespace cie::fem
 
-#include "../impl/heat_physics_impl.hpp"
+#include "FEM/packages/physics/impl/heat_physics_impl.hpp"
 
 #endif

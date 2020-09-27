@@ -2,7 +2,7 @@
 #define CIE_UTILS_OUTPUT_WRITE_HPP
 
 // --- Internal Includes ---
-#include "../../concepts/inc/container_concepts.hpp"
+#include "cieutils/packages/concepts/inc/container_concepts.hpp"
 
 // --- STL Includes ---
 #include <iostream>
@@ -46,6 +46,6 @@ requires (!concepts::Printable<typename ContainerType::value_type>)
 
 } // namespace cie::utils
 
-#include "../impl/write_impl.hpp"
+#include "cieutils/packages/output/impl/write_impl.hpp"
 
 #endif
