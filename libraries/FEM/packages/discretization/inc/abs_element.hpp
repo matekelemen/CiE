@@ -25,21 +25,21 @@ namespace cie::fem {
 #define CIE_DOF_CONTAINER_TYPE std::vector<Size>
 
 
-template <class AnsatzType>
+template <class BasisType>
 class AbsElement : public DoFMap<CIE_DOF_CONTAINER_TYPE>
 {
     // MEMBER TYPEDEFS -------------------------------------
 public:
-    typedef AnsatzType                                      ansatz_type;
-    static const Size                                       dimension = AnsatzType::dimension;
-    typedef typename AnsatzType::kernel_type                kernel_type;
+    typedef BasisType                                      basis_type;
+    static const Size                                       dimension = BasisType::dimension;
+    typedef typename BasisType::kernel_type                kernel_type;
     typedef typename kernel_type::number_type               NT;
     typedef std::array<NT,dimension>                        point_type;
 
     typedef std::vector<NT>                                 coefficient_container;
     typedef std::vector<NT>                                 value_container;
     typedef std::vector<point_type>                         point_container;
-    typedef std::array<value_container,dimension>           ansatz_value_container;
+    typedef std::array<value_container,dimension>           basis_value_container;
 
     // MEMBER CLASSES --------------------------------------
 public:
@@ -53,27 +53,27 @@ public:
     // BASIS -----------------------------------------------
 public:
     /**
-     * Construct basis function values from ansatz values
+     * Construct basis function values from basis values
      *  - default implementation computes the tensor product
     */
-    virtual void basis( const ansatz_value_container& ansatzValues,
+    virtual void basis( const basis_value_container& basisValues,
                         value_container& outputContainer ) const;
 
     /**
-     * Compute basis function derivatives from ansatz and ansatz derivative values
+     * Compute basis function derivatives from basis and basis derivative values
      * - default implementation computes the derivatives of the tensor product
     */
-    virtual void basisDerivatives(  const ansatz_value_container& ansatzValues,
-                                    const ansatz_value_container& ansatzDerivativeValues,
+    virtual void basisDerivatives(  const basis_value_container& basisValues,
+                                    const basis_value_container& basisDerivativeValues,
                                     point_container& outputContainer ) const;
 
     // COMPUTE FIELD VALUES --------------------------------
 public:
-    template <class CoefficientContainer, concepts::STLContainer AnsatzContainer>
+    template <class CoefficientContainer, concepts::STLContainer BasisContainer>
     NT operator()(  const CoefficientContainer& coefficients,
-                    const AnsatzContainer& ansatzValues ) const
+                    const BasisContainer& basisValues ) const
     requires concepts::ClassContainer<CoefficientContainer,NT>
-                && concepts::ClassContainer<typename AnsatzContainer::value_type,NT>;
+                && concepts::ClassContainer<typename BasisContainer::value_type,NT>;
 
     template <class CoefficientContainer>
     NT operator()(  const CoefficientContainer& coefficients,
@@ -94,16 +94,16 @@ public:
     // COMPUTE FIELD DERIVATIVES -------------------------------
 protected:
     virtual void _derivative(   const coefficient_container& coefficients,
-                                const ansatz_value_container& ansatzValues,
-                                const ansatz_value_container& ansatzDerivativeValues,
+                                const basis_value_container& basisValues,
+                                const basis_value_container& basisDerivativeValues,
                                 point_type& gradient );
 
 public:
     // Duplicate of AbsElement::_derivative to avoid unintentional shadowing when overriding it
     // in derived classes
     void derivative(    const coefficient_container& coefficients,
-                        const ansatz_value_container& ansatzValues,
-                        const ansatz_value_container& derivativeValues,
+                        const basis_value_container& basisValues,
+                        const basis_value_container& derivativeValues,
                         point_type& gradient );
 
     point_type derivative(  const coefficient_container& coefficients,
@@ -140,18 +140,18 @@ protected:
 
     // OTHER MEMBER FUNCTIONS ----------------------------------
 public:
-    const ansatz_type& basis() const                     { return _ansatzSet; }
+    const basis_type& basis() const                     { return _basisSet; }
 
     // MEMBER VARIABLES ----------------------------------------
 protected:
-    static ansatz_type   _ansatzSet;
+    static basis_type   _basisSet;
 }; // class AbsElement
 
 
 // Initialize static members
-template <class AnsatzType>
-typename AbsElement<AnsatzType>::ansatz_type 
-AbsElement<AnsatzType>::_ansatzSet = typename AbsElement<AnsatzType>::ansatz_type();
+template <class BasisType>
+typename AbsElement<BasisType>::basis_type 
+AbsElement<BasisType>::_basisSet = typename AbsElement<BasisType>::basis_type();
 
 
 
@@ -161,8 +161,8 @@ AbsElement<AnsatzType>::_ansatzSet = typename AbsElement<AnsatzType>::ansatz_typ
 // 1D BASE SPECIALIZATION
 // ---------------------------------------------------------
 
-template <class AnsatzType>
-class AbsElement1D : public AbsElement<AnsatzType>
+template <class BasisType>
+class AbsElement1D : public AbsElement<BasisType>
 {
 public:
     template <class ...Args>
@@ -177,8 +177,8 @@ protected:
     typename AbsElement1D::NT toLocalCoordinates( typename AbsElement1D::NT coordinate ) const;
 
     virtual void _derivative(   const typename AbsElement1D::coefficient_container& coefficients,
-                                const typename AbsElement1D::ansatz_value_container& ansatzValues,
-                                const typename AbsElement1D::ansatz_value_container& ansatzDerivativeValues,
+                                const typename AbsElement1D::basis_value_container& basisValues,
+                                const typename AbsElement1D::basis_value_container& basisDerivativeValues,
                                 typename AbsElement1D::point_type& gradient ) override;
 
 protected:

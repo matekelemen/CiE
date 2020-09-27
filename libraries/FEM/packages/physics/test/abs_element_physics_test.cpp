@@ -19,7 +19,7 @@ TEST_CASE( "AbsElementPhysics", "[physics]" )
     const Size Dimension            = 1;
     const Size integrationOrder     = 5;
     using NT                        = Double;
-    using Basis                     = LinearAnsatzFunctionSet<Dimension,NT>;
+    using Basis                     = LinearBasisFunctionSet<Dimension,NT>;
     using ElementBase               = AbsElement1D<Basis>;
     using Element                   = AbsElementPhysics<ElementBase>;
 

@@ -45,43 +45,43 @@ AbsElementPhysics<ElementType>::recache()
 {
     // Get integration points
     typename ElementType::point_container integrationPoints;
-    utils::setContainerSize( integrationPoints, _integratorPtr->integrationPoints().size() );
+    utils::resize( integrationPoints, _integratorPtr->integrationPoints().size() );
     std::copy(  _integratorPtr->integrationPoints().begin(),
                 _integratorPtr->integrationPoints().end(),
                 integrationPoints.begin() );
     
     // Cache basis values and its derivatives
-    typename ElementType::ansatz_value_container                    ansatzValues;
-    typename ElementType::ansatz_value_container                    ansatzDerivativeValues;
+    typename ElementType::basis_value_container                    basisValues;
+    typename ElementType::basis_value_container                    basisDerivativeValues;
     typename AbsElementPhysics::basis_set_container                 basisSet;
     typename AbsElementPhysics::basis_derivative_set_container      basisDerivativeSet;
-    auto ansatzDerivatives = this->_ansatzSet.derivatives();
+    auto basisDerivatives = this->_basisSet.derivatives();
 
     for (const auto& point : integrationPoints)
     {
-        // Compute ansatz values and their derivatives
-        auto ansatzIt               = ansatzValues.begin();
-        auto ansatzDerivativeIt     = ansatzDerivativeValues.begin();
+        // Compute basis values and their derivatives
+        auto basisIt               = basisValues.begin();
+        auto basisDerivativeIt     = basisDerivativeValues.begin();
 
-        for (Size dim=0; dim<ElementType::dimension; ++dim,++ansatzIt,++ansatzDerivativeIt)
+        for (Size dim=0; dim<ElementType::dimension; ++dim,++basisIt,++basisDerivativeIt)
         {
-            ansatzIt->clear();
-            ansatzDerivativeIt->clear();
+            basisIt->clear();
+            basisDerivativeIt->clear();
             const auto& coordinate = point[dim];
-            for (const auto& function : this->_ansatzSet.functions(dim))
-                ansatzIt->push_back( function(coordinate) );
-            for (const auto& function : ansatzDerivatives->functions(dim))
-                ansatzDerivativeIt->push_back( function(coordinate) );
+            for (const auto& function : this->_basisSet.functions(dim))
+                basisIt->push_back( function(coordinate) );
+            for (const auto& function : basisDerivatives->functions(dim))
+                basisDerivativeIt->push_back( function(coordinate) );
         }
 
         // Compute basis and basis derivative values
         basisSet.emplace_back();
         basisDerivativeSet.emplace_back();
 
-        this->basis(    ansatzValues,
+        this->basis(    basisValues,
                         basisSet.back() );
-        this->basisDerivatives( ansatzValues,
-                                ansatzDerivativeValues,
+        this->basisDerivatives( basisValues,
+                                basisDerivativeValues,
                                 basisDerivativeSet.back() );
     }
 

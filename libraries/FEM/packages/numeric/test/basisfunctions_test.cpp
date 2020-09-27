@@ -18,11 +18,11 @@ namespace cie::fem
 {
 
 
-TEST_CASE( "PolynomialAnsatzFunctionSet", "numeric" )
+TEST_CASE( "PolynomialBasisFunctionSet", "numeric" )
 {
     const Size dim = 2;
 
-    typedef PolynomialAnsatzFunctionSet<dim,Double> Basis;
+    typedef PolynomialBasisFunctionSet<dim,Double> Basis;
 
     typename Basis::coefficient_container coefficients;
     utils::resize(coefficients, dim);
@@ -184,10 +184,10 @@ TEST_CASE( "PolynomialAnsatzFunctionSet", "numeric" )
 
 
 
-TEST_CASE( "LinearAnsatzFunctionSet", "[numeric]" )
+TEST_CASE( "LinearBasisFunctionSet", "[numeric]" )
 {
     const Size dim = 2;
-    typedef LinearAnsatzFunctionSet<dim,Double> Basis;
+    typedef LinearBasisFunctionSet<dim,Double> Basis;
 
     REQUIRE_NOTHROW(Basis());
     Basis basis;

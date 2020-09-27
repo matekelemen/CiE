@@ -7,7 +7,7 @@
 // --- Internal Includes ---
 #include "../../packages/physics/inc/heat_physics.hpp"
 #include "../../packages/discretization/inc/abs_element.hpp"
-#include "../../packages/numeric/inc/ansatzfunctions.hpp"
+#include "../../packages/numeric/inc/basisfunctions.hpp"
 
 #include "./convenience_functions.hpp"
 #include "./material_functions.hpp"
@@ -20,11 +20,11 @@
 // General
 using Double                            = cie::Double;
 
-// Ansatz sets
-using LinearAnsatzSet1D                 = cie::fem::LinearAnsatzFunctionSet<1,Double>;
+// Basis sets
+using LinearBasisSet1D                 = cie::fem::LinearBasisFunctionSet<1,Double>;
 
 // Element bases
-using LinearElementBase1D               = cie::fem::AbsElement1D<LinearAnsatzSet1D>;
+using LinearElementBase1D               = cie::fem::AbsElement1D<LinearBasisSet1D>;
 
 // Element types
 using StaticLinearHeatElement1DLinear   = cie::fem::StaticLinearHeatPhysics1D<LinearElementBase1D>;

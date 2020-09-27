@@ -20,8 +20,8 @@ namespace cie::fem {
 TEST_CASE( "StaticLinearHeatPhysics1D", "[physics]" )
 {
     using NT                    = Double;
-    using AnsatzSet             = LinearAnsatzFunctionSet<1,NT>;
-    using ElementBase           = AbsElement1D<AnsatzSet>;
+    using BasisSet             = LinearBasisFunctionSet<1,NT>;
+    using ElementBase           = AbsElement1D<BasisSet>;
     using Element               = StaticLinearHeatPhysics1D<ElementBase>;
 
     using Row                   = std::array<NT,2>;

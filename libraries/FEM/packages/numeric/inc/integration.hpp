@@ -2,7 +2,7 @@
 #define CIE_FEM_INTEGRATION_HPP
 
 // --- Utility Includes ---
-#include "cieutils/packages/concepts/inc/basic_concepts.hpp"
+#include "cieutils/packages/concepts/inc/iterator_concepts.hpp"
 #include "cieutils/packages/types/inc/types.hpp"
 
 // --- Internal Includes ---

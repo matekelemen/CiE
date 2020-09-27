@@ -15,9 +15,9 @@ namespace cie::fem {
 // ---------------------------------------------------------
 // CONSTRUCTORS
 // ---------------------------------------------------------
-template <class AnsatzType>
-AbsElement<AnsatzType>::AbsElement( const typename AbsElement<AnsatzType>::dof_container& dofs ) :
-    DoFMap<typename AbsElement<AnsatzType>::dof_container>(dofs)
+template <class BasisType>
+AbsElement<BasisType>::AbsElement( const typename AbsElement<BasisType>::dof_container& dofs ) :
+    DoFMap<typename AbsElement<BasisType>::dof_container>(dofs)
 {
 }
 
@@ -25,43 +25,43 @@ AbsElement<AnsatzType>::AbsElement( const typename AbsElement<AnsatzType>::dof_c
 // ---------------------------------------------------------
 // BASIS
 // ---------------------------------------------------------
-template <class AnsatzType>
+template <class BasisType>
 inline void
-AbsElement<AnsatzType>::basis(  const typename AbsElement::ansatz_value_container& ansatzValues,
+AbsElement<BasisType>::basis(  const typename AbsElement::basis_value_container& basisValues,
                                 typename AbsElement::value_container& outputContainer ) const
 {
-    Size numberOfBasisValues    = std::accumulate(  ansatzValues.begin(),
-                                                    ansatzValues.end(),
+    Size numberOfBasisValues    = std::accumulate(  basisValues.begin(),
+                                                    basisValues.end(),
                                                     Size(1),
                                                     [](auto lhs, const auto& rhs) -> Size
                                                     {
                                                         return lhs * rhs.size();
                                                     } );
 
-    auto basisIt                = detail::makeTensorProductBasis(ansatzValues);
-    utils::setContainerSize( outputContainer, numberOfBasisValues );
+    auto basisIt                = detail::makeTensorProductBasis(basisValues);
+    utils::resize( outputContainer, numberOfBasisValues );
     for (auto outputIt=outputContainer.begin(); outputIt!=outputContainer.end(); ++outputIt,++basisIt)
         *outputIt = basisIt.product();
 }
 
 
 
-template <class AnsatzType>
+template <class BasisType>
 inline void
-AbsElement<AnsatzType>::basisDerivatives(   const typename AbsElement::ansatz_value_container& ansatzValues,
-                                            const typename AbsElement::ansatz_value_container& ansatzDerivativeValues,
+AbsElement<BasisType>::basisDerivatives(   const typename AbsElement::basis_value_container& basisValues,
+                                            const typename AbsElement::basis_value_container& basisDerivativeValues,
                                             typename AbsElement::point_container& outputContainer ) const
 {
-    Size numberOfBasisValues    = std::accumulate(  ansatzValues.begin(),
-                                                    ansatzValues.end(),
+    Size numberOfBasisValues    = std::accumulate(  basisValues.begin(),
+                                                    basisValues.end(),
                                                     Size(1),
                                                     [](auto lhs, const auto& rhs) -> Size
                                                     {
                                                         return lhs * rhs.size();
                                                     } );
-    auto basisDerivativeIt = detail::makeTensorProductDerivatives(ansatzValues, ansatzDerivativeValues);
+    auto basisDerivativeIt = detail::makeTensorProductDerivatives(basisValues, basisDerivativeValues);
 
-    utils::setContainerSize( outputContainer, numberOfBasisValues );
+    utils::resize( outputContainer, numberOfBasisValues );
     for (Size basisIndex=0; basisIndex<numberOfBasisValues; ++basisIndex,++basisDerivativeIt)
         outputContainer[basisIndex]    = basisDerivativeIt.product();
 }
@@ -71,17 +71,17 @@ AbsElement<AnsatzType>::basisDerivatives(   const typename AbsElement::ansatz_va
 // COMPUTE FIELD VALUES
 // ---------------------------------------------------------
 
-template <class AnsatzType>
-template <class CoefficientContainer, concepts::STLContainer AnsatzContainer>
-inline typename AbsElement<AnsatzType>::NT
-AbsElement<AnsatzType>::operator()(  const CoefficientContainer& coefficients,
-                                    const AnsatzContainer& ansatzValues ) const
+template <class BasisType>
+template <class CoefficientContainer, concepts::STLContainer BasisContainer>
+inline typename AbsElement<BasisType>::NT
+AbsElement<BasisType>::operator()(  const CoefficientContainer& coefficients,
+                                    const BasisContainer& basisValues ) const
 requires concepts::ClassContainer<CoefficientContainer,NT>
-            && concepts::ClassContainer<typename AnsatzContainer::value_type,NT>
+            && concepts::ClassContainer<typename BasisContainer::value_type,NT>
 {
     // Get basis values
     typename AbsElement::value_container basis;
-    this->basis( ansatzValues, basis );
+    this->basis( basisValues, basis );
 
     CIE_OUT_OF_RANGE_ASSERT(
         coefficients.size() == basis.size(),
@@ -96,18 +96,18 @@ requires concepts::ClassContainer<CoefficientContainer,NT>
 }
 
 
-template <class AnsatzType>
+template <class BasisType>
 template <class CoefficientContainer>
-inline typename AbsElement<AnsatzType>::NT
-AbsElement<AnsatzType>::operator()(  const CoefficientContainer& coefficients,
-                                    const typename AbsElement<AnsatzType>::LocalCoordinates& point ) const
+inline typename AbsElement<BasisType>::NT
+AbsElement<BasisType>::operator()(  const CoefficientContainer& coefficients,
+                                    const typename AbsElement<BasisType>::LocalCoordinates& point ) const
 requires concepts::ClassContainer<CoefficientContainer,NT>
 {
     std::array<std::vector<NT>,dimension>   basisValues;
     auto basisIt = basisValues.begin();
 
     for (Size dim=0; dim<dimension; ++dim,++basisIt)
-        for (const auto& function : this->_ansatzSet.functions(dim))
+        for (const auto& function : this->_basisSet.functions(dim))
             basisIt->push_back( function(point[dim]) );
 
     return this->operator()(    coefficients,
@@ -115,12 +115,12 @@ requires concepts::ClassContainer<CoefficientContainer,NT>
 }
 
 
-template <class AnsatzType>
+template <class BasisType>
 template <  class CoefficientContainer,
             class PointIterator,
             class OutputIterator >
 inline void 
-AbsElement<AnsatzType>::operator()(  const CoefficientContainer& coefficients,
+AbsElement<BasisType>::operator()(  const CoefficientContainer& coefficients,
                                     PointIterator pointBegin,
                                     PointIterator pointEnd,
                                     OutputIterator outputIt )
@@ -138,22 +138,22 @@ requires concepts::ClassContainer<CoefficientContainer,NT>
 // COMPUTE FIELD DERIVATIVES
 // ---------------------------------------------------------
 
-template <class AnsatzType>
+template <class BasisType>
 inline void
-AbsElement<AnsatzType>::_derivative( const coefficient_container& coefficients,
-                                    const ansatz_value_container& basisValues,
-                                    const ansatz_value_container& derivativeValues,
+AbsElement<BasisType>::_derivative( const coefficient_container& coefficients,
+                                    const basis_value_container& basisValues,
+                                    const basis_value_container& derivativeValues,
                                     point_type& gradient )
 {
     throw AbstractCallException( "AbsElement::derivative" );
 }
 
 
-template <class AnsatzType>
+template <class BasisType>
 inline void
-AbsElement<AnsatzType>::derivative( const coefficient_container& coefficients,
-                                    const ansatz_value_container& basisValues,
-                                    const ansatz_value_container& derivativeValues,
+AbsElement<BasisType>::derivative( const coefficient_container& coefficients,
+                                    const basis_value_container& basisValues,
+                                    const basis_value_container& derivativeValues,
                                     point_type& gradient )
 {
     return this->_derivative(   coefficients,
@@ -162,18 +162,18 @@ AbsElement<AnsatzType>::derivative( const coefficient_container& coefficients,
 }
 
 
-template <class AnsatzType>
-inline typename AbsElement<AnsatzType>::point_type
-AbsElement<AnsatzType>::derivative(  const coefficient_container& coefficients,
+template <class BasisType>
+inline typename AbsElement<BasisType>::point_type
+AbsElement<BasisType>::derivative(  const coefficient_container& coefficients,
                                     const LocalCoordinates& point )
 {
     std::array<std::vector<NT>,dimension>   basisValues, derivativeValues;
-    auto                                    _derivatives = _ansatzSet.derivatives();
+    auto                                    _derivatives = _basisSet.derivatives();
     point_type                              gradient;
 
     auto valueIt    = basisValues.begin();
     for (Size dim=0; dim<dimension; ++dim,++valueIt)
-        for (const auto& function : this->_ansatzSet.functions(dim))
+        for (const auto& function : this->_basisSet.functions(dim))
             valueIt->push_back( function(point[dim]) );
 
     valueIt         = derivativeValues.begin();
@@ -190,18 +190,18 @@ AbsElement<AnsatzType>::derivative(  const coefficient_container& coefficients,
 }
 
 
-template <class AnsatzType>
+template <class BasisType>
 template <  class PointIterator,
             class OutputIterator >
 inline void
-AbsElement<AnsatzType>::derivative(  const coefficient_container& coefficients,
+AbsElement<BasisType>::derivative(  const coefficient_container& coefficients,
                                     PointIterator pointBegin,
                                     PointIterator pointEnd,
                                     OutputIterator outputIt )
 requires concepts::ClassIterator<PointIterator,LocalCoordinates>
             && concepts::ClassIterator<OutputIterator,point_type>
 {
-    auto _derivatives = _ansatzSet.derivatives();
+    auto _derivatives = _basisSet.derivatives();
 
     for ( ; pointBegin!=pointEnd; ++pointBegin )
     {
@@ -209,7 +209,7 @@ requires concepts::ClassIterator<PointIterator,LocalCoordinates>
 
         auto valueIt    = basisValues.begin();
         for (Size dim=0; dim<dimension; ++dim,++valueIt)
-            for (const auto& function : this->_ansatzSet.functions(dim))
+            for (const auto& function : this->_basisSet.functions(dim))
                 valueIt->push_back( function(pointBegin->at(dim)) );
 
         valueIt         = derivativeValues.begin();
@@ -229,21 +229,21 @@ requires concepts::ClassIterator<PointIterator,LocalCoordinates>
 // COORDINATE TRANSFORMATION
 // ---------------------------------------------------------
 
-template <class AnsatzType>
+template <class BasisType>
 inline void
-AbsElement<AnsatzType>::localCoordinates(    const typename AbsElement<AnsatzType>::point_type& point,
-                                            typename AbsElement<AnsatzType>::LocalCoordinates& localPoint ) const
+AbsElement<BasisType>::localCoordinates(    const typename AbsElement<BasisType>::point_type& point,
+                                            typename AbsElement<BasisType>::LocalCoordinates& localPoint ) const
 {
     utils::resize(localPoint,dimension);
     this->toLocalCoordinates( point, localPoint );
 }
 
 
-template <class AnsatzType>
+template <class BasisType>
 template <  class PointIterator,
             class LocalIterator >
 inline void 
-AbsElement<AnsatzType>::localCoordinates(    PointIterator pointBegin,
+AbsElement<BasisType>::localCoordinates(    PointIterator pointBegin,
                                             PointIterator pointEnd,
                                             LocalIterator localBegin ) const
 requires concepts::ClassIterator<PointIterator,point_type>
@@ -256,9 +256,9 @@ requires concepts::ClassIterator<PointIterator,point_type>
 }
 
 
-template <class AnsatzType>
-inline AbsElement<AnsatzType>::LocalCoordinates
-AbsElement<AnsatzType>::localCoordinates(  const typename AbsElement<AnsatzType>::point_type& point ) const
+template <class BasisType>
+inline AbsElement<BasisType>::LocalCoordinates
+AbsElement<BasisType>::localCoordinates(  const typename AbsElement<BasisType>::point_type& point ) const
 {
     AbsElement<BasisType>::LocalCoordinates output;
     utils::resize(output,dimension);
@@ -274,22 +274,22 @@ AbsElement<AnsatzType>::localCoordinates(  const typename AbsElement<AnsatzType>
 // 1D BASE SPECIALIZATION
 // ---------------------------------------------------------
 
-template <class AnsatzType>
+template <class BasisType>
 template <class ...Args>
-AbsElement1D<AnsatzType>::AbsElement1D(  const std::pair<typename AbsElement1D::NT, typename AbsElement1D::NT>& domain,
+AbsElement1D<BasisType>::AbsElement1D(  const std::pair<typename AbsElement1D::NT, typename AbsElement1D::NT>& domain,
                                         Args&&... args ) :
-    AbsElement<AnsatzType>( std::forward<Args>(args)... ),
+    AbsElement<BasisType>( std::forward<Args>(args)... ),
     _domain(domain),
-    _jacobian( (domain.second-domain.first) / (this->_ansatzSet.domain(0,1)-this->_ansatzSet.domain(0,0)) ),
+    _jacobian( (domain.second-domain.first) / (this->_basisSet.domain(0,1)-this->_basisSet.domain(0,0)) ),
     _invJacobian( 1.0/_jacobian )
 {
-    CIE_STATIC_ASSERT( AnsatzType::dimension == 1 )
+    CIE_STATIC_ASSERT( BasisType::dimension == 1 )
 }
 
 
-template <class AnsatzType>
+template <class BasisType>
 inline void
-AbsElement1D<AnsatzType>::toLocalCoordinates(    const typename AbsElement1D::point_type& point,
+AbsElement1D<BasisType>::toLocalCoordinates(    const typename AbsElement1D::point_type& point,
                                                 typename AbsElement1D::LocalCoordinates& localPoint ) const
 {
     CIE_ASSERT(
@@ -297,34 +297,34 @@ AbsElement1D<AnsatzType>::toLocalCoordinates(    const typename AbsElement1D::po
         "Input coordinate " + std::to_string(point[0]) + " outside element domain ["
         + std::to_string(_domain.first) + "," + std::to_string(_domain.second) + "]"
     );
-    localPoint[0] = (point[0] - _domain.first) * _invJacobian - this->_ansatzSet.domain(0,1);
+    localPoint[0] = (point[0] - _domain.first) * _invJacobian - this->_basisSet.domain(0,1);
 }
 
 
-template <class AnsatzType>
-inline typename AbsElement1D<AnsatzType>::NT
-AbsElement1D<AnsatzType>::toLocalCoordinates( typename AbsElement1D<AnsatzType>::NT coordinate ) const
+template <class BasisType>
+inline typename AbsElement1D<BasisType>::NT
+AbsElement1D<BasisType>::toLocalCoordinates( typename AbsElement1D<BasisType>::NT coordinate ) const
 {
     CIE_ASSERT(
         _domain.first <= coordinate && coordinate <= _domain.second,
         "Input coordinate " + std::to_string(coordinate) + " outside element domain ["
         + std::to_string(_domain.first) + "," + std::to_string(_domain.second) + "]"
     );
-    return (coordinate - _domain.first) * _invJacobian - this->_ansatzSet->domain(0,1);
+    return (coordinate - _domain.first) * _invJacobian - this->_basisSet->domain(0,1);
 }
 
 
-template <class AnsatzType>
+template <class BasisType>
 void 
-AbsElement1D<AnsatzType>::_derivative(   const typename AbsElement1D::coefficient_container& coefficients,
-                                        const typename AbsElement1D::ansatz_value_container& ansatzValues,
-                                        const typename AbsElement1D::ansatz_value_container& ansatzDerivativeValues,
+AbsElement1D<BasisType>::_derivative(   const typename AbsElement1D::coefficient_container& coefficients,
+                                        const typename AbsElement1D::basis_value_container& basisValues,
+                                        const typename AbsElement1D::basis_value_container& basisDerivativeValues,
                                         typename AbsElement1D::point_type& gradient )
 {
     std::fill(  gradient.begin(),
                 gradient.end(),
                 0.0 );
-    auto basisDerivatives   = detail::makeTensorProductDerivatives(ansatzValues, ansatzDerivativeValues);
+    auto basisDerivatives   = detail::makeTensorProductDerivatives(basisValues, basisDerivativeValues);
     for (const auto& coefficient : coefficients)
     {
         auto basisDerivativeValues  = basisDerivatives.product();

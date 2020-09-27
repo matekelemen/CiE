@@ -20,12 +20,12 @@ TEST_CASE( "basis_wrappers", "[discretization]" )
     using BasisDerivatives      = detail::TensorProductDerivatives<Container,Dimension>;
 
     typename Basis::container_array basisValues;
-    utils::setContainerSize(basisValues,Dimension);
+    utils::resize(basisValues,Dimension);
     basisValues[0] = Container({ 1.0, 2.0 });
     basisValues[1] = Container({ 3.0, 4.0 });
 
     typename BasisDerivatives::container_array derivativeValues;
-    utils::setContainerSize(derivativeValues,Dimension);
+    utils::resize(derivativeValues,Dimension);
     derivativeValues[0] = Container({ 5.0, 6.0 });
     derivativeValues[1] = Container({ 7.0, 8.0 });
 

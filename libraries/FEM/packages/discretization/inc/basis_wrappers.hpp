@@ -3,6 +3,7 @@
 
 // --- Utility Includes ---
 #include "cieutils/packages/concepts/inc/container_concepts.hpp"
+#include "cieutils/packages/stl_extension/inc/state_iterator.hpp"
 #include "cieutils/packages/macros/inc/checks.hpp"
 #include "cieutils/packages/exceptions/inc/exception.hpp"
 
@@ -68,7 +69,7 @@ public:
             {
                 CIE_ASSERT(
                     basisValues[i].size() == derivativeValues[i].size(),
-                    "number of ansatz function values and their derivatives must match"
+                    "number of basis function values and their derivatives must match"
                 )
             }
         #endif

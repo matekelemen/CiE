@@ -37,13 +37,13 @@ protected:
     }
 
     void _derivative(   const typename TestElement::coefficient_container& coefficients,
-                        const typename TestElement::ansatz_value_container& ansatzValues,
-                        const typename TestElement::ansatz_value_container& ansatzDerivativeValues,
+                        const typename TestElement::basis_value_container& basisValues,
+                        const typename TestElement::basis_value_container& basisDerivativeValues,
                         typename TestElement::point_type& gradient ) override
     {
         typename TestElement::point_container basisDerivativeProducts;
-        this->basisDerivatives( ansatzValues,
-                                ansatzDerivativeValues,
+        this->basisDerivatives( basisValues,
+                                basisDerivativeValues,
                                 basisDerivativeProducts );
 
         CIE_ASSERT(
@@ -51,7 +51,7 @@ protected:
             "basis coefficient - basis derivative size mismatch"
         )
 
-        utils::setContainerSize(gradient,this->dimension);
+        utils::resize(gradient,this->dimension);
         std::fill(  gradient.begin(),
                     gradient.end(),
                     0.0 );
@@ -75,7 +75,7 @@ TEST_CASE( "AbsElement", "[discretization]" )
     // General init
     const Size                                      Dimension = 2;
     typedef Double                                  NT;
-    typedef LinearAnsatzFunctionSet<Dimension,NT>   Basis;
+    typedef LinearBasisFunctionSet<Dimension,NT>   Basis;
     typedef detail::TestElement<Basis>              Element;
 
     // Test constructor
@@ -151,7 +151,7 @@ TEST_CASE( "AbsElement1D", "[discretization]" )
     // General init
     const Size                                      Dimension = 1;
     typedef Double                                  NT;
-    typedef LinearAnsatzFunctionSet<Dimension,NT>    Basis;
+    typedef LinearBasisFunctionSet<Dimension,NT>    Basis;
     typedef AbsElement1D<Basis>                     Element;
 
     const Size                                      resolution = 5;
