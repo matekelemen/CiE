@@ -117,7 +117,7 @@ public:
 } // namespace boolean
 
 
-}
+} // namespace cie::csg
 
 #include "CSG/packages/trees/impl/cell_impl.hpp"
 
