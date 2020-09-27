@@ -237,7 +237,7 @@ inline void
 AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::computeDerivatives()
 {
     typename AbsPolynomialBasisFunctionSet<Dimension,NT,SelfType>::coefficient_container derivativeCoefficients;
-    utils::resize( derivativeCoefficients, this->dimension );
+    cie::utils::resize( derivativeCoefficients, this->dimension );
     
     for (Size dim=0; dim<this->dimension; ++dim)
     {
@@ -276,7 +276,7 @@ linearPolynomialCoefficients( PolynomialBasis* instance )
     typedef typename PolynomialBasis::kernel_type::number_type NT;
 
     typename PolynomialBasis::coefficient_container coefficients;
-    utils::resize(coefficients,PolynomialBasis::dimension);
+    cie::utils::resize(coefficients,PolynomialBasis::dimension);
     for (auto& coefficientSet : coefficients)
     {
         coefficientSet.emplace_back( std::initializer_list<NT>({ 0.5, 0.5 }) );

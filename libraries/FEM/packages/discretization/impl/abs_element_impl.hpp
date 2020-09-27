@@ -39,7 +39,7 @@ AbsElement<BasisType>::basis(  const typename AbsElement::basis_value_container&
                                                     } );
 
     auto basisIt                = detail::makeTensorProductBasis(basisValues);
-    utils::resize( outputContainer, numberOfBasisValues );
+    cie::utils::resize( outputContainer, numberOfBasisValues );
     for (auto outputIt=outputContainer.begin(); outputIt!=outputContainer.end(); ++outputIt,++basisIt)
         *outputIt = basisIt.product();
 }
@@ -61,7 +61,7 @@ AbsElement<BasisType>::basisDerivatives(   const typename AbsElement::basis_valu
                                                     } );
     auto basisDerivativeIt = detail::makeTensorProductDerivatives(basisValues, basisDerivativeValues);
 
-    utils::resize( outputContainer, numberOfBasisValues );
+    cie::utils::resize( outputContainer, numberOfBasisValues );
     for (Size basisIndex=0; basisIndex<numberOfBasisValues; ++basisIndex,++basisDerivativeIt)
         outputContainer[basisIndex]    = basisDerivativeIt.product();
 }

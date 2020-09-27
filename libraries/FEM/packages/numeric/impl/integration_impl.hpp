@@ -124,8 +124,8 @@ gaussLegendreNodes( Size integrationOrder )
     auto& abscissae = output.first;
     auto& weights   = output.second;
 
-    utils::resize( abscissae, integrationOrder );
-    utils::resize( weights, integrationOrder );
+    cie::utils::resize( abscissae, integrationOrder );
+    cie::utils::resize( weights, integrationOrder );
     
     switch ( integrationOrder )
     {
@@ -253,17 +253,17 @@ tensorProductQuadratureNodes( const std::pair<std::vector<NT>,std::vector<NT>>& 
     auto& weights               = output.second;
 
     Size numberOfPoints         = intPow( abscissae.size(), Dimension );
-    utils::resize( points, numberOfPoints );
-    utils::resize( weights, numberOfPoints );
+    cie::utils::resize( points, numberOfPoints );
+    cie::utils::resize( weights, numberOfPoints );
 
     // Create iterators the loop through all combinations of the abscissae and weights
-    auto abscissaState          = utils::makeInternalStateIterator(abscissae, Dimension);
-    auto weightState            = utils::makeInternalStateIterator(abscissaWeights, Dimension);
+    auto abscissaState          = cie::utils::makeInternalStateIterator(abscissae, Dimension);
+    auto weightState            = cie::utils::makeInternalStateIterator(abscissaWeights, Dimension);
     
     // Compute tensor product components
     for (Size i=0; i<numberOfPoints; ++i)
     {
-        utils::resize( points[i], Dimension );
+        cie::utils::resize( points[i], Dimension );
         std::transform( (*abscissaState).begin(),
                         (*abscissaState).end(),
                         points[i].begin(),

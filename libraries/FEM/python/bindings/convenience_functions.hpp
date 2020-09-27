@@ -40,7 +40,9 @@ integrateStiffness( ElementContainer<ElementType>& elementContainer,
     };
 
     // Integrate
+    #ifndef MSVC
     #pragma omp parallel for shared(elementContainer,updateFunction)
+    #endif
     for (auto& element : elementContainer)
     {
         element.integrateStiffness(recordUpdate);
@@ -80,7 +82,9 @@ integrateLoad(  ElementContainer<ElementType>& elementContainer,
     };
 
     // Integrate
+    #ifndef MSVC
     #pragma omp parallel for shared(elementContainer,updateFunction)
+    #endif
     for (auto& element : elementContainer)
     {
         element.integrateLoad(recordUpdate);

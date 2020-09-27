@@ -23,8 +23,7 @@ class CSGTestObject : public CSGObject<N,ValueType,CoordinateType>
 protected:
     ValueType at(const typename CSGTestObject::point_type& point) const override
     {
-        ValueType output;
-        return output;
+        return ValueType();
     }
 };
 

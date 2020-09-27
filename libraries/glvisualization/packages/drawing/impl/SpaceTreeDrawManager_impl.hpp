@@ -29,7 +29,9 @@ void SpaceTreeDrawManager<M>::collectNodesToBuffer()
     {
         if (root.children()[0] != nullptr )
         {
+            #ifndef MSVC
             #pragma omp task shared(root,nodes)
+            #endif
             for( const auto& child : root.children() )
                 if (child != nullptr)
                     collectNodes( *child, nodes );

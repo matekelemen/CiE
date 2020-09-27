@@ -133,7 +133,9 @@ bool SpaceTreeNode<N, M>::divideRecursive(const GeometryFunction<N>& geometry, s
     // Divide if boundary
     if (boundary)
     {
-        #pragma omp task shared(_children, geometry, level)
+        #ifndef MSVC
+        #pragma omp task
+        #endif
         for (auto it = _children.begin(); it != _children.end(); ++it)
         {
             *it = std::make_unique<SpaceTreeNode>(  *this,
@@ -167,7 +169,9 @@ void SpaceTreeNode<N,M>::write(std::ostream& file) const
 template <size_t N, size_t M>
 void SpaceTreeNode<N,M>::wipe()
 {
+    #ifndef MSVC
     #pragma omp task shared(_children)
+    #endif
     for (auto& child : _children)
         if (child != nullptr)
         {
@@ -299,7 +303,9 @@ bool SpaceTreeNode<N,M>::divideOffloadRecursive( const GeometryFunction<N>& geom
     if (boundary)
     {
         //#pragma omp parallel for shared(_evaluationRequests, _children, _data, geometry, level)
+        #ifndef MSVC
         #pragma omp parallel for simd
+        #endif
         for (auto it = _children.begin(); it != _children.end(); ++it)
             *it = std::make_unique<SpaceTreeNode>(  *this,
                                                     std::distance(_children.begin(),it),
@@ -310,7 +316,9 @@ bool SpaceTreeNode<N,M>::divideOffloadRecursive( const GeometryFunction<N>& geom
         //std::vector<double> values(_evaluationRequests.size());
         //#pragma omp parallel for shared(_evaluationRequests,_children, _data, geometry, level)
         //#pragma omp target teams distribute parallel for map(from:_evaluationRequests) map(to:values)
+        #ifndef MSVC
         #pragma omp parallel for simd
+        #endif
         for (size_t i=0; i<_evaluationRequests.size(); ++i)
         {
             //values[i] = geometry(_evaluationRequests[i].first);

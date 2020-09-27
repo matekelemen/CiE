@@ -45,7 +45,7 @@ AbsElementPhysics<ElementType>::recache()
 {
     // Get integration points
     typename ElementType::point_container integrationPoints;
-    utils::resize( integrationPoints, _integratorPtr->integrationPoints().size() );
+    cie::utils::resize( integrationPoints, _integratorPtr->integrationPoints().size() );
     std::copy(  _integratorPtr->integrationPoints().begin(),
                 _integratorPtr->integrationPoints().end(),
                 integrationPoints.begin() );

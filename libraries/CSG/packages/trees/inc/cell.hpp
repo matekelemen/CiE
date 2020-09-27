@@ -32,11 +32,11 @@ public:
     AbsCell( Args&&... args );
 
     template <concepts::NumericContainer PointType>
-    typename AbsCell::child_container_type& split( const PointType& point );
-    typename AbsCell::child_container_type& split( const typename AbsCell::point_type& point );
+    typename AbsCell<PrimitiveType,SelfType>::child_container_type& split( const PointType& point );
+    typename AbsCell<PrimitiveType,SelfType>::child_container_type& split( const typename AbsCell<PrimitiveType, SelfType>::point_type& point );
 
 protected:
-    virtual typename AbsCell::child_container_type& split_internal( const typename AbsCell::point_type& point ) = 0;
+    virtual typename AbsCell::child_container_type& split_internal( const typename AbsCell<PrimitiveType, SelfType>::point_type& point ) = 0;
 };
 
 
@@ -57,10 +57,10 @@ public:
                         CoordinateType length )
     requires concepts::ClassContainer<ContainerType,CoordinateType>;
 
-    typename CubeCellTemplate::child_container_type& split( );
+    typename CubeCellTemplate<dimension,SelfType,CoordinateType>::child_container_type& split( );
 
 protected:
-    virtual typename CubeCellTemplate::child_container_type& split_internal( const typename CubeCellTemplate::point_type& point ) override;
+    virtual typename CubeCellTemplate<dimension, SelfType, CoordinateType>::child_container_type& split_internal( const typename CubeCellTemplate<dimension, SelfType, CoordinateType>::point_type& point ) override;
 };
 
 
@@ -77,7 +77,7 @@ public:
                 && concepts::ClassContainer<ContainerType2,CoordinateType>;
 
 protected:
-    virtual typename BoxCellTemplate::child_container_type& split_internal( const typename BoxCellTemplate::point_type& point ) override;
+    virtual typename BoxCellTemplate<dimension, SelfType, CoordinateType>::child_container_type& split_internal( const typename BoxCellTemplate<dimension, SelfType, CoordinateType>::point_type& point ) override;
 };
 
 

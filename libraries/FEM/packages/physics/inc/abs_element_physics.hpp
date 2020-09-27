@@ -22,7 +22,7 @@ namespace cie::fem {
 template <  concepts::STLContainer NestedContainer,
             concepts::STLContainer StoredType >
 requires concepts::STLContainer<typename NestedContainer::value_type>
-class NestedCache : public utils::ContainerCache<NestedContainer,StoredType>
+class NestedCache : public cie::utils::ContainerCache<NestedContainer,StoredType>
 {
 public:
     virtual Size hash( const NestedContainer& container ) const override;

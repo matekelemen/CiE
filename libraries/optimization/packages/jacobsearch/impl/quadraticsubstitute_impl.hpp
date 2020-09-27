@@ -1,6 +1,7 @@
 
 // --- Utility Includes ---
 #include "cieutils/packages/macros/inc/exceptions.hpp"
+#include "cieutils/packages/types/inc/types.hpp"
 
 namespace cie::opt {
 
@@ -52,7 +53,7 @@ void QuadraticSubstitute<N>::build(const std::vector<const DoubleArray<N>*>& poi
     this->_base = DoubleArray<N>(*pts[0]);
 
     // Compute direction
-    for (uint i=0; i<this->_direction.size(); ++i){
+    for (Size i=0; i<this->_direction.size(); ++i){
         this->_direction[i] = (*pts[2])[i]-(*pts[0])[i];
     }
 
@@ -91,7 +92,7 @@ std::pair<DoubleArray<N>,double> QuadraticSubstitute<N>::minimum() const {
 
     // Get coordinates at minimum
     DoubleArray<N> minPos(this->_base);
-    for (uint i=0; i<minPos.size(); ++i){
+    for (Size i=0; i<minPos.size(); ++i){
         minPos[i] += minParam*this->_direction[i];
     }
     

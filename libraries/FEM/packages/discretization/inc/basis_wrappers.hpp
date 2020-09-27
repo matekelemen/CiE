@@ -18,7 +18,7 @@ namespace cie::fem::detail {
 template <  concepts::STLContainer ContainerType,
             Size Dimension >
 class TensorProductBasis 
-    : public utils::StateIterator<typename std::array<ContainerType,Dimension>::const_iterator>
+    : public cie::utils::StateIterator<typename std::array<ContainerType,Dimension>::const_iterator>
 {
 public:
     typedef std::array<ContainerType,Dimension>     container_array;
@@ -27,7 +27,7 @@ public:
 
 public:
     TensorProductBasis( const container_array& array ) :
-        utils::StateIterator<typename std::array<ContainerType,Dimension>::const_iterator>( array.begin(), array.end() )
+        cie::utils::StateIterator<typename std::array<ContainerType,Dimension>::const_iterator>( array.begin(), array.end() )
     {}
 
     // Product of all current state components
@@ -48,12 +48,12 @@ template <  concepts::STLContainer ContainerType,
 class TensorProductDerivatives
 {
 public:
-    static const Size                                                       dimension = Dimension;
-    typedef std::array<ContainerType,Dimension>                             container_array;
-    typedef typename container_array::value_type                            container_type;
-    typedef typename container_type::value_type                             value_type;
-    typedef std::array<value_type,Dimension>                                point_type;
-    typedef utils::StateIterator<typename container_array::const_iterator>  state_iterator;
+    static const Size                                                               dimension = Dimension;
+    typedef std::array<ContainerType,Dimension>                                     container_array;
+    typedef typename container_array::value_type                                    container_type;
+    typedef typename container_type::value_type                                     value_type;
+    typedef std::array<value_type,Dimension>                                        point_type;
+    typedef cie::utils::StateIterator<typename container_array::const_iterator>     state_iterator;
 
 public:
     TensorProductDerivatives(   const container_array& basisValues,

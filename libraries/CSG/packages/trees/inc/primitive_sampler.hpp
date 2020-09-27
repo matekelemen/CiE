@@ -49,9 +49,9 @@ class CubeSampler :
     public detail::AbsPrimitiveSampler<Cube<N,CoordinateType>,M>
 {
 public:
-    virtual typename CubeSampler::point_type operator()
+    virtual typename CubeSampler<N,M,CoordinateType>::point_type operator()
     ( 
-        const typename CubeSampler::primitive_type& primitive, 
+        const typename CubeSampler<N, M, CoordinateType>::primitive_type& primitive,
         Size index 
     ) const override;
 
@@ -66,9 +66,9 @@ class BoxSampler :
     public detail::AbsPrimitiveSampler<Box<N,CoordinateType>,M>
 {
 public:
-    virtual typename BoxSampler::point_type operator()
+    virtual typename BoxSampler<N, M, CoordinateType>::point_type operator()
     ( 
-        const typename BoxSampler::primitive_type& primitive, 
+        const typename BoxSampler<N, M, CoordinateType>::primitive_type& primitive,
         Size index 
     ) const override;
 
