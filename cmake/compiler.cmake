@@ -1,39 +1,71 @@
+# Build configuration
+set( CIE_COMPILE_OPTIONS "debug" CACHE STRING "debug or release" )
+message( STATUS "Compile CiE in ${CIE_COMPILE_OPTIONS} mode" )
 
-if( CMAKE_COMPILER_IS_GNUCXX )
+# -------------------------------------------------
+# GCC
+# -------------------------------------------------
+if ( CMAKE_CXX_COMPILER_ID STREQUAL "GNU" )
 
-    # If compiler is g++: Enable further  warnings and treat all warnings as errors. fPIC stands for position independent code.
+	# Compiler definition in preprocessor
+	add_compile_definitions( GCC )
+	
+	# Warnings and errors
     set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -fPIC -Wreturn-type" )
     #set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror" )
+	
+	# Compiler optimizations
+	if( "${CIE_COMPILE_OPTIONS}" STREQUAL "debug" )
+		set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g -DDEBUG" )
+	elseif( "${CIE_COMPILE_OPTIONS}" STREQUAL "release" )
+		set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -s -march=native -mtune=native -DNDEBUG" )
+	else()
+		message( SEND_ERROR "Unrecognized compile option! Choose debug or release." )
+	endif()
+	
+	# OpenMP
+	if( ${CIE_ENABLE_OPENMP} )
+		set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp" )
+	endif()
+	
+	# OpenACC
+	if( ${CIE_ENABLE_OPENACC} )
+		set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenacc" )
+	endif()
 
-    # Compiler optimizations
-    set( CIE_COMPILE_OPTIONS "debug" CACHE STRING "debug or release" )
-    if( "${CIE_COMPILE_OPTIONS}" STREQUAL "debug" )
-        set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g -DDEBUG" )
-    elseif( "${CIE_COMPILE_OPTIONS}" STREQUAL "release" )
-        set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -s -march=native -mtune=native -DNDEBUG" )
-    else()
-        message( SEND_ERROR "Unrecognized compile option! Choose debug or release." )
-    endif()
+# -------------------------------------------------
+# GCC
+# -------------------------------------------------
+elseif( CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" )
 
-    message( STATUS "Compile CiE in ${CIE_COMPILE_OPTIONS} mode" )
+	# Compiler definition in preprocessor
+	add_compile_definitions( MSVC )
+	
+	# Global flags
+	set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++latest" )
+	
+	# Compiler optimizations
+	if( "${CIE_COMPILE_OPTIONS}" STREQUAL "debug" )
+		set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG}" )
+	elseif( "${CIE_COMPILE_OPTIONS}" STREQUAL "release" )
+		set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE}" )
+	else()
+		message( SEND_ERROR "Unrecognized compile option! Choose debug or release." )
+	endif()
+	
+	# OpenMP
+	if( ${CIE_ENABLE_OPENMP} )
+		set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /openmp" )
+	endif()
+	
+# -------------------------------------------------
+# CLANG
+# -------------------------------------------------
+elseif( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )
 
-elseif( MSVC )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" )
-endif( CMAKE_COMPILER_IS_GNUCXX )
+	# Compiler definition in preprocessor
+	add_compile_definitions( CLANG )
+	
+	# TODO
 
-
-# OpenMP
-if( ${CIE_ENABLE_OPENMP} )
-    if( CMAKE_COMPILER_IS_GNUCXX )
-        set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp" )
-    elseif( MSVC )
-        set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /openmp" )
-    endif()
-endif()
-
-# OpenACC
-if( ${CIE_ENABLE_OPENACC} )
-    if( CMAKE_COMPILER_IS_GNUCXX )
-        set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenacc" )
-    endif()
 endif()
