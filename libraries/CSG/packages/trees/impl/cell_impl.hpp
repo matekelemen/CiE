@@ -3,6 +3,7 @@
 
 // --- Utility Includes ---
 #include "cieutils/packages/exceptions/inc/exception.hpp"
+#include "cieutils/packages/stl_extension/inc/resize.hpp"
 
 // --- Internal Includes ---
 #include "CSG/packages/trees/inc/indexconverter.hpp"
@@ -16,28 +17,28 @@ namespace cie::csg {
 // ABSTRACT CELL
 // ---------------------------------------------------------
 
-template <class PrimitiveType, class SelfType>
+template <concepts::PrimitiveType PrimitiveType>
 template <class ...Args>
-AbsCell<PrimitiveType,SelfType>::AbsCell( Args&&... args ) :
+AbsCell<PrimitiveType>::AbsCell( Args&&... args ) :
     PrimitiveType( std::forward<Args>(args) ... )
 {
 }
 
 
-template <class PrimitiveType, class SelfType>
+template <concepts::PrimitiveType PrimitiveType>
 template <concepts::NumericContainer PointType>
-typename AbsCell<PrimitiveType,SelfType>::child_container_type& 
-AbsCell<PrimitiveType,SelfType>::split( const PointType& point )
+inline typename AbsCell<PrimitiveType>::primitive_constructor_container_ptr
+AbsCell<PrimitiveType>::split( const PointType& point )
 {
-    typename AbsCell<PrimitiveType,SelfType>::point_type point_internal;
+    typename AbsCell<PrimitiveType>::point_type point_internal;
     std::copy( point.begin(), point.end(), point_internal.begin() );
     return this->split_internal(point_internal);
 }
 
 
-template <class PrimitiveType, class SelfType>
-typename AbsCell<PrimitiveType,SelfType>::child_container_type& 
-AbsCell<PrimitiveType,SelfType>::split( const typename AbsCell<PrimitiveType,SelfType>::point_type& point )
+template <concepts::PrimitiveType PrimitiveType>
+inline typename AbsCell<PrimitiveType>::primitive_constructor_container_ptr
+AbsCell<PrimitiveType>::split( const typename AbsCell<PrimitiveType>::point_type& point )
 {
     return this->split_internal(point);
 }
@@ -49,102 +50,99 @@ AbsCell<PrimitiveType,SelfType>::split( const typename AbsCell<PrimitiveType,Sel
 namespace boolean {
 
 
-template <Size dimension, class SelfType, concepts::NumericType CoordinateType>
+template <Size dimension, concepts::NumericType CoordinateType>
 template <class ContainerType>
-CubeCellTemplate<dimension,SelfType,CoordinateType>::CubeCellTemplate(  const ContainerType& base, 
-                                                                        CoordinateType length )
+CubeCell<dimension,CoordinateType>::CubeCell(   const ContainerType& base, 
+                                                CoordinateType length )
 requires concepts::ClassContainer<ContainerType,CoordinateType> :
-    CubeCellTemplate<dimension,SelfType,CoordinateType>::cell_base_type( base, length )
+    CubeCell<dimension,CoordinateType>::cell_base_type( base, length )
 {
 }
 
 
-template <Size dimension, class SelfType, concepts::NumericType CoordinateType>
-typename CubeCellTemplate<dimension,SelfType,CoordinateType>::child_container_type&
-CubeCellTemplate<dimension,SelfType,CoordinateType>::split_internal( const typename CubeCellTemplate<dimension,SelfType,CoordinateType>::point_type& point )
+template <Size dimension, concepts::NumericType CoordinateType>
+inline typename CubeCell<dimension,CoordinateType>::primitive_constructor_container_ptr
+CubeCell<dimension,CoordinateType>::split_internal( const typename CubeCell<dimension,CoordinateType>::point_type& point )
 {
-    if (this->_children.size() != 0)
-    {
-        std::cerr << "Overwriting existing children!\n";
-        this->_children.clear();
-    }
+    auto constructorArgumentsContainerPtr = typename CubeCell<dimension,CoordinateType>::primitive_constructor_container_ptr(
+        new typename CubeCell<dimension,CoordinateType>::primitive_constructor_container
+    );
 
-    this->_children.resize( intPow(2,dimension) );
-    typename CubeCellTemplate<dimension,SelfType,CoordinateType>::point_type tempBase;
+    typename CubeCell<dimension,CoordinateType>::point_type tempBase;
     SpaceTreeIndexConverter<dimension,2> base2;
 
-    for (Size childIndex=0; childIndex < this->_children.size(); ++childIndex)
+    for (Size childIndex=0; childIndex < intPow(2,dimension); ++childIndex)
     {
-        for (Size i=0; i<dimension; ++i)
+        for (Size dim=0; dim<dimension; ++dim)
         {
-            if (base2.convert(childIndex)[i] == 0)
-                tempBase[i]   = this->_base[i];
+            if (base2.convert(childIndex)[dim] == 0)
+                tempBase[dim]   = this->_base[dim];
             else
-                tempBase[i]   = this->_base[i] + this->_length/2.0;
+                tempBase[dim]   = this->_base[dim] + this->_length/2.0;
         }
 
-        this->_children[childIndex] = std::make_shared<CubeCellTemplate<dimension,SelfType,CoordinateType>>( tempBase, this->_length / 2.0 );
+        constructorArgumentsContainerPtr->emplace_back( tempBase, this->_length/2.0 );
     }
-    return this->_children;
+
+    return constructorArgumentsContainerPtr;
 }
 
 
-template <Size dimension, class SelfType, concepts::NumericType CoordinateType>
-typename CubeCellTemplate<dimension,SelfType,CoordinateType>::child_container_type&
-CubeCellTemplate<dimension,SelfType,CoordinateType>::split( )
+template <Size dimension, concepts::NumericType CoordinateType>
+inline typename CubeCell<dimension,CoordinateType>::primitive_constructor_container_ptr
+CubeCell<dimension,CoordinateType>::split( )
 {
-    return this->split_internal( typename CubeCellTemplate<dimension,SelfType,CoordinateType>::point_type() );
+    return this->split_internal( typename CubeCell<dimension,CoordinateType>::point_type() );
 }
 
 
-template <Size dimension, class SelfType, concepts::NumericType CoordinateType>
+template <Size dimension, concepts::NumericType CoordinateType>
 template <class ContainerType1, class ContainerType2>
-BoxCellTemplate<dimension,SelfType,CoordinateType>::BoxCellTemplate(    const ContainerType1& base, 
-                                                                        const ContainerType2& lengths )
+BoxCell<dimension,CoordinateType>::BoxCell( const ContainerType1& base, 
+                                            const ContainerType2& lengths )
 requires concepts::ClassContainer<ContainerType1,CoordinateType>
             && concepts::ClassContainer<ContainerType2,CoordinateType> :
-    BoxCellTemplate<dimension,SelfType,CoordinateType>::cell_base_type( base, lengths )
+    BoxCell<dimension,CoordinateType>::cell_base_type( base, lengths )
 {
 }
 
 
-template <Size dimension, class SelfType, concepts::NumericType CoordinateType>
-typename BoxCellTemplate<dimension,SelfType,CoordinateType>::child_container_type&
-BoxCellTemplate<dimension,SelfType,CoordinateType>::split_internal( const typename BoxCellTemplate<dimension,SelfType,CoordinateType>::point_type& point )
+template <Size dimension, concepts::NumericType CoordinateType>
+inline typename BoxCell<dimension,CoordinateType>::primitive_constructor_container_ptr
+BoxCell<dimension,CoordinateType>::split_internal( const typename BoxCell<dimension,CoordinateType>::point_type& point )
 {
     CIE_RUNTIME_GEOMETRY_ASSERT(    this->evaluate(point),
                                     "Cannot split geometry using a point outside it!",
                                     "BoxCellTemplate::split")
-    if (this->_children.size() != 0)
-    {
-        std::cerr << "Overwriting existing children!\n";
-        this->_children.clear();
-    }
 
-    this->_children.resize( intPow(2,dimension) );
-    typename BoxCellTemplate<dimension,SelfType,CoordinateType>::point_type tempBase;
-    typename BoxCellTemplate<dimension,SelfType,CoordinateType>::point_type tempLengths;
+    auto constructorArgumentsContainerPtr = typename BoxCell<dimension,CoordinateType>::primitive_constructor_container_ptr(
+        new typename BoxCell<dimension,CoordinateType>::primitive_constructor_container
+    );
+
+    typename BoxCell<dimension,CoordinateType>::point_type tempBase;
+    typename BoxCell<dimension,CoordinateType>::point_type tempLengths;
     SpaceTreeIndexConverter<dimension,2> base2;
 
-    for (Size childIndex=0; childIndex < this->_children.size(); ++childIndex)
+    for (Size childIndex=0; childIndex < intPow(2,dimension); ++childIndex)
     {
-        for (Size i=0; i<dimension; ++i)
+        for (Size dim=0; dim<dimension; ++dim)
         {
-            if (base2.convert(childIndex)[i] == 0)
+            if (base2.convert(childIndex)[dim] == 0)
             {
-                tempLengths[i]  = point[i] - this->_base[i];
-                tempBase[i]     = this->_base[i];
+                tempLengths[dim]  = point[dim] - this->_base[dim];
+                tempBase[dim]     = this->_base[dim];
             }
             else
             {
-                tempLengths[i]  = (this->_base[i] + this->_lengths[i]) - point[i];
-                tempBase[i]     = point[i];
+                tempLengths[dim]  = (this->_base[dim] + this->_lengths[dim]) - point[dim];
+                tempBase[dim]     = point[dim];
             }
         }
 
-        this->_children[childIndex] = std::make_shared<BoxCellTemplate<dimension,SelfType,CoordinateType>>( tempBase, tempLengths );
+        constructorArgumentsContainerPtr->emplace_back( tempBase, tempLengths );
     }
-    return this->_children;
+
+    return constructorArgumentsContainerPtr;
 }
 
 

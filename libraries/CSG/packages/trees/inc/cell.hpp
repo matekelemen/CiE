@@ -11,6 +11,8 @@
 
 // --- STL Includes ---
 #include <memory>
+#include <vector>
+#include <memory>
 
 namespace cie::csg {
 
@@ -18,101 +20,74 @@ namespace cie::csg {
 // ABSTRACT CELL
 // ---------------------------------------------------------
 
-template <  class PrimitiveType,
-            class SelfType  >
-class AbsCell : public PrimitiveType,
-                public utils::AbsTree<std::vector,SelfType>
+/**
+ * Node interface of a tree of primitives, splittable around a single point.
+ * The 'split' interface supplies a set of tuples necessary for constructing
+ * a set of primitives (results of the split).
+*/
+template <concepts::PrimitiveType PrimitiveType>
+class AbsCell : public PrimitiveType
 {
 public:
-    typedef PrimitiveType                   primitive_type;
-    typedef AbsCell<PrimitiveType,SelfType> cell_base_type;
+    using primitive_type                        = PrimitiveType;
+    using cell_base_type                        = AbsCell<PrimitiveType>;
+
+    using primitive_constructor_container       = std::vector<typename primitive_type::primitive_constructor_arguments>;
+    using primitive_constructor_container_ptr   = std::shared_ptr<primitive_constructor_container>;
 
 public:
     template <class ...Args>
     AbsCell( Args&&... args );
 
     template <concepts::NumericContainer PointType>
-    typename AbsCell<PrimitiveType,SelfType>::child_container_type& split( const PointType& point );
-    typename AbsCell<PrimitiveType,SelfType>::child_container_type& split( const typename AbsCell<PrimitiveType, SelfType>::point_type& point );
+    primitive_constructor_container_ptr split( const PointType& point );
+    primitive_constructor_container_ptr split( const typename AbsCell<PrimitiveType>::point_type& point );
 
 protected:
-    virtual typename AbsCell::child_container_type& split_internal( const typename AbsCell<PrimitiveType, SelfType>::point_type& point ) = 0;
+    virtual primitive_constructor_container_ptr split_internal( const typename AbsCell<PrimitiveType>::point_type& point ) = 0;
 };
 
 
 // ---------------------------------------------------------
-// BOOLEAN PRIMITIVE CELL TEMPLATES
+// BOOLEAN PRIMITIVE CELLS
 // ---------------------------------------------------------
 namespace boolean {
     
 
 template <  Size dimension,
-            class SelfType,
             concepts::NumericType CoordinateType = Double>
-class CubeCellTemplate :    public AbsCell<boolean::CSGCube<dimension,CoordinateType>,CubeCellTemplate<dimension,SelfType,CoordinateType>>
-{
-public:
-    template <class ContainerType>
-    CubeCellTemplate(   const ContainerType& base, 
-                        CoordinateType length )
-    requires concepts::ClassContainer<ContainerType,CoordinateType>;
-
-    typename CubeCellTemplate<dimension,SelfType,CoordinateType>::child_container_type& split( );
-
-protected:
-    virtual typename CubeCellTemplate<dimension, SelfType, CoordinateType>::child_container_type& split_internal( const typename CubeCellTemplate<dimension, SelfType, CoordinateType>::point_type& point ) override;
-};
-
-
-template <  Size dimension,
-            class SelfType,
-            concepts::NumericType CoordinateType = Double>
-class BoxCellTemplate :     public AbsCell<boolean::CSGBox<dimension,CoordinateType>,BoxCellTemplate<dimension,SelfType,CoordinateType>>
-{
-public:
-    template <class ContainerType1, class ContainerType2>
-    BoxCellTemplate(const ContainerType1& base, 
-                    const ContainerType2& lengths )
-    requires concepts::ClassContainer<ContainerType1,CoordinateType>
-                && concepts::ClassContainer<ContainerType2,CoordinateType>;
-
-protected:
-    virtual typename BoxCellTemplate<dimension, SelfType, CoordinateType>::child_container_type& split_internal( const typename BoxCellTemplate<dimension, SelfType, CoordinateType>::point_type& point ) override;
-};
-
-
-// ---------------------------------------------------------
-// BOOLEAN PRIMITIVE CELL TEMPLATES
-// ---------------------------------------------------------
-
-template <  Size Dimension,
-            concepts::NumericType CoordinateType = Double >
-class CubeCell : public CubeCellTemplate<Dimension,CubeCell<Dimension,CoordinateType>,CoordinateType>
+class CubeCell :
+    public AbsCell<boolean::CSGCube<dimension,CoordinateType>>
 {
 public:
     template <class ContainerType>
     CubeCell(   const ContainerType& base, 
                 CoordinateType length )
-    requires concepts::ClassContainer<ContainerType,CoordinateType> :
-        CubeCellTemplate<Dimension,CubeCell<Dimension,CoordinateType>,CoordinateType>(base,length) 
-    {}
+    requires concepts::ClassContainer<ContainerType,CoordinateType>;
+
+    typename CubeCell<dimension,CoordinateType>::primitive_constructor_container_ptr split( );
+
+protected:
+    virtual typename CubeCell<dimension,CoordinateType>::primitive_constructor_container_ptr split_internal( const typename CubeCell<dimension, CoordinateType>::point_type& point ) override;
 };
 
 
-template <  Size Dimension,
-            concepts::NumericType CoordinateType = Double >
-class BoxCell : public BoxCellTemplate<Dimension,BoxCell<Dimension,CoordinateType>,CoordinateType>
+
+template <  Size dimension,
+            concepts::NumericType CoordinateType = Double>
+class BoxCell :
+    public AbsCell<boolean::CSGBox<dimension,CoordinateType>>
 {
 public:
     template <class ContainerType1, class ContainerType2>
     BoxCell(    const ContainerType1& base, 
                 const ContainerType2& lengths )
     requires concepts::ClassContainer<ContainerType1,CoordinateType>
-                && concepts::ClassContainer<ContainerType2,CoordinateType> :
-        BoxCellTemplate<Dimension,BoxCell<Dimension,CoordinateType>,CoordinateType>(base,lengths)
-    {}
-};
+                && concepts::ClassContainer<ContainerType2,CoordinateType>;
 
+protected:
+    virtual typename BoxCell<dimension,CoordinateType>::primitive_constructor_container_ptr split_internal( const typename BoxCell<dimension, CoordinateType>::point_type& point ) override;
+};
 
 } // namespace boolean
 

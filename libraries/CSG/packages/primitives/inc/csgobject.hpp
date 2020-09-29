@@ -11,9 +11,11 @@
 namespace cie::csg {
 
 
-
+/**
+ * Basic templated traits that every object has in CSG
+*/
 template <Size N, concepts::NumericType CoordinateType = Double>
-class Primitive
+class CSGTraits
 {
 public:
     typedef CoordinateType                  coordinate_type;
@@ -22,11 +24,13 @@ public:
 };
 
 
-
+/**
+ * Interface for point-queriable objects
+*/
 template <  Size N, 
             concepts::CopyConstructible ValueType = Bool,
             concepts::NumericType CoordinateType = Double   >
-class CSGObject : public Primitive<N,CoordinateType>
+class CSGObject : public CSGTraits<N,CoordinateType>
 {
 public:
     typedef CSGObject                       abstract_base_type;
