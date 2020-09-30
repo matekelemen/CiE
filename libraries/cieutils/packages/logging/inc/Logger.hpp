@@ -8,7 +8,7 @@
 // --- STL Includes ---
 #include <fstream>
 #include <iostream>
-#include <vector>
+#include <deque>
 #include <memory>
 #include <string>
 #include <chrono>
@@ -37,44 +37,51 @@ using StreamPtr     = std::shared_ptr<Stream>;
 class Logger
 {
 public:
+    friend class LogBlock;
+
+public:
     Logger() = delete;
     Logger( const std::string& fileName );
     Logger( const Logger& copy ) = delete;
     ~Logger();
 
-    void addStream( StreamPtr stream );
-    void removeStream( StreamPtr stream );
-    void useConsole( bool use );
-    void forceFlush( bool use );
+    Logger& addStream( StreamPtr stream );
+    Logger& removeStream( StreamPtr stream );
+    Logger& useConsole( bool use );
+    Logger& forceFlush( bool use );
 
-    void log(   const std::string& message );
-    void warn(  const std::string& message );
-    void error( const std::string& message );
+    Logger& log(   const std::string& message );
+    Logger& warn(  const std::string& message );
+    Logger& error( const std::string& message );
 
-    void logDate( const std::string& message );
+    Logger& logDate( const std::string& message );
     [[nodiscard]] size_t startTimer();
     size_t elapsed( size_t timeID, 
                     bool reset=true );
-    void logElapsed(    const std::string& message, 
+    Logger& logElapsed(    const std::string& message, 
                         size_t timeID,
                         bool reset=true );
 
-    void separate();
+    Logger& separate();
 
-    void increaseIndent();
-    void decreaseIndent();
-    void noIndent();
+    Logger& increaseIndent();
+    Logger& decreaseIndent();
+    Logger& noIndent();
 
     FileManager& fileManager();
 
 protected:
-    void flush();
-    std::string decorate( const std::string& message );
-    void printToStreams( const std::string& message );
+    Logger& log(    const std::string& r_message,
+                    bool printPrefix );
+
+    Logger& flush();
+    std::string decorate(   const std::string& message,
+                            bool prefix = true );
+    Logger& printToStreams( const std::string& message );
 
     FileManager                 _manager;
-    std::vector<StreamPtr>      _streams;
-    std::vector<detail::Time>   _timeLog;
+    std::deque<StreamPtr>       _streams;
+    std::deque<detail::Time>    _timeLog;
 
     std::string                 _prefix;
     std::string                 _separator;

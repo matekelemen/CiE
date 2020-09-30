@@ -9,11 +9,10 @@
 namespace cie::utils {
 
 
-std::string loggerTestDir = TEST_OUTPUT_PATH;
-
-
 TEST_CASE( "Logger" )
 {
+    std::string loggerTestDir = TEST_OUTPUT_PATH;
+
     {
         // Construct logger
         Logger logger( loggerTestDir + "/testLog.txt" );

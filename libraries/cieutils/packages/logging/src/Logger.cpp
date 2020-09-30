@@ -51,7 +51,7 @@ Logger::~Logger()
 }
 
 
-void Logger::addStream( StreamPtr stream )
+Logger& Logger::addStream( StreamPtr stream )
 {
     auto it = std::find(    _streams.begin(),
                             _streams.end(),
@@ -59,10 +59,12 @@ void Logger::addStream( StreamPtr stream )
 
     if (it == _streams.end())   
         _streams.push_back(stream);
+
+    return *this;
 }
 
 
-void Logger::removeStream( StreamPtr stream )
+Logger& Logger::removeStream( StreamPtr stream )
 {
     auto it = std::find(    _streams.begin(),
                             _streams.end(),
@@ -70,55 +72,48 @@ void Logger::removeStream( StreamPtr stream )
 
     if (it != _streams.end() && it!=_streams.begin())   
         _streams.erase(it);
+
+    return *this;
 }
 
 
-void Logger::useConsole( bool use )
+Logger& Logger::useConsole( bool use )
 {
     _useConsole = use;
+    return *this;
 }
 
 
-void Logger::forceFlush( bool use )
+Logger& Logger::forceFlush( bool use )
 {
     _forceFlush = use;
+    return *this;
 }
 
 
-void Logger::log( const std::string& message )
+Logger& Logger::log( const std::string& message )
 {
-    // Get decorated message
-    std::string msg = decorate(message);
-
-    // Print to console if enabled
-    if (_useConsole)
-    {
-        std::cout << msg;
-        if (_forceFlush)
-            std::flush(std::cout);
-    }
-
-    // Streams
-    printToStreams( msg );
+    return log( message, true );
 }
 
 
-void Logger::warn( const std::string& message )
+Logger& Logger::warn( const std::string& message )
 {
-    log( "WARNING: " + message );
+    return log( "WARNING: " + message );
 }
 
 
-void Logger::error( const std::string& message )
+Logger& Logger::error( const std::string& message )
 {
     log( "ERROR: " + message );
     CIE_THROW( std::runtime_error, message );
+    return *this;
 }
 
 
-void Logger::logDate( const std::string& message )
+Logger& Logger::logDate( const std::string& message )
 {
-    log( message + " " + detail::getDate() );
+    return log( message + " " + detail::getDate() );
 }
 
 
@@ -159,37 +154,40 @@ size_t Logger::elapsed( size_t slotID, bool reset )
 }
 
 
-void Logger::logElapsed(    const std::string& message,
+Logger& Logger::logElapsed(    const std::string& message,
                             size_t timeID,
                             bool reset )
 {
-    log( message + " " + std::to_string( elapsed(timeID, reset) ) + " [ms]" );
+    return log( message + " " + std::to_string( elapsed(timeID, reset) ) + " [ms]" );
 }
 
 
-void Logger::separate()
+Logger& Logger::separate()
 {
-    log( _separator );
+    return log( _separator, false );
 }
 
 
-void Logger::increaseIndent()
+Logger& Logger::increaseIndent()
 {
     _prefix += "\t";
+    return *this;
 }
 
 
-void Logger::decreaseIndent()
+Logger& Logger::decreaseIndent()
 {
     if (_prefix.back() == '\t')
         _prefix.pop_back();
+    return *this;
 }
 
 
-void Logger::noIndent()
+Logger& Logger::noIndent()
 {
     while( _prefix.back() == '\t' )
         _prefix.pop_back();
+    return *this;
 }
 
 
@@ -199,22 +197,44 @@ FileManager& Logger::fileManager()
 }
 
 
-void Logger::flush()
+Logger& Logger::log(    const std::string& message,
+                        bool printPrefix )
+{
+    // Get decorated message
+    std::string msg = decorate( message, printPrefix );
+
+    // Print to console if enabled
+    if (_useConsole)
+    {
+        std::cout << msg;
+        if (_forceFlush)
+            std::flush(std::cout);
+    }
+
+    // Streams
+    return printToStreams( msg );
+}
+
+
+Logger& Logger::flush()
 {
     std::flush( std::cout );
 
     for ( auto& stream : _streams )
         std::flush(*stream);
+
+    return *this;
 }
 
 
-std::string Logger::decorate( const std::string& message )
+std::string Logger::decorate(   const std::string& message,
+                                bool prefix )
 {
-    return _prefix + message + "\n";
+    return (prefix ? _prefix + message : message) + "\n"; 
 }
 
 
-void Logger::printToStreams( const std::string& message )
+Logger& Logger::printToStreams( const std::string& message )
 {
     for ( auto& stream : _streams )
     {
@@ -229,6 +249,7 @@ void Logger::printToStreams( const std::string& message )
             std::cerr << e.what() << '\n';
         }
     }
+    return *this;
 }
 
 
