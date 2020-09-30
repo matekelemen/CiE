@@ -14,13 +14,13 @@ namespace cie::csg {
 /**
  * Basic templated traits that every object has in CSG
 */
-template <Size N, concepts::NumericType CoordinateType = Double>
+template <Size Dimension, concepts::NumericType CoordinateType = Double>
 class CSGTraits
 {
 public:
-    typedef CoordinateType                  coordinate_type;
-    typedef std::array<CoordinateType,N>    point_type;
-    static const Size                       dimension = N;
+    static const Size                               dimension = Dimension;
+    typedef CoordinateType                          coordinate_type;
+    typedef std::array<CoordinateType,Dimension>    point_type;
 };
 
 

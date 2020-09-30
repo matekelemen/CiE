@@ -4,50 +4,37 @@
 // --- Linalg Includes ---
 #include "linalg/packages/types/inc/arraytypes.hpp"
 
-// --- Internal Includes ---
-#include "CSG/packages/trees/inc/spacetreeutils.hpp"
+// --- STL Includes ---
+#include <vector>
+#include <memory>
+
 
 namespace cie::csg {
-namespace detail {
 
-template <Size N, Size M>
-class AbsSpaceTreeIndexConverter
+
+template <Size Dimension>
+class GridIndexConverter
 {
 public:
-    static const Size dimension     = N;
-    static const Size resolution    = M;
+    GridIndexConverter( Size numberOfPointsPerDimension );
 
-public:
-    typedef std::array<UIntArray<N>,intPow(M,N)> index_array_type;
+    const UIntArray<Dimension>& convert( Size index ) const;
 
-    AbsSpaceTreeIndexConverter();
+    Size numberOfPointsPerDimension() const;
+    Size numberOfPoints() const;
 
-    static constexpr Size numberOfChildren();
-    static constexpr Size numberOfDataPoints();
+    GridIndexConverter<Dimension>& setNumberOfPointsPerDimension( Size numberOfPointsPerDimension );
 
-protected:
-    static constexpr index_array_type initializeIndexArray();
+private:
+    Size                                _numberOfPointsPerDimension;
 
-    static constexpr const Size       _numberOfChildren       = intPow(2,N);
-    static constexpr const Size       _numberOfDataPoints     = intPow(M,N);
+    Size                                _numberOfPoints;
+    std::vector<UIntArray<Dimension>>   _gridIndices;
 };
 
-} // namespace detail
 
-
-template <Size N, Size M>
-class SpaceTreeIndexConverter : public detail::AbsSpaceTreeIndexConverter<N,M>
-{
-public:
-    static constexpr const UIntArray<N>& convert(Size index);
-    static constexpr Size convert(const UIntArray<N>& indexM);
-
-    friend class SpaceTreeNode<N,M>;
-
-protected:
-    static constexpr typename detail::AbsSpaceTreeIndexConverter<N,M>::index_array_type 
-        _indices = detail::AbsSpaceTreeIndexConverter<N,M>::initializeIndexArray();
-};
+template<Size Dimension>
+using GridIndexConverterPtr = std::shared_ptr<GridIndexConverter<Dimension>>;
 
 
 } // namespace cie::csg

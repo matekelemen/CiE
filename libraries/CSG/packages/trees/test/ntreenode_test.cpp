@@ -10,7 +10,7 @@
 
 namespace cie::csg {
 
-
+/*
 #pragma acc routine seq
 double unitCircle(const DoubleArray<2>& point)
 {
@@ -121,11 +121,7 @@ TEST_CASE("Boundary nodes")
     root.divide(circle, 4);
 
     auto nodes = boundaryNodes<2,3>(root);
-    /*
-    for (auto it=nodes.begin(); it!=nodes.end(); ++it)
-        std::cout << std::to_string( (**it).center()[0] ) << std::endl;
-    */
 }
-
+*/
 
 } // namespace cie::csg

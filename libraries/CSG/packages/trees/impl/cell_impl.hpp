@@ -4,6 +4,7 @@
 // --- Utility Includes ---
 #include "cieutils/packages/exceptions/inc/exception.hpp"
 #include "cieutils/packages/stl_extension/inc/resize.hpp"
+#include "cieutils/packages/maths/inc/power.hpp"
 
 // --- Internal Includes ---
 #include "CSG/packages/trees/inc/indexconverter.hpp"
@@ -50,6 +51,14 @@ AbsCell<PrimitiveType>::split( const typename AbsCell<PrimitiveType>::point_type
 namespace boolean {
 
 
+/* --- CubeCell --- */
+
+// 2 children per dimension
+template <Size Dimension, concepts::NumericType CoordinateType>
+const GridIndexConverter<Dimension> 
+    CubeCell<Dimension,CoordinateType>::_childIndexConverter(2);
+
+
 template <Size dimension, concepts::NumericType CoordinateType>
 template <class ContainerType>
 CubeCell<dimension,CoordinateType>::CubeCell(   const ContainerType& base, 
@@ -69,13 +78,12 @@ CubeCell<dimension,CoordinateType>::split_internal( const typename CubeCell<dime
     );
 
     typename CubeCell<dimension,CoordinateType>::point_type tempBase;
-    SpaceTreeIndexConverter<dimension,2> base2;
 
     for (Size childIndex=0; childIndex < intPow(2,dimension); ++childIndex)
     {
         for (Size dim=0; dim<dimension; ++dim)
         {
-            if (base2.convert(childIndex)[dim] == 0)
+            if (_childIndexConverter.convert(childIndex)[dim] == 0)
                 tempBase[dim]   = this->_base[dim];
             else
                 tempBase[dim]   = this->_base[dim] + this->_length/2.0;
@@ -94,6 +102,14 @@ CubeCell<dimension,CoordinateType>::split( )
 {
     return this->split_internal( typename CubeCell<dimension,CoordinateType>::point_type() );
 }
+
+
+/* --- BoxCell --- */
+
+// 2 children per dimension
+template <Size Dimension, concepts::NumericType CoordinateType>
+const GridIndexConverter<Dimension> 
+    BoxCell<Dimension,CoordinateType>::_childIndexConverter(2);
 
 
 template <Size dimension, concepts::NumericType CoordinateType>
@@ -121,13 +137,12 @@ BoxCell<dimension,CoordinateType>::split_internal( const typename BoxCell<dimens
 
     typename BoxCell<dimension,CoordinateType>::point_type tempBase;
     typename BoxCell<dimension,CoordinateType>::point_type tempLengths;
-    SpaceTreeIndexConverter<dimension,2> base2;
 
     for (Size childIndex=0; childIndex < intPow(2,dimension); ++childIndex)
     {
         for (Size dim=0; dim<dimension; ++dim)
         {
-            if (base2.convert(childIndex)[dim] == 0)
+            if (_childIndexConverter.convert(childIndex)[dim] == 0)
             {
                 tempLengths[dim]  = point[dim] - this->_base[dim];
                 tempBase[dim]     = this->_base[dim];

@@ -12,21 +12,33 @@
 namespace cie::csg {
 
 
+
+template <  class CellType,
+            class ValueType >
+template <class ...Args>
+SpaceTreeNode<CellType,ValueType>::SpaceTreeNode(   PrimitiveSamplerPtr<CellType> p_sampler,
+                                                    typename SpaceTreeNode<CellType,ValueType>::split_policy_ptr p_splitPolicy,
+                                                    Size level,
+                                                    Args&&... args ) :
+    CellType( std::forward<Args>(args)... ),
+    utils::AbsTree<std::vector,SpaceTreeNode<CellType,ValueType>>( level ),
+    _p_sampler( p_sampler ),
+    _p_splitPolicy( p_splitPolicy )
+{
+}
+
+
+
+
+
+
+/*
 // Initialize static index converters
 template <size_t N, size_t M>
 SpaceTreeIndexConverter<N,M> SpaceTreeNode<N,M>::_dataIndex = SpaceTreeIndexConverter<N,M>();
 
 template <size_t N, size_t M>
 SpaceTreeIndexConverter<N,2> SpaceTreeNode<N,M>::_centerIndex = SpaceTreeIndexConverter<N,2>();
-
-/*
-template <class CT,class ST, class SP, concepts::STLContainer VCT>
-template <class ...Args>
-SpaceTreeNode_<CT,ST,SP,VCT>::SpaceTreeNode_( Args&&... args ) :
-    SpaceTreeNode_<CT,ST,SP,VCT>::cell_type( std::forward<Args>(args)... )
-{
-}
-*/
 
 
 template <size_t N, size_t M>
@@ -352,7 +364,7 @@ void SpaceTreeNode<N,M>::requestEvaluation( SpaceTreeNode<N,M>& parent,
     #pragma omp critical(requestUpdate)
     parent._evaluationRequests.emplace_back( point, dataPtr );
 }
-
+*/
 
 } // namespace cie::csg
 

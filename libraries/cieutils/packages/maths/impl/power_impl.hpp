@@ -8,8 +8,8 @@
 namespace cie {
 
 
-template <concepts::Integer NT>
-constexpr NT intPow( NT base, NT exponent )
+template <concepts::Integer BaseType, concepts::Integer ExponentType>
+constexpr BaseType intPow( BaseType base, ExponentType exponent )
 {
     CIE_ASSERT(
         exponent >= 0,
@@ -21,7 +21,7 @@ constexpr NT intPow( NT base, NT exponent )
     else if (exponent == 1)
         return base;
 
-    NT output = intPow(base, exponent/2);
+    BaseType output = intPow(base, exponent/2);
 
     if (exponent%2 == 0)
         return output * output;

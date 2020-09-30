@@ -8,8 +8,8 @@
 namespace cie {
 
 
-template <concepts::Integer NT>
-constexpr NT intPow( NT base, NT exponent );
+template <concepts::Integer BaseType, concepts::Integer ExponentType>
+constexpr BaseType intPow( BaseType base, ExponentType exponent );
 
 
 } // namespace cie

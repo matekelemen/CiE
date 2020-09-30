@@ -20,28 +20,6 @@ class SpaceTreeNode;
 template <Size N>
 using GeometryFunction = std::function<Double(const DoubleArray<N>&)>;
 
-
-// Integer power and base conversions --------------------------------
-
-constexpr const Size intPow(int base, Size exponent);
-
-
-template <Size M>
-constexpr void baseN(Size base_10, Size base, UIntArray<M>& base_N);
-
-
-template <Size M>
-constexpr UIntArray<M> baseN(Size base_10, Size base);
-
-
-template <Size M>
-constexpr Size base10(const UIntArray<M>& base_N, Size base);
-
-
-template <Size M>
-constexpr Size reinterpretBase( const UIntArray<M>& baseN, Size newBase );
-
-
 // Writing to file ---------------------------------------------------
 template <Size N, Size M>
 void writeSpaceTree(const SpaceTreeNode<N,M>& node, std::ostream& file);

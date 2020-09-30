@@ -8,17 +8,23 @@
 #include "CSG/packages/trees/inc/primitive_sampler.hpp"
 
 // --- STL Includes ---
-#include <functional>
+#include <memory>
 
 
 namespace cie::csg {
 
 
+/* --- SplitPolicy --- */
 
-// Abstract split policy
-template <  class PointIterator,
+/**
+ * Interface for providing points around which
+ * to split a cell. Generating the split point
+ * is based on a set of point-value pairs and
+ * must be implemented in derived classes.
+*/
+template <  concepts::IteratorType PointIterator,
             concepts::IteratorType ValueIterator>
-class AbsSplitPolicy
+class SplitPolicy
 {
 public:
     typedef PointIterator                       point_iterator_type;
@@ -27,26 +33,37 @@ public:
     typedef typename ValueIterator::value_type  value_type;
 
 public:
-    virtual point_type operator()(  point_iterator_type pointBegin,
-                                    point_iterator_type pointEnd,
-                                    value_iterator_type valueBegin ) const = 0;
+    virtual point_type operator()(  ValueIterator it_valueBegin,
+                                    PointIterator it_valueEnd,
+                                    PointIterator it_pointBegin ) const = 0;
 };
 
 
 
-// Midpoint splitter
-template <  class PointIterator,
+template <  concepts::IteratorType PointIterator,
+            concepts::IteratorType ValueIterator >
+using SplitPolicyPtr = std::shared_ptr<SplitPolicy<PointIterator,ValueIterator>>;
+
+
+
+/* --- MidPointSplitPolicy --- */
+
+/**
+ * Compute the arithmetic mean of the input points.
+*/
+template <  concepts::IteratorType PointIterator,
             concepts::IteratorType ValueIterator>
+class MidPointSplitPolicy : public SplitPolicy<PointIterator,ValueIterator>
 {
 public:
-    virtual typename MidpointSplitPolicy::point_type operator()( 
-                typename MidpointSplitPolicy::point_iterator pointBegin,
-                typename MidpointSplitPolicy::point_iterator pointEnd,
-                typename MidpointSplitPolicy::value_iterator valueEnd ) const override;
+    virtual typename MidPointSplitPolicy<PointIterator,ValueIterator>::point_type operator()( 
+                ValueIterator it_valueBegin,
+                ValueIterator it_valueEnd,
+                PointIterator it_pointBegin ) const override;
 };
 
 
-}
+} // namespace cie::csg
 
 #include "CSG/packages/trees/impl/split_policy_impl.hpp"
 
