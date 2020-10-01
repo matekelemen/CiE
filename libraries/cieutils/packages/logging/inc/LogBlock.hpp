@@ -36,5 +36,6 @@ protected:
 
 } // namespace cie::utils
 
+#include "cieutils/packages/logging/impl/LogBlock_impl.hpp"
 
 #endif

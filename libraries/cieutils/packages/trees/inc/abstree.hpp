@@ -6,6 +6,7 @@
 
 // --- STL Includes ---
 #include <functional>
+#include <memory>
 
 namespace cie::utils {
 
