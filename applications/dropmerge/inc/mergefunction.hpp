@@ -1,6 +1,6 @@
 #ifndef DROPMERGE_MERGE_FUNCTION_HPP
 #define DROPMERGE_MERGE_FUNCTION_HPP
-
+/*
 // --- CSG Includes ---
 #include <csg/trees.hpp>
 
@@ -19,5 +19,5 @@ double exponentialMergeFunction( const DoubleArray<D>& point, double offset=0.0 
 }
 
 #include "mergefunction_impl.hpp"
-
+*/
 #endif

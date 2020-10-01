@@ -1,3 +1,4 @@
+/*
 // --- CSG Includes ---
 #include <csg/trees.hpp>
 
@@ -91,8 +92,9 @@ int main()
 }
 }
 
-
+*/
 int main()
 {
-    return cie::mathieu::main();
+    //return cie::mathieu::main();
+    return 0;
 }

@@ -4,9 +4,6 @@
 
 // --- Internal Includes ---
 #include "CSG/packages/clustering/inc/minimumdisc.hpp"
-#include "CSG/packages/trees/inc/spacetreeutils.hpp"
-#include "CSG/packages/trees/inc/spacetreenode.hpp"
-#include "csgconversion.hpp"
 
 
 PYBIND11_MODULE( pycsg,m ){

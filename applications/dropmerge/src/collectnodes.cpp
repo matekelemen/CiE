@@ -1,3 +1,4 @@
+/*
 #include "../inc/collectnodes.hpp"
 
 namespace cie {
@@ -66,3 +67,4 @@ void collectNodesRecursive(     const SpaceTreeNode<N,M>& root,
 
 }
 }
+*/

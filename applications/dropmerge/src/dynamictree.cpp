@@ -1,3 +1,4 @@
+/*
 #include "../inc/dynamictree.hpp"
 
 namespace cie {
@@ -32,3 +33,4 @@ void DynamicTree::offset(double value)
 
 }
 }
+*/

@@ -13,7 +13,7 @@
 
 namespace cie::gl {
 
-
+/*
 template <size_t M>
 class SpaceTreeDrawManager final : public gl::DrawManager
 {
@@ -35,5 +35,5 @@ private:
 } // namespace cie::gl
 
 #include "glvisualization/packages/drawing/impl/SpaceTreeDrawManager_impl.hpp"
-
+*/
 #endif

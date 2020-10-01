@@ -3,6 +3,5 @@
 
 #include "CSG/packages/trees/inc/spacetreenode.hpp"
 #include "CSG/packages/trees/inc/cell.hpp"
-#include "CSG/packages/trees/inc/spacetreeutils.hpp"
 
 #endif

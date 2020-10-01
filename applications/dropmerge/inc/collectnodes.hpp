@@ -1,6 +1,6 @@
 #ifndef DROPMERGE_COLLECT_NODES_HPP
 #define DROPMERGE_COLLECT_NODES_HPP
-
+/*
 // --- Linalg Includes ---
 #include <linalg/types.hpp>
 
@@ -37,5 +37,5 @@ void collectNodesRecursive(     const SpaceTreeNode<N,M>& root,
 
 }
 }
-
+*/
 #endif

@@ -1,6 +1,6 @@
 #ifndef DROPMERGE_DYNAMIC_TREE_HPP
 #define DROPMERGE_DYNAMIC_TREE_HPP
-
+/*
 // --- CSG Includes ---
 #include <csg/trees.hpp>
 
@@ -34,5 +34,5 @@ public:
 
 }
 }
-
+*/
 #endif

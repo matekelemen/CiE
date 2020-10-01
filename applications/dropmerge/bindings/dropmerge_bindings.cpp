@@ -1,6 +1,7 @@
 #include "pybind11/pybind11.h"
 #include "pybind11/stl.h"
 
+/*
 #include "mergefunction.hpp"
 #include "dynamictree.hpp"
 #include "collectnodes.hpp"
@@ -30,3 +31,4 @@ PYBIND11_MODULE( pydropmerge, m )
 
     m.def("collectNodes", &cie::csg::collectNodes, "Collect DynamicTree nodes");
 }
+*/
