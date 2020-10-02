@@ -1,6 +1,9 @@
 // --- External Includes ---
 #include "catch.hpp"
 
+// --- Utility Includes ---
+#include "cieutils/packages/macros/inc/testing.hpp"
+
 // --- Internal Includes ---
 #include "cieutils/packages/maths/inc/base.hpp"
 
@@ -10,14 +13,17 @@ namespace cie::utils {
 
 TEST_CASE( "base", "[maths]" )
 {
+    CIE_TEST_CASE_INIT( "base" )
+
     const Size                      NDigits = 4;
     typedef Size                    NT;
     typedef std::array<NT,NDigits>  Array;
 
     NT base;
 
-    SECTION( "baseN in-place" )
     {
+        CIE_TEST_CASE_INIT( "baseN in-place" )
+
         NT value    = 13;
         base        = 2;
         Array check = { 1, 0, 1, 1 };
@@ -35,8 +41,9 @@ TEST_CASE( "base", "[maths]" )
             CHECK( test[i] == check[i] );
     }
 
-    SECTION( "baseN" )
     {
+        CIE_TEST_CASE_INIT( "baseN" )
+
         NT value    = 13;
         base        = 2;
         Array check = { 1, 0, 1, 1 };
@@ -53,8 +60,9 @@ TEST_CASE( "base", "[maths]" )
             CHECK( test[i] == check[i] );
     }
 
-    SECTION( "base10" )
     {
+        CIE_TEST_CASE_INIT( "base10" )
+
         Array value     = { 1, 0, 1, 1 };
         base            = 2;
         NT check        = 13;
@@ -69,8 +77,9 @@ TEST_CASE( "base", "[maths]" )
         CHECK( test == check );
     }
 
-    SECTION( "reinterpretBase" )
     {
+        CIE_TEST_CASE_INIT( "reinterpretBase" )
+
         Array value     = { 1, 0, 1, 1 };
         NT base         = 2;
         NT check        = 13;

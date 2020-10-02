@@ -102,7 +102,6 @@ TEST_CASE( "Quadratures", "[numeric]" )
         return output;
     };
 
-    SECTION( "GaussLegendreQuadrature" )
     {
         CIE_TEST_CASE_INIT( "GaussLegendreQuadrature" )
         typedef GaussLegendreQuadrature<Dimension, NT> Integrator;
@@ -114,9 +113,8 @@ TEST_CASE( "Quadratures", "[numeric]" )
             REQUIRE_NOTHROW( integrator(testFunction) );
             CHECK( integrator(testFunction) == Approx(check) );
         }
-    } // SECTION GaussLegendre
+    }
 
-    SECTION( "GaussLobattoQuadrature" )
     {
         CIE_TEST_CASE_INIT( "GaussLobattoQuadrature" )
         typedef GaussLobattoQuadrature<Dimension, NT> Integrator;
@@ -128,7 +126,7 @@ TEST_CASE( "Quadratures", "[numeric]" )
             REQUIRE_NOTHROW( integrator(testFunction) );
             CHECK( integrator(testFunction) == Approx(check) );
         }
-    } // SECTION GaussLobatto
+    }
 } // TEST_CASE Quadratures
 
 

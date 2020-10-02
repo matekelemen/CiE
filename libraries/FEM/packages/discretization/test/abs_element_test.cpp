@@ -106,7 +106,6 @@ TEST_CASE( "AbsElement", "[discretization]" )
     const std::vector<NT> coefficients    = { 1.0, 2.0, 3.0, 4.0 };
 
     // Test field values
-    SECTION( "field values" )
     {
         CIE_TEST_CASE_INIT( "field values" )
         for (const auto& point : localPoints)
@@ -120,10 +119,9 @@ TEST_CASE( "AbsElement", "[discretization]" )
             REQUIRE_NOTHROW( element(coefficients, point) );
             CHECK( element(coefficients,point) == Approx(reference) );
         }
-    } // SECTION field values
+    }
     
     // Test field derivatives
-    SECTION( "field derivatives" )
     {
         CIE_TEST_CASE_INIT( "field derivatives" )
         for (const auto& point : localPoints)
@@ -146,7 +144,7 @@ TEST_CASE( "AbsElement", "[discretization]" )
             for (Size i=0; i<Dimension; ++i)
                 CHECK( test[i] == Approx(reference[i]) );
         }
-    } // SECTION field derivatives
+    }
 } // TEST_CASE AbsElement
 
 
@@ -190,7 +188,6 @@ TEST_CASE( "AbsElement1D", "[discretization]" )
     );
 
     // Check field values
-    SECTION( "field values" )
     {
         CIE_TEST_CASE_INIT( "field values" )
         for (const auto& point : localPoints)
@@ -202,10 +199,9 @@ TEST_CASE( "AbsElement1D", "[discretization]" )
                 + coefficients[1] * (-point[0] + 1.0)/2.0 )
             );
         }
-    } // SECTION field values
+    }
 
     // Check field derivatives
-    SECTION( "field derivatives" )
     {
         CIE_TEST_CASE_INIT( "field derivatives" )
         for (const auto& point : localPoints)
@@ -215,7 +211,7 @@ TEST_CASE( "AbsElement1D", "[discretization]" )
                 == Approx( coefficients[0] - coefficients[1] )
             );
         }
-    } // SECTION field derivatives
+    }
 } // TEST_CASE AbsElement1D
 
 

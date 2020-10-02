@@ -1,6 +1,9 @@
 // --- External Includes ---
 #include "catch.hpp"
 
+// --- Utility Includes ---
+#include "cieutils/packages/macros/inc/testing.hpp"
+
 // --- Internal Includes ---
 #include "FEM/packages/discretization/inc/basis_wrappers.hpp"
 
@@ -13,6 +16,8 @@ namespace cie::fem {
 
 TEST_CASE( "basis_wrappers", "[discretization]" )
 {
+    CIE_TEST_CASE_INIT( "Basis wrappers" )
+
     const Size Dimension        = 2;
     using NT                    = Double;
     using Container             = std::vector<NT>;
@@ -35,8 +40,8 @@ TEST_CASE( "basis_wrappers", "[discretization]" )
     REQUIRE_NOTHROW( BasisDerivatives(basisValues,derivativeValues) );
     BasisDerivatives basisDerivative(basisValues,derivativeValues);
 
-    SECTION( "TensorProductBasis" )
     {
+        CIE_TEST_CASE_INIT( "TensorProductBasis" )
         for (Size j=0; j<Dimension; ++j)
             for (Size i=0; i<Dimension; ++i)
             {
@@ -47,8 +52,8 @@ TEST_CASE( "basis_wrappers", "[discretization]" )
         REQUIRE_NOTHROW( basis.reset() );
     }
 
-    SECTION( "TensorProductDerivatives" )
     {
+        CIE_TEST_CASE_INIT( "TensorProductDerivatives" )
         typename BasisDerivatives::point_type derivative;
 
         REQUIRE_NOTHROW( derivative = basisDerivative.product() );

@@ -1,6 +1,9 @@
 // --- External Includes ---
 #include "catch.hpp"
 
+// --- Utility Includes ---
+#include "cieutils/packages/macros/inc/testing.hpp"
+
 // --- Internal Includes ---
 #include "cieutils/packages/stl_extension/inc/type_safety.hpp"
 
@@ -58,8 +61,10 @@ requires (!ConvertibleTo<T,TT>)
 
 TEST_CASE( "STRONG_TYPEDEF", "[stl_extension]" )
 {
-    SECTION( "global typedef" )
+    CIE_TEST_CASE_INIT( "STRONG_TYPEDEF" )
+
     {
+        CIE_TEST_CASE_INIT( "global typedef" )
         test::Type0 type0;
         test::Type1 type1;
         test::Type2 type2;
@@ -69,11 +74,11 @@ TEST_CASE( "STRONG_TYPEDEF", "[stl_extension]" )
         CHECK( test::testFunction(type2) == 2 );
 
         // TODO: typedefs are still interconvertible -> this check fails
-        //CHECK( !test::convertibleTo(type2,type1) );
+        CHECK( !test::convertibleTo(type2,type1) );
     }
 
-    SECTION( "member typedef" )
     {
+        CIE_TEST_CASE_INIT( "member typedef" )
         typename test::TestClass::MemberType memberType;
         CHECK( test::testFunction(memberType) == 3 );
     }
