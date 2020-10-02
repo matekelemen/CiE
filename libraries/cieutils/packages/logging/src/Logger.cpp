@@ -143,7 +143,7 @@ size_t Logger::elapsed( size_t slotID, bool reset )
         error( "Invalid timerID " + std::to_string(slotID) );
 
     // Compute elapsed time
-    size_t t = (size_t)std::chrono::duration_cast<std::chrono::milliseconds>(detail::getTime() - _timeLog[slotID]).count();
+    size_t t = (size_t)std::chrono::duration_cast<std::chrono::microseconds>(detail::getTime() - _timeLog[slotID]).count();
 
     // Reset timer if requested
     if (reset)
@@ -153,11 +153,20 @@ size_t Logger::elapsed( size_t slotID, bool reset )
 }
 
 
-Logger& Logger::logElapsed(    const std::string& message,
+Logger& Logger::logElapsed( const std::string& message,
                             size_t timeID,
                             bool reset )
 {
-    return log( message + " " + std::to_string( elapsed(timeID, reset) ) + " [ms]" );
+    auto dt = elapsed( timeID, reset );
+    std::string unit = " [us] ";
+
+    if ( dt > 10000 )
+    {
+        dt      /= 1000;
+        unit    = " [ms] ";
+    }
+
+    return log( message + " " + std::to_string( dt ) + unit );
 }
 
 
@@ -167,7 +176,12 @@ Logger& Logger::separate()
     const char separatorCharacter   = '-';
     const Size tabWidth             = 4;
     const Size lineWidth            = 60;
-    return log( std::string( lineWidth - tabWidth*_prefix.size(), separatorCharacter ),
+
+    Size numberOfSeparators         = 0;
+    if ( lineWidth > tabWidth*_prefix.size() )
+        numberOfSeparators = lineWidth - tabWidth*_prefix.size();
+
+    return log( std::string( numberOfSeparators, separatorCharacter ),
                 true );
 }
 
