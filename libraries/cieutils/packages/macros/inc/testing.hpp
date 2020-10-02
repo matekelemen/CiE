@@ -16,7 +16,8 @@ namespace cie::utils {
 class STATIC_LOG_BLOCK : public LogBlock
 {
 public:
-    STATIC_LOG_BLOCK( const std::string& name ) : LogBlock( name, _logger ) {}
+    STATIC_LOG_BLOCK( const std::string& name ) : LogBlock( name, _logger ) 
+    { _logger.useConsole(true); }
     static Logger _logger;
 };
 

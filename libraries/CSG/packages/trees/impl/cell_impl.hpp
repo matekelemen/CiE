@@ -79,7 +79,7 @@ CubeCell<dimension,CoordinateType>::split_internal( const typename CubeCell<dime
 
     typename CubeCell<dimension,CoordinateType>::point_type tempBase;
 
-    for (Size childIndex=0; childIndex < intPow(2,dimension); ++childIndex)
+    for (Size childIndex=0; childIndex < intPow(Size(2),dimension); ++childIndex)
     {
         for (Size dim=0; dim<dimension; ++dim)
         {
@@ -138,7 +138,7 @@ BoxCell<dimension,CoordinateType>::split_internal( const typename BoxCell<dimens
     typename BoxCell<dimension,CoordinateType>::point_type tempBase;
     typename BoxCell<dimension,CoordinateType>::point_type tempLengths;
 
-    for (Size childIndex=0; childIndex < intPow(2,dimension); ++childIndex)
+    for (Size childIndex=0; childIndex < intPow(Size(2),dimension); ++childIndex)
     {
         for (Size dim=0; dim<dimension; ++dim)
         {

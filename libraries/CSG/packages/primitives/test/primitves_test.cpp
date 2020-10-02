@@ -1,6 +1,9 @@
 // --- External Includes ---
 #include "catch.hpp"
 
+// --- Utility Includes ---
+#include "cieutils/packages/macros/inc/testing.hpp"
+
 // --- Linalg Includes ---
 #include "linalg/packages/types/inc/vectortypes.hpp"
 #include "linalg/packages/types/inc/arraytypes.hpp"
@@ -15,6 +18,8 @@ namespace boolean {
 
 TEST_CASE( "boolean::CSGCube", "[primitives]" )
 {
+    CIE_TEST_CASE_INIT( "boolean::CSGCube" )
+
     const Size dimension = 2;
     CSGCube<dimension,Double> cube( DoubleArray<dimension>({10.0,20.0}), 
                                     2.0 );
@@ -33,6 +38,8 @@ TEST_CASE( "boolean::CSGCube", "[primitives]" )
 
 TEST_CASE( "boolean::CSGBox", "[primitives]" )
 {
+    CIE_TEST_CASE_INIT( "boolean::CSGBox" )
+
     const Size dimension = 2;
     CSGBox<dimension,Double> box(   DoubleArray<dimension>({10.0,20.0}), 
                                     DoubleArray<dimension>({1.0,2.0}) );

@@ -1,6 +1,9 @@
 // --- External Includes ---
 #include "catch.hpp"
 
+// --- Utility Includes ---
+#include "cieutils/packages/macros/inc/testing.hpp"
+
 // --- Internal Includes ---
 #include "CSG/packages/clustering/inc/minimumdisc.hpp"
 
@@ -12,6 +15,8 @@ namespace cie::csg {
 
 TEST_CASE( "Disc", "[clustering]" )
 {
+    CIE_TEST_CASE_INIT( "Disc" )
+
     // Disc defined by center and radius
     Disc disc( {0.1,0.2}, 0.5 );
     CHECK( disc._center[0]     == Approx(0.1) );

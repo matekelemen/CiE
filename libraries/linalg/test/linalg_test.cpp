@@ -1,6 +1,9 @@
 // --- External Includes ---
 #include "catch.hpp"
 
+// --- Utility Includes ---
+#include "cieutils/packages/macros/inc/testing.hpp"
+
 // --- Internal Includes ---
 #include <linalg/linalg.hpp>
 #include "linalg/packages/utilities/inc/linalghelper.hpp"
@@ -16,6 +19,8 @@ namespace cie::linalg
 
 TEST_CASE( "Matrix", "[matrix]" )
 {
+    CIE_TEST_CASE_INIT( "Matrix" )
+
     CHECK( Matrix<Double>( 1, 3, 0.0 ).size1( ) == 1 );
     CHECK( Matrix<Double>( 1, 3, 0.0 ).size2( ) == 3 );
     CHECK( Matrix<Double>( 5, 2 ).sizes( )[0] == 5);
@@ -50,8 +55,10 @@ TEST_CASE( "Matrix", "[matrix]" )
     }
 }
 
-TEST_CASE( "Matrix_zero_size", "[matrix]" )
+TEST_CASE( "zero size Matrix", "[matrix]" )
 {
+    CIE_TEST_CASE_INIT( "zero size Matrix" )
+
     Matrix<Double> m( 1, 2, 3.0 );
 
     REQUIRE_NOTHROW( m = Matrix<Double>( 0, 0, 2.0 ) );
@@ -65,8 +72,10 @@ TEST_CASE( "Matrix_zero_size", "[matrix]" )
     CHECK( m.size2( ) == 0 );
 }
 
-TEST_CASE( "Matrix_inconsistent_input", "[matrix]" )
+TEST_CASE( "inconsistent input to Matrix", "[matrix]" )
 {
+    CIE_TEST_CASE_INIT( "inconsistent input to Matrix" )
+
     std::vector<DoubleVector> inconsistentData
     {
         DoubleVector{  0.0, 0.0, 0.0 },
@@ -83,8 +92,10 @@ TEST_CASE( "Matrix_inconsistent_input", "[matrix]" )
 }
 
 
-TEST_CASE( "Matrix_linearized_input", "[matrix]" )
+TEST_CASE( "linearized input to Matrix", "[matrix]" )
 {
+    CIE_TEST_CASE_INIT( "linearized input to Matrix" )
+
     std::vector<Double> data{ 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
 
     CHECK_THROWS_AS( Matrix<Double>( data, 2 ), OutOfRangeException );
@@ -137,8 +148,10 @@ namespace linalgtesthelper
     }
 }
 
-TEST_CASE( "write_vector" )
+TEST_CASE( "write vector", "[io]" )
 {
+    CIE_TEST_CASE_INIT( "write vector" )
+
     DoubleVector v{ 0.0, 2.0, 4.0 };
 
     auto result = linalgtesthelper::writeAndParse( v );
@@ -150,8 +163,10 @@ TEST_CASE( "write_vector" )
     CHECK( result[2] == v[2] );
 }
 
-TEST_CASE( "write_matrix", "[matrix]" )
+TEST_CASE( "write matrix", "[io]" )
 {
+    CIE_TEST_CASE_INIT( "write matrix" )
+
     Matrix<Double> m( { DoubleVector{ 1.0, -2.0 },
                 DoubleVector{ -8.0, 4.0 } } );
 
@@ -167,6 +182,8 @@ TEST_CASE( "write_matrix", "[matrix]" )
 
 TEST_CASE( "norm" )
 {
+    CIE_TEST_CASE_INIT( "norm" )
+
     DoubleVector vector { 4.0, 3.0 };
 
     Double tolerance = 1e-12;
@@ -182,6 +199,8 @@ TEST_CASE( "norm" )
 
 TEST_CASE( "solve" )
 {
+    CIE_TEST_CASE_INIT( "solve" )
+
     Matrix<Double> matrix( { DoubleVector{  5.2,  1.2,  7.3, -2.3 },
                      DoubleVector{  8.9, -7.6, -0.2,  3.4 },
                      DoubleVector{ -5.7,  6.2, -3.4,  7.8 },
@@ -204,8 +223,10 @@ TEST_CASE( "solve" )
     CHECK( solution[3] == Approx( -0.1893110309940256 ).epsilon( tolerance ) );
 }
 
-TEST_CASE( "solve_singular" )
+TEST_CASE( "solve singular" )
 {
+    CIE_TEST_CASE_INIT( "solve singular" )
+
     Matrix<Double> matrix( { DoubleVector{  1.0, -1.0 },
                      DoubleVector{ -1.0,  1.0 } } );
 
@@ -217,8 +238,10 @@ TEST_CASE( "solve_singular" )
     CHECK_THROWS_AS( solve( matrix, rhs ), MatrixError<decltype(matrix)> );
 }
 
-TEST_CASE( "solve_zero_pivot" )
+TEST_CASE( "solve zero pivot" )
 {
+    CIE_TEST_CASE_INIT( "solve zero pivot" )
+
     Matrix<Double> matrix( {    DoubleVector{ 0.0       , 1.85943691, 6.97111553, 8.69227093 },
 					            DoubleVector{ 3.28991871, 1.53597987, 7.61514532, 3.60326283 },
 					            DoubleVector{ 2.94417179, 6.82592967, 1.11991796, 3.83895535 },

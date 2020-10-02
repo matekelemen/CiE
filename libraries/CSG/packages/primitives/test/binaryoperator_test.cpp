@@ -1,6 +1,9 @@
 // --- External Includes ---
 #include "catch.hpp"
 
+// --- Utility Includes ---
+#include "cieutils/packages/macros/inc/testing.hpp"
+
 // --- Linalg Includes ---
 #include "linalg/packages/types/inc/arraytypes.hpp"
 
@@ -41,6 +44,8 @@ protected:
 
 TEST_CASE( "BinaryOperator", "[primitives]" )
 {
+    CIE_TEST_CASE_INIT( "BinaryOperator" )
+
     REQUIRE_NOTHROW( TestBinaryOperator() );
     TestBinaryOperator op;
     DoubleArray<2> doubleArray;

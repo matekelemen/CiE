@@ -1,6 +1,9 @@
 // --- External Includes ---
 #include "catch.hpp"
 
+// --- Utility Includes ---
+#include "cieutils/packages/macros/inc/testing.hpp"
+
 // --- Linalg Includes ---
 #include "linalg/packages/types/inc/arraytypes.hpp"
 
@@ -53,6 +56,8 @@ protected:
 
 TEST_CASE( "UnaryOperator", "[primitives]" )
 {
+    CIE_TEST_CASE_INIT( "UnaryOperator" )
+
     // Check sequential rhs emplacement
     TestUnaryOperator op;
     DoubleArray<dimension> doubleArray;

@@ -1,5 +1,6 @@
 // --- Internal Includes ---
 #include "cieutils/packages/logging/inc/Logger.hpp"
+#include "cieutils/packages/logging/inc/LogBlock.hpp"
 #include "cieutils/packages//macros/inc/exceptions.hpp"
 
 // --- STL Includes ---
@@ -47,6 +48,12 @@ Logger::~Logger()
     logElapsed( "\nLogger ran for", 0, false );
     logDate( "Log file closed on" );
     flush();
+}
+
+
+LogBlock Logger::newBlock( const std::string& r_name )
+{
+    return LogBlock( r_name, *this );
 }
 
 

@@ -3,6 +3,7 @@
 
 // --- Internal Includes ---
 #include "cieutils/packages/logging/inc/Logger.hpp"
+#include "cieutils/packages/logging/inc/LogBlock.hpp"
 
 // --- STL Includes ---
 #include <string>
@@ -38,6 +39,8 @@ public:
     void toc(   const std::string& message,
                 size_t timerID,
                 bool reset = true );
+
+    LogBlock newBlock( const std::string& r_name ) { return _logger->newBlock(r_name); }
 
     void separate();
 

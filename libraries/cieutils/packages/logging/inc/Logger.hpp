@@ -34,6 +34,9 @@ using Stream        = std::ostream;
 using StreamPtr     = std::shared_ptr<Stream>;
 
 
+class LogBlock;
+
+
 class Logger
 {
 public:
@@ -44,6 +47,8 @@ public:
     Logger( const std::string& fileName );
     Logger( const Logger& copy ) = delete;
     ~Logger();
+
+    LogBlock newBlock( const std::string& r_name );
 
     Logger& addStream( StreamPtr stream );
     Logger& removeStream( StreamPtr stream );

@@ -1,6 +1,9 @@
 // --- External Includes ---
 #include "catch.hpp"
 
+// --- Utility Includes ---
+#include "cieutils/packages/macros/inc/testing.hpp"
+
 // --- Linalg Includes ---
 #include "linalg/packages/types/inc/vectortypes.hpp"
 
@@ -30,6 +33,8 @@ protected:
 
 TEST_CASE( "CSGObject", "[primitives]" )
 {
+    CIE_TEST_CASE_INIT( "CSGObject" )
+
     const Size dimension    = 2;
 
     REQUIRE_NOTHROW( CSGTestObject<dimension>() );
