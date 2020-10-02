@@ -34,6 +34,9 @@ protected:
 };
 
 
+LogBlock& operator<<( LogBlock& r_block, const std::string& r_message );
+
+
 } // namespace cie::utils
 
 #include "cieutils/packages/logging/impl/LogBlock_impl.hpp"

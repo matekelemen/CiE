@@ -23,4 +23,10 @@ LogBlock::~LogBlock()
 }
 
 
+LogBlock& operator<<( LogBlock& r_block, const std::string& r_message )
+{
+    return r_block.log( r_message );
+}
+
+
 } // namespace cie::utils

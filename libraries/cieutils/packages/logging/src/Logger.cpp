@@ -29,7 +29,6 @@ Logger::Logger( const std::string& fileName ) :
     _manager( detail::fileDirectory(fileName) ),
     _timeLog( {detail::getTime()} ),
     _prefix( "" ),
-    _separator( "------------------------------------------------------" ),
     _useConsole( false ),
     _forceFlush( true )
 {
@@ -164,7 +163,12 @@ Logger& Logger::logElapsed(    const std::string& message,
 
 Logger& Logger::separate()
 {
-    return log( _separator, false );
+    // TODO: separator behaviour is hard-coded
+    const char separatorCharacter   = '-';
+    const Size tabWidth             = 4;
+    const Size lineWidth            = 60;
+    return log( std::string( lineWidth - tabWidth*_prefix.size(), separatorCharacter ),
+                true );
 }
 
 
@@ -250,6 +254,13 @@ Logger& Logger::printToStreams( const std::string& message )
         }
     }
     return *this;
+}
+
+
+
+Logger& operator<<( Logger& r_logger, const std::string& r_message )
+{
+    return r_logger.log( r_message );
 }
 
 

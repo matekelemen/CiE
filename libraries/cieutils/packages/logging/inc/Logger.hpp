@@ -84,10 +84,12 @@ protected:
     std::deque<detail::Time>    _timeLog;
 
     std::string                 _prefix;
-    std::string                 _separator;
     bool                        _useConsole;
     bool                        _forceFlush;
 };
+
+
+Logger& operator<<( Logger& r_logger, const std::string& r_message );
 
 
 } // namespace cie::utils
