@@ -1,6 +1,9 @@
 // --- External Includes ---
 #include "catch.hpp"
 
+// --- Utility Includes ---
+#include "cieutils/packages/macros/inc/testing.hpp"
+
 // --- Internal Inludes ---
 #include "CSG/packages/trees/inc/primitive_sampler.hpp"
 #include "CSG/packages/primitives/inc/primitives.hpp"
@@ -14,6 +17,8 @@ namespace cie::csg {
 
 TEST_CASE( "CubeSampler", "[trees]" )
 {
+    CIE_TEST_CASE_INIT( "CubeSampler" )
+
     // Dimension and coordinate type
     const Size      Dimension = 2;
     typedef Double  CT;
@@ -75,6 +80,8 @@ TEST_CASE( "CubeSampler", "[trees]" )
 
 TEST_CASE( "BoxSampler", "[trees]" )
 {
+    CIE_TEST_CASE_INIT( "BoxSampler" )
+
     // Dimension and coordinate type
     typedef Double  CT;
     const Size      Dimension = 2;

@@ -1,8 +1,12 @@
 // --- External Includes ---
 #include "catch.hpp"
 
+// --- Utility Includes ---
+#include "cieutils/packages/macros/inc/testing.hpp"
+
 // --- Internal Includes ---
 #include "CSG/packages/trees/inc/cell.hpp"
+#include "cmake_variables.hpp"
 
 
 namespace cie::csg {
@@ -10,7 +14,7 @@ namespace cie::csg {
 
 TEST_CASE( "boolean::CubeCell", "[trees]" )
 {
-
+    CIE_TEST_CASE_INIT( "boolean::CubeCell" )
     /**
      *    y
      *    ^
@@ -64,7 +68,7 @@ TEST_CASE( "boolean::CubeCell", "[trees]" )
 
 TEST_CASE( "boolean::BoxCell", "[trees]" )
 {
-
+    CIE_TEST_CASE_INIT( "boolean::BoxCell" )
     /**
      *    y
      *    ^

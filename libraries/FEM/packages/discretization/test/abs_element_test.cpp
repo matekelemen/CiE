@@ -6,6 +6,7 @@
 
 // --- Utility Includes ---
 #include "cieutils/packages/stl_extension/inc/resize.hpp"
+#include "cieutils/packages/macros/inc/testing.hpp"
 
 // --- Internal Includes ---
 #include "FEM/packages/discretization/inc/abs_element.hpp"
@@ -72,6 +73,8 @@ protected:
 
 TEST_CASE( "AbsElement", "[discretization]" )
 {
+    CIE_TEST_CASE_INIT( "AbsElement" )
+
     // General init
     const Size                                      Dimension = 2;
     typedef Double                                  NT;
@@ -105,6 +108,7 @@ TEST_CASE( "AbsElement", "[discretization]" )
     // Test field values
     SECTION( "field values" )
     {
+        CIE_TEST_CASE_INIT( "field values" )
         for (const auto& point : localPoints)
         {
             auto xi     = point[0];
@@ -121,6 +125,7 @@ TEST_CASE( "AbsElement", "[discretization]" )
     // Test field derivatives
     SECTION( "field derivatives" )
     {
+        CIE_TEST_CASE_INIT( "field derivatives" )
         for (const auto& point : localPoints)
         {
             auto xi     = point[0];
@@ -148,6 +153,8 @@ TEST_CASE( "AbsElement", "[discretization]" )
 
 TEST_CASE( "AbsElement1D", "[discretization]" )
 {
+    CIE_TEST_CASE_INIT( "AbsElement1D" )
+
     // General init
     const Size                                      Dimension = 1;
     typedef Double                                  NT;
@@ -185,6 +192,7 @@ TEST_CASE( "AbsElement1D", "[discretization]" )
     // Check field values
     SECTION( "field values" )
     {
+        CIE_TEST_CASE_INIT( "field values" )
         for (const auto& point : localPoints)
         {
             CHECK(
@@ -199,6 +207,7 @@ TEST_CASE( "AbsElement1D", "[discretization]" )
     // Check field derivatives
     SECTION( "field derivatives" )
     {
+        CIE_TEST_CASE_INIT( "field derivatives" )
         for (const auto& point : localPoints)
         {
             CHECK(

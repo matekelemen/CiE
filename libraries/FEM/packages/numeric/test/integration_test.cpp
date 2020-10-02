@@ -1,6 +1,9 @@
 // --- External Includes ---
 #include "catch.hpp"
 
+// --- Utility Includes ---
+#include "cieutils/packages/macros/inc/testing.hpp"
+
 // --- Internal Includes ---
 #include "FEM/packages/numeric/inc/integration.hpp"
 
@@ -10,6 +13,8 @@ namespace cie::fem {
 
 TEST_CASE( "AbsQuadrature", "[numeric]" )
 {
+    CIE_TEST_CASE_INIT( "AbsQuadrature" )
+
     const Size                              dimension = 2;
     typedef Double                          NT;
     typedef AbsQuadrature<dimension,NT>     Integrator;
@@ -51,6 +56,8 @@ TEST_CASE( "AbsQuadrature", "[numeric]" )
 
 TEST_CASE( "Quadratures", "[numeric]" )
 {
+    CIE_TEST_CASE_INIT( "Quadratures" )
+
     // General init
     const Size                          Dimension = 2;
     typedef Double                      NT;
@@ -97,6 +104,7 @@ TEST_CASE( "Quadratures", "[numeric]" )
 
     SECTION( "GaussLegendreQuadrature" )
     {
+        CIE_TEST_CASE_INIT( "GaussLegendreQuadrature" )
         typedef GaussLegendreQuadrature<Dimension, NT> Integrator;
 
         for (Size integrationOrder=3; integrationOrder<6; ++integrationOrder)
@@ -110,6 +118,7 @@ TEST_CASE( "Quadratures", "[numeric]" )
 
     SECTION( "GaussLobattoQuadrature" )
     {
+        CIE_TEST_CASE_INIT( "GaussLobattoQuadrature" )
         typedef GaussLobattoQuadrature<Dimension, NT> Integrator;
 
         for (Size integrationOrder=3; integrationOrder<6; ++integrationOrder)

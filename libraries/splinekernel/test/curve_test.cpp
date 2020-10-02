@@ -1,6 +1,9 @@
 // --- External Includes ---
 #include "catch.hpp"
 
+// --- Utility Includes ---
+#include "cieutils/packages/macros/inc/testing.hpp"
+
 // --- Internal Includes ---
 #include "splinekernel/inc/curve.hpp"
 
@@ -11,8 +14,10 @@
 namespace cie::splinekernel
 {
 
-TEST_CASE("Linear interpolation curve")
+TEST_CASE( "Linear interpolation curve", "[splinekernel]" )
 {
+    CIE_TEST_CASE_INIT( "Linear interpolation curve" )
+
     std::vector<double> knotVector{ 0.0, 0.0, 0.5, 1.0, 1.0 };
     std::vector<double> x{ 2.0, 3.0, 0.5 };
     std::vector<double> y{ 1.0, 3.0, 3.0 };

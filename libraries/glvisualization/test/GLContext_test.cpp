@@ -1,6 +1,9 @@
 // --- External Includes ---
 #include "catch.hpp"
 
+// --- Utility Includes ---
+#include "cieutils/packages/macros/inc/testing.hpp"
+
 // --- Internal Includes ---
 #include "glvisualization/packages/context/inc/GLContext.hpp"
 #include "glvisualization/packages/drawing/inc/Camera.hpp"
@@ -106,8 +109,10 @@ TEST_CASE( "GLContext" )
 //}
 
 
-TEST_CASE( "DrawManager" )
+TEST_CASE( "DrawManager", "[glvisualization]" )
 {
+    CIE_TEST_CASE_INIT( "DrawManager" )
+
     // Create context
     REQUIRE_NOTHROW( context_global.openWindow() );
     REQUIRE_NOTHROW( context_global.makeContextCurrent() );

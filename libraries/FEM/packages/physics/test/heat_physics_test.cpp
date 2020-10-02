@@ -3,6 +3,7 @@
 
 // --- Utility Includes ---
 #include <cieutils/file.hpp>
+#include "cieutils/packages/macros/inc/testing.hpp"
 
 // --- Internal Includes ---
 #include "FEM/packages/physics/inc/heat_physics.hpp"
@@ -19,6 +20,8 @@ namespace cie::fem {
 
 TEST_CASE( "StaticLinearHeatPhysics1D", "[physics]" )
 {
+    CIE_TEST_CASE_INIT( "StaticLinearHeatPhysics1D" )
+
     using NT                    = Double;
     using BasisSet             = LinearBasisFunctionSet<1,NT>;
     using ElementBase           = AbsElement1D<BasisSet>;

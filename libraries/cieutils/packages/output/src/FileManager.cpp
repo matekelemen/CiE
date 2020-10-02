@@ -27,8 +27,8 @@ FileManager::FileManager( const std::string& path ) :
     auto it = std::find( _paths.begin(), _paths.end(), _path );
     if (it == _paths.end() )
         _paths.push_back(_path);
-    else
-        CIE_THROW( std::runtime_error, "A FileManager is already active in " + _path )
+    //else
+    //    CIE_THROW( std::runtime_error, "A FileManager is already active in " + _path )
 }
 
 

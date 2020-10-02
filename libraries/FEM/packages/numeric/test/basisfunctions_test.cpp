@@ -4,6 +4,7 @@
 // --- Utility Includes ---
 #include "cieutils/packages/concepts/inc/container_concepts.hpp"
 #include "cieutils/packages/stl_extension/inc/resize.hpp"
+#include "cieutils/packages/macros/inc/testing.hpp"
 
 // --- Internal Includes ---
 #include "FEM/packages/numeric/inc/basisfunctions.hpp"
@@ -20,6 +21,8 @@ namespace cie::fem
 
 TEST_CASE( "PolynomialBasisFunctionSet", "numeric" )
 {
+    CIE_TEST_CASE_INIT( "PolynomialBasisFunctionSet" )
+
     const Size dim = 2;
 
     typedef PolynomialBasisFunctionSet<dim,Double> Basis;
@@ -184,6 +187,8 @@ TEST_CASE( "PolynomialBasisFunctionSet", "numeric" )
 
 TEST_CASE( "LinearBasisFunctionSet", "[numeric]" )
 {
+    CIE_TEST_CASE_INIT( "LinearBasisFunctionSet" )
+
     const Size dim = 2;
     typedef LinearBasisFunctionSet<dim,Double> Basis;
 

@@ -1,6 +1,9 @@
 // --- External Includes ---
 #include "catch.hpp"
 
+// --- Utility Includes ---
+#include "cieutils/packages/macros/inc/testing.hpp"
+
 // --- Internal Includes ---
 #include "FEM/packages/physics/inc/abs_element_physics.hpp"
 #include "FEM/packages/discretization/inc/abs_element.hpp"
@@ -16,6 +19,8 @@ namespace cie::fem {
 
 TEST_CASE( "AbsElementPhysics", "[physics]" )
 {
+    CIE_TEST_CASE_INIT( "AbsElementPhysics" )
+
     const Size Dimension            = 1;
     const Size integrationOrder     = 5;
     using NT                        = Double;
