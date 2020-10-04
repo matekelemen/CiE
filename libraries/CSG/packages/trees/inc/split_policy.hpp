@@ -34,7 +34,7 @@ public:
 
 public:
     virtual point_type operator()(  ValueIterator it_valueBegin,
-                                    PointIterator it_valueEnd,
+                                    ValueIterator it_valueEnd,
                                     PointIterator it_pointBegin ) const = 0;
 };
 

@@ -18,7 +18,13 @@ class GridIndexConverter
 public:
     GridIndexConverter( Size numberOfPointsPerDimension );
 
+    /**
+     * Convert input to base numberOfPointsPerDimension
+    */
     const UIntArray<Dimension>& convert( Size index ) const;
+
+    //bool increment( UIntArray<Dimension>& r_index ) const;
+    //bool decrement( UIntArray<Dimension>& r_index ) const;
 
     Size numberOfPointsPerDimension() const;
     Size numberOfPoints() const;

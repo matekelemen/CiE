@@ -18,7 +18,7 @@
 namespace cie::csg {
 
 // ---------------------------------------------------------
-// ABSTRACT CELL
+// CELL INTERFACE
 // ---------------------------------------------------------
 
 /**
@@ -32,7 +32,7 @@ class AbsCell : public PrimitiveType
 public:
     using primitive_type                        = PrimitiveType;
     using cell_base_type                        = AbsCell<PrimitiveType>;
-
+    
     using primitive_constructor_container       = std::vector<typename primitive_type::primitive_constructor_arguments>;
     using primitive_constructor_container_ptr   = std::shared_ptr<primitive_constructor_container>;
 
@@ -44,13 +44,6 @@ public:
     */
     template <class ...Args>
     AbsCell( Args&&... args );
-
-    /**
-     * Convert a container of coordinates to point_type,
-     * and call the internal split function.
-    */
-    template <concepts::NumericContainer PointType>
-    primitive_constructor_container_ptr split( const PointType& point );
 
     /**
      * Split overload that doesn't attempt to convert the coordinate container
@@ -69,58 +62,50 @@ protected:
 
 
 // ---------------------------------------------------------
-// BOOLEAN PRIMITIVE CELLS
+// BASIC CELL TYPES
 // ---------------------------------------------------------
-namespace boolean {
-    
 
-template <  Size dimension,
-            concepts::NumericType CoordinateType = Double>
-class CubeCell :
-    public AbsCell<boolean::CSGCube<dimension,CoordinateType>>
+/* --- CubeCell --- */
+
+template <concepts::PrimitiveType CubeType>
+class CubeCell : public AbsCell<CubeType>
 {
 public:
-    template <class ContainerType>
-    CubeCell(   const ContainerType& base, 
-                CoordinateType length )
-    requires concepts::ClassContainer<ContainerType,CoordinateType>;
+    CubeCell(   const typename CubeCell<CubeType>::point_type& base, 
+                typename CubeCell<CubeType>::coordinate_type length );
+
+    typename CubeCell<CubeType>::primitive_constructor_container_ptr split( const typename CubeCell<CubeType>::point_type& r_point );
 
     /**
      * A cube will only produce subcubes when split if it's split at the
-     * midpoint, so this overload doesn't allow a point to be passed and
-     * shadows other AbsCell::split members.
+     * midpoint, so the actual split point is unnecessary and ignored.
     */
-    typename CubeCell<dimension,CoordinateType>::primitive_constructor_container_ptr split( );
+    typename CubeCell<CubeType>::primitive_constructor_container_ptr split( );
 
 protected:
-    virtual typename CubeCell<dimension,CoordinateType>::primitive_constructor_container_ptr split_internal( const typename CubeCell<dimension, CoordinateType>::point_type& point ) override;
+    virtual typename CubeCell<CubeType>::primitive_constructor_container_ptr split_internal( const typename CubeCell<CubeType>::point_type& point ) override;
 
 protected:
-    static const GridIndexConverter<dimension> _childIndexConverter;
+    static const GridIndexConverter<CubeType::dimension> _childIndexConverter;
 };
 
 
 
-template <  Size dimension,
-            concepts::NumericType CoordinateType = Double>
-class BoxCell :
-    public AbsCell<boolean::CSGBox<dimension,CoordinateType>>
+/* --- BoxCell --- */
+
+template <concepts::PrimitiveType BoxType>
+class BoxCell : public AbsCell<BoxType>
 {
 public:
-    template <class ContainerType1, class ContainerType2>
-    BoxCell(    const ContainerType1& base, 
-                const ContainerType2& lengths )
-    requires concepts::ClassContainer<ContainerType1,CoordinateType>
-                && concepts::ClassContainer<ContainerType2,CoordinateType>;
+    BoxCell(    const typename BoxCell<BoxType>::point_type& base, 
+                const typename BoxCell<BoxType>::point_type& lengths );
 
 protected:
-    virtual typename BoxCell<dimension,CoordinateType>::primitive_constructor_container_ptr split_internal( const typename BoxCell<dimension, CoordinateType>::point_type& point ) override;
+    virtual typename BoxCell<BoxType>::primitive_constructor_container_ptr split_internal( const typename BoxCell<BoxType>::point_type& point ) override;
 
 protected:
-    static const GridIndexConverter<dimension> _childIndexConverter;
+    static const GridIndexConverter<BoxType::dimension> _childIndexConverter;
 };
-
-} // namespace boolean
 
 
 } // namespace cie::csg

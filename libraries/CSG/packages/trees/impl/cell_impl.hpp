@@ -26,16 +26,6 @@ AbsCell<PrimitiveType>::AbsCell( Args&&... args ) :
 }
 
 
-template <concepts::PrimitiveType PrimitiveType>
-template <concepts::NumericContainer PointType>
-inline typename AbsCell<PrimitiveType>::primitive_constructor_container_ptr
-AbsCell<PrimitiveType>::split( const PointType& point )
-{
-    typename AbsCell<PrimitiveType>::point_type point_internal;
-    std::copy( point.begin(), point.end(), point_internal.begin() );
-    return this->split_internal(point_internal);
-}
-
 
 template <concepts::PrimitiveType PrimitiveType>
 inline typename AbsCell<PrimitiveType>::primitive_constructor_container_ptr
@@ -46,42 +36,38 @@ AbsCell<PrimitiveType>::split( const typename AbsCell<PrimitiveType>::point_type
 
 
 // ---------------------------------------------------------
-// BOOLEAN PRIMITIVE CELLS
+// BASIC CELL TYPES
 // ---------------------------------------------------------
-namespace boolean {
-
 
 /* --- CubeCell --- */
 
 // 2 children per dimension
-template <Size Dimension, concepts::NumericType CoordinateType>
-const GridIndexConverter<Dimension> 
-    CubeCell<Dimension,CoordinateType>::_childIndexConverter(2);
+template <concepts::PrimitiveType CubeType>
+const GridIndexConverter<CubeType::dimension>
+    CubeCell<CubeType>::_childIndexConverter(2);
 
 
-template <Size dimension, concepts::NumericType CoordinateType>
-template <class ContainerType>
-CubeCell<dimension,CoordinateType>::CubeCell(   const ContainerType& base, 
-                                                CoordinateType length )
-requires concepts::ClassContainer<ContainerType,CoordinateType> :
-    CubeCell<dimension,CoordinateType>::cell_base_type( base, length )
+template <concepts::PrimitiveType CubeType>
+CubeCell<CubeType>::CubeCell(   const typename CubeCell<CubeType>::point_type& base, 
+                                typename CubeCell<CubeType>::coordinate_type length ) :
+    CubeCell<CubeType>::cell_base_type( base, length )
 {
 }
 
 
-template <Size dimension, concepts::NumericType CoordinateType>
-inline typename CubeCell<dimension,CoordinateType>::primitive_constructor_container_ptr
-CubeCell<dimension,CoordinateType>::split_internal( const typename CubeCell<dimension,CoordinateType>::point_type& point )
+template <concepts::PrimitiveType CubeType>
+inline typename CubeCell<CubeType>::primitive_constructor_container_ptr
+CubeCell<CubeType>::split_internal( const typename CubeCell<CubeType>::point_type& point )
 {
-    auto constructorArgumentsContainerPtr = typename CubeCell<dimension,CoordinateType>::primitive_constructor_container_ptr(
-        new typename CubeCell<dimension,CoordinateType>::primitive_constructor_container
+    auto constructorArgumentsContainerPtr = typename CubeCell<CubeType>::primitive_constructor_container_ptr(
+        new typename CubeCell<CubeType>::primitive_constructor_container
     );
 
-    typename CubeCell<dimension,CoordinateType>::point_type tempBase;
+    typename CubeCell<CubeType>::point_type tempBase;
 
-    for (Size childIndex=0; childIndex < intPow(Size(2),dimension); ++childIndex)
+    for (Size childIndex=0; childIndex < intPow(Size(2),CubeCell<CubeType>::dimension); ++childIndex)
     {
-        for (Size dim=0; dim<dimension; ++dim)
+        for (Size dim=0; dim<CubeCell<CubeType>::dimension; ++dim)
         {
             if (_childIndexConverter.convert(childIndex)[dim] == 0)
                 tempBase[dim]   = this->_base[dim];
@@ -96,51 +82,53 @@ CubeCell<dimension,CoordinateType>::split_internal( const typename CubeCell<dime
 }
 
 
-template <Size dimension, concepts::NumericType CoordinateType>
-inline typename CubeCell<dimension,CoordinateType>::primitive_constructor_container_ptr
-CubeCell<dimension,CoordinateType>::split( )
+
+template <concepts::PrimitiveType CubeType>
+inline typename CubeCell<CubeType>::primitive_constructor_container_ptr
+CubeCell<CubeType>::split( const typename CubeCell<CubeType>::point_type& r_point )
 {
-    return this->split_internal( typename CubeCell<dimension,CoordinateType>::point_type() );
+    return AbsCell<CubeType>::split(r_point);
+}
+
+
+template <concepts::PrimitiveType CubeType>
+inline typename CubeCell<CubeType>::primitive_constructor_container_ptr
+CubeCell<CubeType>::split( )
+{
+    return this->split_internal( typename CubeCell<CubeType>::point_type() );
 }
 
 
 /* --- BoxCell --- */
 
 // 2 children per dimension
-template <Size Dimension, concepts::NumericType CoordinateType>
-const GridIndexConverter<Dimension> 
-    BoxCell<Dimension,CoordinateType>::_childIndexConverter(2);
+template <concepts::PrimitiveType BoxType>
+const GridIndexConverter<BoxType::dimension> 
+    BoxCell<BoxType>::_childIndexConverter(2);
 
 
-template <Size dimension, concepts::NumericType CoordinateType>
-template <class ContainerType1, class ContainerType2>
-BoxCell<dimension,CoordinateType>::BoxCell( const ContainerType1& base, 
-                                            const ContainerType2& lengths )
-requires concepts::ClassContainer<ContainerType1,CoordinateType>
-            && concepts::ClassContainer<ContainerType2,CoordinateType> :
-    BoxCell<dimension,CoordinateType>::cell_base_type( base, lengths )
+template <concepts::PrimitiveType BoxType>
+BoxCell<BoxType>::BoxCell(  const typename BoxCell<BoxType>::point_type& base, 
+                            const typename BoxCell<BoxType>::point_type& lengths ) :
+    BoxCell<BoxType>::cell_base_type( base, lengths )
 {
 }
 
 
-template <Size dimension, concepts::NumericType CoordinateType>
-inline typename BoxCell<dimension,CoordinateType>::primitive_constructor_container_ptr
-BoxCell<dimension,CoordinateType>::split_internal( const typename BoxCell<dimension,CoordinateType>::point_type& point )
+template <concepts::PrimitiveType BoxType>
+inline typename BoxCell<BoxType>::primitive_constructor_container_ptr
+BoxCell<BoxType>::split_internal( const typename BoxCell<BoxType>::point_type& point )
 {
-    CIE_RUNTIME_GEOMETRY_ASSERT(    this->evaluate(point),
-                                    "Cannot split geometry using a point outside it!",
-                                    "BoxCellTemplate::split")
-
-    auto constructorArgumentsContainerPtr = typename BoxCell<dimension,CoordinateType>::primitive_constructor_container_ptr(
-        new typename BoxCell<dimension,CoordinateType>::primitive_constructor_container
+    auto constructorArgumentsContainerPtr = typename BoxCell<BoxType>::primitive_constructor_container_ptr(
+        new typename BoxCell<BoxType>::primitive_constructor_container
     );
 
-    typename BoxCell<dimension,CoordinateType>::point_type tempBase;
-    typename BoxCell<dimension,CoordinateType>::point_type tempLengths;
+    typename BoxCell<BoxType>::point_type tempBase;
+    typename BoxCell<BoxType>::point_type tempLengths;
 
-    for (Size childIndex=0; childIndex < intPow(Size(2),dimension); ++childIndex)
+    for (Size childIndex=0; childIndex < intPow(Size(2),BoxCell<BoxType>::dimension); ++childIndex)
     {
-        for (Size dim=0; dim<dimension; ++dim)
+        for (Size dim=0; dim<BoxCell<BoxType>::dimension; ++dim)
         {
             if (_childIndexConverter.convert(childIndex)[dim] == 0)
             {
@@ -159,9 +147,6 @@ BoxCell<dimension,CoordinateType>::split_internal( const typename BoxCell<dimens
 
     return constructorArgumentsContainerPtr;
 }
-
-
-} // namespace boolean
 
 
 

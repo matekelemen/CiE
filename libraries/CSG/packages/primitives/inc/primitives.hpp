@@ -41,6 +41,7 @@ struct is_primitive
         void
     >
 > : public std::true_type {};
+
 } // namespace detail
 
 /**
@@ -64,9 +65,9 @@ namespace cie::csg {
 /**
  * Cube template
 */
-template <  Size N, 
+template <  Size Dimension,
             concepts::NumericType CoordinateType = Double>
-class Cube : public CSGTraits<N,CoordinateType>
+class Cube : public CSGTraits<Dimension,CoordinateType>
 {
 public:
     using primitive_constructor_arguments

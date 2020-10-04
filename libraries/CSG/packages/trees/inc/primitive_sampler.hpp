@@ -35,7 +35,7 @@ public:
 
 
 template <class PrimitiveType>
-using PrimitiveSamplerPtr   = std::shared_ptr<PrimitiveType>;
+using PrimitiveSamplerPtr   = std::shared_ptr<PrimitiveSampler<PrimitiveType>>;
 
 
 

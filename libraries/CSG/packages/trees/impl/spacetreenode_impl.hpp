@@ -1,33 +1,195 @@
 #ifndef CIE_CSG_SPACETREENODE_IMPL_HPP
 #define CIE_CSG_SPACETREENODE_IMPL_HPP
 
+// --- Utility Includes ---
+#include "cieutils/packages/macros/inc/exceptions.hpp"
+#include "cieutils/packages/stl_extension/inc/resize.hpp"
+#include "cieutils/packages/stl_extension/inc/make_shared_from_tuple.hpp"
+
 // --- Internal Includes ---
 #include "cmake_variables.hpp"
 
 // --- STL Includes ---
-#include <string>
-#include <iostream>
-#include <cmath>
+#include <tuple>
+
 
 namespace cie::csg {
-
 
 
 template <  class CellType,
             class ValueType >
 template <class ...Args>
-SpaceTreeNode<CellType,ValueType>::SpaceTreeNode(   PrimitiveSamplerPtr<CellType> p_sampler,
+SpaceTreeNode<CellType,ValueType>::SpaceTreeNode(   typename SpaceTreeNode<CellType,ValueType>::sampler_ptr p_sampler,
                                                     typename SpaceTreeNode<CellType,ValueType>::split_policy_ptr p_splitPolicy,
                                                     Size level,
                                                     Args&&... args ) :
     CellType( std::forward<Args>(args)... ),
     utils::AbsTree<std::vector,SpaceTreeNode<CellType,ValueType>>( level ),
+    _p_splitPolicy( p_splitPolicy ),
     _p_sampler( p_sampler ),
-    _p_splitPolicy( p_splitPolicy )
+    _isBoundary(-1)
 {
 }
 
 
+template <  class CellType,
+            class ValueType >
+inline bool
+SpaceTreeNode<CellType,ValueType>::divide(  const TargetFunction<typename CellType::point_type,ValueType>& r_target,
+                                            Size level )
+{
+    // Do nothing if this is the last level
+    if ( this->_level >= level )
+        return false;
+
+    // Evaluate target and set boundary flag
+    evaluate( r_target );
+
+    // Split if boundary
+    if ( _isBoundary )
+    {
+        auto splitPoint = _p_splitPolicy->operator()(
+            _values.begin(),
+            _values.end(),
+            typename SpaceTreeNode<CellType,ValueType>::sample_point_iterator(0,*this)
+        );
+
+        auto nodeConstructor    = std::make_tuple(  _p_sampler,
+                                                    _p_splitPolicy,
+                                                    this->_level + 1 );
+        auto p_cellConstructors = this->split( splitPoint );
+
+        for ( const auto& cellConstructor : *p_cellConstructors )
+        {
+            auto compoundConstructor = std::tuple_cat(nodeConstructor,cellConstructor);
+            this->_children.push_back(
+                utils::make_shared_from_tuple<SpaceTreeNode<CellType,ValueType>>(compoundConstructor)
+            );
+            this->_children.back()->divide( r_target, level );
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+
+
+template <  class CellType,
+            class ValueType >
+inline void
+SpaceTreeNode<CellType,ValueType>::evaluate( const TargetFunction<typename CellType::point_type,ValueType>& r_target )
+{
+    _isBoundary = -1;
+    cie::utils::resize( _values, _p_sampler->size() );
+    auto it_value = _values.begin();
+    typename SpaceTreeNode<CellType,ValueType>::sample_point_iterator it_point(0,*this);
+
+    // Evaluate first point separately
+    *it_value = r_target(*it_point++);
+    bool isFirstValuePositive = *it_value > 0;
+    it_value++;
+
+    // Evaluate the rest of the points
+    for ( ; it_value!=_values.end(); ++it_value,++it_point )
+    {
+        *it_value = r_target(*it_point);
+
+        // Boundary check
+        if ( ((*it_value>0) != isFirstValuePositive) && (_isBoundary < 0)  )
+            _isBoundary = 1;
+    }
+
+    // If the boundary flag hasn't been modified -> not a boundary
+    if ( _isBoundary < 0 )
+        _isBoundary = 0;
+}
+
+
+
+template <  class CellType,
+            class ValueType >
+inline void
+SpaceTreeNode<CellType,ValueType>::clear()
+{
+    // Clear data
+    _values.clear();
+    for ( auto& p_child : this->_children )
+        p_child->clear();
+    
+    // Reset flags
+    _isBoundary = -1;
+}
+
+
+
+template <  class CellType,
+            class ValueType >
+inline bool
+SpaceTreeNode<CellType,ValueType>::isBoundary() const
+{
+    if ( _isBoundary < 0 )
+        CIE_THROW( std::runtime_error, "SpaceTreeNode::isBoundary expects the node to be evaluated" )
+
+    return _isBoundary==0 ? false : true;
+}
+
+
+
+template <  class CellType,
+            class ValueType >
+inline void
+SpaceTreeNode<CellType,ValueType>::setSplitPolicy( typename SpaceTreeNode<CellType,ValueType>::split_policy_ptr p_splitPolicy )
+{
+    _p_splitPolicy = p_splitPolicy;
+    this->_children.clear();
+}
+
+
+
+template <  class CellType,
+            class ValueType >
+inline void
+SpaceTreeNode<CellType,ValueType>::setSampler( typename SpaceTreeNode<CellType,ValueType>::sampler_ptr p_sampler )
+{
+    // Set pointer
+    _p_sampler = p_sampler;
+    _values.clear();
+
+    // Reset flags
+    _isBoundary = -1;
+}
+
+
+
+template <  class CellType,
+            class ValueType >
+inline const typename SpaceTreeNode<CellType,ValueType>::split_policy_ptr&
+SpaceTreeNode<CellType,ValueType>::splitPolicy() const
+{
+    return _p_splitPolicy;
+}
+
+
+
+template <  class CellType,
+            class ValueType >
+inline const typename SpaceTreeNode<CellType,ValueType>::value_container_type&
+SpaceTreeNode<CellType,ValueType>::values() const
+{
+    return _values;
+}
+
+
+
+template <  class CellType,
+            class ValueType >
+inline const typename SpaceTreeNode<CellType,ValueType>::sampler_ptr&
+SpaceTreeNode<CellType,ValueType>::sampler() const
+{
+    return _p_sampler;
+}
 
 
 

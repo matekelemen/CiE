@@ -10,6 +10,7 @@
 // --- Internal Includes ---
 #include "CSG/packages/trees/inc/cell.hpp"
 #include "CSG/packages/trees/inc/split_policy.hpp"
+#include "CSG/packages/trees/inc/indexconverter.hpp"
 
 // --- STL Includes ---
 #include <deque>
@@ -37,26 +38,38 @@ class SpaceTreeNode :
     public utils::AbsTree<std::vector,SpaceTreeNode<CellType,ValueType>>
 {
 public:
+    /**
+     * Point iterator that lazily generates sample points. 
+    */
     struct sample_point_iterator
     {
         typedef typename SpaceTreeNode::point_type  value_type;
-        typedef Size                                difference_type;
+        typedef int                                 difference_type;
         typedef value_type*                         pointer;
-        typedef value_type&                         reference; 
+        typedef value_type&                         reference;
+        typedef std::random_access_iterator_tag     iterator_category;
 
-        sample_point_iterator( Size counter ) : _counter(counter)   {}
-        sample_point_iterator() : sample_point_iterator(0)          {}
+        sample_point_iterator( Size counter, const SpaceTreeNode<CellType,ValueType>& r_node ) :
+            _counter(counter),
+            _r_node( r_node )
+        {}
         sample_point_iterator& operator++()                         { ++_counter; return *this; };
         sample_point_iterator& operator++(int)                      { _counter++; return *this; }
         sample_point_iterator& operator--()                         { --_counter; return *this; }
         sample_point_iterator& operator--(int)                      { _counter--; return *this; }
         sample_point_iterator& operator+=( Size offset )            { _counter += offset; return *this; }
         sample_point_iterator& operator-=( Size offset )            { _counter -= offset; return *this; }
-        value_type operator*()                                      { /* TODO */ return value_type(); };
-        bool operator!=( sample_point_iterator rhs )                { return this->_counter != rhs._counter;}
+        const value_type& operator*()                               { _point = _r_node._p_sampler->getSamplePoint(_r_node,_counter); return _point; }
+        value_type const* operator->()                              { return &_point; }
+        bool operator!=( const sample_point_iterator& r_rhs )       { return this->_counter != r_rhs._counter;}
+
+    protected:
+        const value_type& get() const                               { return _point; }
 
     private:
-        Size _counter;
+        Size                                        _counter;
+        const SpaceTreeNode<CellType,ValueType>&    _r_node;
+        value_type                                  _point;
     };
 
 public:
@@ -65,27 +78,65 @@ public:
     using value_container_type  = std::vector<value_type>;
     using value_iterator        = typename value_container_type::const_iterator;
 
+    using sampler_ptr           = PrimitiveSamplerPtr<typename CellType::primitive_type>;
     using split_policy_ptr      = SplitPolicyPtr<sample_point_iterator,value_iterator>;
 
 public:
-
     /**
      * Constructor that forwards its arguments to the 
      * constructor of its primitive (through the cell constructor).
     */
     template <class ...Args>
-    SpaceTreeNode(  PrimitiveSamplerPtr<CellType> p_sampler,
+    SpaceTreeNode(  sampler_ptr p_sampler,
                     split_policy_ptr p_splitPolicy,
                     Size level,
                     Args&&... args );
 
+    /**
+     * Evaluate the target function at all sample points and split the
+     * node if the results have mixed signs.
+    */
+    bool divide(    const TargetFunction<typename CellType::point_type,value_type>& r_target,
+                    Size level );
 
+    /**
+     * Evaluate the target function at all sample points and store the results.
+    */ 
+    virtual void evaluate( const TargetFunction<typename CellType::point_type,value_type>& r_target );
+
+    /**
+     * Clear data container and call clear on children.
+    */
+    void clear();
+
+    /**
+     * Check whether this cell is cut.
+     * The node needs to be in an evaluated stat, otherwise
+     * an exception is thrown.
+    */
+    bool isBoundary() const;
+
+    void setSplitPolicy( split_policy_ptr p_splitPolicy );
+    void setSampler( sampler_ptr p_sampler );
+
+    const split_policy_ptr& splitPolicy() const;
+    const value_container_type& values() const;
+    const sampler_ptr& sampler() const;
 
 protected:
-    PrimitiveSamplerPtr<CellType>   _p_sampler;
-    split_policy_ptr                _p_splitPolicy;
-    value_container_type            _values;
+    split_policy_ptr        _p_splitPolicy;
+
+private:
+    value_container_type    _values;
+    sampler_ptr             _p_sampler;
+    int8_t                  _isBoundary; // 1:true 0:false -1:unevaluated
 };
+
+
+
+template <class CellType, class ValueType>
+using SpaceTreeNodePtr = std::shared_ptr<SpaceTreeNode<CellType,ValueType>>;
+
 
 
 /*

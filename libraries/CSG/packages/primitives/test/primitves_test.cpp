@@ -21,8 +21,12 @@ TEST_CASE( "boolean::CSGCube", "[primitives]" )
     CIE_TEST_CASE_INIT( "boolean::CSGCube" )
 
     const Size dimension = 2;
+
+    REQUIRE_NOTHROW( CSGCube<dimension,Double>(DoubleArray<dimension>({10.0,20.0}),2.0) );
     CSGCube<dimension,Double> cube( DoubleArray<dimension>({10.0,20.0}), 
                                     2.0 );
+    CHECK( CSGCube<dimension,Double>::dimension == dimension );
+
     DoubleArray<dimension> point = {0.0, 0.0};
 
     REQUIRE_NOTHROW( cube.evaluate(point) );

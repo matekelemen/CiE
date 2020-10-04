@@ -59,7 +59,7 @@ GridIndexConverter<Dimension>::setNumberOfPointsPerDimension( Size numberOfPoint
 
     cie::utils::resize( _gridIndices, _numberOfPoints );
     for ( Size i=0; i<_numberOfPoints; ++i )
-        utils::baseN( i, Dimension, _gridIndices[i] );
+        utils::baseN( i, numberOfPointsPerDimension, _gridIndices[i] );
 
     return *this;
 }

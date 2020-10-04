@@ -24,6 +24,11 @@ public:
 };
 
 
+template <Size Dimension, concepts::NumericType CoordinateType>
+const Size
+CSGTraits<Dimension,CoordinateType>::dimension;
+
+
 /**
  * Interface for point-queriable objects
 */
