@@ -181,12 +181,11 @@ Logger& Logger::separate()
 {
     // TODO: separator behaviour is hard-coded
     const char separatorCharacter   = '-';
-    const Size tabWidth             = 4;
     const Size lineWidth            = 60;
 
     Size numberOfSeparators         = 0;
-    if ( lineWidth > tabWidth*_prefix.size() )
-        numberOfSeparators = lineWidth - tabWidth*_prefix.size();
+    if ( lineWidth > _prefix.size() )
+        numberOfSeparators = lineWidth - _prefix.size();
 
     return log( std::string( numberOfSeparators, separatorCharacter ),
                 true );
@@ -195,15 +194,17 @@ Logger& Logger::separate()
 
 Logger& Logger::increaseIndent()
 {
-    _prefix += "\t";
+    _prefix += "    ";
     return *this;
 }
 
 
 Logger& Logger::decreaseIndent()
 {
-    if (_prefix.back() == '\t')
-        _prefix.pop_back();
+    if ( _prefix.size() >= 4 )
+        _prefix.resize( _prefix.size() - 4 );
+    else
+        _prefix.clear();
     return *this;
 }
 

@@ -24,7 +24,7 @@ struct is_iterator<T, typename std::enable_if<!std::is_same_v<typename std::iter
    static constexpr bool value = true;
 };
 
-}
+} // namespace detail
 
 
 template <class T>
