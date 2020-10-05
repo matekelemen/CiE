@@ -1,8 +1,7 @@
-/*
+// --- Internal Includes ---
 #include "../inc/collectnodes.hpp"
 
-namespace cie {
-namespace csg {
+namespace cie::csg {
 
 
 TreeData::TreeData() :
@@ -13,58 +12,43 @@ TreeData::TreeData() :
 }
 
 
-int checkBoundary(const SpaceTreeNode<N,M>& root)
-{
-    bool result = root.data()[0] > 0.0;
-
-    if (root.children()[0] == nullptr)
-    {
-        for (auto it=root.data().begin()+1; it!=root.data().end(); ++it)
-        {
-            if ( ((*it)>0.0) != result )
-            {
-                return 1;
-            }
-        }
-    }
-
-    return 0;
-}
-
-
 TreeData collectNodes(const DynamicTree& root)
 {
     TreeData data;
 
     collectNodesRecursive(  root,
-                            data._centers,
-                            data._edgeLengths,
-                            data._boundaries    );
+                            data.centers(),
+                            data.edgeLengths(),
+                            data.boundaries()    );
     return data;
 }
 
 
-void collectNodesRecursive(     const SpaceTreeNode<N,M>& root,
-                                std::vector<DoubleArray<N>>& centers,
-                                DoubleVector& edgeLengths,
-                                std::vector<int>& boundaries)
+void collectNodesRecursive(     const NodeType& r_root,
+                                std::vector<PointType>& r_centers,
+                                DoubleVector& r_edgeLengths,
+                                std::vector<int>& r_boundaries)
 {
-    centers.push_back( root.center() );
-    edgeLengths.push_back( root.edgeLength() );
-    boundaries.push_back(checkBoundary(root));
+    auto center     = r_root.base();
+    auto edgeLength = r_root.length();
 
-    for (auto it=root.children().begin(); it!=root.children().end(); ++it)
+    for ( auto& component : center )
+        component += edgeLength / 2.0;
+
+    r_centers.push_back( center );
+    r_edgeLengths.push_back( edgeLength );
+    r_boundaries.push_back( r_root.isBoundary() );
+
+    for ( auto& rp_child : r_root.children() )
     {
-        if (*it!=nullptr)
-            collectNodesRecursive(  **it,
-                                    centers,
-                                    edgeLengths,
-                                    boundaries);
+        if ( rp_child != nullptr )
+            collectNodesRecursive(  *rp_child,
+                                    r_centers,
+                                    r_edgeLengths,
+                                    r_boundaries);
         else break;
     }
 }
 
 
-}
-}
-*/
+} // namespace cie::csg

@@ -5,11 +5,11 @@
 namespace cie::gl {
 
 
-template <size_t M>
-SpaceTreeDrawManager<M>::SpaceTreeDrawManager(  csg::SpaceTreeNode<3,M>& root,
-                                                GLContext& context  ) :
-    DrawManager(context, "SpaceTreeDrawManager"),
-    _root( &root ),
+template <concepts::Cube NodeType>
+SpaceTreeDrawManager<NodeType>::SpaceTreeDrawManager(   NodeType& r_root,
+                                                        GLContext& r_context  ) :
+    DrawManager( r_context, "SpaceTreeDrawManager" ),
+    _r_root( r_root ),
     _drawFunction( nullptr )
 {
     _shaderManager.setVertexShader( "pointVertexShader.glsl" );
@@ -19,56 +19,45 @@ SpaceTreeDrawManager<M>::SpaceTreeDrawManager(  csg::SpaceTreeNode<3,M>& root,
 }
 
 
-template <size_t M>
-void SpaceTreeDrawManager<M>::collectNodesToBuffer()
+template <concepts::Cube NodeType>
+void SpaceTreeDrawManager<NodeType>::collectNodesToBuffer()
 {
     std::vector<GLfloat> vertexData;
 
     // Define recursive node collecting function
-    std::function<void(const csg::SpaceTreeNode<3,M>&, std::vector<GLfloat>&)> collectNodes = [&collectNodes]( const csg::SpaceTreeNode<3,M>& root, std::vector<GLfloat>& nodes )
+    auto collectNodes = [&vertexData]( NodeType* p_root ) -> Bool
     {
-        if (root.children()[0] != nullptr )
+        if ( p_root->children().empty() && p_root->isBoundary() )
         {
-            #ifndef MSVC
-            #pragma omp task shared(root,nodes)
-            #endif
-            for( const auto& child : root.children() )
-                if (child != nullptr)
-                    collectNodes( *child, nodes );
-        }
-        else
-        {
-            bool boundary   = false;
-            bool indicator  = root.data()[0] > 0.0;
-            for (const auto& data : root.data())
-                if ((data>0.0) != indicator)
-                {
-                    boundary = true;
-                    break;
-                }
 
-            if (boundary)
-            {
-                #pragma omp critical(SpaceTreeDrawManager_collectNodes)
-                nodes.insert( nodes.end(), root.center().begin(), root.center().end() );
-                // Uncomment for complete cell representation (needs matching spacetree shaders)
-                //nodes.push_back( (GLfloat)root.edgeLength() );
-            }
+            auto center     = p_root->base();
+            auto halfLength = p_root->length() / 2.0;
+
+            for ( auto& r_component : center )
+                r_component += halfLength;
+
+            vertexData.insert(  vertexData.end(),
+                                center.begin(),
+                                center.end() );
+            // Uncomment for complete cell representation (needs matching spacetree shaders)
+            //nodes.push_back( (GLfloat)root.edgeLength() );
         }
+        return true;
     };
 
     // Collect nodes and write to buffer
     #pragma omp parallel
     #pragma omp single
-    collectNodes( *_root, vertexData );
+    _r_root.visit( collectNodes );
 
     _buffers.writeToActiveBuffer( GL_ARRAY_BUFFER, vertexData );
     checkGLErrors();
 }
 
 
-template <size_t M>
-void SpaceTreeDrawManager<M>::initialize()
+
+template <concepts::Cube NodeType>
+void SpaceTreeDrawManager<NodeType>::initialize()
 {
     DrawManager::initialize();
     log( "Run SpaceTreeDrawManager initialization" );
@@ -76,8 +65,9 @@ void SpaceTreeDrawManager<M>::initialize()
 }
 
 
-template <size_t M>
-bool SpaceTreeDrawManager<M>::draw()
+
+template <concepts::Cube NodeType>
+bool SpaceTreeDrawManager<NodeType>::draw()
 {
     DrawManager::draw();
 
@@ -99,8 +89,9 @@ bool SpaceTreeDrawManager<M>::draw()
 }
 
 
-template <size_t M>
-void SpaceTreeDrawManager<M>::setDrawFunction( const std::function<bool()>& function )
+
+template <concepts::Cube NodeType>
+void SpaceTreeDrawManager<NodeType>::setDrawFunction( const std::function<bool()>& function )
 {
     _drawFunction = function;
 }

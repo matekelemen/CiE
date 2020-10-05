@@ -1,10 +1,11 @@
 #ifndef DROPMERGE_MERGE_FUNCTION_IMPL_HPP
 #define DROPMERGE_MERGE_FUNCTION_IMPL_HPP
 
+// --- STL Includes ---
 #include <algorithm>
+#include <cmath>
 
-namespace cie {
-namespace csg {
+namespace cie::csg {
 
 
 static size_t mergeCounter;
@@ -33,14 +34,13 @@ double exponentialMergeFunction( const DoubleArray<D>& point, double offset )
                     point.end(), 
                     [&result](auto value){result+=value*value;} );
 
-    result =    exp( -result - (point[0]-offset)*(point[0]-offset) )
-                + exp( -result - (point[0]+offset)*(point[0]+offset) );
+    result =    std::exp( -result - (point[0]-offset)*(point[0]-offset) )
+                + std::exp( -result - (point[0]+offset)*(point[0]+offset) );
 
     return 0.75 - result;
 }
 
 
-}
-}
+} // namespace cie::csg
 
 #endif

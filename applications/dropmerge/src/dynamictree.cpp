@@ -1,36 +1,39 @@
-/*
+
+// --- Internal Includes --
 #include "../inc/dynamictree.hpp"
 
-namespace cie {
-namespace csg {
+namespace cie::csg {
 
 
-DynamicTree::DynamicTree(   const DoubleArray<N>& center, 
-                            double edgeLength ) :
-    SpaceTreeNode<N,M>(center, edgeLength),
-    _drop(exponentialMergeFunction<N>),
+DynamicTree::DynamicTree(   const PointType& base, 
+                            CoordinateType edgeLength,
+                            Size level ) :
+    NodeType(
+        typename NodeType::sampler_ptr( new SamplerType(numberOfPointsPerDimension) ),
+        typename NodeType::split_policy_ptr( new SplitterType ),
+        level,
+        base,
+        edgeLength
+    ),
+    _drop(exponentialMergeFunction<Dimension>),
     _offset(0.0)
 {
-    _geometry = [this](const DoubleArray<N>& point)
-                    {return this->_drop(point,_offset);};
-    SpaceTreeNode<N,M>::evaluate(_geometry);
+    _geometry = [this](const PointType& r_point)
+                    {return this->_drop(r_point,_offset);};
 }
 
 
 void DynamicTree::divide(size_t level)
 {
-    SpaceTreeNode<N,M>::divide(_geometry, level);
+    NodeType::divide(_geometry, level);
 }
 
 
 void DynamicTree::offset(double value)
 {
-    SpaceTreeNode<N,M>::wipe();
+    NodeType::clear();
     _offset = value;
-    SpaceTreeNode<N,M>::evaluate(_geometry);
 }
 
 
-}
-}
-*/
+} // namespace cie::csg

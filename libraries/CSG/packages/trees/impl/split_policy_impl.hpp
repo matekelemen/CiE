@@ -7,6 +7,7 @@
 
 // --- STL Includes ---
 #include <algorithm>
+#include <numeric>
 #include <limits>
 
 

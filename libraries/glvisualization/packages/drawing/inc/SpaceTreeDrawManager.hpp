@@ -11,15 +11,32 @@
 #include <functional>
 
 
+
+/**
+ * Support cube cells only (for now)
+*/
+namespace cie::concepts {
+template <class T>
+concept Cube
+=  PrimitiveType<T>
+    && requires ( T instance )
+    {
+        { instance.base() }     -> std::same_as<typename T::point_type&>;
+        { instance.length() }   -> std::same_as<typename T::coordinate_type&>;
+    };
+} // namespace cie::concepts
+
+
+
 namespace cie::gl {
 
-/*
-template <size_t M>
+
+template <concepts::Cube NodeType>
 class SpaceTreeDrawManager final : public gl::DrawManager
 {
 public:
-    SpaceTreeDrawManager(   csg::SpaceTreeNode<3,M>& root,
-                            gl::GLContext& context  );
+    SpaceTreeDrawManager(   NodeType& r_root,
+                            gl::GLContext& r_context  );
 
     void collectNodesToBuffer();
     void initialize() override;
@@ -28,12 +45,12 @@ public:
     void setDrawFunction( const std::function<bool()>& function );
 
 private:
-    csg::SpaceTreeNode<3,M>*    _root;
-    std::function<bool()>       _drawFunction;
+    NodeType&               _r_root;
+    std::function<bool()>   _drawFunction;
 };
 
 } // namespace cie::gl
 
 #include "glvisualization/packages/drawing/impl/SpaceTreeDrawManager_impl.hpp"
-*/
+
 #endif
