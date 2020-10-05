@@ -12,11 +12,8 @@
 
 namespace cie::csg {
 
-// Problem settings
-const Size depth = 7;
 
-
-int main(std::function<ValueType(const PointType&,Double)> targetFunction, Double speed = 1.0)
+int main(std::function<ValueType(const PointType&,Double)> targetFunction, Double speed = 1.0, Size depth = 6)
 {
     // Initialize target function
     mergeCounter    = 0;
@@ -41,7 +38,7 @@ int main(std::function<ValueType(const PointType&,Double)> targetFunction, Doubl
     gl::SpaceTreeDrawManager<NodeType> manager(root,context);
     double time = glfwGetTime();
 
-    manager.setDrawFunction( [&manager, &root, &time, targetFunction, speed]()
+    manager.setDrawFunction( [&manager, &root, &time, targetFunction, speed, depth]()
         { 
             if (glfwGetTime()-time > 1.0/144.0)
             {
@@ -54,7 +51,15 @@ int main(std::function<ValueType(const PointType&,Double)> targetFunction, Doubl
 
                 auto timerID = manager.tic();
                 root.clear();
+
+                #pragma omp parallel
+                {
+                #pragma omp single
+                {
                 root.divide(target,depth);
+                }
+                }
+
                 manager.toc( "Dividing took", timerID );
                 manager.collectNodesToBuffer();
             }
@@ -94,14 +99,17 @@ int main(std::function<ValueType(const PointType&,Double)> targetFunction, Doubl
 int main(int argc, char *argv[])
 {
     // Parse argument (animation speed)
-    double speed = 1.0;
+    double speed    = 1.0;
+    int depth       = 6;
     if (argc>1)
         speed = std::atof(argv[1]);
+    if (argc>2)
+        depth = std::atoi(argv[2]);
 
     auto targetFunction =  [](const cie::csg::PointType& r_point, double offset) 
         {return cie::csg::exponentialMergeFunction<3>(r_point,offset);};
 
-    cie::csg::main(targetFunction, speed);
+    cie::csg::main(targetFunction, speed, depth);
     std::cout << "\nTotal merge function calls: " << cie::csg::mergeCounter << "\n";
 
     return 0;
