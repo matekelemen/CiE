@@ -14,7 +14,7 @@ LIST( INSERT CSG_TEST_FILES 0 ${CSG_TEST_DRIVER} )
 # LIBRARIES AND EXECUTABLES
 # ---------------------------------------------------------
 ADD_SHARED_LIBRARY( csg ${CSG_SOURCE_FILES} ${CSG_HEADER_FILES}  )
-TARGET_LINK_LIBRARIES_INSTALL( csg linalg )
+TARGET_LINK_LIBRARIES_INSTALL( csg linalg pugixml )
 
 add_executable( csg_testrunner ${CSG_TEST_FILES} )
 TARGET_LINK_LIBRARIES_INSTALL( csg_testrunner csg linalg )

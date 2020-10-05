@@ -5,6 +5,7 @@
 #include "cieutils/packages/exceptions/inc/exception.hpp"
 #include "cieutils/packages/stl_extension/inc/resize.hpp"
 #include "cieutils/packages/maths/inc/power.hpp"
+#include "cieutils/packages/macros/inc/checks.hpp"
 
 // --- Internal Includes ---
 #include "CSG/packages/trees/inc/indexconverter.hpp"
@@ -59,7 +60,7 @@ template <concepts::PrimitiveType CubeType>
 inline typename CubeCell<CubeType>::primitive_constructor_container_ptr
 CubeCell<CubeType>::split_internal( const typename CubeCell<CubeType>::point_type& point )
 {
-    auto constructorArgumentsContainerPtr = typename CubeCell<CubeType>::primitive_constructor_container_ptr(
+    auto p_constructorArgumentsContainer = typename CubeCell<CubeType>::primitive_constructor_container_ptr(
         new typename CubeCell<CubeType>::primitive_constructor_container
     );
 
@@ -75,10 +76,10 @@ CubeCell<CubeType>::split_internal( const typename CubeCell<CubeType>::point_typ
                 tempBase[dim]   = this->_base[dim] + this->_length/2.0;
         }
 
-        constructorArgumentsContainerPtr->emplace_back( tempBase, this->_length/2.0 );
+        p_constructorArgumentsContainer->emplace_back( tempBase, this->_length/2.0 );
     }
 
-    return constructorArgumentsContainerPtr;
+    return p_constructorArgumentsContainer;
 }
 
 
@@ -119,12 +120,11 @@ template <concepts::PrimitiveType BoxType>
 inline typename BoxCell<BoxType>::primitive_constructor_container_ptr
 BoxCell<BoxType>::split_internal( const typename BoxCell<BoxType>::point_type& point )
 {
-    auto constructorArgumentsContainerPtr = typename BoxCell<BoxType>::primitive_constructor_container_ptr(
+    auto p_constructorArgumentsContainer = typename BoxCell<BoxType>::primitive_constructor_container_ptr(
         new typename BoxCell<BoxType>::primitive_constructor_container
     );
 
-    typename BoxCell<BoxType>::point_type tempBase;
-    typename BoxCell<BoxType>::point_type tempLengths;
+    typename BoxCell<BoxType>::point_type tempBase, tempLengths;
 
     for (Size childIndex=0; childIndex < intPow(Size(2),BoxCell<BoxType>::dimension); ++childIndex)
     {
@@ -142,10 +142,10 @@ BoxCell<BoxType>::split_internal( const typename BoxCell<BoxType>::point_type& p
             }
         }
 
-        constructorArgumentsContainerPtr->emplace_back( tempBase, tempLengths );
+        p_constructorArgumentsContainer->emplace_back( tempBase, tempLengths );
     }
 
-    return constructorArgumentsContainerPtr;
+    return p_constructorArgumentsContainer;
 }
 
 

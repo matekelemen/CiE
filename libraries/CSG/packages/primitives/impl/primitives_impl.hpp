@@ -24,9 +24,24 @@ Cube<N,CoordinateType>::Cube(   const ContainerType& base,
 {
     CIE_OUT_OF_RANGE_ASSERT( base.size() == N, "Cube::Cube" )
 
+    CIE_RUNTIME_GEOMETRY_ASSERT(
+        length >= 0,
+        "Edge length of a cube must be non-negative",
+        "Cube::Cube"
+    )
+
     std::copy(  base.begin(),
                 base.end(),
                 _base.begin() );
+}
+
+
+template < Size Dimension,
+           concepts::NumericType CoordinateType >
+inline Bool
+Cube<Dimension,CoordinateType>::isDegenerate() const
+{
+    return _length < 1e-16 ? true : false;
 }
 
 
@@ -77,12 +92,45 @@ Box<N,CoordinateType>::Box( const ContainerType1& base,
     CIE_OUT_OF_RANGE_ASSERT( base.size() == N, "Box::Box" )
     CIE_OUT_OF_RANGE_ASSERT( lengths.size() == N, "Box::Box" )
 
+    #ifdef CIE_ENABLE_RUNTIME_GEOMETRY_CHECKS
+    bool positiveEdgeLengths = true;
+    for ( const auto& length : lengths )
+        if ( length < 0 )
+        {
+            positiveEdgeLengths = false;
+            break;
+        }
+
+    CIE_RUNTIME_GEOMETRY_ASSERT(
+        positiveEdgeLengths == true,
+        "Edge lengths of a box must be non-negative",
+        "Box::Box"
+    )
+    #endif
+
     std::copy(  base.begin(),
                 base.end(),
                 _base.begin() );
     std::copy(  lengths.begin(),
                 lengths.end(),
                 _lengths.begin() );
+}
+
+
+template < Size Dimension,
+           concepts::NumericType CoordinateType >
+inline Bool
+Box<Dimension,CoordinateType>::isDegenerate() const
+{
+    Bool degenerate = false;
+    for (const auto& r_length : _lengths)
+        if ( r_length < 1e-16 )
+        {
+            degenerate = true;
+            break;
+        }
+
+    return degenerate;
 }
 
 

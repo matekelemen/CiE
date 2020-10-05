@@ -52,19 +52,19 @@ public:
         sample_point_iterator( Size counter, const SpaceTreeNode<CellType,ValueType>& r_node ) :
             _counter(counter),
             _r_node( r_node )
-        {}
+        { **this; }
         sample_point_iterator& operator++()                         { ++_counter; return *this; };
         sample_point_iterator& operator++(int)                      { _counter++; return *this; }
         sample_point_iterator& operator--()                         { --_counter; return *this; }
         sample_point_iterator& operator--(int)                      { _counter--; return *this; }
         sample_point_iterator& operator+=( Size offset )            { _counter += offset; return *this; }
         sample_point_iterator& operator-=( Size offset )            { _counter -= offset; return *this; }
-        const value_type& operator*()                               { _point = _r_node._p_sampler->getSamplePoint(_r_node,_counter); return _point; }
-        value_type const* operator->()                              { return &_point; }
+        const value_type& operator*()                               { updatePoint(); return _point; }
+        value_type const* operator->()                              { updatePoint(); return &_point; }
         bool operator!=( const sample_point_iterator& r_rhs )       { return this->_counter != r_rhs._counter;}
 
     protected:
-        const value_type& get() const                               { return _point; }
+        void updatePoint()                                          { _point = _r_node._p_sampler->getSamplePoint(_r_node,_counter); }
 
     private:
         Size                                        _counter;

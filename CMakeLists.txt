@@ -3,6 +3,7 @@ cmake_minimum_required( VERSION 3.7.0 )
 project( CiE CXX )
 
 set( CMAKE_CXX_STANDARD 20 )
+set( CIE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR} )
 
 # ---------------------------------------------------------
 # OPTIONS
@@ -46,7 +47,8 @@ include( cmake/macro_link.cmake )
 include( cmake/macro_add.cmake )
 
 # Copy CMAKE variables in global header
-configure_file( cmake/cmake_variables.hpp.in ${CMAKE_BINARY_DIR}/generated/cmake_variables.hpp )
+configure_file( cmake/cmake_variables.hpp.in "${CMAKE_BINARY_DIR}/generated/cmake_variables.hpp" )
+install( FILES "${CMAKE_BINARY_DIR}/generated/cmake_variables.hpp" DESTINATION "${INSTALL_HEADER_PREFIX}/" )
 include_directories( ${CMAKE_BINARY_DIR}/generated )
 
 # ---------------------------------------------------------
@@ -57,26 +59,7 @@ include( cmake/compiler.cmake )
 # ---------------------------------------------------------
 # EXTERNAL
 # ---------------------------------------------------------
-include_directories( external/catch )
-
-# Add pybind11 project (this is just the folder available at https://github.com/pybind/pybind11)
-set(PYBIND11_CPP_STANDARD -std=c++17)
-add_subdirectory( external/pybind11 )
-
-if( CIE_USE_CPP_GRAPHICS )
-    if( WIN32 )
-        set( BUILD_SHARED_LIBS ON )
-    endif()
-
-    find_package( OpenGL REQUIRED )
-    add_subdirectory( external/glfw )
-    add_subdirectory( external/glm )
-    add_subdirectory( external/glad )
-
-    if( NOT WIN32 )
-        set( BUILD_SHARED_LIBS ON "Always build shared libraries" CACHE BOOL "Always build shared libraries" FORCE )
-    endif()
-endif(  )
+include( cmake/external.cmake )
 
 # ---------------------------------------------------------
 # BUILD LIBRARIES AND TESTS

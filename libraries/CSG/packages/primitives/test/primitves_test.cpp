@@ -16,6 +16,102 @@ namespace cie::csg {
 namespace boolean {
 
 
+TEST_CASE( "Cube", "[primitives]" )
+{
+    CIE_TEST_CASE_INIT( "Cube" )
+
+    const Size Dimension = 2;
+    using CoordinateType = Double;
+    using PrimitiveType  = Cube<Dimension,CoordinateType>;
+    using PointType      = typename PrimitiveType::point_type;
+
+    PointType base{ 0.0, 0.0 };
+    CoordinateType length;
+
+    // Unit cube
+    {
+        length = 1.0;
+        REQUIRE_NOTHROW( PrimitiveType(base, length) );
+        PrimitiveType primitive( base, length );
+        CHECK( !primitive.isDegenerate() );
+        REQUIRE( primitive.base().size() == Dimension );
+        CHECK( primitive.base()[0] == Approx(base[0]) );
+        CHECK( primitive.base()[1] == Approx(base[1]) );
+        CHECK( primitive.length() == Approx(length) );
+    }
+
+    // Degenerate cube
+    {
+        length = 0.0;
+        REQUIRE_NOTHROW( PrimitiveType(base, length) );
+        PrimitiveType primitive( base, length );
+        CHECK( primitive.isDegenerate() );
+        REQUIRE( primitive.base().size() == Dimension );
+        CHECK( primitive.base()[0] == Approx(base[0]) );
+        CHECK( primitive.base()[1] == Approx(base[1]) );
+        CHECK( primitive.length() == Approx(length) );
+    }
+
+    // Invalid cube
+    {
+        length = -1.0;
+        CHECK_THROWS( PrimitiveType(base, length) );
+    }
+}
+
+
+
+TEST_CASE( "Box", "[primitives]" )
+{
+    CIE_TEST_CASE_INIT( "Box" )
+
+    const Size Dimension = 2;
+    using CoordinateType = Double;
+    using PrimitiveType  = Box<Dimension,CoordinateType>;
+    using PointType      = typename PrimitiveType::point_type;
+
+    PointType base{ 0.0, 0.0 };
+    PointType lengths;
+
+    // Unit cubeas box
+    {
+        lengths = { 1.0, 1.0 };
+        REQUIRE_NOTHROW( PrimitiveType(base, lengths) );
+        PrimitiveType primitive( base, lengths );
+        CHECK( !primitive.isDegenerate() );
+        REQUIRE( primitive.base().size() == Dimension );
+        CHECK( primitive.base()[0] == Approx(base[0]) );
+        CHECK( primitive.base()[1] == Approx(base[1]) );
+        REQUIRE( primitive.lengths().size() == Dimension );
+        CHECK( primitive.lengths()[0] == Approx(lengths[0]) );
+        CHECK( primitive.lengths()[1] == Approx(lengths[1]) );
+    }
+
+    // Degenerate boxes
+    {
+        lengths = { 1.0, 0.0 };
+        REQUIRE_NOTHROW( PrimitiveType(base, lengths) );
+        PrimitiveType primitive( base, lengths );
+        CHECK( primitive.isDegenerate() );
+
+        lengths = { 0.0, 1.0 };
+        REQUIRE_NOTHROW( PrimitiveType(base,lengths) );
+        primitive = PrimitiveType( base, lengths );
+        CHECK( primitive.isDegenerate() );
+    }
+
+    // Invalid boxes
+    {
+        lengths = { -1.0, 1.0 };
+        CHECK_THROWS( PrimitiveType(base, lengths) );
+
+        lengths = { 1.0, -1.0 };
+        CHECK_THROWS( PrimitiveType(base, lengths) );
+    }
+}
+
+
+
 TEST_CASE( "boolean::CSGCube", "[primitives]" )
 {
     CIE_TEST_CASE_INIT( "boolean::CSGCube" )

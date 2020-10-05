@@ -42,6 +42,14 @@ struct is_primitive
     >
 > : public std::true_type {};
 
+
+template <class T>
+concept hasIsDegenerate
+= requires ( T instance )
+{
+    { instance.isDegenerate() } -> std::same_as<Bool>;
+};
+
 } // namespace detail
 
 /**
@@ -52,11 +60,26 @@ struct is_primitive
 */
 template <class T>
 concept PrimitiveType
-= detail::is_primitive<T>::value;
+= detail::is_primitive<T>::value
+    && detail::hasIsDegenerate<T>;
 
 } // namespace cie::concepts
 
 namespace cie::csg {
+
+
+// ---------------------------------------------------------
+// PRIMITIVE INTERFACE
+// ---------------------------------------------------------
+
+template <  Size Dimension,
+            concepts::NumericType CoordinateType = Double >
+class Primitive : public CSGTraits<Dimension,CoordinateType>
+{
+public:
+    virtual Bool isDegenerate() const = 0;
+};
+
 
 // ---------------------------------------------------------
 // ABSTRACT PRIMITIVES
@@ -67,7 +90,7 @@ namespace cie::csg {
 */
 template <  Size Dimension,
             concepts::NumericType CoordinateType = Double>
-class Cube : public CSGTraits<Dimension,CoordinateType>
+class Cube : public Primitive<Dimension,CoordinateType>
 {
 public:
     using primitive_constructor_arguments
@@ -78,6 +101,8 @@ public:
     Cube(   const ContainerType& base, 
             CoordinateType length )
     requires concepts::ClassContainer<ContainerType,CoordinateType>;
+
+    virtual Bool isDegenerate() const override;
 
     const typename Cube::point_type& base() const;
     const typename Cube::coordinate_type& length() const;
@@ -96,7 +121,7 @@ protected:
 */
 template <  Size N, 
             concepts::NumericType CoordinateType = Double>
-class Box : public CSGTraits<N,CoordinateType>
+class Box : public Primitive<N,CoordinateType>
 {
 public:
     using primitive_constructor_arguments
@@ -108,6 +133,8 @@ public:
             const ContainerType2& lengths )
     requires concepts::ClassContainer<ContainerType1,CoordinateType>
                 && concepts::ClassContainer<ContainerType2,CoordinateType>;
+
+    virtual Bool isDegenerate() const override;
 
     const typename Box::point_type& base() const;
     const typename Box::point_type& lengths() const;

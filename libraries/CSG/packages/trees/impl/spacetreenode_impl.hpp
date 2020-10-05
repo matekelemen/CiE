@@ -38,15 +38,18 @@ inline bool
 SpaceTreeNode<CellType,ValueType>::divide(  const TargetFunction<typename CellType::point_type,ValueType>& r_target,
                                             Size level )
 {
+    // Evaluate target and set boundary flag
+    evaluate( r_target );
+
     // Do nothing if this is the last level
     if ( this->_level >= level )
         return false;
 
-    // Evaluate target and set boundary flag
-    evaluate( r_target );
+    // Clear children
+    this->_children.clear();
 
     // Split if boundary
-    if ( _isBoundary )
+    if ( _isBoundary == 1 )
     {
         auto splitPoint = _p_splitPolicy->operator()(
             _values.begin(),
@@ -61,11 +64,18 @@ SpaceTreeNode<CellType,ValueType>::divide(  const TargetFunction<typename CellTy
 
         for ( const auto& cellConstructor : *p_cellConstructors )
         {
+            // Construct a child
             auto compoundConstructor = std::tuple_cat(nodeConstructor,cellConstructor);
-            this->_children.push_back(
-                utils::make_shared_from_tuple<SpaceTreeNode<CellType,ValueType>>(compoundConstructor)
-            );
-            this->_children.back()->divide( r_target, level );
+            auto p_node = utils::make_shared_from_tuple<SpaceTreeNode<CellType,ValueType>>(compoundConstructor);
+            
+            // Check whether child is valid
+            if ( p_node->isDegenerate() )
+                continue;
+
+            this->_children.push_back(p_node);
+
+            // Call divide on child
+            p_node->divide( r_target, level );
         }
 
         return true;
@@ -86,7 +96,7 @@ SpaceTreeNode<CellType,ValueType>::evaluate( const TargetFunction<typename CellT
     auto it_value = _values.begin();
     typename SpaceTreeNode<CellType,ValueType>::sample_point_iterator it_point(0,*this);
 
-    // Evaluate first point separately
+    // Evaluate first point separately and set sign flag
     *it_value = r_target(*it_point++);
     bool isFirstValuePositive = *it_value > 0;
     it_value++;
