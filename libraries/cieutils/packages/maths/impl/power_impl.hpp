@@ -2,6 +2,7 @@
 #define CIE_UTILS_MATHS_POWER_IMPL_HPP
 
 // --- Internal Includes ---
+#include "cieutils/packages/macros/inc/exceptions.hpp"
 #include "cieutils/packages/macros/inc/assertions.hpp"
 
 
@@ -11,6 +12,8 @@ namespace cie {
 template <concepts::Integer BaseType, concepts::Integer ExponentType>
 constexpr BaseType intPow( BaseType base, ExponentType exponent )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     CIE_ASSERT(
         exponent >= 0,
         "Negative exponents for integer bases yield non-integer results!"
@@ -27,6 +30,8 @@ constexpr BaseType intPow( BaseType base, ExponentType exponent )
         return output * output;
     else
         return output * output * base;
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 

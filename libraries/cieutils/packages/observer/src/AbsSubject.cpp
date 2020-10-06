@@ -1,5 +1,6 @@
 // --- Internal Includes ---
 #include "cieutils/packages/observer/inc/AbsSubject.hpp"
+#include "cieutils/packages/macros/inc/exceptions.hpp"
 
 // --- STL Includes ---
 #include <memory>
@@ -16,7 +17,11 @@ AbsSubject::AbsSubject( const AbsSubjectPtr& copy )
 
 AbsSubjectPtr AbsSubject::operator=( const AbsSubjectPtr& copy )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     return shared_from_this();
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -29,13 +34,19 @@ AbsSubject::~AbsSubject()
 
 void AbsSubject::notifyObservers()
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     for (auto it=_observers.begin(); it!=_observers.end(); ++it)
         (*it)->onSubjectChange();
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
 int AbsSubject::attachObserver( AbsObserverPtr observer )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     int id = observerID(observer);
 
     if ( id == -1 )
@@ -45,11 +56,15 @@ int AbsSubject::attachObserver( AbsObserverPtr observer )
     }
     
     return id;
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
 void AbsSubject::detachObserver( AbsObserverPtr observer )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     int id = observerID(observer);
 
     if ( observer->subject().get() == this )
@@ -57,11 +72,15 @@ void AbsSubject::detachObserver( AbsObserverPtr observer )
 
     if ( id != -1 )
         _observers.erase( _observers.begin()+id );
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
 int AbsSubject::observerID( AbsObserverPtr observer )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     int id = -1;
 
     for ( size_t i=0; i<_observers.size(); ++i )
@@ -72,6 +91,8 @@ int AbsSubject::observerID( AbsObserverPtr observer )
         }
     
     return id;
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 

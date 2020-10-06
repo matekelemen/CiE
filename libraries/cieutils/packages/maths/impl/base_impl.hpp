@@ -1,6 +1,9 @@
 #ifndef CIE_UTILS_MATHS_BASE_IMPL_HPP
 #define CIE_UTILS_MATHS_BASE_IMPL_HPP
 
+// --- Internal Includes ---
+#include "cieutils/packages/macros/inc/exceptions.hpp"
+
 // --- STL Includes ---
 #include <string>
 
@@ -15,6 +18,8 @@ baseN(  NT base10,
         NT base,
         std::array<NT,NDigits>& output )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     for (NT i = 0; i < NDigits; ++i)
     {
         if (base10 == 0)
@@ -27,6 +32,8 @@ baseN(  NT base10,
     }
     if (base10 != 0)
         throw std::overflow_error( "Error converting to base " + std::to_string(base) );
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -36,9 +43,13 @@ constexpr std::array<NT,NDigits>
 baseN(  NT base10,
         NT base )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     std::array<NT,NDigits> result;
     baseN<NDigits>(base10, base, result);
     return result;
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -48,6 +59,8 @@ constexpr NT
 base10( const std::array<NT,NDigits>& base_N,
         NT base )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     NT power = 1;
     NT base10 = 0;
     for (NT i = 0; i < NDigits; ++i)
@@ -56,6 +69,8 @@ base10( const std::array<NT,NDigits>& base_N,
         power *= base;
     }
     return base10;
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -65,6 +80,8 @@ constexpr NT
 reinterpretBase(    const std::array<NT,NDigits>& base_N,
                     NT newBase )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     NT power = 1;
     NT value = 0;
     for (NT i=0; i<NDigits; ++i)
@@ -73,6 +90,8 @@ reinterpretBase(    const std::array<NT,NDigits>& base_N,
         power *= newBase;
     }
     return value;
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 

@@ -1,4 +1,8 @@
 // --- Internal Includes ---
+#include "cieutils/packages/macros/inc/exceptions.hpp"
+#include "cieutils/packages/macros/inc/checks.hpp"
+
+// --- Internal Includes ---
 #include "cieutils/packages/logging/inc/Loggee.hpp"
 
 // --- STL Includes ---
@@ -14,7 +18,11 @@ Loggee::Loggee( Logger& logger,
     _name( instanceName ),
     _timerID( logger.startTimer() )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     logger.logElapsed( "[" + _name + "] Create at log time:", 0 );
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -27,6 +35,8 @@ Loggee::~Loggee()
 void Loggee::log(   const std::string& message,
                     size_t messageType  )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     std::string msg = "[" +  _name + "] " + message;
 
     switch(messageType)
@@ -47,6 +57,8 @@ void Loggee::log(   const std::string& message,
             _logger->error( "Invalid message type!" );
             break;
     }
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -54,13 +66,21 @@ void Loggee::logID( const std::string& message,
                     size_t id,
                     size_t messageType  )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     log( message + " | id_" + std::to_string(id), messageType );
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
 size_t Loggee::tic()
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     return _logger->startTimer();
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -68,32 +88,53 @@ void Loggee::toc(   const std::string& message,
                     size_t timerID,
                     bool reset )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     _logger->logElapsed( "[" + _name + "] " + message, timerID, reset );
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
 void Loggee::toc(   size_t timerID,
                     bool reset )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     toc( "", timerID, reset );
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
 void Loggee::separate()
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     _logger->separate();
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
 FileManager& Loggee::fileManager()
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     return _logger->fileManager();
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
 Logger& Loggee::logger()
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    CIE_CHECK_POINTER( _logger )
     return *_logger;
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 

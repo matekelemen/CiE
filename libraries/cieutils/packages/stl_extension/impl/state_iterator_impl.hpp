@@ -3,6 +3,8 @@
 
 // --- Internal Includes ---
 #include "cieutils/packages/stl_extension/inc/resize.hpp"
+#include "cieutils/packages/macros/inc/exceptions.hpp"
+#include "cieutils/packages/macros/inc/checks.hpp"
 
 // --- STL Includes ---
 #include <algorithm>
@@ -20,7 +22,11 @@ StateIterator<IteratorType>::StateIterator( IteratorType begin,
     _begin(begin),
     _end(end)
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     this->reset();
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -29,12 +35,16 @@ requires concepts::STLContainer<typename std::iterator_traits<IteratorType>::val
 inline void
 StateIterator<IteratorType>::reset()
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     utils::resize( _state, std::distance(_begin,_end) );
     std::transform( _begin,
                     _end,
                     _state.begin(),
                     [](const auto& container) -> subiterator_type
                     { return container.begin(); } );
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -43,7 +53,9 @@ requires concepts::STLContainer<typename std::iterator_traits<IteratorType>::val
 inline StateIterator<IteratorType>& 
 StateIterator<IteratorType>::operator++()
 {
-    assert( _state.size() == Size(std::distance(_begin,_end)) );
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    CIE_OUT_OF_RANGE_CHECK( _state.size() == Size(std::distance(_begin,_end)) )
 
     auto stateIt        = _state.begin();
     auto subContainerIt = _begin;
@@ -64,6 +76,8 @@ StateIterator<IteratorType>::operator++()
     } // while incrementable
 
     return *this;
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -90,12 +104,16 @@ InternalStateIterator<ContainerType>::InternalStateIterator(    const ContainerT
                                                                 Size size ) :
     StateIterator<typename std::vector<detail::container_reference_wrapper<const ContainerType>>::const_iterator>()
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     for (Size i=0; i<size; ++i)
         _dummyContainer.emplace_back(container);
 
     this->_begin    = _dummyContainer.begin();
     this->_end      = _dummyContainer.end();
     this->reset();
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -111,7 +129,11 @@ makeStateIterator(  IteratorType begin,
                     IteratorType end )
 requires concepts::STLContainer<typename std::iterator_traits<IteratorType>::value_type>
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     return StateIterator<IteratorType>(begin,end);
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -120,7 +142,11 @@ StateIterator<typename ContainerType::const_iterator>
 makeStateIterator( const ContainerType& container )
 requires concepts::STLContainer<typename ContainerType::value_type>
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     return StateIterator<typename ContainerType::const_iterator>( container.begin(), container.end() );
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -129,7 +155,11 @@ InternalStateIterator<const ContainerType>
 makeInternalStateIterator(  const ContainerType& container,
                             Size size )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     return InternalStateIterator<const ContainerType>( container, size );
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
