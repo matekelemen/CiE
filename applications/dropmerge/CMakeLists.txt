@@ -9,7 +9,7 @@ file( GLOB DROPMERGE_SOURCE_FILES src/*.cpp )
 
 # Build executable
 add_executable( dropmerge_executable ${DROPMERGE_HEADER_FILES} ${DROPMERGE_SOURCE_FILES} )
-TARGET_LINK_LIBRARIES_INSTALL( dropmerge_executable csg glvisualization )
+TARGET_LINK_LIBRARIES_INSTALL( dropmerge_executable csg ciegl )
 
 # Copy python scripts
 file( GLOB DROPMERGE_PYTHON_SCRIPTS scripts/*.py )
@@ -31,6 +31,6 @@ if( MSVC )
 
     add_custom_command(TARGET dropmerge_executable POST_BUILD        	
         COMMAND ${CMAKE_COMMAND} -E copy 					
-            "$<TARGET_FILE_DIR:glvisualization>/glvisualization.dll"  
+            "$<TARGET_FILE_DIR:ciegl>/ciegl.dll"  
             ${INSTALL_APPLICATION_PREFIX}/dropmerge)
 endif( )

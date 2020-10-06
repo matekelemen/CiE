@@ -5,10 +5,10 @@ import numpy as np
 from pysplinekernel import SurfaceKernel
 
 # --- GLmesh imports ---
-from glvisualization.glmesh import convertToSurfaceMesh, MeshApp3D, MeshNode
+from ciegl.glmesh import convertToSurfaceMesh, MeshApp3D, MeshNode
 
 # --- Lighting imports ---
-from glvisualization.lighting import TimedSpotLight
+from ciegl.lighting import TimedSpotLight
 
 # --- Vispy imports
 from vispy import scene

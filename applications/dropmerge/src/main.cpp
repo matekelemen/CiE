@@ -1,6 +1,6 @@
 
 // --- CiE Includes ---
-#include <glvisualization/csgvisualization.hpp>
+#include <ciegl/csgl.hpp>
 
 // --- Internal Includes ---
 #include "mergefunction.hpp"

@@ -3,7 +3,7 @@
 #include <csg/trees.hpp>
 
 // --- GL Includes ---
-#include <glvisualization/csgvisualization.hpp>
+#include <ciegl/csgvisualization.hpp>
 
 // --- Internal Includes ---
 #include "../inc/hilbert_determinant.hpp"

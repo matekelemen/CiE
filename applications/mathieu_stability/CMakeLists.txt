@@ -12,7 +12,7 @@ file( GLOB MATHIEU_STABILITY_SOURCE_FILES src/*.cpp )
 
 # Build executable
 add_executable( mathieu_stability ${MATHIEU_STABILITY_HEADER_FILES} ${MATHIEU_STABILITY_SOURCE_FILES} )
-TARGET_LINK_LIBRARIES_INSTALL( mathieu_stability csg glvisualization )
+TARGET_LINK_LIBRARIES_INSTALL( mathieu_stability csg ciegl )
 TARGET_LINK_GRAPHICS_INSTALL( mathieu_stability )
 
 # Move to install folder

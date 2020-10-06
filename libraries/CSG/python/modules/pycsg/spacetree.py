@@ -4,7 +4,7 @@ import csv
 from timeit import default_timer
 
 # --- Visualization Imports ---
-from glvisualization.glvisuals import ModularCanvas
+from ciegl.glvisuals import ModularCanvas
 
 # --- Vispy Imports ---
 from vispy import scene, app
