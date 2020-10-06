@@ -13,6 +13,30 @@
 namespace cie::csg {
 
 
+
+template <concepts::Cube Node>
+Node makeRoot()
+{
+    return Node(    typename Node::sampler_ptr( new SamplerType(numberOfPointsPerDimension) ),
+                    typename Node::split_policy_ptr( new SplitterType ),
+                    0,
+                    PointType{-2.0,-2.0,-2.0},
+                    4.0 );
+}
+
+
+template <concepts::Box Node>
+Node makeRoot()
+{
+    return Node(    typename Node::sampler_ptr( new SamplerType(numberOfPointsPerDimension) ),
+                    typename Node::split_policy_ptr( new SplitterType ),
+                    0,
+                    PointType{-2.0,-2.0,-2.0},
+                    PointType{ 4.0, 4.0, 4.0 } );
+}
+
+
+
 int main(std::function<ValueType(const PointType&,Double)> targetFunction, Double speed = 1.0, Size depth = 6)
 {
     // Initialize target function
@@ -20,13 +44,8 @@ int main(std::function<ValueType(const PointType&,Double)> targetFunction, Doubl
     auto target     = [&](const PointType& r_point) -> double { return targetFunction(r_point, 0.0); };
 
     // Build tree
-    NodeType root(  typename NodeType::sampler_ptr( new SamplerType(numberOfPointsPerDimension) ),
-                    typename NodeType::split_policy_ptr( new SplitterType ),
-                    0,
-                    PointType{-2.0,-2.0,-2.0},
-                    4.0 );
+    NodeType root = makeRoot<NodeType>();
     root.divide(target,depth);
-
 
     // Context creation
     gl::GLContext context( 4,5,4,"dropMerge_log.txt" );

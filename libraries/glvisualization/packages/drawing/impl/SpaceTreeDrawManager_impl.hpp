@@ -5,7 +5,7 @@
 namespace cie::gl {
 
 
-template <concepts::Cube NodeType>
+template <class NodeType>
 SpaceTreeDrawManager<NodeType>::SpaceTreeDrawManager(   NodeType& r_root,
                                                         GLContext& r_context  ) :
     DrawManager( r_context, "SpaceTreeDrawManager" ),
@@ -19,7 +19,7 @@ SpaceTreeDrawManager<NodeType>::SpaceTreeDrawManager(   NodeType& r_root,
 }
 
 
-template <concepts::Cube NodeType>
+template <class NodeType>
 void SpaceTreeDrawManager<NodeType>::collectNodesToBuffer()
 {
     std::vector<GLfloat> vertexData;
@@ -30,11 +30,7 @@ void SpaceTreeDrawManager<NodeType>::collectNodesToBuffer()
         if ( p_root->children().empty() && p_root->isBoundary() )
         {
 
-            auto center     = p_root->base();
-            auto halfLength = p_root->length() / 2.0;
-
-            for ( auto& r_component : center )
-                r_component += halfLength;
+            typename NodeType::point_type center = getCenter( *p_root );
 
             vertexData.insert(  vertexData.end(),
                                 center.begin(),
@@ -56,7 +52,7 @@ void SpaceTreeDrawManager<NodeType>::collectNodesToBuffer()
 
 
 
-template <concepts::Cube NodeType>
+template <class NodeType>
 void SpaceTreeDrawManager<NodeType>::initialize()
 {
     DrawManager::initialize();
@@ -66,7 +62,7 @@ void SpaceTreeDrawManager<NodeType>::initialize()
 
 
 
-template <concepts::Cube NodeType>
+template <class NodeType>
 bool SpaceTreeDrawManager<NodeType>::draw()
 {
     DrawManager::draw();
@@ -90,10 +86,36 @@ bool SpaceTreeDrawManager<NodeType>::draw()
 
 
 
-template <concepts::Cube NodeType>
+template <class NodeType>
 void SpaceTreeDrawManager<NodeType>::setDrawFunction( const std::function<bool()>& function )
 {
     _drawFunction = function;
+}
+
+
+template <concepts::Cube PrimitiveType>
+typename PrimitiveType::point_type getCenter( const PrimitiveType& r_primitive )
+{
+    auto center     = r_primitive.base();
+    auto halfLength = r_primitive.length() / 2.0;
+    for ( auto& r_component : center )
+        r_component += halfLength;
+
+    return center;
+}
+
+
+
+template <concepts::Box PrimitiveType>
+typename PrimitiveType::point_type getCenter( const PrimitiveType& r_primitive )
+{
+    auto center     = r_primitive.base();
+    auto it_length  = r_primitive.lengths().begin();
+
+    for ( auto& r_component : center )
+        r_component += (*it_length++) / 2.0;
+
+    return center;
 }
 
 

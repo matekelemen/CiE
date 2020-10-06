@@ -13,7 +13,7 @@
 
 
 /**
- * Support cube cells only (for now)
+ * Support cube and box cells only (for now)
 */
 namespace cie::concepts {
 template <class T>
@@ -24,6 +24,15 @@ concept Cube
         { instance.base() }     -> std::same_as<typename T::point_type&>;
         { instance.length() }   -> std::same_as<typename T::coordinate_type&>;
     };
+
+template <class T>
+concept Box
+= PrimitiveType<T>
+    && requires ( T instance )
+    {
+        { instance.base() }     -> std::same_as<typename T::point_type&>;
+        { instance.lengths() }  -> std::same_as<typename T::point_type&>;
+    };
 } // namespace cie::concepts
 
 
@@ -31,7 +40,7 @@ concept Cube
 namespace cie::gl {
 
 
-template <concepts::Cube NodeType>
+template <class NodeType>
 class SpaceTreeDrawManager final : public gl::DrawManager
 {
 public:
@@ -48,6 +57,18 @@ private:
     NodeType&               _r_root;
     std::function<bool()>   _drawFunction;
 };
+
+
+
+template <concepts::Cube PrimitiveType>
+typename PrimitiveType::point_type getCenter( const PrimitiveType& r_primitive );
+
+
+
+template <concepts::Box PrimitiveType>
+typename PrimitiveType::point_type getCenter( const PrimitiveType& r_primitive );
+
+
 
 } // namespace cie::gl
 

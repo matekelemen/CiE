@@ -20,12 +20,12 @@ using CoordinateType                    = Double;
 using ValueType                         = Double;
 using PointType                         = typename CSGTraits<Dimension,CoordinateType>::point_type;
 
-using PrimitiveType                     = Cube<Dimension,CoordinateType>;
-using CellType                          = CubeCell<PrimitiveType>;
+using PrimitiveType                     = Box<Dimension,CoordinateType>;
+using CellType                          = BoxCell<PrimitiveType>;
 using NodeType                          = SpaceTreeNode<CellType,ValueType>;
 
-using SamplerType                       = CubeSampler<Dimension,CoordinateType>;
-using SplitterType                      = MidPointSplitPolicy< typename NodeType::sample_point_iterator,
+using SamplerType                       = BoxSampler<Dimension,CoordinateType>;
+using SplitterType                      = WeightedSplitPolicy< typename NodeType::sample_point_iterator,
                                                                typename NodeType::value_iterator >;
 
 using DropFunction                      = std::function<ValueType(const DoubleArray<Dimension>&, Double)>;
