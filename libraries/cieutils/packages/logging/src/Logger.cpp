@@ -167,11 +167,24 @@ Logger& Logger::logElapsed( const std::string& message,
     auto dt = elapsed( timeID, reset );
     std::string unit = " [us] ";
 
-    if ( dt > 10000 )
+    if ( dt > 100000 )
     {
         dt      /= 1000;
         unit    = " [ms] ";
+
+        if ( dt > 100000 )
+        {
+            dt      /= 1000;
+            unit    = " [s] ";
+
+            if ( dt > 6000 )
+            {
+                dt      /= 60;
+                unit    = " [min] ";
+            }
+        }
     }
+
 
     return log( message + " " + std::to_string( dt ) + unit );
 }
