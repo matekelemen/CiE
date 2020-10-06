@@ -19,4 +19,32 @@
     }
 
 
+#ifdef CIE_ENABLE_EXCEPTION_TRACING
+
+    #define CIE_BEGIN_EXCEPTION_TRACING                                     \
+        try {
+
+    #define CIE_END_EXCEPTION_TRACING                                       \
+        catch ( const cie::Exception& EXCEPTION )                           \
+        {                                                                   \
+            throw EXCEPTION;                                                \
+        }                                                                   \
+        catch ( const std::exception& EXCEPTION )                           \
+        {                                                                   \
+            throw EXCEPTION;                                                \
+        }                                                                   \
+        catch ( ... )                                                       \
+        {                                                                   \
+            throw cie::Exception( "Unknown exception" );                    \
+        }
+
+#else
+
+    #define CIE_BEGIN_EXCEPTION_TRACING
+
+    #define CIE_END_EXCEPTION_TRACING
+
+#endif // CIE_ENABLE_EXCEPTION_TRACING
+
+
 #endif

@@ -7,6 +7,7 @@
 // --- STL Includes ---
 #include <stdexcept>
 #include <string>
+#include <deque>
 
 namespace cie {
 
@@ -15,11 +16,20 @@ struct Exception : public std::exception
 {
 public:
     Exception() = delete;
-    Exception( const String& message );
+    Exception(  const String& location,
+                const String& message );
+    Exception( const Exception& r_copy ) = default;
+    
     const char* what() const noexcept override;
 
+    void pushToStack( const Exception& r_exception );
+
 protected:
-    String _what;
+    String _location;
+    String _message;
+
+private:
+    std::deque<Exception> _stack;
 };
 
 

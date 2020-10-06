@@ -19,6 +19,11 @@ set( OpenGL_GL_PREFERENCE "GLVND" CACHE STRING "GLVND or LEGACY" )
 # ---------------------------------------------------------
 # MACRO OPTIONS
 # ---------------------------------------------------------
+set( CIE_ENABLE_EXCEPTION_TRACING ON CACHE BOOL "Trace thrown exceptions through functions" )
+if ( ${CIE_ENABLE_EXCEPTION_TRACING} )
+    add_compile_definitions( CIE_ENABLE_EXCEPTION_TRACING )
+endif()
+
 set( CIE_ENABLE_OUT_OF_RANGE_TESTS ON CACHE BOOL "" )
 if( ${CIE_ENABLE_OUT_OF_RANGE_TESTS} )
     add_compile_definitions( CIE_ENABLE_OUT_OF_RANGE_TESTS )

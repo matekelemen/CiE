@@ -1,18 +1,23 @@
 // --- Internal Includes ---
 #include "cieutils/packages/exceptions/inc/exception.hpp"
 
+// --- STL Includes ---
+#include <sstream>
+
 namespace cie {
 
 
-Exception::Exception( const String& message ) :
-    _what(message)
+Exception::Exception(   const String& r_location,
+                        const String& r_message ) :
+    _location( r_location ),
+    _message( r_message )
 {
 }
 
 
 const char* Exception::what() const noexcept
 {
-    return _what.c_str();
+    std::stringstream stream;
 }
 
 
