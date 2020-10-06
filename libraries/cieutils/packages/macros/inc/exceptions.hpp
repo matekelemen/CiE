@@ -7,15 +7,52 @@
 
 // --- STL Includes ---
 #include <sstream>
+#include <concepts>
 
+
+/* --- Define exception concepts --- */
+namespace cie::concepts {
+
+template <class T>
+concept CIEException
+= std::derived_from<T,cie::Exception>;
+
+template <class T>
+concept STLException
+= std::derived_from<T,std::exception>
+        && (!CIEException<T>);
+
+} // namespace concepts
+
+/* --- Define exception factories --- */
+namespace cie::detail {
+
+template <concepts::CIEException ExceptionType>
+ExceptionType makeException( const String& r_location,
+                             const String& r_message,
+                             const String& r_exceptionName )
+{ return ExceptionType( r_location, r_message ); }
+
+template <concepts::STLException ExceptionType>
+Exception makeException(    const String& r_location,
+                            const String& r_message,
+                            const String& r_exceptionName )
+{
+    return Exception( r_location,
+                      r_exceptionName + ": " + r_message );
+}
+
+} // namespace cie::detail
+
+
+
+/* Define exception-related macros */
 
 #define CIE_THROW(ExceptionType,message)                                    \
     {                                                                       \
-        std::stringstream msg;                                              \
-        msg << "Exception of type " << #ExceptionType << " thrown\n";       \
-        msg << CIE_CODE_LOCATION << "\n";                                   \
-        msg << "with message: " << message;                                 \
-        throw ExceptionType( msg.str() );                                   \
+        throw cie::detail::makeException<ExceptionType>( CIE_CODE_LOCATION, \
+                                                         message,           \
+                                                         #ExceptionType );  \
     }
 
 
@@ -25,17 +62,26 @@
         try {
 
     #define CIE_END_EXCEPTION_TRACING                                       \
+        }                                                                   \
         catch ( const cie::Exception& EXCEPTION )                           \
         {                                                                   \
-            throw EXCEPTION;                                                \
+            throw cie::Exception(                                           \
+                CIE_CODE_LOCATION,                                          \
+                EXCEPTION.what(),                                           \
+                EXCEPTION.stackLevel() + 1                                  \
+            );                                                              \
         }                                                                   \
         catch ( const std::exception& EXCEPTION )                           \
         {                                                                   \
-            throw EXCEPTION;                                                \
+            throw cie::detail::makeException<cie::Exception>(               \
+                CIE_CODE_LOCATION,                                          \
+                EXCEPTION.what(),                                           \
+                "std::exception"                                            \
+            );                                                              \
         }                                                                   \
         catch ( ... )                                                       \
         {                                                                   \
-            throw cie::Exception( "Unknown exception" );                    \
+            CIE_THROW( cie::Exception, "Unknown exception" )                \
         }
 
 #else

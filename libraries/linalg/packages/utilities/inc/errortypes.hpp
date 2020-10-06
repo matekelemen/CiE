@@ -10,14 +10,12 @@
 
 namespace cie::linalg {
 
-template <class MatrixType>
 class MatrixError : public Exception {
 public:
-    MatrixError(const String& message, const MatrixType& matrix);
+    MatrixError( const std::string& r_location,
+                 const std::string& r_message );
 };
 
-}
-
-#include "linalg/packages/utilities/impl/errortypes_impl.hpp"
+} // namespace cie::linalg
 
 #endif

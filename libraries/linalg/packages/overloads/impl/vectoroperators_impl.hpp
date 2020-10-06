@@ -121,7 +121,7 @@ std::array<ScalarType,N> operator*( const std::array<ScalarType,N>& vector, cons
 template <cie::concepts::NumericContainer ArrayType, cie::concepts::NumericType ScalarType>
 ArrayType operator/( const ArrayType& vector, const ScalarType& scalar )
 {
-    CIE_DIVISION_BY_ZERO_ASSERT( scalar!=0, "operator/(vector,scalar)" )
+    CIE_DIVISION_BY_ZERO_CHECK( scalar!=0 )
 
     ArrayType result(vector.size());
     std::transform( 
@@ -138,7 +138,7 @@ ArrayType operator/( const ArrayType& vector, const ScalarType& scalar )
 template <cie::Size N, cie::concepts::NumericType ScalarType>
 std::array<ScalarType,N> operator/( const std::array<ScalarType,N>& vector, const ScalarType& scalar )
 {
-    CIE_DIVISION_BY_ZERO_ASSERT( scalar!=0, "operator/(std::array,scalar)" )
+    CIE_DIVISION_BY_ZERO_CHECK( scalar!=0 )
 
     std::array<ScalarType,N> result;
     std::transform( 
@@ -165,7 +165,7 @@ ArrayType operator*( const ScalarType& scalar, const ArrayType& vector )
 template <cie::concepts::NumericContainer ArrayType>
 ArrayType operator+( const ArrayType& lhs, const ArrayType& rhs )
 {
-    CIE_OUT_OF_RANGE_ASSERT( lhs.size() == rhs.size(), "operator+(Container,Container)" )
+    CIE_OUT_OF_RANGE_CHECK( lhs.size() == rhs.size() )
 
     typedef typename ArrayType::value_type ValueType;
     ArrayType result(lhs.size());
@@ -202,7 +202,7 @@ std::array<ValueType,N> operator+( const std::array<ValueType,N>& lhs, const std
 template <cie::concepts::NumericContainer ArrayType>
 ArrayType operator-( const ArrayType& lhs, const ArrayType& rhs )
 {
-    CIE_OUT_OF_RANGE_ASSERT( lhs.size() == rhs.size(), "operator+(Container,Container)" )
+    CIE_OUT_OF_RANGE_CHECK( lhs.size() == rhs.size() )
 
     typedef typename ArrayType::value_type ValueType;
     ArrayType result(lhs.size());

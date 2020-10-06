@@ -235,7 +235,7 @@ TEST_CASE( "solve singular" )
     REQUIRE( matrix.size1( ) == 2 );
     REQUIRE( matrix.size2( ) == 2 );
 
-    CHECK_THROWS_AS( solve( matrix, rhs ), MatrixError<decltype(matrix)> );
+    CHECK_THROWS_AS( solve( matrix, rhs ), MatrixError );
 }
 
 TEST_CASE( "solve zero pivot" )

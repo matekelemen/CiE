@@ -3,6 +3,7 @@
 
 // --- Internal Includes ---
 #include "cieutils/packages/exceptions/inc/exception.hpp"
+#include "cieutils/packages/macros/inc/exceptions.hpp"
 #include "cieutils/packages/macros/inc/detail.hpp"
 #include "cmake_variables.hpp"
 
@@ -16,46 +17,38 @@
 #define CIE_CHECK_POINTER( pointer )                                                \
     if (pointer == nullptr)                                                         \
     {                                                                               \
-        std::stringstream message;                                                  \
-        message << CIE_CODE_LOCATION                                                \
-        throw cie::NullPtrException( message.str() );                               \
+        CIE_THROW( cie::NullPtrException, "" )                                      \
     }
 
 
 #ifdef CIE_ENABLE_OUT_OF_RANGE_TESTS
-    #define CIE_OUT_OF_RANGE_ASSERT(boolExpression, functionName)   \
+    #define CIE_OUT_OF_RANGE_CHECK(boolExpression)                  \
         if (!(boolExpression))                                      \
         {                                                           \
             std::stringstream stream;                               \
             stream << #boolExpression;                              \
-            stream << " (";                                         \
-            stream << functionName;                                 \
-            stream << ")";                                          \
-            throw cie::OutOfRangeException( stream.str() );         \
+            CIE_THROW( cie::OutOfRangeException, stream.str() );    \
         }
 #else
-    #define CIE_OUT_OF_RANGE_ASSERT(boolExpression, functionName)
+    #define CIE_OUT_OF_RANGE_CHECK(boolExpression, functionName)
 #endif
 
 
 #ifdef CIE_ENABLE_DIVISION_BY_ZERO_CHECKS
-    #define CIE_DIVISION_BY_ZERO_ASSERT(boolExpression, functionName)   \
+    #define CIE_DIVISION_BY_ZERO_CHECK(boolExpression)                  \
         if (!(boolExpression))                                          \
         {                                                               \
             std::stringstream stream;                                   \
             stream << #boolExpression;                                  \
-            stream << " (";                                             \
-            stream << functionName;                                     \
-            stream << ")";                                              \
-            throw cie::DivisionByZeroException( stream.str() );         \
+            CIE_THROW( cie::DivisionByZeroException, stream.str() );    \
         }
 #else
-    #define CIE_DIVISION_BY_ZERO_ASSERT(boolExpression, functionName)
+    #define CIE_DIVISION_BY_ZERO_CHECK(boolExpression)
 #endif
 
 
 #ifdef CIE_ENABLE_RUNTIME_GEOMETRY_CHECKS
-    #define CIE_RUNTIME_GEOMETRY_ASSERT(boolExpression, message, functionName)  \
+    #define CIE_RUNTIME_GEOMETRY_CHECK(boolExpression, message)                 \
         if (!(boolExpression))                                                  \
         {                                                                       \
             std::stringstream stream;                                           \
@@ -63,10 +56,10 @@
             stream << " (";                                                     \
             stream << message;                                                  \
             stream << ")";                                                      \
-            throw cie::GeometryException( stream.str(), functionName );         \
+            CIE_THROW( cie::GeometryException, stream.str() );                  \
         }
 #else
-    #define CIE_RUNTIME_GEOMETRY_ASSERT(boolExpression, message, functionName)
+    #define CIE_RUNTIME_GEOMETRY_CHECK(boolExpression, message)
 #endif
 
 

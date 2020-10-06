@@ -1,6 +1,9 @@
 #ifndef CIE_LINALG_UTILITIES_IMPL_HPP
 #define CIE_LINALG_UTILITIES_IMPL_HPP
 
+// --- Utility Includes ---
+#include "cieutils/packages/macros/inc/exceptions.hpp"
+
 // --- STL Includes ---
 #include <algorithm>
 #include <cmath>
@@ -25,7 +28,7 @@ void updatePermutation( const Matrix<ValueType>& matrix,
     auto pivot = std::max_element( permutation.begin( ) + index, permutation.end( ), compare );
 
     if (std::abs( matrix( *pivot, index ) ) < singularTolerance)
-    throw MatrixError("Matrix is singular!",matrix);
+        CIE_THROW( MatrixError, "Matrix is singular!" )
 
     // Swap indices in permutation vector
     std::iter_swap( permutation.begin( ) + index, pivot );

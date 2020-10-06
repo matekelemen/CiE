@@ -3,7 +3,7 @@
 
 // --- Utility Includes ---
 #include "cieutils/packages/macros/inc/checks.hpp"
-#include "cieutils/packages/exceptions/inc/exception.hpp"
+#include "cieutils/packages/macros/inc/exceptions.hpp"
 #include "cieutils/packages/concepts/inc/container_concepts.hpp"
 #include "cieutils/packages/stl_extension/inc/resize.hpp"
 
@@ -83,10 +83,7 @@ requires concepts::ClassContainer<CoefficientContainer,NT>
     typename AbsElement::value_container basis;
     this->basis( basisValues, basis );
 
-    CIE_OUT_OF_RANGE_ASSERT(
-        coefficients.size() == basis.size(),
-        "AbsElement::operator()"
-    )
+    CIE_OUT_OF_RANGE_CHECK( coefficients.size() == basis.size() )
 
     // Compute inner product
     return std::inner_product(  basis.begin(),
@@ -145,7 +142,7 @@ AbsElement<BasisType>::_derivative( const coefficient_container& coefficients,
                                     const basis_value_container& derivativeValues,
                                     point_type& gradient )
 {
-    throw AbstractCallException( "AbsElement::derivative" );
+    CIE_THROW( AbstractCallException, "Field derivative not implemented" )
 }
 
 

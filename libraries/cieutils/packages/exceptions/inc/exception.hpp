@@ -8,68 +8,86 @@
 #include <stdexcept>
 #include <string>
 #include <deque>
+#include <memory>
 
 namespace cie {
+
+
+struct Exception;
+using ExceptionPtr = std::shared_ptr<Exception>;
+
 
 
 struct Exception : public std::exception
 {
 public:
     Exception() = delete;
+
+    Exception(  const String& location,
+                const String& message,
+                Size stackLevel );
+
     Exception(  const String& location,
                 const String& message );
-    Exception( const Exception& r_copy ) = default;
+
+    Exception(  const String& r_what,
+                Size stackLevel );
+
+    Exception( const Exception& r_rhs );
     
     const char* what() const noexcept override;
 
-    void pushToStack( const Exception& r_exception );
-
-protected:
-    String _location;
-    String _message;
+    Size stackLevel() const;
 
 private:
-    std::deque<Exception> _stack;
+    const Size      _stackLevel;
+    String          _what;
 };
 
 
 struct NullPtrException : public Exception
 {
-    NullPtrException( const String& message );
+    NullPtrException(   const String& r_location,
+                        const String& r_message );
 };
 
 
 struct AbstractCallException : public Exception
 {
-    AbstractCallException( const String& message );
+    AbstractCallException(  const String& r_location,
+                            const String& r_message );
 };
 
 
 struct NotImplementedException : public Exception
 {
-    NotImplementedException( const String& message );
+    NotImplementedException(    const String& r_location,
+                                const String& r_message );
 };
 
 
 struct OutOfRangeException : public Exception
 {
-    OutOfRangeException( const String& message );
+    OutOfRangeException(    const String& r_location,
+                            const String& r_message );
 };
 
 
 struct DivisionByZeroException : public Exception
 {
-    DivisionByZeroException( const String& message );
+    DivisionByZeroException(    const String& r_location,
+                                const String& r_message );
 };
 
 
 struct GeometryException : public Exception
 {
-    GeometryException( const String& message, const String& functionName );
+    GeometryException(  const String& r_location,
+                        const String& r_message );
 };
 
 
-}
+} // namespace cie
 
 
 #endif

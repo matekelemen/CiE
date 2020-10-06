@@ -22,12 +22,11 @@ Cube<N,CoordinateType>::Cube(   const ContainerType& base,
     requires concepts::ClassContainer<ContainerType,CoordinateType> :
     _length(length)
 {
-    CIE_OUT_OF_RANGE_ASSERT( base.size() == N, "Cube::Cube" )
+    CIE_OUT_OF_RANGE_CHECK( base.size() == N )
 
-    CIE_RUNTIME_GEOMETRY_ASSERT(
+    CIE_RUNTIME_GEOMETRY_CHECK(
         length >= 0,
-        "Edge length of a cube must be non-negative",
-        "Cube::Cube"
+        "Edge length of a cube must be non-negative"
     )
 
     std::copy(  base.begin(),
@@ -89,8 +88,8 @@ Box<N,CoordinateType>::Box( const ContainerType1& base,
     requires concepts::ClassContainer<ContainerType1,CoordinateType>
                 && concepts::ClassContainer<ContainerType2,CoordinateType>
 {
-    CIE_OUT_OF_RANGE_ASSERT( base.size() == N, "Box::Box" )
-    CIE_OUT_OF_RANGE_ASSERT( lengths.size() == N, "Box::Box" )
+    CIE_OUT_OF_RANGE_CHECK( base.size() == N )
+    CIE_OUT_OF_RANGE_CHECK( lengths.size() == N )
 
     #ifdef CIE_ENABLE_RUNTIME_GEOMETRY_CHECKS
     bool positiveEdgeLengths = true;
@@ -101,11 +100,10 @@ Box<N,CoordinateType>::Box( const ContainerType1& base,
             break;
         }
 
-    CIE_RUNTIME_GEOMETRY_ASSERT(
+    CIE_RUNTIME_GEOMETRY_CHECK(
         positiveEdgeLengths == true,
-        "Edge lengths of a box must be non-negative",
-        "Box::Box"
-    )
+        "Edge lengths of a box must be non-negative" 
+        )
     #endif
 
     std::copy(  base.begin(),
@@ -193,7 +191,7 @@ template <  Size N,
 Bool
 CSGCube<N,CoordinateType>::at( const typename CSGCube<N,CoordinateType>::point_type& point ) const
 {
-    CIE_OUT_OF_RANGE_ASSERT( point.size() == N, "CSGCube::at" )
+    CIE_OUT_OF_RANGE_CHECK( point.size() == N )
 
     auto baseIt = this->_base.begin();
     for (auto pointIt=point.begin(); pointIt!=point.end(); ++pointIt,++baseIt)
@@ -220,7 +218,7 @@ template <  Size N,
 Bool
 CSGBox<N,CoordinateType>::at( const typename CSGBox<N,CoordinateType>::point_type& point ) const
 {
-    CIE_OUT_OF_RANGE_ASSERT( point.size() == N, "CSGBox::at" )
+    CIE_OUT_OF_RANGE_CHECK( point.size() == N )
 
     auto baseIt     = this->_base.begin();
     auto lengthIt   = this->_lengths.begin();

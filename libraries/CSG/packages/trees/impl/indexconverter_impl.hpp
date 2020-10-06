@@ -25,10 +25,7 @@ template <Size Dimension>
 inline const UIntArray<Dimension>&
 GridIndexConverter<Dimension>::convert( Size index ) const
 {
-    CIE_OUT_OF_RANGE_ASSERT(
-        index < _gridIndices.size(),
-        "GridIndexConverter::convert"
-    )
+    CIE_OUT_OF_RANGE_CHECK( index < _gridIndices.size() )
 
     return _gridIndices[index];
 }
