@@ -104,8 +104,10 @@ SpaceTreeNode<CellType,ValueType>::evaluate( const TargetFunction<typename CellT
     bool isFirstValuePositive = *it_value > 0;
     it_value++;
 
+    auto it_valueEnd = _values.end();
+
     // Evaluate the rest of the points
-    for ( ; it_value!=_values.end(); ++it_value,++it_point )
+    for ( ; it_value!=it_valueEnd; ++it_value,++it_point )
     {
         *it_value = r_target(*it_point);
 

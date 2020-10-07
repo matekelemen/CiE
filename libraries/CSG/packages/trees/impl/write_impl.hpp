@@ -12,6 +12,9 @@ template <class NodeType>
 void writeToVTK( NodeType& r_node,
                  const std::string& r_fileName )
 {
+    // Init
+    const Size dimension = NodeType::dimension;
+
     // Header
     pugi::xml_document document;
 
@@ -59,7 +62,7 @@ void writeToVTK( NodeType& r_node,
             Size i = 1;
 
             // Rest of the coordinates
-            for ( ; i<point.size(); ++i)
+            for ( ; i<dimension; ++i)
                 stringStream << " " << point[i];
 
             // Pad with zeros because Paraview

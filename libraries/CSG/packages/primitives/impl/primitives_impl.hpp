@@ -193,8 +193,9 @@ CSGCube<N,CoordinateType>::at( const typename CSGCube<N,CoordinateType>::point_t
 {
     CIE_OUT_OF_RANGE_CHECK( point.size() == N )
 
-    auto baseIt = this->_base.begin();
-    for (auto pointIt=point.begin(); pointIt!=point.end(); ++pointIt,++baseIt)
+    auto baseIt         = this->_base.begin();
+    auto it_pointEnd    = point.end();
+    for (auto pointIt=point.begin(); pointIt!=it_pointEnd; ++pointIt,++baseIt)
         if ( ((*pointIt) < (*baseIt)) == ((*pointIt) < ((*baseIt) + this->_length)) )
             return false;
     return true;
@@ -220,10 +221,12 @@ CSGBox<N,CoordinateType>::at( const typename CSGBox<N,CoordinateType>::point_typ
 {
     CIE_OUT_OF_RANGE_CHECK( point.size() == N )
 
-    auto baseIt     = this->_base.begin();
-    auto lengthIt   = this->_lengths.begin();
-    for (auto pointIt=point.begin(); pointIt!=point.end(); ++pointIt,++baseIt,++lengthIt)
-        if ( (*pointIt<(*baseIt)) == (*pointIt<(*baseIt + (*lengthIt))) )
+    auto it_base        = this->_base.begin();
+    auto it_length      = this->_lengths.begin();
+    auto it_pointEnd    = point.end();
+
+    for (auto it_point=point.begin(); it_point!=it_pointEnd; ++it_point,++it_base,++it_length)
+        if ( (*it_point<(*it_base)) == (*it_point<(*it_base + (*it_length))) )
             return false;
     return true;
 }

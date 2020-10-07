@@ -65,8 +65,9 @@ CubeCell<CubeType>::split_internal( const typename CubeCell<CubeType>::point_typ
     );
 
     typename CubeCell<CubeType>::point_type tempBase;
+    Size numberOfChildren = intPow(Size(2),CubeCell<CubeType>::dimension);
 
-    for (Size childIndex=0; childIndex < intPow(Size(2),CubeCell<CubeType>::dimension); ++childIndex)
+    for (Size childIndex=0; childIndex < numberOfChildren; ++childIndex)
     {
         for (Size dim=0; dim<CubeCell<CubeType>::dimension; ++dim)
         {
@@ -125,8 +126,9 @@ BoxCell<BoxType>::split_internal( const typename BoxCell<BoxType>::point_type& p
     );
 
     typename BoxCell<BoxType>::point_type tempBase, tempLengths;
+    Size numberOfChildren = intPow(Size(2),BoxCell<BoxType>::dimension);
 
-    for (Size childIndex=0; childIndex < intPow(Size(2),BoxCell<BoxType>::dimension); ++childIndex)
+    for (Size childIndex=0; childIndex < numberOfChildren; ++childIndex)
     {
         for (Size dim=0; dim<BoxCell<BoxType>::dimension; ++dim)
         {

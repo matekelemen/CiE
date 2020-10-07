@@ -28,9 +28,12 @@ MidPointSplitPolicy<PointIterator,ValueIterator>:: operator()(
     using CoordinateType    = typename PointType::value_type;
 
     PointType splitPoint;
+    auto it_splitPointBegin = splitPoint.begin();
+    auto it_splitPointEnd   = splitPoint.end();
+
     cie::utils::resize( splitPoint, it_pointBegin->size() );
-    std::fill(  splitPoint.begin(),
-                splitPoint.end(),
+    std::fill(  it_splitPointBegin,
+                it_splitPointEnd,
                 0.0 );
 
     CoordinateType numberOfPoints = std::distance( it_valueBegin, it_valueEnd );
@@ -38,7 +41,7 @@ MidPointSplitPolicy<PointIterator,ValueIterator>:: operator()(
     for ( ; it_valueBegin!=it_valueEnd; it_valueBegin++,it_pointBegin++ )
     {
         auto it_tmp = it_pointBegin->begin();
-        for (auto it_coordinate=splitPoint.begin(); it_coordinate!=splitPoint.end(); ++it_coordinate,++it_tmp)
+        for (auto it_coordinate=it_splitPointBegin; it_coordinate!=it_splitPointEnd; ++it_coordinate,++it_tmp)
             *it_coordinate += *it_tmp;
     }
 
@@ -190,15 +193,17 @@ WeightedSplitPolicy<PointIterator,ValueIterator>::operator()(   ValueIterator it
     // Second pass: weight points and accumulate weights
     for ( ; it_valueBegin!=it_valueEnd; ++it_valueBegin,++it_pointBegin )
     {
-        auto it_point       = it_pointBegin->begin();
-        auto it_splitPoint  = splitPoint.begin();
-        it_min              = min.begin();
-        it_max              = max.begin();
+        auto it_point               = it_pointBegin->begin();
+        auto it_splitPoint          = splitPoint.begin();
+        it_min                      = min.begin();
+        it_max                      = max.begin();
 
-        weight              = absMaxValue - (*it_valueBegin);
-        weightSum           += weight;
+        weight                      = absMaxValue - (*it_valueBegin);
+        weightSum                   += weight;
 
-        for ( ; it_point!=it_pointBegin->end(); ++it_point,++it_splitPoint,++it_min,++it_max )
+        auto it_pointComponentEnd   = it_pointBegin->end();
+
+        for ( ; it_point!=it_pointComponentEnd; ++it_point,++it_splitPoint,++it_min,++it_max )
         {
             *it_splitPoint += weight * (*it_point);
 

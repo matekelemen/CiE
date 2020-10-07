@@ -77,15 +77,16 @@ CubeSampler<Dimension,CoordinateType>::getSamplePoint(
 {
     typename CubeSampler<Dimension,CoordinateType>::point_type point;
     auto it_base     = r_primitive.base().begin();
+    auto it_pointEnd = point.end();
 
     if (this->numberOfPointsPerDimension() == 1)    // center point
-        for (auto it=point.begin(); it!=point.end(); ++it,++it_base)
+        for (auto it=point.begin(); it!=it_pointEnd; ++it,++it_base)
             *it = *it_base + r_primitive.length() / CoordinateType(2);
     else
     {
         auto it_index   = this->indexConverter().convert( index ).begin();
 
-        for (auto it=point.begin(); it!=point.end(); ++it,++it_index,++it_base)
+        for (auto it=point.begin(); it!=it_pointEnd; ++it,++it_index,++it_base)
             *it = *it_base + (*it_index) * r_primitive.length() / (CoordinateType(this->numberOfPointsPerDimension())-1.0);
     }
 
@@ -111,17 +112,18 @@ BoxSampler<Dimension,CoordinateType>::getSamplePoint(
         Size index ) const
 {
     typename BoxSampler<Dimension,CoordinateType>::point_type point;
-    auto it_base    = r_primitive.base().begin();
-    auto it_length  = r_primitive.lengths().begin();
+    auto it_base        = r_primitive.base().begin();
+    auto it_length      = r_primitive.lengths().begin();
+    auto it_pointEnd    = point.end();
 
     if (this->numberOfPointsPerDimension() == 1)    // center point
-        for (auto it=point.begin(); it!=point.end(); ++it,++it_base,++it_length)
+        for (auto it=point.begin(); it!=it_pointEnd; ++it,++it_base,++it_length)
             *it = *it_base + (*it_length) / CoordinateType(2);
     else
     {
         auto it_index    = this->indexConverter().convert(index).begin();
 
-        for (auto it=point.begin(); it!=point.end(); ++it,++it_index,++it_base,++it_length)
+        for (auto it=point.begin(); it!=it_pointEnd; ++it,++it_index,++it_base,++it_length)
             *it = (*it_base) + (*it_index) * (*it_length) / (CoordinateType(this->numberOfPointsPerDimension())-1.0);
     }
 
