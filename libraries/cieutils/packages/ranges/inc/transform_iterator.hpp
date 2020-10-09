@@ -64,21 +64,42 @@ private:
 };
 
 
-}
+} // namespace cie::utils
 
 
 // TransformIterator concept
+
+// Helper for the Primitive concept
 namespace cie::concepts::detail {
+
+template <class T, class _ = void>
+struct is_TransformIterator : std::false_type {};
+
+template <class ...Args>
+struct is_TransformIterator_helper {};
+
+template <class T>
+struct is_TransformIterator
+<
+    T,
+    std::conditional_t
+    <
+        false,
+        is_TransformIterator_helper
+        <
+            typename T::base_type,
+            typename T::base_iterator_type,
+            typename T::self_type
+        >,
+        void
+    >
+> : public std::true_type {};
 
 template <class T>
 concept TransformIterator
-=   IteratorType<T>
-    && requires ( T iterator )
-    {
-        { iterator.base() };
-    };
+= is_TransformIterator<T>::value;
 
-}
+} // namespace cie::concepts::detail
 
 
 // ---------------------------------------------------------
