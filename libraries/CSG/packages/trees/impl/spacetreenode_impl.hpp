@@ -125,6 +125,55 @@ SpaceTreeNode<CellType,ValueType>::evaluate( const TargetFunction<typename CellT
 
 template <  class CellType,
             class ValueType >
+inline typename SpaceTreeNode<CellType,ValueType>::target_map_ptr
+SpaceTreeNode<CellType,ValueType>::evaluateMap( const TargetFunction<typename CellType::point_type,value_type>& r_target,
+                                                typename SpaceTreeNode<CellType,ValueType>::target_map_ptr p_targetMap )
+{
+    CIE_THROW( NotImplementedException, "SpaceTreeNode::evaluateMap needs a threadsafe map implementation" )
+
+    // Create target map if it doesn't exist yet
+    if ( p_targetMap == nullptr )
+        p_targetMap = typename SpaceTreeNode<CellType,ValueType>::target_map_ptr(
+            new typename SpaceTreeNode<CellType,ValueType>::target_map_type
+        );
+
+    // Init
+    _isBoundary = -1;
+    cie::utils::resize( _values, _p_sampler->size() );
+    auto it_value = _values.begin();
+    typename SpaceTreeNode<CellType,ValueType>::sample_point_iterator it_point(0,*this);
+
+    // Evaluate first point separately and set sign flag
+    auto it_targetMap = p_targetMap->find( *it_point++ );
+
+    //if ( auto it_targetMap )
+    *it_value = r_target(*it_point++);
+    bool isFirstValuePositive = *it_value > 0;
+    it_value++;
+
+    auto it_valueEnd = _values.end();
+
+    // Evaluate the rest of the points
+    for ( ; it_value!=it_valueEnd; ++it_value,++it_point )
+    {
+        *it_value = r_target(*it_point);
+
+        // Boundary check
+        if ( ((*it_value>0) != isFirstValuePositive) && (_isBoundary < 0)  )
+            _isBoundary = 1;
+    }
+
+    // If the boundary flag hasn't been modified -> not a boundary
+    if ( _isBoundary < 0 )
+        _isBoundary = 0;
+
+    return p_targetMap;
+}
+
+
+
+template <  class CellType,
+            class ValueType >
 inline void
 SpaceTreeNode<CellType,ValueType>::clear()
 {

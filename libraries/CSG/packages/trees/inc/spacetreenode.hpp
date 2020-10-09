@@ -17,6 +17,7 @@
 #include <stdint.h>
 #include <memory>
 #include <functional>
+#include <unordered_map>
 
 namespace cie::csg {
 
@@ -81,6 +82,9 @@ public:
     using sampler_ptr           = PrimitiveSamplerPtr<typename CellType::primitive_type>;
     using split_policy_ptr      = SplitPolicyPtr<sample_point_iterator,value_iterator>;
 
+    using target_map_type       = std::unordered_map<typename cell_type::point_type, value_type>;
+    using target_map_ptr        = std::shared_ptr<target_map_type>;
+
 public:
     /**
      * Constructor that forwards its arguments to the 
@@ -105,13 +109,20 @@ public:
     virtual void evaluate( const TargetFunction<typename CellType::point_type,value_type>& r_target );
 
     /**
+     * Alternative to evaluate.
+     * Record sample points and their values in a global map, then set the isBoundary flag.
+    */
+    target_map_ptr evaluateMap( const TargetFunction<typename CellType::point_type,value_type>& r_target,
+                                target_map_ptr p_targetMap = nullptr );
+
+    /**
      * Clear data container and call clear on children.
     */
     void clear();
 
     /**
      * Check whether this cell is cut.
-     * The node needs to be in an evaluated stat, otherwise
+     * The node needs to be in an evaluated state, otherwise
      * an exception is thrown.
     */
     bool isBoundary() const;
