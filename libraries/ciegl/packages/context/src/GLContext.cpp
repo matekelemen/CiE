@@ -25,20 +25,20 @@ bool GLContext::_current        = false;
 
 
 
-GLContext::GLContext(   uint8_t versionMajor,
-                        uint8_t versionMinor,
-                        uint8_t samples,
-                        const std::string& logFileName  )   :
-    utils::Logger( logFileName ),
-    utils::AbsSubject(  ),
-    _window(nullptr)
+GLContext::GLContext(   Size versionMajor,
+                        Size versionMinor,
+                        Size MSAASamples,
+                        const std::string& r_logFileName  )   :
+    AbsContext( versionMajor,
+                versionMinor,
+                MSAASamples,
+                r_logFileName )
 {
     if (!_initialized)
     {
-        // Apply settings
-        glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, versionMajor );
-        glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, versionMinor );
-        glfwWindowHint( GLFW_SAMPLES, samples );
+        glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, this->_version.first );
+        glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, this->_version.second );
+        glfwWindowHint( GLFW_SAMPLES, MSAASamples );
         //glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE );
         glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
         glfwWindowHint( GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE );
@@ -69,66 +69,66 @@ GLContext::~GLContext()
 
 
 
-WindowPtr GLContext::openWindow(    size_t width,
-                                    size_t height,
-                                    const std::string& windowName,
-                                    GLFWmonitor* fullscreenMonitor,
-                                    GLFWwindow* sharedWindow )
+typename GLContext::window_ptr GLContext::newWindow( Size width,
+                                                     Size height,
+                                                     const std::string& r_name,
+                                                     typename GLContext::monitor_ptr p_monitor )
 {
-    if (_window != nullptr)
-    {
-        warn( "Open new window on an existing one, closing old window..." );
-        closeWindow();
-    }
-    _window = glfwCreateWindow( width, 
-                                height,
-                                windowName.c_str(),
-                                fullscreenMonitor,
-                                sharedWindow)   ;
-    if (!_window)
+    typename GLContext::window_ptr p_newWindow(
+        glfwCreateWindow( width, 
+                          height,
+                          r_name.c_str(),
+                          p_monitor.get(),
+                          nullptr )
+    );
+
+    if ( p_newWindow == nullptr )
     {
         terminate();
         error( "Failed to create window!" );
     }
-    else
-        log("Open window");
 
-    // Set basic callbacks
-    glfwSetFramebufferSizeCallback( _window, frameBufferResizeCallback );
+    log("Open window");
+    this->registerWindow( p_newWindow );
+
+    glfwSetFramebufferSizeCallback( p_newWindow.get(), frameBufferResizeCallback );
         
-    // Check window dimensions
     int checkWidth, checkHeight;
-    glfwGetFramebufferSize( _window, &checkWidth, &checkHeight );
+    glfwGetFramebufferSize( p_newWindow.get(), &checkWidth, &checkHeight );
     if ( (size_t)checkWidth!=width || (size_t)checkHeight!=height )
         warn( "Created window is not of the requested size!" );
 
-    return _window;
+    return p_newWindow;
 }
 
 
 
-void GLContext::closeWindow()
+void GLContext::closeWindow( typename GLContext::window_ptr p_window )
 {
     _current = false;
 
-    if (_window != nullptr)
-    {
-        glfwSetWindowShouldClose( _window, 1 );
-        log( "Close window" );
-    }
+    auto itp_window = std::find( this->windows().begin(),
+                                 this->windows().end(),
+                                 p_window );
 
-    _window = nullptr;
+    if ( itp_window != this->windows().end() )
+    {
+        glfwSetWindowShouldClose( p_window.get(), 1 );
+        log( "Close window" );
+    }    
+
+    this->deregisterWindow( p_window );
 }
 
 
 
 void GLContext::makeContextCurrent()
 {
-    if (_window != nullptr)
+    if ( !this->windows().empty() )
     {
         if (!_current)
         {
-            glfwMakeContextCurrent(_window);
+            glfwMakeContextCurrent( this->windows().begin()->get() );
             log( "Make context current" );
             _current = true;
         }
@@ -159,12 +159,14 @@ void GLContext::startEventLoop( DrawFunctionFactory eventLoopGenerator,
     // Bind loop
     _drawFunction = eventLoopGenerator( *this );
 
+    typename GLContext::window_type* p_window = this->windows().begin()->get();
+
     // Bind events
-    if (_window != nullptr)
+    if ( p_window != nullptr )
     {
-        glfwSetKeyCallback( _window, keyCallback );
-        glfwSetCursorPosCallback( _window, cursorCallback );
-        glfwSetMouseButtonCallback( _window, mouseCallback );
+        glfwSetKeyCallback( p_window, keyCallback );
+        glfwSetCursorPosCallback( p_window, cursorCallback );
+        glfwSetMouseButtonCallback( p_window, mouseCallback );
         separate();
         log("Start event loop");
     }
@@ -175,10 +177,10 @@ void GLContext::startEventLoop( DrawFunctionFactory eventLoopGenerator,
     }
 
     // Start event loop
-    while(!glfwWindowShouldClose(_window))
+    while( !glfwWindowShouldClose(p_window) )
     {
         if ( !_drawFunction() )
-            glfwSetWindowShouldClose(_window, GLFW_TRUE);
+            glfwSetWindowShouldClose(p_window, GLFW_TRUE);
 
         // Check errors
         GLuint err = glGetError();
@@ -192,7 +194,7 @@ void GLContext::startEventLoop( DrawFunctionFactory eventLoopGenerator,
         if (err!=0)
             error( "Error polling events! Error code: " + std::to_string(err) );
         
-        glfwSwapBuffers( _window );
+        glfwSwapBuffers( p_window );
 
         // Check errors
         err = glGetError();
@@ -202,14 +204,14 @@ void GLContext::startEventLoop( DrawFunctionFactory eventLoopGenerator,
 
     log( "End event loop" );
     separate();
-    closeWindow();
+    closeWindow( *this->windows().begin() );
 }
 
 
 void GLContext::terminate()
 {
     log( "Terminate context" );
-    closeWindow();
+    this->closeAllWindows();
     glfwTerminate();
 }
 
@@ -217,14 +219,14 @@ void GLContext::terminate()
 
 WindowPtr GLContext::window()
 {
-    return _window;
+    return this->windows().begin()->get();
 }
 
 
 
 const WindowPtr GLContext::window() const
 {
-    return _window;
+    return this->windows().begin()->get();
 }
 
 

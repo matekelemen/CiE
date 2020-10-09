@@ -10,6 +10,7 @@
 #include <cieutils/observer.hpp>
 
 // --- Internal Includes ---
+#include "ciegl/packages/context/inc/AbsContext.hpp"
 #include "ciegl/packages/context/inc/windowutilities.hpp"
 #include "ciegl/packages/context/inc/defaultCallback.hpp"
 #include "cmake_variables.hpp"
@@ -34,23 +35,50 @@ using DrawFunctionFactory   = std::function<DrawFunction(GLContext&)>;
 DrawFunction makeEmptyDrawFunction( GLContext& );
 
 
+namespace detail {
+
+struct GLFWWindowDestructorFunctor
+{
+    void operator()( GLFWwindow* p_window ) { glfwDestroyWindow(p_window); }
+};
+
+struct GLFWMonitorDestructorFunctor
+{
+    void operator()( GLFWmonitor* p_monitor ) { /*TODO*/ }
+};
+
+struct GLFWWindowPtr : public std::shared_ptr<GLFWwindow>
+{
+    GLFWWindowPtr( GLFWwindow* p_window ) : 
+        std::shared_ptr<GLFWwindow>( p_window, GLFWWindowDestructorFunctor() ) {}
+};
+
+struct GLFWMonitorPtr : public std::shared_ptr<GLFWmonitor>
+{
+    GLFWMonitorPtr( GLFWmonitor* p_monitor ) : 
+        std::shared_ptr<GLFWmonitor>( p_monitor, GLFWMonitorDestructorFunctor() ) {}
+};
+
+} // namespace detail
+
+using GLFWWindowPtr     = detail::GLFWWindowPtr;
+using GLFWMonitorPtr    = detail::GLFWMonitorPtr;
 
 
-class GLContext : public utils::Logger, public utils::AbsSubject
+class GLContext final : public AbsContext<GLFWwindow,GLFWmonitor,GLFWWindowPtr,GLFWMonitorPtr>
 {
 public:
-    GLContext(  uint8_t versionMajor                    = 4,
-                uint8_t versionMinor                    = 5,
-                uint8_t samples                         = 0, 
-                const std::string& logFileName          = OUTPUT_PATH + "/ContextLogger.txt" );
+    GLContext(  Size versionMajor                    = 4,
+                Size versionMinor                    = 5,
+                Size MSAASamples                     = 0, 
+                const std::string& r_logFileName     = OUTPUT_PATH + "/ContextLogger.txt" );
     ~GLContext();
 
-    WindowPtr openWindow(   size_t width                    = 800,
-                            size_t height                   = 600,
-                            const std::string& windowName   = "OpenGL",
-                            GLFWmonitor* fullscreenMonitor  = nullptr,
-                            WindowPtr sharedWindow          = nullptr );
-    void closeWindow();
+    typename GLContext::window_ptr newWindow( size_t width                              = 800,
+                                              size_t height                             = 600,
+                                              const std::string& r_name                 = "GLFW Window",
+                                              typename GLContext::monitor_ptr p_monitor = nullptr ) override;
+    void closeWindow( typename GLContext::window_ptr p_window ) override;
     void makeContextCurrent();
     void startEventLoop(    DrawFunctionFactory eventLoopGenerator  = makeEmptyDrawFunction,
                             KeyCallbackFunction keyCallback         = callback_keyExit,
@@ -63,7 +91,6 @@ public:
     const WindowPtr window() const;
 
 private:
-    WindowPtr                       _window;
     DrawFunction                    _drawFunction;
     
     static bool                     _initialized;

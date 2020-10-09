@@ -3,6 +3,8 @@
 
 // --- Utility Includes ---
 #include "cieutils/packages/types/inc/types.hpp"
+#include "cieutils/packages/logging/inc/Logger.hpp"
+#include <cieutils/observer.hpp>
 
 // --- STL Includes ---
 #include <utility>
@@ -18,25 +20,29 @@ namespace cie::gl {
  * Interface for an OpenGL context.
 */
 template <  class WindowType,
-            class MonitorType >
-class AbsContext
+            class MonitorType,
+            class WindowPtr     = std::shared_ptr<WindowType>,
+            class MonitorPtr    = std::shared_ptr<MonitorType> >
+class AbsContext :
+    public utils::Logger,
+    public utils::AbsSubject
 {
 public:
     using window_type           = WindowType;
-    using window_ptr            = std::shared_ptr<window_type>;
+    using window_ptr            = WindowPtr;
     using window_container      = std::list<window_ptr>;
 
     using monitor_type          = MonitorType;
-    using monitor_ptr           = std::shared_ptr<monitor_type>;
+    using monitor_ptr           = MonitorPtr;
 
 public:
 
-    AbsGLContext( Size versionMajor,
-                  Size versionMinor,
-                  Size MSAASamples,
-                  const std::string& r_logFileName );
+    AbsContext( Size versionMajor,
+                Size versionMinor,
+                Size MSAASamples,
+                const std::string& r_logFileName );
 
-    virtual ~AbsContext() = 0;
+    ~AbsContext();
 
     /**
      * Get OpenGL version as {major,minor}
@@ -65,7 +71,7 @@ public:
      * Close the specified window. Must call deregisterWindow before
      * returning.
     */
-    virtual void closeWindow( window_ptr window );
+    virtual void closeWindow( window_ptr window ) = 0;
 
     /**
      * Close every registered window
@@ -83,13 +89,13 @@ protected:
      * Append the internal set of windows.
      * Call after every call to newWindow.
     */
-    void registerWindow( window_ptr p_window );
+    void registerWindow( WindowPtr p_window );
 
     /**
      * Remove the specified window from the internal
      * set of windows.
     */
-    void deregisterWindow( window_ptr p_window );
+    void deregisterWindow( WindowPtr p_window );
 
 protected:
     const std::pair<Size,Size>  _version;

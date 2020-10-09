@@ -114,7 +114,7 @@ TEST_CASE( "DrawManager", "[ciegl]" )
     CIE_TEST_CASE_INIT( "DrawManager" )
 
     // Create context
-    REQUIRE_NOTHROW( context_global.openWindow() );
+    REQUIRE_NOTHROW( context_global.newWindow() );
     REQUIRE_NOTHROW( context_global.makeContextCurrent() );
     
     // Create draw manager
