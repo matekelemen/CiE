@@ -7,6 +7,7 @@
 
 // --- Internal Includes ---
 #include "ciegl/packages/context/inc/AbsContextClass.hpp"
+#include "ciegl/packages/buffer/inc/AbsBuffer.hpp"
 
 // --- STL Includes ---
 #include <vector>
