@@ -45,7 +45,7 @@ class SpaceTreeDrawManager final : public gl::DrawManager
 {
 public:
     SpaceTreeDrawManager(   NodeType& r_root,
-                            gl::GLContext& r_context  );
+                            gl::GLFWContext& r_context  );
 
     void collectNodesToBuffer();
     void initialize() override;

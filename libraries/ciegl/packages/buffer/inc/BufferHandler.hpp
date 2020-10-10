@@ -17,10 +17,9 @@ namespace cie::gl {
 class BufferHandler : AbsContextClass
 {
 public:
-    BufferHandler(  GLContext& context,
+    BufferHandler(  GLFWContext& context,
                     GLuint drawMode );
     virtual ~BufferHandler();
-    virtual void terminate() override;
 
     [[nodiscard]] GLuint createBuffer();
 

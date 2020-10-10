@@ -5,7 +5,7 @@
 #include "cieutils/packages/macros/inc/testing.hpp"
 
 // --- Internal Includes ---
-#include "ciegl/packages/context/inc/GLContext.hpp"
+#include "ciegl/packages/context/inc/GLFWContext.hpp"
 #include "ciegl/packages/drawing/inc/Camera.hpp"
 #include "ciegl/packages/drawing/inc/DrawManager.hpp"
 #include "ciegl/packages/callbacks/inc/CallbackGroup.hpp"
@@ -19,7 +19,7 @@
 namespace cie::gl {
 
 
-GLContext context_global( 4,5,4, TEST_OUTPUT_PATH + "/ciegl_testrunner_log.txt" );
+GLFWContext context_global( 4,5,4, TEST_OUTPUT_PATH + "/ciegl_testrunner_log.txt" );
 
 
 struct TestDrawManager : public DrawManager
@@ -75,10 +75,10 @@ struct TestDrawManager : public DrawManager
 };
 
 /*
-TEST_CASE( "GLContext" )
+TEST_CASE( "GLFWContext" )
 {
 
-    auto loopFactory = [] (cie::gl::GLContext& context) -> cie::gl::DrawFunction
+    auto loopFactory = [] (cie::gl::GLFWContext& context) -> cie::gl::DrawFunction
     {
         int* loopCounter = new int(0);
 
@@ -114,8 +114,9 @@ TEST_CASE( "DrawManager", "[ciegl]" )
     CIE_TEST_CASE_INIT( "DrawManager" )
 
     // Create context
-    REQUIRE_NOTHROW( context_global.newWindow() );
-    REQUIRE_NOTHROW( context_global.makeContextCurrent() );
+    typename GLFWContext::window_ptr p_window;
+    REQUIRE_NOTHROW( p_window = context_global.newWindow() );
+    REQUIRE_NOTHROW( context_global.focusWindow( p_window ) );
     
     // Create draw manager
     TestDrawManager drawManager;

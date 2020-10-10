@@ -4,7 +4,7 @@
 namespace cie::gl {
 
 
-AbsContextClass::AbsContextClass(   GLContext& context,
+AbsContextClass::AbsContextClass(   GLFWContext& context,
                                     const std::string& className ) :
     utils::Loggee( context, className ),
     _className( className ),
@@ -13,14 +13,7 @@ AbsContextClass::AbsContextClass(   GLContext& context,
 }
 
 
-void AbsContextClass::terminate( )
-{
-    log( "Request context termination" );
-    _context->terminate();
-}
-
-
-const GLContext* AbsContextClass::context() const
+const GLFWContext* AbsContextClass::context() const
 {
     return _context;
 }

@@ -10,7 +10,7 @@
 namespace cie::gl {
 
 
-Camera::Camera( GLContext& context, const std::string& className ) :
+Camera::Camera( GLFWContext& context, const std::string& className ) :
     AbsContextClass( context, className ),
     RigidBody(),
     _fieldOfView( 90.0 ),
@@ -256,7 +256,7 @@ double Camera::farClippingPlane() const
 
 
 
-InteractiveCamera::InteractiveCamera( GLContext& context, const std::string& className ) :
+InteractiveCamera::InteractiveCamera( GLFWContext& context, const std::string& className ) :
     Camera( context, className ),
     _mousePressPosition( 0.0, 0.0, 0.0 ),
     _cursorPosition( 0.0, 0.0, 0.0 )
@@ -308,7 +308,7 @@ const glm::dvec3& InteractiveCamera::cursorPosition( ) const
 }
 
 
-ArcballCamera::ArcballCamera(   GLContext& context,
+ArcballCamera::ArcballCamera(   GLFWContext& context,
                                 const std::string& className ) :
     InteractiveCamera( context, className ),
     _center( 0.0, 0.0, 0.0 )

@@ -22,7 +22,7 @@ using ShaderPtr = Shader*;
 class ShaderManager : public AbsContextClass
 {
 public:
-    ShaderManager( GLContext& context );
+    ShaderManager( GLFWContext& context );
     ~ShaderManager();
     ShaderPtr getVertexShader();
     ShaderPtr getGeometryShader();

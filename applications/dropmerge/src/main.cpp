@@ -48,10 +48,10 @@ int main(std::function<ValueType(const PointType&,Double)> targetFunction, Doubl
     root.divide(target,depth);
 
     // Context creation
-    gl::GLContext context( 4,5,4,"dropMerge_log.txt" );
+    gl::GLFWContext context( 4,5,4,"dropMerge_log.txt" );
     context.useConsole(true);
-    context.newWindow();
-    context.makeContextCurrent();
+    auto p_window = context.newWindow();
+    context.focusWindow( p_window );
 
     // Draw manager setup
     gl::SpaceTreeDrawManager<NodeType> manager(root,context);

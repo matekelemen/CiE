@@ -26,7 +26,7 @@ using InteractiveCameraPtr  = std::shared_ptr<InteractiveCamera>;
 class Camera : public AbsContextClass, public RigidBody
 {
 public:
-    Camera( GLContext& context,
+    Camera( GLFWContext& context,
             const std::string& className = "Camera" );
     Camera( const Camera& camera );
     Camera& operator=( const Camera& camera );
@@ -78,7 +78,7 @@ protected:
 class InteractiveCamera : public Camera
 {
 public:
-    InteractiveCamera(  GLContext& context,
+    InteractiveCamera(  GLFWContext& context,
                         const std::string& className = "InteractiveCamera" );
     InteractiveCamera( const InteractiveCamera& copy );
     InteractiveCamera& operator=( const InteractiveCamera& copy ) = default;
@@ -101,7 +101,7 @@ protected:
 class ArcballCamera : public InteractiveCamera
 {
 public:
-    ArcballCamera(  GLContext& context,
+    ArcballCamera(  GLFWContext& context,
                     const std::string& className = "ArcballCamera" );
 
     void rotate(    double radians,

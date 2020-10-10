@@ -18,12 +18,11 @@ namespace cie::gl {
 class ProgramManager : public AbsContextClass
 {
 public:
-    ProgramManager(     GLContext& context,
+    ProgramManager(     GLFWContext& context,
                         const std::string& className = "ProgramManager" );
     virtual ~ProgramManager();
 
     virtual void initialize();
-    virtual void terminate() override;
 
     virtual void compileShaders();
     virtual void makeProgram();

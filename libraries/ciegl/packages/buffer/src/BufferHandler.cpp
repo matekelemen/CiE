@@ -4,7 +4,7 @@
 namespace cie::gl {
 
 
-BufferHandler::BufferHandler(   GLContext& context,
+BufferHandler::BufferHandler(   GLFWContext& context,
                                 GLuint drawMode ) :
     AbsContextClass( context, "BufferHandler" ),
     _buffers( ),
@@ -14,12 +14,6 @@ BufferHandler::BufferHandler(   GLContext& context,
 
 
 BufferHandler::~BufferHandler()
-{
-    terminate();
-}
-
-
-void BufferHandler::terminate()
 {
     for (auto bufferID : _buffers)
     {

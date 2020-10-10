@@ -2,7 +2,7 @@
 #define CIEGL_CALLBACK_GROUP_HPP
 
 // --- Internal Includes ---
-#include "ciegl/packages/context/inc/GLContext.hpp"
+#include "ciegl/packages/context/inc/GLFWContext.hpp"
 #include "ciegl/packages/drawing/inc/DrawManager.hpp"
 
 

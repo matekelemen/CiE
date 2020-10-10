@@ -4,7 +4,7 @@
 namespace cie::gl {
 
 
-ProgramManager::ProgramManager( GLContext& context, const std::string& className ) :
+ProgramManager::ProgramManager( GLFWContext& context, const std::string& className ) :
     AbsContextClass( context, className ),
     _buffers( context, GL_STATIC_DRAW ),
     _shaders( ),
@@ -15,17 +15,6 @@ ProgramManager::ProgramManager( GLContext& context, const std::string& className
 
 
 ProgramManager::~ProgramManager()
-{
-}
-
-
-void ProgramManager::initialize()
-{
-    log( "Attempt to initialize ProgramManager", LOG_TYPE_WARNING );
-}
-
-
-void ProgramManager::terminate()
 {
     logID( "Delete program", _programID );
     glDeleteProgram( _programID );
@@ -38,9 +27,12 @@ void ProgramManager::terminate()
 
     logID( "Delete VAO", _vaoID );
     glDeleteVertexArrays( 1, &_vaoID );
+}
 
-    // Forward the termination call
-    AbsContextClass::terminate();
+
+void ProgramManager::initialize()
+{
+    log( "Attempt to initialize ProgramManager", LOG_TYPE_WARNING );
 }
 
 

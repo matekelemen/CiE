@@ -4,7 +4,7 @@
 namespace cie::gl {
 
 
-DrawManager::DrawManager( GLContext& context, const std::string& className ) :
+DrawManager::DrawManager( GLFWContext& context, const std::string& className ) :
     ProgramManager( context, className ),
     _shaderManager( context ),
     _camera( new Camera(context) ),
@@ -74,7 +74,7 @@ bool DrawManager::draw()
 }
 
 
-DrawFunction DrawManager::makeDrawFunction( GLContext& context )
+DrawFunction DrawManager::makeDrawFunction( GLFWContext& context )
 {
     log( "Create callable draw function factory" );
     return [&context, this]() -> bool

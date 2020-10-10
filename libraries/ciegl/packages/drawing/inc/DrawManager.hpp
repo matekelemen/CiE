@@ -12,7 +12,7 @@ namespace cie::gl {
 class DrawManager : public ProgramManager
 {
 public:
-    DrawManager(    GLContext& context,
+    DrawManager(    GLFWContext& context,
                     const std::string& className = "DrawManager" );
     ~DrawManager();
 
@@ -21,7 +21,7 @@ public:
     void makeProgram() override;
 
     virtual bool draw();
-    DrawFunction makeDrawFunction( GLContext& context );
+    DrawFunction makeDrawFunction( GLFWContext& context );
 
     ShaderManager& shaderManager();
     const ShaderManager& shaderManager() const;

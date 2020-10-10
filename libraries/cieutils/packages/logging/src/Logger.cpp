@@ -144,18 +144,6 @@ Logger& Logger::warn( const std::string& message )
 }
 
 
-Logger& Logger::error( const std::string& message )
-{
-    CIE_BEGIN_EXCEPTION_TRACING
-
-    log( "ERROR: " + message );
-    CIE_THROW( std::runtime_error, message );
-    return *this;
-
-    CIE_END_EXCEPTION_TRACING
-}
-
-
 Logger& Logger::logDate( const std::string& message )
 {
     CIE_BEGIN_EXCEPTION_TRACING

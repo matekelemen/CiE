@@ -80,7 +80,9 @@ AbsContext<WindowType,MonitorType,WindowPtr,MonitorPtr>::closeAllWindows()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    for ( auto& rp_window : _windows )
+    auto windows = _windows;
+
+    for ( auto& rp_window : windows )
         this->closeWindow( rp_window );
 
     CIE_END_EXCEPTION_TRACING

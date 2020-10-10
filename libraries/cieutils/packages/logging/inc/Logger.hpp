@@ -26,7 +26,7 @@ using Time = std::chrono::steady_clock::time_point;
 Time getTime();
 
 std::string getDate();
-}
+} // namespace detail
 
 
 // Type aliases
@@ -57,7 +57,9 @@ public:
 
     Logger& log(   const std::string& message );
     Logger& warn(  const std::string& message );
-    Logger& error( const std::string& message );
+
+    template <class ExceptionType = std::runtime_error>
+    Logger& error( const std::string& r_message );
 
     Logger& logDate( const std::string& message );
     [[nodiscard]] size_t startTimer();
@@ -100,5 +102,7 @@ Logger& operator<<( Logger& r_logger, const std::string& r_message );
 
 
 } // namespace cie::utils
+
+#include "cieutils/packages/logging/impl/Logger_impl.hpp"
 
 #endif

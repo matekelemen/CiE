@@ -9,7 +9,7 @@
 namespace cie::gl {
 
 
-ShaderManager::ShaderManager( GLContext& context ) :
+ShaderManager::ShaderManager( GLFWContext& context ) :
     AbsContextClass( context, "ShaderManager" ),
     _vertexShader( "defaultColorVertexShader.glsl" ),
     _geometryShader( "defaultColorGeometryShader.glsl" ),

@@ -1,5 +1,5 @@
 // --- Internal Includes ---
-#include "ciegl/packages/context/inc/defaultCallback.hpp"
+#include "ciegl/packages/context/inc/GLFWContext.hpp"
 
 // --- STL Includes ---
 #include <iostream>
@@ -49,7 +49,8 @@ void GLAPIENTRY messageCallback(    GLenum source,
                                     const void* logger )
 {
     std::string messageString = message;
-    std::cout <<  std::to_string(source) + ": " + message + "\n";
+    auto p_context = const_cast<GLFWContext*>( reinterpret_cast<const GLFWContext*>( logger ) );
+    p_context->log( std::to_string(source) + ": " + message + "\n" );
 }
 
 

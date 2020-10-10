@@ -7,7 +7,7 @@ namespace cie::gl {
 
 template <class NodeType>
 SpaceTreeDrawManager<NodeType>::SpaceTreeDrawManager(   NodeType& r_root,
-                                                        GLContext& r_context  ) :
+                                                        GLFWContext& r_context  ) :
     DrawManager( r_context, "SpaceTreeDrawManager" ),
     _r_root( r_root ),
     _drawFunction( nullptr )

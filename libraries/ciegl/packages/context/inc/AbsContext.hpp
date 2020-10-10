@@ -68,6 +68,11 @@ public:
                                     monitor_ptr p_monitor ) = 0;
 
     /**
+     * Make the specified window active.
+    */
+    virtual void focusWindow( window_ptr p_window ) = 0;
+
+    /**
      * Close the specified window. Must call deregisterWindow before
      * returning.
     */
@@ -77,11 +82,6 @@ public:
      * Close every registered window
     */
     void closeAllWindows();
-
-    /**
-     * Cleanup
-    */
-    virtual void terminate() = 0;
 
 protected:
 
