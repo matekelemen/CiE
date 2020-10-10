@@ -50,7 +50,7 @@ int main(std::function<ValueType(const PointType&,Double)> targetFunction, Doubl
     // Context creation
     gl::GLContext context( 4,5,4,"dropMerge_log.txt" );
     context.useConsole(true);
-    context.openWindow();
+    context.newWindow();
     context.makeContextCurrent();
 
     // Draw manager setup

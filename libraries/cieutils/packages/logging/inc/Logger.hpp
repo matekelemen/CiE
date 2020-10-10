@@ -94,6 +94,8 @@ protected:
 };
 
 
+using LoggerPtr = std::shared_ptr<Logger>;
+
 Logger& operator<<( Logger& r_logger, const std::string& r_message );
 
 
