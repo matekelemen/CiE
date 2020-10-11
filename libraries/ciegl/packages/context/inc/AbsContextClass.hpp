@@ -1,6 +1,9 @@
 #ifndef CIEGL_ABS_CONTEXT_CLASS_HPP
 #define CIEGL_ABS_CONTEXT_CLASS_HPP
 
+// --- Utility Includes ---
+#include "cieutils/packages/types/inc/NamedObject.hpp"
+
 // --- Internal Includes ---
 #include "ciegl/packages/context/inc/GLFWContext.hpp"
 
@@ -14,15 +17,14 @@ namespace cie::gl {
 class AbsContextClass : public utils::Loggee
 {
 public:
-    const GLFWContext* context() const;
+    const GLFWContext& context() const;
 
 protected:
-    AbsContextClass(    GLFWContext& context,
-                        const std::string& className );
-    void checkGLErrors( const std::string& errorMessage = "" );
+    AbsContextClass(    GLFWContext& r_context,
+                        const std::string& r_name );
+    void checkGLErrors( const std::string& r_errorMessage );
 
-    std::string     _className;
-    GLFWContext*      _context;
+    GLFWContext&    _r_context;
 };
 
 

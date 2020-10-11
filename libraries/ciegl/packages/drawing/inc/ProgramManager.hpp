@@ -7,7 +7,7 @@
 
 // --- Internal Includes ---
 #include "ciegl/packages/context/inc/AbsContextClass.hpp"
-#include "ciegl/packages/buffer/inc/BufferHandler.hpp"
+#include "ciegl/packages/buffer/inc/BufferManager.hpp"
 
 // --- Standard Includes ---
 #include <string>
@@ -27,12 +27,12 @@ public:
     virtual void compileShaders();
     virtual void makeProgram();
 
-    BufferHandler& buffers();
-    const BufferHandler& buffers() const;
+    BufferManager& buffers();
+    const BufferManager& buffers() const;
     const std::vector<GLuint>& shaders() const;
 
 protected:
-    BufferHandler       _buffers;
+    BufferManager       _buffers;
     std::vector<GLuint> _shaders;
 
     GLuint              _programID;

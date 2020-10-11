@@ -23,9 +23,9 @@ Camera::Camera( GLFWContext& context, const std::string& className ) :
     // Update width and height (orthographic mode)
     int w, h;
 
-    if (_context->window() != nullptr)
+    if (_r_context.window() != nullptr)
     {
-        glfwGetFramebufferSize( _context->window(), &w, &h );
+        glfwGetFramebufferSize( _r_context.window(), &w, &h );
     }
     else
     {
@@ -41,7 +41,7 @@ Camera::Camera( GLFWContext& context, const std::string& className ) :
 
 
 Camera::Camera( const Camera& copy ) :
-    AbsContextClass( *copy._context, "Camera" ),
+    AbsContextClass( copy._r_context, "Camera" ),
     RigidBody( copy._position, copy._direction, copy._up ),
     _fieldOfView( copy._fieldOfView ),
     _width( copy._width ),
@@ -204,7 +204,7 @@ glm::dvec3 Camera::screenToWorld( double x, double y ) const
 {
     // Get window size
     int w, h;
-    glfwGetFramebufferSize( _context->window(), &w, &h );
+    glfwGetFramebufferSize( _r_context.window(), &w, &h );
 
     // Get depth buffer value
     double z = 0.0;

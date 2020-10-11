@@ -12,15 +12,15 @@
 namespace cie::utils {
 
 
-Loggee::Loggee( Logger& logger,
-                const std::string& instanceName ) :
-    _logger( &logger ),
-    _name( instanceName ),
-    _timerID( logger.startTimer() )
+Loggee::Loggee( Logger& r_logger,
+                const std::string& r_instanceName ) :
+    NamedObject( r_instanceName ),
+    _logger( &r_logger ),
+    _timerID( r_logger.startTimer() )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    logger.logElapsed( "[" + _name + "] Create at log time:", 0 );
+    r_logger.logElapsed( "[" + _name + "] Create at log time:", 0 );
 
     CIE_END_EXCEPTION_TRACING
 }

@@ -4,6 +4,7 @@
 // --- Internal Includes ---
 #include "cieutils/packages/logging/inc/Logger.hpp"
 #include "cieutils/packages/logging/inc/LogBlock.hpp"
+#include "cieutils/packages/types/inc/NamedObject.hpp"
 
 // --- STL Includes ---
 #include <string>
@@ -20,11 +21,11 @@ const size_t LOG_TYPE_ERROR     = 2;
 namespace cie::utils {
 
 
-class Loggee
+class Loggee : NamedObject
 {
 public:
-    Loggee( Logger& logger, 
-            const std::string& instanceName );
+    Loggee( Logger& r_logger, 
+            const std::string& r_instanceName );
     ~Loggee();
 
     void log(   const std::string& message,
@@ -51,7 +52,6 @@ protected:
 
 private:
     Logger*         _logger;
-    std::string     _name;
     size_t          _timerID;
 };
 

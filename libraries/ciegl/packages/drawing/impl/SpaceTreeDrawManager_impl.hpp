@@ -47,7 +47,7 @@ void SpaceTreeDrawManager<NodeType>::collectNodesToBuffer()
     _r_root.visit( collectNodes );
 
     _buffers.writeToActiveBuffer( GL_ARRAY_BUFFER, vertexData );
-    checkGLErrors();
+    checkGLErrors( "Error while writing to buffer" );
 }
 
 
@@ -80,7 +80,7 @@ bool SpaceTreeDrawManager<NodeType>::draw()
     numberOfVertices /= 3*sizeof(GLfloat);
     glDrawArrays( GL_POINTS, 0, numberOfVertices );
 
-    checkGLErrors();
+    checkGLErrors( "Error while drawing" );
     return result;
 }
 

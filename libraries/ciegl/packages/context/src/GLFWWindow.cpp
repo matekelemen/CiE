@@ -1,0 +1,79 @@
+// --- Utility Includes ---
+#include "cieutils/packages/macros/inc/exceptions.hpp"
+#include "cieutils/packages/macros/inc/checks.hpp"
+
+// --- Internal Includes ---
+#include "ciegl/packages/context/inc/GLFWWindow.hpp"
+
+
+namespace cie::gl {
+
+
+GLFWWindow::GLFWWindow( Size id,
+                        const std::string& r_name,
+                        Size width,
+                        Size height ) :
+    AbsWindow( id,
+               r_name,
+               width,
+               height ),
+    _p_window( nullptr )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    // Construct window
+    _p_window   = glfwCreateWindow( width, 
+                                    height,
+                                    r_name.c_str(),
+                                    nullptr,
+                                    nullptr );
+
+    if ( !_p_window )
+        CIE_THROW( Exception, "Failed to create window" )
+
+    // Bind window resize callback
+    glfwSetWindowUserPointer( _p_window, this );
+
+    auto resizeCallback = []( GLFWwindow* p_window, int width, int height )
+    {
+        auto p_GLFWWindow = static_cast<GLFWWindow*>( glfwGetWindowUserPointer( p_window ) );
+        p_GLFWWindow->onResize( p_window, width, height );
+    };
+
+    glfwSetWindowSizeCallback( _p_window, resizeCallback );
+
+    // Check whether the new window has the requested parameters
+    int checkWidth, checkHeight;
+    glfwGetFramebufferSize( _p_window, &checkWidth, &checkHeight );
+    if ( Size(checkWidth)!=width || Size(checkHeight)!=height )
+        CIE_THROW( Exception, "Created window is not of the requested size!" );
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+void GLFWWindow::setSize_impl( Size width,
+                               Size height )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    CIE_CHECK_POINTER( _p_window )
+    glfwSetWindowSize( _p_window, width, height );
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+void GLFWWindow::onResize( GLFWwindow* p_window,
+                     int width,
+                     int height )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    this->_size = std::make_pair<Size,Size>( width, height );
+
+    CIE_END_EXCEPTION_TRACING 
+}
+
+
+} // namespace cie::gl

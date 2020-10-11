@@ -5,7 +5,7 @@ namespace cie::gl {
 
 
 template <template<class ...> class ContainerType, class DataType, class ...Args>
-void BufferHandler::writeToActiveBuffer( GLenum target, const ContainerType<DataType, Args...>& data )
+void BufferManager::writeToActiveBuffer( GLenum target, const ContainerType<DataType, Args...>& data )
 {
     glBufferData( target, data.size()*sizeof(DataType), &(data[0]), _drawMode );
 }

@@ -14,8 +14,8 @@ template <class CallbackType>
 CallbackType makeCallback(  CallbackType callback,
                             DrawManager* drawManager )
 {
-    if ( glfwGetWindowUserPointer( drawManager->context()->window()) == nullptr )
-        glfwSetWindowUserPointer( drawManager->context()->window(), static_cast<void*>(drawManager) );
+    if ( glfwGetWindowUserPointer( drawManager->context().window()) == nullptr )
+        glfwSetWindowUserPointer( drawManager->context().window(), static_cast<void*>(drawManager) );
     return callback;
 }
 

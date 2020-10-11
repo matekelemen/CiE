@@ -1,0 +1,39 @@
+#ifndef CIE_GL_GLFW_WINDOW_HPP
+#define CIE_GL_GLFW_WINDOW_HPP
+
+// --- External Includes ---
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+// --- Internal Includes ---
+#include "ciegl/packages/context/inc/AbsWindow.hpp"
+
+
+namespace cie::gl {
+
+
+class GLFWWindow final : public AbsWindow
+{
+public:
+    GLFWWindow( Size id,
+                const std::string& r_name,
+                Size width,
+                Size height );
+
+    void onResize( GLFWwindow* p_window,
+                   int width,
+                   int height );
+
+protected:
+    virtual void setSize_impl( Size width,
+                               Size height ) override;
+
+private:
+    GLFWwindow* _p_window;
+};
+
+
+} // namespace cie::gl
+
+
+#endif

@@ -54,7 +54,7 @@ struct TestDrawManager : public DrawManager
         _buffers.writeToActiveBuffer(GL_ARRAY_BUFFER, vertices);
         _buffers.writeToActiveBuffer(GL_ELEMENT_ARRAY_BUFFER, triangles);
 
-        checkGLErrors();
+        checkGLErrors( "Error while writing to buffers" );
     }
 
     bool draw() override

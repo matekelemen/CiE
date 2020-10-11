@@ -51,8 +51,8 @@ public:
 using AbsVertexBuffer       = AbsBuffer<Float>;
 using AbsElementBuffer      = AbsBuffer<unsigned int>;
 
-using AbsVertexBufferPtr    = std::shared_ptr<AbsVertexBuffer>;
-using AbsElementBufferPtr   = std::shared_ptr<AbsElementBuffer>;
+using VertexBufferPtr    = std::shared_ptr<AbsVertexBuffer>;
+using ElementBufferPtr   = std::shared_ptr<AbsElementBuffer>;
 
 
 } // namespace cie::gl

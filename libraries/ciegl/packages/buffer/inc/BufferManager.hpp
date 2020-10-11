@@ -7,6 +7,7 @@
 
 // --- Internal Includes ---
 #include "ciegl/packages/context/inc/AbsContextClass.hpp"
+#include "ciegl/packages/buffer/inc/AbsBufferManager.hpp"
 #include "ciegl/packages/buffer/inc/AbsBuffer.hpp"
 
 // --- STL Includes ---
@@ -15,12 +16,12 @@
 namespace cie::gl {
 
 
-class BufferHandler : AbsContextClass
+class BufferManager : AbsContextClass
 {
 public:
-    BufferHandler(  GLFWContext& context,
+    BufferManager(  GLFWContext& context,
                     GLuint drawMode );
-    virtual ~BufferHandler();
+    virtual ~BufferManager();
 
     [[nodiscard]] GLuint createBuffer();
 
@@ -43,6 +44,6 @@ private:
 
 } // namespace cie::gl
 
-#include "ciegl/packages/buffer/impl/BufferHandler_impl.hpp"
+#include "ciegl/packages/buffer/impl/BufferManager_impl.hpp"
 
 #endif

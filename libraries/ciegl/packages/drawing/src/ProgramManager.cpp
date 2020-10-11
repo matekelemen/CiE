@@ -91,13 +91,13 @@ void ProgramManager::makeProgram( )
 }
 
 
-BufferHandler& ProgramManager::buffers()
+BufferManager& ProgramManager::buffers()
 {
     return _buffers;
 }
 
 
-const BufferHandler& ProgramManager::buffers() const
+const BufferManager& ProgramManager::buffers() const
 {
     return _buffers;
 }

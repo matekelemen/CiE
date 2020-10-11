@@ -1,19 +1,19 @@
 // --- Internal Includes ---
-#include "ciegl/packages/buffer/inc/BufferHandler.hpp"
+#include "ciegl/packages/buffer/inc/BufferManager.hpp"
 
 namespace cie::gl {
 
 
-BufferHandler::BufferHandler(   GLFWContext& context,
+BufferManager::BufferManager(   GLFWContext& context,
                                 GLuint drawMode ) :
-    AbsContextClass( context, "BufferHandler" ),
+    AbsContextClass( context, "BufferManager" ),
     _buffers( ),
     _drawMode( drawMode )
 {
 }
 
 
-BufferHandler::~BufferHandler()
+BufferManager::~BufferManager()
 {
     for (auto bufferID : _buffers)
     {
@@ -24,7 +24,7 @@ BufferHandler::~BufferHandler()
 }
 
 
-GLuint BufferHandler::createBuffer( )
+GLuint BufferManager::createBuffer( )
 {
     GLuint bufferID;
     glGenBuffers( 1, &bufferID );
@@ -35,21 +35,21 @@ GLuint BufferHandler::createBuffer( )
 }
 
 
-void BufferHandler::bindVertexBuffer( GLuint bufferID )
+void BufferManager::bindVertexBuffer( GLuint bufferID )
 {
     glBindBuffer( GL_ARRAY_BUFFER, bufferID );
     logID( "Bind vertex buffer", bufferID );
 }
 
 
-void BufferHandler::bindElementBuffer( GLuint bufferID )
+void BufferManager::bindElementBuffer( GLuint bufferID )
 {
     glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufferID );
     logID( "Bind element buffer", bufferID );
 }
 
 
-void BufferHandler::setDrawMode( GLuint drawMode )
+void BufferManager::setDrawMode( GLuint drawMode )
 {
     _drawMode = drawMode;
     switch (drawMode)

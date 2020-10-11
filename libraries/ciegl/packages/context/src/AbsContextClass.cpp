@@ -4,25 +4,24 @@
 namespace cie::gl {
 
 
-AbsContextClass::AbsContextClass(   GLFWContext& context,
-                                    const std::string& className ) :
-    utils::Loggee( context, className ),
-    _className( className ),
-    _context( &context )
+AbsContextClass::AbsContextClass(   GLFWContext& r_context,
+                                    const std::string& r_name ) :
+    utils::Loggee( r_context, r_name ),
+    _r_context( r_context )
 {
 }
 
 
-const GLFWContext* AbsContextClass::context() const
+const GLFWContext& AbsContextClass::context() const
 {
-    return _context;
+    return _r_context;
 }
 
 
-void AbsContextClass::checkGLErrors( const std::string& errorMessage )
+void AbsContextClass::checkGLErrors( const std::string& r_errorMessage )
 {
 
-    std::string message = errorMessage;
+    std::string message = r_errorMessage;
     if ( message.empty() )
         message = "GL Error";
 
