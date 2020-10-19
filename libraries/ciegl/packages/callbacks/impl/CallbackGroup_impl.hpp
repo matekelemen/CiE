@@ -4,6 +4,9 @@
 // --- Utility Includes ---
 #include "cieutils/packages/macros/inc/exceptions.hpp"
 
+// --- Internal Includes ---
+#include "ciegl/packages/context/inc/GLFWWindow.hpp"
+
 // --- STL Includes ---
 #include <sstream>
 
@@ -14,17 +17,19 @@ template <class CallbackType>
 CallbackType makeCallback(  CallbackType callback,
                             DrawManager* drawManager )
 {
-    if ( glfwGetWindowUserPointer( drawManager->context().window()) == nullptr )
-        glfwSetWindowUserPointer( drawManager->context().window(), static_cast<void*>(drawManager) );
+    GLFWwindow* p_window = detail::getGLFWwindow( drawManager->context().window() );
+    if ( glfwGetWindowUserPointer(p_window) == nullptr )
+        glfwSetWindowUserPointer( p_window, static_cast<void*>(drawManager) );
     return callback;
 }
 
 
 template <class CameraType>
-CameraType* CallbackGroup::getCameraPtr( WindowPtr window )
+CameraType* CallbackGroup::getCameraPtr( WindowPtr p_window )
 {
     // Get window user pointer
-    void* userPtr           = glfwGetWindowUserPointer(window);
+    GLFWwindow* p_rawWindow = detail::getGLFWwindow(p_window);
+    void* userPtr           = glfwGetWindowUserPointer( p_rawWindow );
 
     // Check if window user pointer was set
     if (userPtr == nullptr)
@@ -35,7 +40,7 @@ CameraType* CallbackGroup::getCameraPtr( WindowPtr window )
     }
 
     // Reinterpret as DrawManager and get camera
-    DrawManager* manager    = static_cast<DrawManager*>(glfwGetWindowUserPointer(window));
+    DrawManager* manager    = static_cast<DrawManager*>(glfwGetWindowUserPointer( p_rawWindow ));
     CameraType* camera      = nullptr;
 
     // Try casting the camera to the requested type

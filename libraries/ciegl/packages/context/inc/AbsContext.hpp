@@ -6,6 +6,10 @@
 #include "cieutils/packages/logging/inc/Logger.hpp"
 #include <cieutils/observer.hpp>
 
+// --- Internal Includes ---
+#include "ciegl/packages/context/inc/AbsMonitor.hpp"
+#include "ciegl/packages/context/inc/AbsWindow.hpp"
+
 // --- STL Includes ---
 #include <utility>
 #include <memory>
@@ -19,21 +23,12 @@ namespace cie::gl {
 /**
  * Interface for an OpenGL context.
 */
-template <  class WindowType,
-            class MonitorType,
-            class WindowPtr     = std::shared_ptr<WindowType>,
-            class MonitorPtr    = std::shared_ptr<MonitorType> >
 class AbsContext :
     public utils::Logger,
     public utils::AbsSubject
 {
 public:
-    using window_type           = WindowType;
-    using window_ptr            = WindowPtr;
-    using window_container      = std::list<window_ptr>;
-
-    using monitor_type          = MonitorType;
-    using monitor_ptr           = MonitorPtr;
+    using window_container = std::list<WindowPtr>;
 
 public:
 
@@ -52,7 +47,7 @@ public:
     /**
      * Get number of samples used for Multi Sample Anti-Aliasing.
     */
-   const Size MSAASamples() const;
+    const Size MSAASamples() const;
 
     /**
      * Get the set of all registered windows.
@@ -62,21 +57,20 @@ public:
     /**
      * Open a new window. Must call registerWindow before returning.
     */
-    virtual window_ptr newWindow(   Size width,
-                                    Size height,
-                                    const std::string& r_name,
-                                    monitor_ptr p_monitor ) = 0;
+    virtual WindowPtr newWindow( Size width,
+                                 Size height,
+                                 const std::string& r_name ) = 0;
 
     /**
      * Make the specified window active.
     */
-    virtual void focusWindow( window_ptr p_window ) = 0;
+    virtual void focusWindow( WindowPtr p_window ) = 0;
 
     /**
      * Close the specified window. Must call deregisterWindow before
      * returning.
     */
-    virtual void closeWindow( window_ptr window ) = 0;
+    virtual void closeWindow( WindowPtr p_window );
 
     /**
      * Close every registered window
@@ -107,7 +101,5 @@ private:
 
 
 } // namespace cie::gl
-
-#include "ciegl/packages/context/impl/AbsContext_impl.hpp"
 
 #endif

@@ -23,11 +23,8 @@
 namespace cie::gl {
 
 
-/* --- Type aliases --- */
-
 class GLFWContext;
-using WindowPtr             = GLFWwindow*;
-using MonitorPtr            = GLFWmonitor*;
+
 
 using DrawFunction          = std::function<bool()>;
 using DrawFunctionFactory   = std::function<DrawFunction(GLFWContext&)>;
@@ -38,45 +35,9 @@ using DrawFunctionFactory   = std::function<DrawFunction(GLFWContext&)>;
 DrawFunction makeEmptyDrawFunction( GLFWContext& );
 
 
-/* --- Define smart pointers for GLFW objects with custom destructors --- */
-
-namespace detail {
-
-struct GLFWWindowDestructorFunctor
-{
-    void operator()( GLFWwindow* p_window ) { glfwDestroyWindow(p_window); }
-};
-
-struct GLFWMonitorDestructorFunctor
-{
-    void operator()( GLFWmonitor* p_monitor ) { /*TODO*/ }
-};
-
-struct GLFWWindowPtr : public std::shared_ptr<GLFWwindow>
-{
-    GLFWWindowPtr() :
-        std::shared_ptr<GLFWwindow>( nullptr ) {}
-    GLFWWindowPtr( GLFWwindow* p_window ) : 
-        std::shared_ptr<GLFWwindow>( p_window, GLFWWindowDestructorFunctor() ) {}
-};
-
-struct GLFWMonitorPtr : public std::shared_ptr<GLFWmonitor>
-{
-    GLFWMonitorPtr() :
-        std::shared_ptr<GLFWmonitor>( nullptr ) {}
-    GLFWMonitorPtr( GLFWmonitor* p_monitor ) : 
-        std::shared_ptr<GLFWmonitor>( p_monitor, GLFWMonitorDestructorFunctor() ) {}
-};
-
-} // namespace detail
-
-using GLFWWindowPtr     = detail::GLFWWindowPtr;
-using GLFWMonitorPtr    = detail::GLFWMonitorPtr;
-
-
 /* --- GLFWContext --- */
 
-class GLFWContext final : public AbsContext<GLFWwindow,GLFWmonitor,GLFWWindowPtr,GLFWMonitorPtr>
+class GLFWContext final : public AbsContext
 {
 public:
     GLFWContext( Size versionMajor                    = 4,
@@ -85,14 +46,13 @@ public:
                  const std::string& r_logFileName     = OUTPUT_PATH + "/ContextLogger.txt" );
     ~GLFWContext();
 
-    typename GLFWContext::window_ptr newWindow( size_t width                              = 800,
-                                                size_t height                             = 600,
-                                                const std::string& r_name                 = "GLFW Window",
-                                                typename GLFWContext::monitor_ptr p_monitor = nullptr ) override;
+    WindowPtr newWindow( size_t width              = 800,
+                         size_t height             = 600,
+                         const std::string& r_name = "GLFW Window" ) override;
 
-    void focusWindow( typename GLFWContext::window_ptr p_window ) override;
+    void focusWindow( WindowPtr p_window ) override;
 
-    void closeWindow( typename GLFWContext::window_ptr p_window ) override;
+    void closeWindow( WindowPtr p_window ) override;
 
     void startEventLoop(    DrawFunctionFactory eventLoopGenerator  = makeEmptyDrawFunction,
                             KeyCallbackFunction keyCallback         = callback_keyExit,

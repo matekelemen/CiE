@@ -52,6 +52,12 @@ GLFWWindow::GLFWWindow( Size id,
 }
 
 
+GLFWWindow::~GLFWWindow()
+{
+    glfwSetWindowShouldClose( _p_window, 1 );
+}
+
+
 void GLFWWindow::setSize_impl( Size width,
                                Size height )
 {
@@ -74,6 +80,38 @@ void GLFWWindow::onResize( GLFWwindow* p_window,
 
     CIE_END_EXCEPTION_TRACING 
 }
+
+
+const GLFWwindow* GLFWWindow::get() const
+{
+    return _p_window;
+}
+
+
+GLFWwindow* GLFWWindow::get()
+{
+    return _p_window;
+}
+
+
+std::pair<double,double> GLFWWindow::getCursorPosition()
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    double x, y;
+    glfwGetCursorPos( _p_window, &x, &y );
+    return std::make_pair( x, y );
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+namespace detail {
+GLFWwindow* getGLFWwindow( WindowPtr p_window )
+{
+    return dynamic_pointer_cast<GLFWWindow>( p_window )->get();
+}
+} // namespace detail
 
 
 } // namespace cie::gl

@@ -3,6 +3,7 @@
 
 // --- Internal Includes ---
 #include "ciegl/packages/context/inc/GLFWContext.hpp"
+#include "ciegl/packages/context/inc/GLFWWindow.hpp"
 #include "ciegl/packages/context/inc/defaultCallback.hpp"
 
 // --- STL Includes ---
@@ -78,38 +79,24 @@ GLFWContext::~GLFWContext()
 
 
 
-typename GLFWContext::window_ptr GLFWContext::newWindow( Size width,
-                                                         Size height,
-                                                         const std::string& r_name,
-                                                         typename GLFWContext::monitor_ptr p_monitor )
+WindowPtr GLFWContext::newWindow( Size width,
+                                  Size height,
+                                  const std::string& r_name )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
     auto scopedBlock = this->newBlock( "open new window" );
 
-    // Create new window
-    typename GLFWContext::window_ptr p_newWindow(
-        glfwCreateWindow( width, 
-                          height,
-                          r_name.c_str(),
-                          p_monitor.get(),
-                          nullptr )
+    auto p_newWindow = WindowPtr(
+        new GLFWWindow( 0,
+                        r_name,
+                        width,
+                        height )
     );
-
-    // Check whether opening a new window was successful
-    if ( p_newWindow == nullptr )
-        error<Exception>( "Failed to create window!" );
-
-    // Register
-    log("Open window");
     this->registerWindow( p_newWindow );
-    glfwSetFramebufferSizeCallback( p_newWindow.get(), frameBufferResizeCallback );
 
-    // Check whether the new window has the requested parameters
-    int checkWidth, checkHeight;
-    glfwGetFramebufferSize( p_newWindow.get(), &checkWidth, &checkHeight );
-    if ( (size_t)checkWidth!=width || (size_t)checkHeight!=height )
-        warn( "Created window is not of the requested size!" );
+    // Initialize GLAD if this is the first window
+
 
     return p_newWindow;
 
@@ -118,13 +105,13 @@ typename GLFWContext::window_ptr GLFWContext::newWindow( Size width,
 
 
 
-void GLFWContext::focusWindow( typename GLFWContext::window_ptr p_window )
+void GLFWContext::focusWindow( WindowPtr p_window )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
     if ( p_window != nullptr )
     {
-        glfwMakeContextCurrent( p_window.get() );
+        glfwMakeContextCurrent( detail::getGLFWwindow(p_window) );
         log( "Focus on window " );
         initializeGLADIfNecessary();
         glDebugMessageCallback( messageCallback, this );
@@ -137,12 +124,12 @@ void GLFWContext::focusWindow( typename GLFWContext::window_ptr p_window )
 
 
 
-void GLFWContext::closeWindow( typename GLFWContext::window_ptr p_window )
+void GLFWContext::closeWindow( WindowPtr p_window )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
     this->deregisterWindow( p_window );
-    glfwSetWindowShouldClose( p_window.get(), 1 );
+    glfwSetWindowShouldClose( detail::getGLFWwindow(p_window), 1 );
     log( "Close window" );
 
     CIE_END_EXCEPTION_TRACING
@@ -160,11 +147,11 @@ void GLFWContext::startEventLoop( DrawFunctionFactory eventLoopGenerator,
     // Bind loop
     _drawFunction = eventLoopGenerator( *this );
 
-    typename GLFWContext::window_ptr p_window = nullptr;
+    WindowPtr p_window = nullptr;
     if ( !this->windows().empty() )
-        p_window = *this->windows().begin();
+        p_window = this->window();
 
-    auto p_rawWindow = p_window.get();
+    auto p_rawWindow = detail::getGLFWwindow(p_window);
 
     // Bind events
     if ( p_rawWindow )
@@ -215,7 +202,7 @@ WindowPtr GLFWContext::window()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    return this->windows().begin()->get();
+    return *this->windows().begin();
 
     CIE_END_EXCEPTION_TRACING
 }
@@ -226,7 +213,7 @@ const WindowPtr GLFWContext::window() const
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    return this->windows().begin()->get();
+    return *this->windows().begin();
 
     CIE_END_EXCEPTION_TRACING
 }
@@ -240,7 +227,7 @@ void GLFWContext::initializeGLADIfNecessary()
     if ( _isGLADInitialized )
         return;
 
-    if ((!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)))
+    if ( (!gladLoadGLLoader( (GLADloadproc)glfwGetProcAddress )) )
         error<Exception>( "Failed to initialize GLAD" );
     else
         log("Initialize GLAD");

@@ -24,6 +24,8 @@ public:
                 Size width,
                 Size height );
 
+    virtual std::pair<double,double> getCursorPosition() = 0;
+
     void setSize( Size width,
                   Size height );
 
@@ -36,6 +38,9 @@ protected:
 protected:
     std::pair<Size,Size> _size;
 };
+
+
+using WindowPtr = std::shared_ptr<AbsWindow>;
 
 
 } // namespace cie::gl

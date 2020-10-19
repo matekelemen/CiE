@@ -15,22 +15,43 @@ namespace cie::gl {
 class GLFWWindow final : public AbsWindow
 {
 public:
-    GLFWWindow( Size id,
-                const std::string& r_name,
-                Size width,
-                Size height );
+    friend class GLFWContext;
+
+public:
+    ~GLFWWindow();
+
+    virtual std::pair<double,double> getCursorPosition() override;
 
     void onResize( GLFWwindow* p_window,
                    int width,
                    int height );
+
+    const GLFWwindow* get() const;
+    GLFWwindow* get();
 
 protected:
     virtual void setSize_impl( Size width,
                                Size height ) override;
 
 private:
+    GLFWWindow( Size id,
+                const std::string& r_name,
+                Size width,
+                Size height );
+
+private:
     GLFWwindow* _p_window;
 };
+
+
+namespace detail {
+/** Helper function for getting a GLFW window
+ * from a WindowPtr interface
+*/
+GLFWwindow* getGLFWwindow( WindowPtr p_window );
+} // namespace detail
+
+
 
 
 } // namespace cie::gl

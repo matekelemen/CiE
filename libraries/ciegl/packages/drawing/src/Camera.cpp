@@ -21,21 +21,10 @@ Camera::Camera( GLFWContext& context, const std::string& className ) :
     _transformationMatrix( 1.0 )
 {
     // Update width and height (orthographic mode)
-    int w, h;
+    const auto& windowSize = _r_context.window()->getSize();
 
-    if (_r_context.window() != nullptr)
-    {
-        glfwGetFramebufferSize( _r_context.window(), &w, &h );
-    }
-    else
-    {
-        auto resolution = getPrimaryMonitorResolution();
-        w = (int)resolution.first;
-        h = (int)resolution.second;
-    }
-    
     _width      = 2.0;
-    _height     = 2.0 * (double)h / (double)w;
+    _height     = 2.0 * double(windowSize.second) / double(windowSize.first);
     update();
 }
 
@@ -203,8 +192,7 @@ const glm::mat4& Camera::transformationMatrix() const
 glm::dvec3 Camera::screenToWorld( double x, double y ) const
 {
     // Get window size
-    int w, h;
-    glfwGetFramebufferSize( _r_context.window(), &w, &h );
+    const auto& windowSize = _r_context.window()->getSize();
 
     // Get depth buffer value
     double z = 0.0;
@@ -215,12 +203,12 @@ glm::dvec3 Camera::screenToWorld( double x, double y ) const
                     &z );
 
     // Map to [-1,1]
-    x                   = 2.0 * x/(double)w - 1.0;
-    y                   = 2.0 * y/(double)h - 1.0;
+    x                   = 2.0 * x/double(windowSize.first) - 1.0;
+    y                   = 2.0 * y/double(windowSize.second) - 1.0;
     z                   = 2.0 * z - 1.0;
 
     // Transform to world
-    glm::dvec4 world     = glm::inverse(_transformationMatrix) * glm::dvec4( x, y, (double)z, 1.0 );        
+    glm::dvec4 world     = glm::inverse(_transformationMatrix) * glm::dvec4( x, y, z, 1.0 );        
     return glm::dvec3(world) / world[3];
 }
 
