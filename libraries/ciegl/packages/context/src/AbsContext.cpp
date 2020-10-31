@@ -1,6 +1,9 @@
 // --- Utility Includes ---
 #include "cieutils/packages/macros/inc/exceptions.hpp"
 
+// --- Internal Includes ---
+#include "ciegl/packages/context/inc/AbsContext.hpp"
+
 // --- STL Includes ---
 #include <algorithm>
 
@@ -10,8 +13,9 @@ namespace cie::gl {
 AbsContext::AbsContext( Size versionMajor,
                         Size versionMinor,
                         Size MSAASamples,
-                        const std::string& r_logFileName ) :
-    utils::Logger( r_logFileName ),
+                        const std::string& r_logFileName,
+                        bool useConsole ) :
+    utils::Logger( r_logFileName, useConsole ),
     utils::AbsSubject(),
     _version( versionMajor, versionMinor ),
     _MSAASamples( MSAASamples ),
@@ -22,7 +26,12 @@ AbsContext::AbsContext( Size versionMajor,
 
 AbsContext::~AbsContext()
 {
-    closeAllWindows();
+    if ( !this->_windows.empty() )
+        this->warn( "The derived context should have closed all windows, but "
+                    + std::to_string( this->_windows.size() )
+                    + " are still open" );
+
+    this->log( "Destroy context" );
 }
 
 
@@ -40,6 +49,27 @@ AbsContext::MSAASamples() const
 }
 
 
+WindowPtr AbsContext::newWindow( Size width,
+                                 Size height,
+                                 const std::string& r_name )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    auto scopedBlock = this->newBlock( "new window" );
+
+    auto p_window = this->newWindow_impl( width,
+                                          height,
+                                          r_name );
+    this->registerWindow( p_window );
+
+    this->logs( "ID_", p_window->getID() );
+
+    return p_window;
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
 const typename AbsContext::window_container&
 AbsContext::windows() const
 {
@@ -47,15 +77,25 @@ AbsContext::windows() const
 }
 
 
-void AbsContext::closeWindw( WindowPtr p_window )
+void AbsContext::closeWindow( WindowPtr p_window )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    if ( p_window.use_count() != 2 )
-        CIE_THROW( Exception, "Cannot force window to be destroyed while it's being used elsewhere" )
+    auto scopedBlock = this->newBlock( "close window" );
 
-    deregisterWindow( p_window );
-    p_window.reset();
+    this->closeWindow_impl( p_window );
+
+    // Max use count:
+    //  - one pointer with which this function was called
+    //  - one pointer constructed as the argument
+    //  - one registered in the internal container
+    if ( p_window.use_count() > 3 )
+        this->error<Exception>( "Cannot force window to be destroyed while it's being used elsewhere | ID_" + std::to_string(p_window->getID()));
+
+    this->deregisterWindow( p_window );
+    this->logs( "ID_", p_window->getID() );
+
+    //p_window.reset();
 
     CIE_END_EXCEPTION_TRACING
 }

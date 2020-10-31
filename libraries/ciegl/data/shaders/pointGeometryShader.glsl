@@ -1,10 +1,3 @@
-// attributes: 
-// sizes: 
-// strides: 
-// offsets: 
-// uniforms: 
-// textures: 
-
 #version 450 core
 
 layout(points) in;

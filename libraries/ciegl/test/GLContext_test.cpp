@@ -1,3 +1,4 @@
+/*
 // --- External Includes ---
 #include "catch.hpp"
 
@@ -6,7 +7,7 @@
 
 // --- Internal Includes ---
 #include "ciegl/packages/context/inc/GLFWContext.hpp"
-#include "ciegl/packages/drawing/inc/Camera.hpp"
+#include "ciegl/packages/scene/inc/Camera.hpp"
 #include "ciegl/packages/drawing/inc/DrawManager.hpp"
 #include "ciegl/packages/callbacks/inc/CallbackGroup.hpp"
 #include "cmake_variables.hpp"
@@ -74,7 +75,7 @@ struct TestDrawManager : public DrawManager
     }
 };
 
-/*
+
 TEST_CASE( "GLFWContext" )
 {
 
@@ -99,7 +100,7 @@ TEST_CASE( "GLFWContext" )
     REQUIRE_NOTHROW( context_global.makeContextCurrent() );
     REQUIRE_NOTHROW( context_global.startEventLoop( loopFactory ) );
 }
-*/
+
 
 //TEST_CASE( "Scene" )
 //{
@@ -114,9 +115,12 @@ TEST_CASE( "DrawManager", "[ciegl]" )
     CIE_TEST_CASE_INIT( "DrawManager" )
 
     // Create context
-    typename GLFWContext::window_ptr p_window;
+    WindowPtr p_window;
     REQUIRE_NOTHROW( p_window = context_global.newWindow() );
     REQUIRE_NOTHROW( context_global.focusWindow( p_window ) );
+
+    ScenePtr p_scene;
+    REQUIRE_NOTHROW( p_scene = p_window->makeScene() );
     
     // Create draw manager
     TestDrawManager drawManager;
@@ -124,24 +128,26 @@ TEST_CASE( "DrawManager", "[ciegl]" )
     REQUIRE_NOTHROW( drawManager.initialize() );
 
     // Set DrawManager members
-    auto camera = std::make_shared<ArcballCamera>( context_global );
-    REQUIRE_NOTHROW( drawManager.camera() = camera );
-    CHECK_NOTHROW( camera->setProperties( 0 ) );
-    CHECK_NOTHROW( camera->setCenter( glm::vec3( 0.5f, 0.5f, 0.5f ) ) );
+    auto p_camera = CameraPtr(
+        new ArcballCamera( context_global )
+    );
+    //REQUIRE_NOTHROW( drawManager.camera() = p_camera );
+    REQUIRE_NOTHROW( p_scene->addCamera( p_camera ) );
+    CHECK_NOTHROW( p_camera->setProperties( 0 ) );
+    //CHECK_NOTHROW( p_camera->setCenter( glm::vec3( 0.5f, 0.5f, 0.5f ) ) );
 
     // Bind callbacks
-    KeyCallbackFunction keyCallback         = makeCallback( ArcballCallbacks::keyCallback,
-                                                            &drawManager );
-    CursorCallbackFunction cursorCallback   = makeCallback( ArcballCallbacks::cursorCallback,
-                                                            &drawManager );
-    MouseCallbackFunction mouseCallback     = makeCallback( ArcballCallbacks::mouseCallback,
-                                                            &drawManager );
+    //KeyCallbackFunction keyCallback         = makeCallback( ArcballCallbacks::keyCallback,
+    //                                                        &drawManager );
+    //CursorCallbackFunction cursorCallback   = makeCallback( ArcballCallbacks::cursorCallback,
+    //                                                        &drawManager );
+    //MouseCallbackFunction mouseCallback     = makeCallback( ArcballCallbacks::mouseCallback,
+    //                                                        &drawManager );
 
     // Start the event loop
-    REQUIRE_NOTHROW(context_global.startEventLoop(  std::bind(&DrawManager::makeDrawFunction, &drawManager, std::placeholders::_1),
-                                                    keyCallback,
-                                                    cursorCallback,
-                                                    mouseCallback     ));
+    REQUIRE_NOTHROW(context_global.startEventLoop(
+        std::bind(&DrawManager::makeDrawFunction, &drawManager, std::placeholders::_1)
+    ));
 }
 
 
@@ -174,3 +180,5 @@ TEST_CASE( "DrawManager", "[ciegl]" )
 
 
 } // namespace cie::gl
+
+*/

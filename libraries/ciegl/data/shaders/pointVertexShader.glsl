@@ -1,14 +1,7 @@
-// attributes: position
-// sizes: 3
-// strides: 0
-// offsets: 0
-// uniforms: transformation
-// textures: 
-
 #version 450 core
 
 // Vertex layout:
-//  poition      : x, y, z
+//  position      : x, y, z
 
 
 in vec3     position;

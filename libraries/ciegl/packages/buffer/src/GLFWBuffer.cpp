@@ -8,8 +8,8 @@
 namespace cie::gl {
 
 
-GLFWVertexBuffer::GLFWVertexBuffer( Size id ) :
-    GLFWBuffer<typename GLFWVertexBuffer::data_type>( id )
+GLFWVertexBuffer::GLFWVertexBuffer() :
+    GLFWBuffer<typename GLFWVertexBuffer::data_type>()
 {
 }
 
@@ -22,15 +22,15 @@ void GLFWVertexBuffer::write( const typename GLFWVertexBuffer::data_container_ty
         GL_ARRAY_BUFFER,
         r_dataContainer.size()*sizeof(typename GLFWVertexBuffer::data_type),
         &*r_dataContainer.begin(),
-        _drawMode 
+        this->_drawMode 
     );
 
     CIE_END_EXCEPTION_TRACING
 }
 
 
-GLFWElementBuffer::GLFWElementBuffer( Size id ) :
-    GLFWBuffer<typename GLFWElementBuffer::data_type>( id )
+GLFWElementBuffer::GLFWElementBuffer() :
+    GLFWBuffer<typename GLFWElementBuffer::data_type>()
 {
 }
 

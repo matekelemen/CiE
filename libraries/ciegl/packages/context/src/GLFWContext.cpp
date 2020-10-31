@@ -13,6 +13,37 @@
 namespace cie::gl {
 
 
+namespace detail {
+GLFWRAII::GLFWRAII( Size versionMajor,
+                    Size versionMinor,
+                    Size MSAASamples,
+                    utils::Logger& r_logger ) :
+    _versionMajor( versionMajor ),
+    _versionMinor( versionMinor ),
+    _MSAASamples( MSAASamples )
+{
+    glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, versionMajor );
+    glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, versionMinor );
+    glfwWindowHint( GLFW_SAMPLES, MSAASamples );
+    //glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE );
+    glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
+    glfwWindowHint( GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE );
+
+    glfwSetErrorCallback( callback_errorPrint );
+
+    if ( !glfwInit() )
+        r_logger.error<Exception>( "Failed to initialize GLFW" );
+    else
+        r_logger.log( "GLFW initialization successful" );
+}
+
+GLFWRAII::~GLFWRAII()
+{
+    glfwTerminate();
+}
+} // namespace detail
+
+
 /* --- Default callbacks --- */
 
 DrawFunction makeEmptyDrawFunction( GLFWContext& )
@@ -22,12 +53,9 @@ DrawFunction makeEmptyDrawFunction( GLFWContext& )
 }
 
 
-/* --- Static initialization --- */
-
-bool GLFWContext::_isGLFWInitialized    = false;
-bool GLFWContext::_active               = false;
-bool GLFWContext::_isGLADInitialized    = false;
-
+/* --- STATIC INITIALIZATION --- */
+bool GLFWContext::_isGLADInitialized = false;
+bool GLFWContext::_isCurrent         = false;
 
 
 /* --- GLFWContext --- */
@@ -35,68 +63,66 @@ bool GLFWContext::_isGLADInitialized    = false;
 GLFWContext::GLFWContext( Size versionMajor,
                           Size versionMinor,
                           Size MSAASamples,
-                          const std::string& r_logFileName  )   :
+                          const std::string& r_logFileName,
+                          bool useConsole  )   :
     AbsContext( versionMajor,
                 versionMinor,
                 MSAASamples,
-                r_logFileName )
+                r_logFileName,
+                useConsole )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    if (!_isGLFWInitialized)
-    {
-        glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, this->_version.first );
-        glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, this->_version.second );
-        glfwWindowHint( GLFW_SAMPLES, MSAASamples );
-        //glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE );
-        glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
-        glfwWindowHint( GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE );
+    auto scopedBlock = this->newBlock( "GLFWContext init" );
 
-        // Bind callbacks and event loops
-        glfwSetErrorCallback( callback_errorPrint );
+    static detail::GLFWRAII glfwInitializer( versionMajor,
+                                             versionMinor,
+                                             MSAASamples,
+                                             *this );
 
-        if ( !glfwInit() )
-            error<Exception>( "Failed to initialize GLFW" );
+    // Check version a sampling
+    // --> once set up with a particular set of parameters,
+    //     other contexts must have the identical ones
+    if ( this->_version.first != glfwInitializer._versionMajor
+         || this->_version.second != glfwInitializer._versionMinor
+         || this->_MSAASamples != glfwInitializer._MSAASamples )
+        CIE_THROW( Exception, "GLFWContext initialization mismatch!" )
 
-        _isGLFWInitialized = true;
-        log( "Open context" );
-    }
-    else
-        warn( "Attempt to reinitialize the context" );
-
+    log( "Open context" );
+    
     CIE_END_EXCEPTION_TRACING
 }
 
 
-
 GLFWContext::~GLFWContext()
 {
-    log( "Terminate context" );
     this->closeAllWindows();
-    glfwTerminate();
-    log( "Destroy context" );
 }
 
 
 
-WindowPtr GLFWContext::newWindow( Size width,
-                                  Size height,
-                                  const std::string& r_name )
+WindowPtr GLFWContext::newWindow_impl( Size width,
+                                       Size height,
+                                       const std::string& r_name )
 {
     CIE_BEGIN_EXCEPTION_TRACING
-
-    auto scopedBlock = this->newBlock( "open new window" );
 
     auto p_newWindow = WindowPtr(
         new GLFWWindow( 0,
                         r_name,
                         width,
-                        height )
+                        height,
+                        *this )
     );
-    this->registerWindow( p_newWindow );
 
-    // Initialize GLAD if this is the first window
-
+    if ( !this->_isCurrent )
+        {
+            glfwMakeContextCurrent( detail::getGLFWwindow(p_newWindow) );
+            this->log( "make context current" );
+            initializeGLADIfNecessary();
+            this->_isCurrent = true;
+            glDebugMessageCallback( messageCallback, this );
+        }
 
     return p_newWindow;
 
@@ -111,10 +137,7 @@ void GLFWContext::focusWindow( WindowPtr p_window )
 
     if ( p_window != nullptr )
     {
-        glfwMakeContextCurrent( detail::getGLFWwindow(p_window) );
         log( "Focus on window " );
-        initializeGLADIfNecessary();
-        glDebugMessageCallback( messageCallback, this );
     }
     else
         error<Exception>( "Focus on non-existent window!" );
@@ -124,23 +147,16 @@ void GLFWContext::focusWindow( WindowPtr p_window )
 
 
 
-void GLFWContext::closeWindow( WindowPtr p_window )
+void GLFWContext::closeWindow_impl( WindowPtr p_window )
 {
     CIE_BEGIN_EXCEPTION_TRACING
-
-    this->deregisterWindow( p_window );
     glfwSetWindowShouldClose( detail::getGLFWwindow(p_window), 1 );
-    log( "Close window" );
-
     CIE_END_EXCEPTION_TRACING
 }
 
 
 
-void GLFWContext::startEventLoop( DrawFunctionFactory eventLoopGenerator,
-                                  KeyCallbackFunction keyCallback,
-                                  CursorCallbackFunction cursorCallback,
-                                  MouseCallbackFunction mouseCallback )
+void GLFWContext::startEventLoop( DrawFunctionFactory eventLoopGenerator )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -153,14 +169,7 @@ void GLFWContext::startEventLoop( DrawFunctionFactory eventLoopGenerator,
 
     auto p_rawWindow = detail::getGLFWwindow(p_window);
 
-    // Bind events
-    if ( p_rawWindow )
-    {
-        glfwSetKeyCallback( p_rawWindow, keyCallback );
-        glfwSetCursorPosCallback( p_rawWindow, cursorCallback );
-        glfwSetMouseButtonCallback( p_rawWindow, mouseCallback );
-    }
-    else 
+    if ( !p_rawWindow )
         error<Exception>( "Attempt to start event loop without an existing window!" );
 
     // Start event loop

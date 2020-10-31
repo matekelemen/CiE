@@ -1,8 +1,10 @@
-// --- Internal Includes ---
-#include "ciegl/packages/drawing/inc/Camera.hpp"
-
 // --- External Includes ---
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <glm/gtx/rotate_vector.hpp>
+
+// --- Internal Includes ---
+#include "ciegl/packages/scene/inc/Camera.hpp"
 
 // --- STL Includes ---
 #include <cmath>
@@ -10,8 +12,8 @@
 namespace cie::gl {
 
 
-Camera::Camera( GLFWContext& context, const std::string& className ) :
-    AbsContextClass( context, className ),
+Camera::Camera( utils::Logger& r_logger, const std::string& r_name ) :
+    utils::Loggee( r_logger, r_name ),
     RigidBody(),
     _fieldOfView( 90.0 ),
     _nearClippingPlane( 0.1 ),
@@ -21,43 +23,43 @@ Camera::Camera( GLFWContext& context, const std::string& className ) :
     _transformationMatrix( 1.0 )
 {
     // Update width and height (orthographic mode)
-    const auto& windowSize = _r_context.window()->getSize();
+    //const auto& windowSize = _r_context.window()->getSize();
 
     _width      = 2.0;
-    _height     = 2.0 * double(windowSize.second) / double(windowSize.first);
+    _height     = 2.0 * 600.0 / 800.0;
     update();
 }
 
 
-Camera::Camera( const Camera& copy ) :
-    AbsContextClass( copy._r_context, "Camera" ),
-    RigidBody( copy._position, copy._direction, copy._up ),
-    _fieldOfView( copy._fieldOfView ),
-    _width( copy._width ),
-    _height( copy._height ),
-    _nearClippingPlane( copy._nearClippingPlane ),
-    _farClippingPlane( copy._farClippingPlane ),
-    _viewMatrix( copy._viewMatrix ),
-    _projectionMatrix( copy._projectionMatrix ),
-    _transformationMatrix( copy._transformationMatrix )
+Camera::Camera( Camera& r_copy ) :
+    utils::Loggee( r_copy.logger(), r_copy.name() ),
+    RigidBody( r_copy._position, r_copy._direction, r_copy._up ),
+    _fieldOfView( r_copy._fieldOfView ),
+    _width( r_copy._width ),
+    _height( r_copy._height ),
+    _nearClippingPlane( r_copy._nearClippingPlane ),
+    _farClippingPlane( r_copy._farClippingPlane ),
+    _viewMatrix( r_copy._viewMatrix ),
+    _projectionMatrix( r_copy._projectionMatrix ),
+    _transformationMatrix( r_copy._transformationMatrix )
 {
     update();
 }
 
 
-Camera& Camera::operator=( const Camera& copy )
+Camera& Camera::operator=( Camera& r_copy )
 {
-    _position               = copy._position;
-    _direction              = copy._direction;
-    _up                     = copy._up;
-    _fieldOfView            = copy._fieldOfView;
-    _width                  = copy._width;
-    _height                 = copy._height;
-    _nearClippingPlane      = copy._nearClippingPlane;
-    _farClippingPlane       = copy._farClippingPlane;
-    _viewMatrix             = copy._viewMatrix;
-    _projectionMatrix       = copy._projectionMatrix;
-    _transformationMatrix   = copy._transformationMatrix;
+    _position               = r_copy._position;
+    _direction              = r_copy._direction;
+    _up                     = r_copy._up;
+    _fieldOfView            = r_copy._fieldOfView;
+    _width                  = r_copy._width;
+    _height                 = r_copy._height;
+    _nearClippingPlane      = r_copy._nearClippingPlane;
+    _farClippingPlane       = r_copy._farClippingPlane;
+    _viewMatrix             = r_copy._viewMatrix;
+    _projectionMatrix       = r_copy._projectionMatrix;
+    _transformationMatrix   = r_copy._transformationMatrix;
     update();
 
     return *this;
@@ -192,7 +194,7 @@ const glm::mat4& Camera::transformationMatrix() const
 glm::dvec3 Camera::screenToWorld( double x, double y ) const
 {
     // Get window size
-    const auto& windowSize = _r_context.window()->getSize();
+    //const auto& windowSize = _r_context.window()->getSize();
 
     // Get depth buffer value
     double z = 0.0;
@@ -203,8 +205,8 @@ glm::dvec3 Camera::screenToWorld( double x, double y ) const
                     &z );
 
     // Map to [-1,1]
-    x                   = 2.0 * x/double(windowSize.first) - 1.0;
-    y                   = 2.0 * y/double(windowSize.second) - 1.0;
+    x                   = 2.0 * x/800.0 - 1.0;
+    y                   = 2.0 * y/600.0 - 1.0;
     z                   = 2.0 * z - 1.0;
 
     // Transform to world
@@ -244,15 +246,15 @@ double Camera::farClippingPlane() const
 
 
 
-InteractiveCamera::InteractiveCamera( GLFWContext& context, const std::string& className ) :
-    Camera( context, className ),
+InteractiveCamera::InteractiveCamera( utils::Logger& r_logger, const std::string& r_name ) :
+    Camera( r_logger, r_name ),
     _mousePressPosition( 0.0, 0.0, 0.0 ),
     _cursorPosition( 0.0, 0.0, 0.0 )
 {
 }
 
 
-InteractiveCamera::InteractiveCamera( const InteractiveCamera& copy ):
+InteractiveCamera::InteractiveCamera( InteractiveCamera& copy ):
     Camera( copy ),
     _mousePressPosition( copy._mousePressPosition ),
     _cursorPosition( copy._cursorPosition )
@@ -296,9 +298,9 @@ const glm::dvec3& InteractiveCamera::cursorPosition( ) const
 }
 
 
-ArcballCamera::ArcballCamera(   GLFWContext& context,
-                                const std::string& className ) :
-    InteractiveCamera( context, className ),
+ArcballCamera::ArcballCamera(   utils::Logger& r_logger,
+                                const std::string& r_name ) :
+    InteractiveCamera( r_logger, r_name ),
     _center( 0.0, 0.0, 0.0 )
 {
 }

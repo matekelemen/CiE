@@ -44,7 +44,8 @@ public:
 
 public:
     Logger() = delete;
-    Logger( const std::string& fileName );
+    Logger( const std::string& fileName,
+            bool useConsole = false );
     Logger( const Logger& copy ) = delete;
     ~Logger();
 
@@ -55,8 +56,12 @@ public:
     Logger& useConsole( bool use );
     Logger& forceFlush( bool use );
 
-    Logger& log(   const std::string& message );
-    Logger& warn(  const std::string& message );
+    Logger& log( const std::string& message );
+
+    template <class ...Args>
+    Logger& logs( Args&&... args );
+
+    Logger& warn( const std::string& message );
 
     template <class ExceptionType = std::runtime_error>
     Logger& error( const std::string& r_message );

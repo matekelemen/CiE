@@ -1,19 +1,25 @@
 // --- Internal Includes ---
-#include "ciegl/packages/buffer/inc/BufferManager.hpp"
+#include "ciegl/packages/buffer/inc/GLFWBufferManager.hpp"
 
 namespace cie::gl {
 
 
-BufferManager::BufferManager(   GLFWContext& context,
-                                GLuint drawMode ) :
-    AbsContextClass( context, "BufferManager" ),
-    _buffers( ),
-    _drawMode( drawMode )
+GLFWBufferManager::GLFWBufferManager( utils::Logger& r_logger,
+                                      GLuint drawMode ) :
+    AbsBufferManager( r_logger, "GLFWBufferManager" ),
+    _buffers( )
+{
+    this->setDrawMode( drawMode );
+}
+
+
+GLFWBufferManager::GLFWBufferManager( utils::Logger& r_logger ) :
+    GLFWBufferManager( r_logger, GL_DYNAMIC_DRAW )
 {
 }
 
 
-BufferManager::~BufferManager()
+GLFWBufferManager::~GLFWBufferManager()
 {
     for (auto bufferID : _buffers)
     {
@@ -24,7 +30,7 @@ BufferManager::~BufferManager()
 }
 
 
-GLuint BufferManager::createBuffer( )
+GLuint GLFWBufferManager::createBuffer( )
 {
     GLuint bufferID;
     glGenBuffers( 1, &bufferID );
@@ -35,21 +41,21 @@ GLuint BufferManager::createBuffer( )
 }
 
 
-void BufferManager::bindVertexBuffer( GLuint bufferID )
+void GLFWBufferManager::bindVertexBuffer( GLuint bufferID )
 {
     glBindBuffer( GL_ARRAY_BUFFER, bufferID );
     logID( "Bind vertex buffer", bufferID );
 }
 
 
-void BufferManager::bindElementBuffer( GLuint bufferID )
+void GLFWBufferManager::bindElementBuffer( GLuint bufferID )
 {
     glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufferID );
     logID( "Bind element buffer", bufferID );
 }
 
 
-void BufferManager::setDrawMode( GLuint drawMode )
+void GLFWBufferManager::setDrawMode( GLuint drawMode )
 {
     _drawMode = drawMode;
     switch (drawMode)
@@ -66,7 +72,6 @@ void BufferManager::setDrawMode( GLuint drawMode )
         default:
             log( "Attempt to set invalid draw mode: " + std::to_string(drawMode), LOG_TYPE_ERROR );
             break;
-
     }
     
 }

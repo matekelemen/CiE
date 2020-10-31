@@ -2,13 +2,15 @@
 #define CIEGL_CAMERA_HPP
 
 // --- Internal Imports ---
-#include "ciegl/packages/context/inc/AbsContextClass.hpp"
 #include "ciegl/packages/rigidbody/inc/RigidBody.hpp"
 
 // --- External Imports ---
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+// --- Utility Includes ---
+#include "cieutils/packages/logging/inc/Loggee.hpp"
 
 // --- STD Imports ---
 #include <memory>
@@ -23,13 +25,15 @@ using InteractiveCameraPtr  = std::shared_ptr<InteractiveCamera>;
 
 
 
-class Camera : public AbsContextClass, public RigidBody
+class Camera :
+    public utils::Loggee,
+    public RigidBody
 {
 public:
-    Camera( GLFWContext& context,
-            const std::string& className = "Camera" );
-    Camera( const Camera& camera );
-    Camera& operator=( const Camera& camera );
+    Camera( utils::Logger& r_logger,
+            const std::string& r_name = "Camera" );
+    Camera( Camera& camera );
+    Camera& operator=( Camera& camera );
     ~Camera();
 
     virtual void zoom( double modifier );
@@ -78,10 +82,10 @@ protected:
 class InteractiveCamera : public Camera
 {
 public:
-    InteractiveCamera(  GLFWContext& context,
-                        const std::string& className = "InteractiveCamera" );
-    InteractiveCamera( const InteractiveCamera& copy );
-    InteractiveCamera& operator=( const InteractiveCamera& copy ) = default;
+    InteractiveCamera(  utils::Logger& r_logger,
+                        const std::string& r_name = "InteractiveCamera" );
+    InteractiveCamera( InteractiveCamera& copy );
+    InteractiveCamera& operator=( InteractiveCamera& copy ) = default;
 
     void setMousePressPosition( double x, double y );
     void setMousePressPosition( const glm::dvec3& pos );
@@ -101,8 +105,8 @@ protected:
 class ArcballCamera : public InteractiveCamera
 {
 public:
-    ArcballCamera(  GLFWContext& context,
-                    const std::string& className = "ArcballCamera" );
+    ArcballCamera(  utils::Logger& r_logger,
+                    const std::string& r_name = "ArcballCamera" );
 
     void rotate(    double radians,
                     const glm::dvec3& axis,

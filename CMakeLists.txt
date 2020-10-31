@@ -9,6 +9,7 @@ set( CIE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR} )
 # OPTIONS
 # ---------------------------------------------------------
 include( cmake/options.cmake )
+set( BUILD_SHARED_LIBS ON CACHE BOOL "Always build shared libraries" FORCE )
 
 # ---------------------------------------------------------
 # INSTALL PATH SETUP

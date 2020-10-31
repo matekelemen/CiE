@@ -4,8 +4,33 @@
 // --- Utility Includes ---
 #include "cieutils/packages/macros/inc/exceptions.hpp"
 
+// --- STL Includes ---
+#include <tuple>
+#include <sstream>
+
 
 namespace cie::utils {
+
+
+template <class ...Args>
+Logger& Logger::logs( Args&&... args )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    auto argTuple = std::make_tuple( std::forward<Args>(args)... );
+
+    std::stringstream stream;
+    std::apply(
+        [&]( auto&&... arguments ) { ((stream << arguments),...); },
+        argTuple
+    );
+
+    this->log( stream.str() );
+
+    return *this;
+
+    CIE_END_EXCEPTION_TRACING
+}
 
 
 template <class ExceptionType>

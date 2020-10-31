@@ -21,7 +21,7 @@ const size_t LOG_TYPE_ERROR     = 2;
 namespace cie::utils {
 
 
-class Loggee : NamedObject
+class Loggee : public NamedObject
 {
 public:
     Loggee( Logger& r_logger, 

@@ -1,12 +1,11 @@
-#ifndef CIEGL_BUFFER_HANDLER_HPP
-#define CIEGL_BUFFER_HANDLER_HPP
+#ifndef CIEGL_GLFW_BUFFER_MANAGER_HPP
+#define CIEGL_GLFW_BUFFER_MANAGER_HPP
 
 // --- External Includes ---
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 // --- Internal Includes ---
-#include "ciegl/packages/context/inc/AbsContextClass.hpp"
 #include "ciegl/packages/buffer/inc/AbsBufferManager.hpp"
 #include "ciegl/packages/buffer/inc/AbsBuffer.hpp"
 
@@ -16,12 +15,14 @@
 namespace cie::gl {
 
 
-class BufferManager : AbsContextClass
+class GLFWBufferManager : public AbsBufferManager
 {
 public:
-    BufferManager(  GLFWContext& context,
-                    GLuint drawMode );
-    virtual ~BufferManager();
+    GLFWBufferManager( utils::Logger& r_logger,
+                       GLuint drawMode );
+    GLFWBufferManager( utils::Logger& r_logger );
+
+    ~GLFWBufferManager();
 
     [[nodiscard]] GLuint createBuffer();
 
@@ -44,6 +45,6 @@ private:
 
 } // namespace cie::gl
 
-#include "ciegl/packages/buffer/impl/BufferManager_impl.hpp"
+#include "ciegl/packages/buffer/impl/GLFWBufferManager_impl.hpp"
 
 #endif

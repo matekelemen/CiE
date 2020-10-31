@@ -87,28 +87,32 @@ int main(std::function<ValueType(const PointType&,Double)> targetFunction, Doubl
     manager.initialize();
 
     // Camera setup
-    auto camera         = std::make_shared<gl::ArcballCamera>(context);
-    manager.camera()    = camera;
-    camera->setProperties(60.0, 0.1, 100.0);
-    camera->setPose(    glm::dvec3( 2.0, 2.0, 2.0 ), 
-                        glm::dvec3( -1.0, -1.0, -1.0 ), 
-                        glm::dvec3( 0.0, 0.0, 1.0 ) );
-    camera->setCenter( glm::dvec3( 0.0, 0.0, 0.0 ) );
-    camera->updateTransformationMatrix();
+    auto p_camera = gl::CameraPtr(
+        new gl::ArcballCamera(context)
+    );
+    //manager.camera()    = camera;
+    p_camera->setProperties(60.0, 0.1, 100.0);
+    p_camera->setPose( glm::dvec3( 2.0, 2.0, 2.0 ), 
+                       glm::dvec3( -1.0, -1.0, -1.0 ), 
+                       glm::dvec3( 0.0, 0.0, 1.0 ) );
+    //p_camera->setCenter( glm::dvec3( 0.0, 0.0, 0.0 ) );
+    p_camera->updateTransformationMatrix();
+
+    auto p_scene = p_window->makeScene();
+    p_scene->addCamera( p_camera );
 
     // Bind callbacks
-    gl::KeyCallbackFunction keyCallback         = makeCallback( gl::ArcballCallbacks::keyCallback,
-                                                                &manager );
-    gl::CursorCallbackFunction cursorCallback   = makeCallback( gl::ArcballCallbacks::cursorCallback,
-                                                                &manager );
-    gl::MouseCallbackFunction mouseCallback     = makeCallback( gl::ArcballCallbacks::mouseCallback,
-                                                                &manager );
+    //gl::KeyCallbackFunction keyCallback         = makeCallback( gl::ArcballCallbacks::keyCallback,
+    //                                                            &manager );
+    //gl::CursorCallbackFunction cursorCallback   = makeCallback( gl::ArcballCallbacks::cursorCallback,
+    //                                                            &manager );
+    //gl::MouseCallbackFunction mouseCallback     = makeCallback( gl::ArcballCallbacks::mouseCallback,
+    //                                                            &manager );
 
     // Start event loop
-    context.startEventLoop( std::bind(&gl::SpaceTreeDrawManager<NodeType>::makeDrawFunction, &manager, std::placeholders::_1),
-                            keyCallback,
-                            cursorCallback,
-                            mouseCallback     );
+    context.startEventLoop(
+        std::bind(&gl::SpaceTreeDrawManager<NodeType>::makeDrawFunction, &manager, std::placeholders::_1)
+    );
     return 0;
 }
 

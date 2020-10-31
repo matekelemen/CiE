@@ -37,11 +37,12 @@ std::string getDate()
 } // namespace detail
 
 
-Logger::Logger( const std::string& fileName ) :
+Logger::Logger( const std::string& fileName,
+                bool useConsole ) :
     _manager( detail::fileDirectory(fileName) ),
     _timeLog( {detail::getTime()} ),
     _prefix( "" ),
-    _useConsole( false ),
+    _useConsole( useConsole ),
     _forceFlush( true )
 {
     CIE_BEGIN_EXCEPTION_TRACING

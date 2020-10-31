@@ -35,7 +35,8 @@ public:
     AbsContext( Size versionMajor,
                 Size versionMinor,
                 Size MSAASamples,
-                const std::string& r_logFileName );
+                const std::string& r_logFileName,
+                bool useConsole = false );
 
     ~AbsContext();
 
@@ -49,27 +50,17 @@ public:
     */
     const Size MSAASamples() const;
 
-    /**
-     * Get the set of all registered windows.
-    */
     const window_container& windows() const;
 
-    /**
-     * Open a new window. Must call registerWindow before returning.
-    */
-    virtual WindowPtr newWindow( Size width,
-                                 Size height,
-                                 const std::string& r_name ) = 0;
+    WindowPtr newWindow( Size width                 = 800,
+                         Size height                = 600,
+                         const std::string& r_name  = "CiE" );
 
     /**
      * Make the specified window active.
     */
     virtual void focusWindow( WindowPtr p_window ) = 0;
 
-    /**
-     * Close the specified window. Must call deregisterWindow before
-     * returning.
-    */
     virtual void closeWindow( WindowPtr p_window );
 
     /**
@@ -78,6 +69,13 @@ public:
     void closeAllWindows();
 
 protected:
+    virtual WindowPtr newWindow_impl( Size width,
+                                      Size height,
+                                      const std::string& r_name ) = 0;
+
+    virtual void closeWindow_impl( WindowPtr p_window ) = 0;
+
+private:
 
     /**
      * Append the internal set of windows.
@@ -98,6 +96,10 @@ protected:
 private:
     window_container            _windows;
 };
+
+
+using ContextPtr        = std::shared_ptr<AbsContext>;
+using ContextConstPtr   = std::shared_ptr<const AbsContext>;
 
 
 } // namespace cie::gl

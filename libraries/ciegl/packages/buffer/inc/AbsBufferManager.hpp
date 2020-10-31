@@ -3,26 +3,28 @@
 
 // --- Utility Includes ---
 #include "cieutils/packages/concepts/inc/container_concepts.hpp"
+#include "cieutils/packages/logging/inc/Loggee.hpp"
 
 // --- Internal Includes ---
 #include "ciegl/packages/buffer/inc/AbsBuffer.hpp"
-#include "ciegl/packages/context/inc/AbsContextClass.hpp"
 
 // --- STL Includes ---
 #include <list>
+#include <memory>
 
 
 namespace cie::gl {
 
 
-class AbsBufferManager //: public AbsContextClass
+class AbsBufferManager : public utils::Loggee
 {
 public:
     using vertex_buffer_container   = std::list<VertexBufferPtr>;
     using element_buffer_container  = std::list<ElementBufferPtr>;
 
 public:
-    //AbsBufferManager(  )
+    AbsBufferManager( utils::Logger& r_logger,
+                      const std::string& r_name = "AbsBufferManager" );
 
     /**
      * Create new vertex buffer
@@ -39,12 +41,34 @@ public:
     /**
      * Bind vertex buffer and set bound flag.
     */
-    void bindVertexBuffer( VertexBufferPtr p_vertexBuffer );
+    AbsBufferManager& bindVertexBuffer( VertexBufferPtr p_vertexBuffer );
 
     /**
      * Bind vertex buffer and set bound flag.
     */
-    void bindElementBuffer( ElementBufferPtr p_elementBuffer );
+    AbsBufferManager& bindElementBuffer( ElementBufferPtr p_elementBuffer );
+
+    /**
+     * Check whether a vertex buffer is bound
+     */
+    bool hasBoundVertexBuffer() const;
+
+    /**
+     * Check whether an element buffer is bound
+     */
+    bool hasBoundElementBuffer() const;
+
+    /**
+     * Write to the bound vertex buffer
+     */
+    template <class ContainerType>
+    AbsBufferManager& writeToBoundVertexBuffer( const ContainerType& r_data );
+
+    /**
+     * Write to the bound element buffer
+     */
+    template <class ContainerType>
+    AbsBufferManager& writeToBoundElementBuffer( const ContainerType& r_data );
 
 
     const vertex_buffer_container& vertexBuffers() const;
@@ -67,6 +91,10 @@ protected:
     vertex_buffer_container     _vertexBuffers;
     element_buffer_container    _elementBuffers;
 };
+
+
+using BufferManagerPtr      = std::shared_ptr<AbsBufferManager>;
+using BufferManagerConstPtr = std::shared_ptr<const AbsBufferManager>;
 
 
 } // namespace cie::gl

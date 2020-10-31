@@ -1,0 +1,11 @@
+<shader>
+    <attributes>
+        <a0 name="position" type="float" size="3" stride="0" offset="0"/>
+    </attributes>
+    <uniforms>
+    </uniforms>
+    <textures>
+    </textures>
+    <outputs>
+    </outputs>
+</shader>

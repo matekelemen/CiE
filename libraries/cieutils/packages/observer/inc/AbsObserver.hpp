@@ -1,7 +1,7 @@
 #ifndef CIEUTILS_ABSOBSERVER_HPP
 #define CIEUTILS_ABSOBSERVER_HPP
 
-// --- STD Imports ---
+// --- STL Imports ---
 #include <memory>
 
 

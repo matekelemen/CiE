@@ -16,7 +16,8 @@ template <class DataType>
 class GLFWBuffer : public AbsBuffer<DataType>
 {
 public:
-    GLFWBuffer( Size id );
+    GLFWBuffer();
+    ~GLFWBuffer();
 
     void write( const typename GLFWBuffer::data_container_type& r_dataContainer ) override;
 
@@ -31,7 +32,7 @@ protected:
 class GLFWVertexBuffer final : public GLFWBuffer<GLfloat>
 {
 public:
-    GLFWVertexBuffer( Size id );
+    GLFWVertexBuffer();
     void write( const typename GLFWVertexBuffer::data_container_type& r_dataContainer ) override;
 };
 
@@ -39,7 +40,7 @@ public:
 class GLFWElementBuffer final : public GLFWBuffer<unsigned int>
 {
 public:
-    GLFWElementBuffer( Size id );
+    GLFWElementBuffer();
     void write( const typename GLFWElementBuffer::data_container_type& r_dataContainer ) override;
 };
 

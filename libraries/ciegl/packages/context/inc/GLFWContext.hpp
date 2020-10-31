@@ -1,5 +1,5 @@
-#ifndef CIEGL_GL_CONTEXT_HPP
-#define CIEGL_GL_CONTEXT_HPP
+#ifndef CIEGL_GL_GLFW_CONTEXT_HPP
+#define CIEGL_GL_GLFW_CONTEXT_HPP
 
 // --- External Includes ---
 #include <glad/glad.h>
@@ -23,9 +23,31 @@
 namespace cie::gl {
 
 
+/**
+ * Used as a static in the constructor of GLFWContext. Initializes GLFW
+ * exactly once, when the first GLFWContext is created, and terminates
+ * GLFW exactly once at program termination.
+ * 
+ * As a sideeffect, only one version of GLFW context can be created and
+ * attempts to create a different one will result in an exception.
+ */
+namespace detail {
+struct GLFWRAII
+{
+    explicit GLFWRAII( Size versionMajor,
+                       Size versionMinor,
+                       Size MSAASamples,
+                       utils::Logger& r_logger );
+    ~GLFWRAII();
+
+    const Size _versionMajor;
+    const Size _versionMinor;
+    const Size _MSAASamples;
+};
+}
+
+
 class GLFWContext;
-
-
 using DrawFunction          = std::function<bool()>;
 using DrawFunctionFactory   = std::function<DrawFunction(GLFWContext&)>;
 
@@ -43,21 +65,14 @@ public:
     GLFWContext( Size versionMajor                    = 4,
                  Size versionMinor                    = 5,
                  Size MSAASamples                     = 0, 
-                 const std::string& r_logFileName     = OUTPUT_PATH + "/ContextLogger.txt" );
-    ~GLFWContext();
+                 const std::string& r_logFileName     = OUTPUT_PATH + "/ContextLogger.txt",
+                 bool useConsole = false );
 
-    WindowPtr newWindow( size_t width              = 800,
-                         size_t height             = 600,
-                         const std::string& r_name = "GLFW Window" ) override;
+    ~GLFWContext();
 
     void focusWindow( WindowPtr p_window ) override;
 
-    void closeWindow( WindowPtr p_window ) override;
-
-    void startEventLoop(    DrawFunctionFactory eventLoopGenerator  = makeEmptyDrawFunction,
-                            KeyCallbackFunction keyCallback         = callback_keyExit,
-                            CursorCallbackFunction cursorCallback   = defaultCursorCallbackFunction,
-                            MouseCallbackFunction mouseCallback     = defaultMouseCallbackFunction );
+    void startEventLoop( DrawFunctionFactory eventLoopGenerator = makeEmptyDrawFunction );
 
     WindowPtr window();
     const WindowPtr window() const;
@@ -65,12 +80,17 @@ public:
 private:
     void initializeGLADIfNecessary();
 
+    WindowPtr newWindow_impl( size_t width              = 800,
+                              size_t height             = 600,
+                              const std::string& r_name = "GLFW Window" ) override;
+
+    void closeWindow_impl( WindowPtr p_window ) override;
+
 private:
     DrawFunction                    _drawFunction;
-    
-    static bool                     _isGLFWInitialized;
-    static bool                     _active;
+
     static bool                     _isGLADInitialized;
+    static bool                     _isCurrent;
 };
 
 

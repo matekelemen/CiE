@@ -68,7 +68,7 @@ void Loggee::logID( const std::string& message,
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    log( message + " | id_" + std::to_string(id), messageType );
+    log( message + " | ID_" + std::to_string(id), messageType );
 
     CIE_END_EXCEPTION_TRACING
 }

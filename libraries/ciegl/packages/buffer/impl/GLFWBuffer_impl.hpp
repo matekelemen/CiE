@@ -4,15 +4,33 @@
 // --- Utility Includes ---
 #include "cieutils/packages/macros/inc/exceptions.hpp"
 
+// --- STL Includes ---
+#include <limits>
+
 
 namespace cie::gl {
 
 
 template <class DataType>
-GLFWBuffer<DataType>::GLFWBuffer( Size id ) :
-    AbsBuffer<DataType>(id),
+GLFWBuffer<DataType>::GLFWBuffer() :
+    AbsBuffer<DataType>( std::numeric_limits<Size>().max() ),
     _drawMode( GL_STATIC_DRAW )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    GLuint tempID;
+    glGenBuffers( 1, &tempID );
+    this->setID( tempID );
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+template <class DataType>
+GLFWBuffer<DataType>::~GLFWBuffer()
+{
+    GLuint id = this->getID();
+    glDeleteBuffers( 1, &id );
 }
 
 

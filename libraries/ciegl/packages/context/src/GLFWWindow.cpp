@@ -12,11 +12,13 @@ namespace cie::gl {
 GLFWWindow::GLFWWindow( Size id,
                         const std::string& r_name,
                         Size width,
-                        Size height ) :
+                        Size height,
+                        utils::Logger& r_logger ) :
     AbsWindow( id,
                r_name,
                width,
-               height ),
+               height,
+               r_logger ),
     _p_window( nullptr )
 {
     CIE_BEGIN_EXCEPTION_TRACING
@@ -31,16 +33,50 @@ GLFWWindow::GLFWWindow( Size id,
     if ( !_p_window )
         CIE_THROW( Exception, "Failed to create window" )
 
-    // Bind window resize callback
+    // Set window pointer
     glfwSetWindowUserPointer( _p_window, this );
 
+    // Set window resize calbback
     auto resizeCallback = []( GLFWwindow* p_window, int width, int height )
     {
         auto p_GLFWWindow = static_cast<GLFWWindow*>( glfwGetWindowUserPointer( p_window ) );
         p_GLFWWindow->onResize( p_window, width, height );
     };
-
     glfwSetWindowSizeCallback( _p_window, resizeCallback );
+
+    // Set key callback
+    auto keyCallback = []( GLFWwindow* p_window, int key, int scanCode, int action, int modifier )
+    {
+        CIE_BEGIN_EXCEPTION_TRACING
+        auto p_this = static_cast<GLFWWindow*>( glfwGetWindowUserPointer(p_window) );
+        CIE_CHECK_POINTER( p_this )
+        p_this->_keyCallback( key, action, modifier );
+        CIE_END_EXCEPTION_TRACING
+    };
+    glfwSetKeyCallback( _p_window, keyCallback );
+
+    // Set mouse callbacks
+    auto cursorCallback = []( GLFWwindow* p_window, double x, double y )
+    {
+        CIE_BEGIN_EXCEPTION_TRACING
+        auto p_this = static_cast<GLFWWindow*>( glfwGetWindowUserPointer(p_window) );
+        CIE_CHECK_POINTER( p_this )
+        p_this->_mouseCallback( x, y, 0, 0, 0 );
+        CIE_END_EXCEPTION_TRACING
+    };
+    glfwSetCursorPosCallback( _p_window, cursorCallback );
+
+    auto mouseClickCallback = []( GLFWwindow* p_window, int button, int action, int modifier )
+    {
+        CIE_BEGIN_EXCEPTION_TRACING
+        double x,y;
+        glfwGetCursorPos( p_window, &x, &y );
+        auto p_this = static_cast<GLFWWindow*>( glfwGetWindowUserPointer(p_window) );
+        CIE_CHECK_POINTER( p_this )
+        p_this->_mouseCallback( x, y, button, action, modifier );
+        CIE_END_EXCEPTION_TRACING
+    };
+    glfwSetMouseButtonCallback( _p_window, mouseClickCallback );
 
     // Check whether the new window has the requested parameters
     int checkWidth, checkHeight;

@@ -16,11 +16,11 @@ using CursorCallbackFunction    = GLFWcursorposfun;
 using MouseCallbackFunction     = GLFWmousebuttonfun;
 
 
-void callback_keyExit(      GLFWwindow* window, 
-                            int key, 
-                            int scancode, 
-                            int action, 
-                            int mods );
+void callback_keyExit(  GLFWwindow* window, 
+                        int key, 
+                        int scancode, 
+                        int action, 
+                        int mods );
 
 void defaultCursorCallbackFunction( GLFWwindow* window,
                                     double x,

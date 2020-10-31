@@ -1,11 +1,11 @@
-#ifndef CIEGL_BUFFER_HANDLER_IMPL_HPP
-#define CIEGL_BUFFER_HANDLER_IMPL_HPP
+#ifndef CIEGL_GLFW_BUFFER_MANAGER_IMPL_HPP
+#define CIEGL_GLFW_BUFFER_MANAGER_IMPL_HPP
 
 namespace cie::gl {
 
 
 template <template<class ...> class ContainerType, class DataType, class ...Args>
-void BufferManager::writeToActiveBuffer( GLenum target, const ContainerType<DataType, Args...>& data )
+void GLFWBufferManager::writeToActiveBuffer( GLenum target, const ContainerType<DataType, Args...>& data )
 {
     glBufferData( target, data.size()*sizeof(DataType), &(data[0]), _drawMode );
 }

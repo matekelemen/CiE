@@ -25,7 +25,7 @@ FUNCTION( TARGET_LINK_LIBRARIES_INSTALL target )
     # Remove target from argument list
     LIST( REMOVE_ITEM ARGV ${target} )
     # Stackoverflow magic
-    set_target_properties( ${target} PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE )
+    #set_target_properties( ${target} PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE )
     target_link_libraries( ${target} PUBLIC ${ARGV} )
   
     if(UNIX AND NOT APPLE)

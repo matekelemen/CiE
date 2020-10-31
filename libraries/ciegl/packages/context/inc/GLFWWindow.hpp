@@ -37,7 +37,8 @@ private:
     GLFWWindow( Size id,
                 const std::string& r_name,
                 Size width,
-                Size height );
+                Size height,
+                utils::Logger& r_logger );
 
 private:
     GLFWwindow* _p_window;
