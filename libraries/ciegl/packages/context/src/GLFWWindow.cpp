@@ -106,6 +106,36 @@ void GLFWWindow::setSize_impl( Size width,
 }
 
 
+void GLFWWindow::update_impl()
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    // Check for polling errors
+    GLint err = glGetError();
+    if (err!=0)
+        this->log( "Error before updating! Error code: " + std::to_string(err),
+                   LOG_TYPE_ERROR );
+
+    glfwPollEvents();
+
+    // Check for polling errors
+    err = glGetError();
+    if (err!=0)
+        this->log( "Error polling events! Error code: " + std::to_string(err),
+                   LOG_TYPE_ERROR );
+    
+    glfwSwapBuffers( this->_p_window );
+
+    // Check for buffer errors
+    err = glGetError();
+    if (err!=0)
+        this->log( "Error swapping buffers! Error code: " + std::to_string(err),
+                   LOG_TYPE_ERROR );
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
 void GLFWWindow::onResize( GLFWwindow* p_window,
                      int width,
                      int height )

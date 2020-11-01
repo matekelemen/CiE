@@ -90,6 +90,8 @@ protected:
     virtual void setSize_impl(  Size width,
                                 Size height ) = 0;
 
+    virtual void update_impl() = 0;
+
 protected:
     std::pair<Size,Size>    _size;
     scene_container         _scenes;

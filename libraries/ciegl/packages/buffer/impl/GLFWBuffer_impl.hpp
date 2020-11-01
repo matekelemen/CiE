@@ -36,15 +36,15 @@ GLFWBuffer<DataType>::~GLFWBuffer()
 
 template <class DataType>
 void
-GLFWBuffer<DataType>::write( const typename GLFWBuffer::data_container_type& r_dataContainer )
+GLFWBuffer<DataType>::write( const typename GLFWBuffer<DataType>::data_container_type& r_dataContainer )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    glBufferData(
+    glNamedBufferData(
         GLuint( this->_id ),
-        r_dataContainer.size()*sizeof(typename GLFWBuffer::data_type),
+        r_dataContainer.size() * sizeof(typename GLFWBuffer<DataType>::data_type),
         &*r_dataContainer.begin(),
-        _drawMode 
+        _drawMode
     );
 
     CIE_END_EXCEPTION_TRACING

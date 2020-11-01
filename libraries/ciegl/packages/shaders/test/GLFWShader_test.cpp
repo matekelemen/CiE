@@ -34,16 +34,65 @@ TEST_CASE( "GLFWShader", "[shader]" )
 
     // Shader setup
     const std::string shaderDir   = SOURCE_PATH + "/libraries/ciegl/data/shaders";
-    const std::string shaderName  = "defaultVertexShader";
 
-    const std::string configPath  = shaderDir + "/" + shaderName + ".xml";
-    const std::string codePath    = shaderDir + "/" + shaderName + ".glsl";
+    auto shaderPaths = [&shaderDir]( const std::string& r_shaderName )
+    {
+        return std::pair<std::string,std::string>(
+            shaderDir + "/" + r_shaderName + ".xml",
+            shaderDir + "/" + r_shaderName + ".glsl"
+        );
+    };
 
     {
         CIE_TEST_CASE_INIT( "default vertex shader" )
 
         ShaderPtr p_shader;
-        CHECK_NOTHROW( p_shader = makeVertexShader<GLFWVertexShader>( configPath, codePath ) );
+        CHECK_NOTHROW( p_shader = makeVertexShader<GLFWVertexShader>( shaderPaths("defaultVertexShader").first,
+                                                                      shaderPaths("defaultVertexShader").second ) );
+
+        REQUIRE( !p_shader->attributes().empty() );
+        CHECK( p_shader->attributes().size() == 1 );
+
+        const auto& r_attribute = p_shader->attributes()[0];
+        CHECK( r_attribute.name() == "position" );
+        CHECK( r_attribute.size() == 3 );
+        CHECK( r_attribute.stride() == 0 );
+        CHECK( r_attribute.offset() == 0 );
+
+        CHECK( p_shader->uniforms().empty() );
+        CHECK( p_shader->textures().empty() );
+        CHECK( p_shader->outputs().empty() );
+    }
+
+    {
+        CIE_TEST_CASE_INIT( "default geometry shader" )
+
+        ShaderPtr p_shader;
+        CHECK_NOTHROW( p_shader = makeGeometryShader<GLFWGeometryShader>( shaderPaths("defaultGeometryShader").first,
+                                                                          shaderPaths("defaultGeometryShader").second ) );
+        
+        CHECK( p_shader->attributes().empty() );
+        CHECK( p_shader->uniforms().empty() );
+        CHECK( p_shader->textures().empty() );
+        CHECK( p_shader->outputs().empty() );
+    }
+
+    {
+        CIE_TEST_CASE_INIT( "default fragment shader" )
+
+        ShaderPtr p_shader;
+        CHECK_NOTHROW( p_shader = makeFragmentShader<GLFWFragmentShader>( shaderPaths("defaultFragmentShader").first,
+                                                                          shaderPaths("defaultFragmentShader").second ) );
+    
+        REQUIRE( !p_shader->outputs().empty() );
+        CHECK( p_shader->outputs().size() == 1 );
+
+        const auto& r_output = p_shader->outputs()[0];
+        CHECK( r_output.name() == "color" );
+
+        CHECK( p_shader->attributes().empty() );
+        CHECK( p_shader->uniforms().empty() );
+        CHECK( p_shader->textures().empty() );
     }
 }
 

@@ -24,11 +24,19 @@ public:
     /**
      * Create new GL program, collect shaders, link program,
      * create a new vertex array object, and activate the program.
+     * 
+     * NOTE: the scene must be constructed with no bound buffers,
+     *       but will bind them during construction. New buffers are
+     *       generated if none are supplied.
      */
     GLFWScene( utils::Logger& r_logger,
+               const std::string& r_name,
                ShaderPtr p_vertexShader,
                ShaderPtr p_geometryShader,
-               ShaderPtr p_fragmentShader );
+               ShaderPtr p_fragmentShader,
+               BufferManagerPtr p_bufferManager,
+               VertexBufferPtr p_vertexBuffer   = nullptr,
+               ElementBufferPtr p_elementBuffer = nullptr );
 
     ~GLFWScene();
 

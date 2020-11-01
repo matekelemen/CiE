@@ -19,7 +19,7 @@ public:
     GLFWBuffer();
     ~GLFWBuffer();
 
-    void write( const typename GLFWBuffer::data_container_type& r_dataContainer ) override;
+    virtual void write( const typename GLFWBuffer::data_container_type& r_dataContainer ) override;
 
     void setDrawMode( Size drawMode );
     const GLuint getDrawMode() const;
@@ -29,20 +29,8 @@ protected:
 };
 
 
-class GLFWVertexBuffer final : public GLFWBuffer<GLfloat>
-{
-public:
-    GLFWVertexBuffer();
-    void write( const typename GLFWVertexBuffer::data_container_type& r_dataContainer ) override;
-};
-
-
-class GLFWElementBuffer final : public GLFWBuffer<unsigned int>
-{
-public:
-    GLFWElementBuffer();
-    void write( const typename GLFWElementBuffer::data_container_type& r_dataContainer ) override;
-};
+using GLFWVertexBuffer  = GLFWBuffer<GLfloat>;
+using GLFWElementBuffer = GLFWBuffer<GLuint>;
 
 
 } // namespace cie::gl

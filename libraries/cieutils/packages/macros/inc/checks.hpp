@@ -30,7 +30,7 @@
             CIE_THROW( cie::OutOfRangeException, stream.str() );    \
         }
 #else
-    #define CIE_OUT_OF_RANGE_CHECK(boolExpression, functionName)
+    #define CIE_OUT_OF_RANGE_CHECK(boolExpression)
 #endif
 
 

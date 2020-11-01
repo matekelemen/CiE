@@ -27,6 +27,8 @@ AbsBufferManager::writeToBoundVertexBuffer( const ContainerType& r_data )
     CIE_CHECK_POINTER( this->_p_boundVertexBuffer )
     this->_p_boundVertexBuffer->write( r_data );
 
+    return *this;
+
     CIE_END_EXCEPTION_TRACING
 }
 
@@ -39,6 +41,8 @@ AbsBufferManager::writeToBoundElementBuffer( const ContainerType& r_data )
 
     CIE_CHECK_POINTER( this->_p_boundElementBuffer )
     this->_p_boundElementBuffer->write( r_data );
+
+    return *this;
 
     CIE_END_EXCEPTION_TRACING
 }

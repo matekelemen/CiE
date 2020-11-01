@@ -35,8 +35,6 @@ Loggee::~Loggee()
 void Loggee::log(   const std::string& message,
                     size_t messageType  )
 {
-    CIE_BEGIN_EXCEPTION_TRACING
-
     std::string msg = "[" +  _name + "] " + message;
 
     switch(messageType)
@@ -57,8 +55,6 @@ void Loggee::log(   const std::string& message,
             _logger->error( "Invalid message type!" );
             break;
     }
-
-    CIE_END_EXCEPTION_TRACING
 }
 
 

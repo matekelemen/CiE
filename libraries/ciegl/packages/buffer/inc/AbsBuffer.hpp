@@ -30,11 +30,17 @@ public:
     using data_container_type   = std::vector<data_type>;   // <-- contiguous data container
 
 public:
+    friend class AbsBufferManager;
+
+public:
     AbsBuffer();
     AbsBuffer( Size id );
 
+//protected:
     /**
-     * Write data to the GPU buffer
+     * Write data to the GPU buffer. Only a buffer manager may issue
+     * a write request, since it's the only entity that keeps track
+     * of bound buffers.
     */
     virtual void write( const data_container_type& r_dataContainer ) = 0;
 
@@ -48,8 +54,8 @@ public:
 };
 
 
-using AbsVertexBuffer       = AbsBuffer<Float>;
-using AbsElementBuffer      = AbsBuffer<unsigned int>;
+using AbsVertexBuffer    = AbsBuffer<float>;
+using AbsElementBuffer   = AbsBuffer<unsigned int>;
 
 using VertexBufferPtr    = std::shared_ptr<AbsVertexBuffer>;
 using ElementBufferPtr   = std::shared_ptr<AbsElementBuffer>;

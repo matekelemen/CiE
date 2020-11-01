@@ -3,6 +3,7 @@
 
 // --- Internal Includes ---
 #include "ciegl/packages/scene/inc/GLFWScene.hpp"
+#include "ciegl/packages/buffer/inc/GLFWBuffer.hpp"
 
 // --- STL Includes ---
 #include <limits>
@@ -12,14 +13,20 @@ namespace cie::gl {
 
 
 GLFWScene::GLFWScene( utils::Logger& r_logger,
+                      const std::string& r_name,
                       ShaderPtr p_vertexShader,
                       ShaderPtr p_geometryShader,
-                      ShaderPtr p_fragmentShader ) :
-    Scene( r_logger, "GLFWScene" ),
+                      ShaderPtr p_fragmentShader,
+                      BufferManagerPtr p_bufferManager,
+                      VertexBufferPtr p_vertexBuffer,
+                      ElementBufferPtr p_elementBuffer ) :
+    Scene( r_logger, r_name ),
     utils::IDObject<Size>( std::numeric_limits<Size>().max() ),
     _vaoID( std::numeric_limits<GLuint>().max() )
 {
     CIE_BEGIN_EXCEPTION_TRACING
+
+    glEnable( GL_DEPTH_TEST );
 
     // Set shaders
     this->setVertexShader( p_vertexShader );
@@ -79,26 +86,40 @@ GLFWScene::GLFWScene( utils::Logger& r_logger,
     this->logID( "Bind Vertex Array Object", this->_vaoID );
 
     // Check buffers
+    //  - no buffers should be bound before binding the vertex array object
+    this->setBufferManager( p_bufferManager );
+
     if ( !this->_p_bufferManager )
         this->logID( "Unset buffer manager!",
                      this->getID(),
                      LOG_TYPE_ERROR );
 
-    if ( !this->_p_bufferManager->hasBoundVertexBuffer() )
-        this->logID( "Unset vertex buffer!",
+    if ( this->_p_bufferManager->hasBoundVertexBuffer() )
+        this->logID( "Bound vertex buffer before a vertex array object was created!",
                      this->getID(),
                      LOG_TYPE_ERROR );
 
-    if ( !this->_p_bufferManager->hasBoundElementBuffer() )
-        this->logID( "Unset element buffer",
+    if ( this->_p_bufferManager->hasBoundElementBuffer() )
+        this->logID( "Bound element buffer before a vertex array object was created!",
                      this->getID(),
                      LOG_TYPE_ERROR );
 
-    // Handle shader attributes
+    // Initialize and bind buffers
+    if ( !p_vertexBuffer )
+        p_vertexBuffer = this->_p_bufferManager->makeVertexBuffer();
+    
+    if ( !p_elementBuffer )
+        p_elementBuffer = this->_p_bufferManager->makeElementBuffer();
+
+    this->_p_bufferManager->bindVertexBuffer( p_vertexBuffer );
+    this->_p_bufferManager->bindElementBuffer( p_elementBuffer );
+
+    // Map vertex shader attributes
     for ( const auto& r_attribute : this->_p_vertexShader->attributes() )
     {
         GLint attributeID = glGetAttribLocation( this->getID(),
                                                  r_attribute.name().c_str() );
+        std::cout << "attribute id: " << attributeID << std::endl;
         glVertexAttribPointer( attributeID,
                                r_attribute.size(),
                                GL_FLOAT,
@@ -109,6 +130,8 @@ GLFWScene::GLFWScene( utils::Logger& r_logger,
         glEnableVertexAttribArray( attributeID );
     }
 
+
+    // Bind fragment shader outputs
     for ( const auto& r_output : this->_p_fragmentShader->outputs() )
         glBindFragDataLocation( this->getID(),
                                 r_output.getID(),
@@ -139,6 +162,10 @@ GLFWScene::GLFWScene( utils::Logger& r_logger,
         this->log( "Program validation failed | ID_" + std::to_string(this->getID()),
                    LOG_TYPE_ERROR );
     }
+
+    // Initial clear
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     CIE_END_EXCEPTION_TRACING
 }

@@ -22,29 +22,19 @@ public:
                        GLuint drawMode );
     GLFWBufferManager( utils::Logger& r_logger );
 
-    ~GLFWBufferManager();
-
-    [[nodiscard]] GLuint createBuffer();
-
-    void bindVertexBuffer( GLuint bufferID );
-    void bindElementBuffer( GLuint bufferID );
-
-    template <template<class ...> class ContainerType, class DataType, class ...Args>
-    void writeToActiveBuffer(   GLenum target,
-                                const ContainerType<DataType, Args...>& data );
-
     void setDrawMode( GLuint drawMode );
 
 protected:
-    std::vector<GLuint>     _buffers;
+    virtual VertexBufferPtr makeVertexBuffer_impl() override;
+    virtual ElementBufferPtr makeElementBuffer_impl() override;
+    virtual void bindVertexBuffer_impl( VertexBufferPtr p_buffer ) override;
+    virtual void bindElementBuffer_impl( ElementBufferPtr p_buffer ) override;
 
 private:
-    GLuint                  _drawMode;
+    GLuint _drawMode;
 };
 
 
 } // namespace cie::gl
-
-#include "ciegl/packages/buffer/impl/GLFWBufferManager_impl.hpp"
 
 #endif

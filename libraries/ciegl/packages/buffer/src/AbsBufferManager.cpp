@@ -19,10 +19,12 @@ VertexBufferPtr AbsBufferManager::makeVertexBuffer()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    VertexBufferPtr p_vertexBuffer = makeVertexBuffer_impl();
-    registerBuffer( p_vertexBuffer, _vertexBuffers );
+    VertexBufferPtr p_buffer = makeVertexBuffer_impl();
+    registerBuffer( p_buffer, _vertexBuffers );
 
-    return p_vertexBuffer;
+    this->logID( "create vertex buffer", p_buffer->getID() );
+
+    return p_buffer;
 
     CIE_END_EXCEPTION_TRACING
 }
@@ -32,21 +34,25 @@ ElementBufferPtr AbsBufferManager::makeElementBuffer()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    ElementBufferPtr p_elementBuffer = makeElementBuffer_impl();
-    registerBuffer( p_elementBuffer, _elementBuffers );
+    ElementBufferPtr p_buffer = makeElementBuffer_impl();
+    registerBuffer( p_buffer, _elementBuffers );
 
-    return p_elementBuffer;
+    this->logID( "create element buffer", p_buffer->getID() );
+
+    return p_buffer;
 
     CIE_END_EXCEPTION_TRACING
 }
 
 
-AbsBufferManager& AbsBufferManager::bindVertexBuffer( VertexBufferPtr p_vertexBuffer )
+AbsBufferManager& AbsBufferManager::bindVertexBuffer( VertexBufferPtr p_buffer )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    bindVertexBuffer_impl( p_vertexBuffer );
-    _p_boundVertexBuffer = p_vertexBuffer;
+    bindVertexBuffer_impl( p_buffer );
+    _p_boundVertexBuffer = p_buffer;
+
+    this->logID( "bind vertex buffer", p_buffer->getID() );
 
     return *this;
 
@@ -54,12 +60,14 @@ AbsBufferManager& AbsBufferManager::bindVertexBuffer( VertexBufferPtr p_vertexBu
 }
 
 
-AbsBufferManager& AbsBufferManager::bindElementBuffer( ElementBufferPtr p_elementBuffer )
+AbsBufferManager& AbsBufferManager::bindElementBuffer( ElementBufferPtr p_buffer )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    bindElementBuffer_impl( p_elementBuffer );
-    _p_boundElementBuffer = p_elementBuffer;
+    bindElementBuffer_impl( p_buffer );
+    _p_boundElementBuffer = p_buffer;
+
+    this->logID( "bind element buffer", p_buffer->getID() );
 
     return *this;
 
@@ -76,6 +84,18 @@ bool AbsBufferManager::hasBoundVertexBuffer() const
 bool AbsBufferManager::hasBoundElementBuffer() const
 {
     return _p_boundElementBuffer ? true : false;
+}
+
+
+const VertexBufferPtr& AbsBufferManager::boundVertexBuffer() const
+{
+    return this->_p_boundVertexBuffer;
+}
+
+
+const ElementBufferPtr& AbsBufferManager::boundElementBuffer() const
+{
+    return this->_p_boundElementBuffer;
 }
 
 

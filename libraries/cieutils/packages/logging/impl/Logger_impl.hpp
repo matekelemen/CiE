@@ -36,13 +36,9 @@ Logger& Logger::logs( Args&&... args )
 template <class ExceptionType>
 Logger& Logger::error( const std::string& r_message )
 {
-    CIE_BEGIN_EXCEPTION_TRACING
-
     log( "ERROR: " + r_message );
     CIE_THROW( ExceptionType, r_message );
     return *this;
-
-    CIE_END_EXCEPTION_TRACING
 }
 
 

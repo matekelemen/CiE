@@ -70,19 +70,22 @@ public:
     template <class ContainerType>
     AbsBufferManager& writeToBoundElementBuffer( const ContainerType& r_data );
 
+    const VertexBufferPtr& boundVertexBuffer() const;
+    const ElementBufferPtr& boundElementBuffer() const;
 
     const vertex_buffer_container& vertexBuffers() const;
     const element_buffer_container& elementBuffers() const;
 
-protected:
-    template <class BufferPtr, class BufferContainer>
-    requires concepts::ClassContainer<BufferContainer,BufferPtr>
-    void registerBuffer( BufferPtr p_buffer, BufferContainer& r_bufferContainer );
-    
+protected:    
     virtual VertexBufferPtr makeVertexBuffer_impl() = 0;
     virtual ElementBufferPtr makeElementBuffer_impl() = 0;
     virtual void bindVertexBuffer_impl( VertexBufferPtr p_vertexBuffer ) = 0;
     virtual void bindElementBuffer_impl( ElementBufferPtr p_elementBuffer ) = 0;
+
+private:
+    template <class BufferPtr, class BufferContainer>
+    requires concepts::ClassContainer<BufferContainer,BufferPtr>
+    void registerBuffer( BufferPtr p_buffer, BufferContainer& r_bufferContainer );
 
 protected:
     VertexBufferPtr          _p_boundVertexBuffer;

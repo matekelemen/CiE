@@ -33,6 +33,8 @@ protected:
     virtual void setSize_impl( Size width,
                                Size height ) override;
 
+    virtual void update_impl() override;
+
 private:
     GLFWWindow( Size id,
                 const std::string& r_name,

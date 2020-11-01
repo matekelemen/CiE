@@ -1,13 +1,16 @@
+// --- Utility Includes ---
+#include "cieutils/packages/macros/inc/exceptions.hpp"
+
 // --- Internal Includes ---
 #include "ciegl/packages/buffer/inc/GLFWBufferManager.hpp"
+#include "ciegl/packages/buffer/inc/GLFWBuffer.hpp"
 
 namespace cie::gl {
 
 
 GLFWBufferManager::GLFWBufferManager( utils::Logger& r_logger,
                                       GLuint drawMode ) :
-    AbsBufferManager( r_logger, "GLFWBufferManager" ),
-    _buffers( )
+    AbsBufferManager( r_logger, "GLFWBufferManager" )
 {
     this->setDrawMode( drawMode );
 }
@@ -19,39 +22,47 @@ GLFWBufferManager::GLFWBufferManager( utils::Logger& r_logger ) :
 }
 
 
-GLFWBufferManager::~GLFWBufferManager()
+VertexBufferPtr GLFWBufferManager::makeVertexBuffer_impl()
 {
-    for (auto bufferID : _buffers)
-    {
-        logID( "Delete buffer", bufferID );
-        glDeleteBuffers(1, &bufferID);
-    }
-    _buffers = {};
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    return VertexBufferPtr(
+        new GLFWVertexBuffer
+    );
+    
+    CIE_END_EXCEPTION_TRACING
 }
 
 
-GLuint GLFWBufferManager::createBuffer( )
+ElementBufferPtr GLFWBufferManager::makeElementBuffer_impl()
 {
-    GLuint bufferID;
-    glGenBuffers( 1, &bufferID );
-    _buffers.push_back( bufferID );
-    logID( "Create buffer", bufferID );
+    CIE_BEGIN_EXCEPTION_TRACING
 
-    return bufferID;
+    return ElementBufferPtr(
+        new GLFWElementBuffer
+    );
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
-void GLFWBufferManager::bindVertexBuffer( GLuint bufferID )
+void GLFWBufferManager::bindVertexBuffer_impl( VertexBufferPtr p_buffer )
 {
-    glBindBuffer( GL_ARRAY_BUFFER, bufferID );
-    logID( "Bind vertex buffer", bufferID );
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    glBindBuffer( GL_ARRAY_BUFFER, p_buffer->getID() );
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
-void GLFWBufferManager::bindElementBuffer( GLuint bufferID )
+void GLFWBufferManager::bindElementBuffer_impl( ElementBufferPtr p_buffer )
 {
-    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufferID );
-    logID( "Bind element buffer", bufferID );
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, p_buffer->getID() );
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 

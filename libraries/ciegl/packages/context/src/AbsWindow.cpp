@@ -13,18 +13,18 @@ namespace cie::gl {
 
 /* --- DEFAULT CALLBACKS --- */
 namespace detail {
-typename AbsWindow::key_callback_function defaultKeyCallback( Size key,
-                                                              Size action,
-                                                              Size modifier )
+void defaultKeyCallback( Size key,
+                         Size action,
+                         Size modifier )
 {
     std::cout << key << std::endl;
 }
 
-typename AbsWindow::mouse_callback_function defaultMouseCallback( double x,
-                                                                  double y,
-                                                                  Size button,
-                                                                  Size action,
-                                                                  Size modifier )
+void defaultMouseCallback( double x,
+                           double y,
+                           Size button,
+                           Size action,
+                           Size modifier )
 {
     std::cout << x << " " << y << std::endl;
 }
@@ -53,6 +53,8 @@ void AbsWindow::update()
 
     for ( auto& rp_scene : _scenes )
         rp_scene->update();
+
+    this->update_impl();
 
     CIE_END_EXCEPTION_TRACING
 }
