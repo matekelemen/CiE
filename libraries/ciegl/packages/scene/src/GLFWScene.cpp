@@ -97,12 +97,12 @@ GLFWScene::GLFWScene( utils::Logger& r_logger,
     if ( this->_p_bufferManager->hasBoundVertexBuffer() )
         this->logID( "Bound vertex buffer before a vertex array object was created!",
                      this->getID(),
-                     LOG_TYPE_ERROR );
+                     LOG_TYPE_WARNING );
 
     if ( this->_p_bufferManager->hasBoundElementBuffer() )
         this->logID( "Bound element buffer before a vertex array object was created!",
                      this->getID(),
-                     LOG_TYPE_ERROR );
+                     LOG_TYPE_WARNING );
 
     // Initialize and bind buffers
     if ( !p_vertexBuffer )
@@ -119,7 +119,7 @@ GLFWScene::GLFWScene( utils::Logger& r_logger,
     {
         GLint attributeID = glGetAttribLocation( this->getID(),
                                                  r_attribute.name().c_str() );
-        std::cout << "attribute id: " << attributeID << std::endl;
+
         glVertexAttribPointer( attributeID,
                                r_attribute.size(),
                                GL_FLOAT,
@@ -178,6 +178,55 @@ GLFWScene::~GLFWScene()
 
     this->logID( "Delete Vertex Array Object", this->_vaoID );
     glDeleteVertexArrays( 1, &_vaoID );
+}
+
+
+void GLFWScene::update_impl()
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    Size numberOfBuffers = this->_p_bufferManager->elementBuffers().size();
+
+    // Check whether the number of vertex buffers
+    // and element buffers is identical
+    if ( this->_p_bufferManager->vertexBuffers().size() != numberOfBuffers )
+        CIE_THROW( OutOfRangeException, "Buffer size mismatch" )
+
+    // Save current bound buffers for resetting after the update
+    VertexBufferPtr p_boundVertexBuffer = this->_p_bufferManager->boundVertexBuffer();
+    ElementBufferPtr p_boundElementBuffer = this->_p_bufferManager->boundElementBuffer();
+
+    // Loop through buffers and draw their contents
+    auto it_vertexBuffer    = this->_p_bufferManager->vertexBuffers().begin();
+    auto it_elementBuffer   = this->_p_bufferManager->elementBuffers().begin();
+    auto it_vertexBufferEnd = this->_p_bufferManager->vertexBuffers().end();
+
+    for ( ; it_vertexBuffer!=it_vertexBufferEnd; ++it_vertexBuffer, ++it_elementBuffer )
+    {
+        this->_p_bufferManager->bindVertexBuffer( 
+            *it_vertexBuffer
+        );
+        this->_p_bufferManager->bindElementBuffer( 
+            *it_elementBuffer
+        );
+
+        GLint64 numberOfIndices;
+        glGetBufferParameteri64v( GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &numberOfIndices );
+        numberOfIndices /= sizeof( GLuint );
+
+        glDrawElements( GL_TRIANGLES, numberOfIndices, GL_UNSIGNED_INT, 0 );
+
+        if ( glGetError() )
+            this->logID( "Error drawing from buffer",
+                         _p_bufferManager->boundElementBuffer()->getID(),
+                         LOG_TYPE_ERROR );
+    }
+
+    // Reset bound buffers
+    this->_p_bufferManager->bindVertexBuffer( p_boundVertexBuffer );
+    this->_p_bufferManager->bindElementBuffer( p_boundElementBuffer );
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 

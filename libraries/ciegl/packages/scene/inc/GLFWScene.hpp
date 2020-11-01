@@ -41,6 +41,13 @@ public:
     ~GLFWScene();
 
 protected:
+
+    /**
+     * Loop through buffers and draw every element
+     */
+    virtual void update_impl() override;
+
+protected:
     GLuint _vaoID;
 };
 

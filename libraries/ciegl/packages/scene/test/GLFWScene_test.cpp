@@ -21,9 +21,6 @@ class TestScene : public GLFWScene
 public:
     template <class ...Args>
     TestScene( Args&&... args ) : GLFWScene( std::forward<Args>(args)... ) {}
-
-private:
-    void update_impl() override {}
 };
 
 
@@ -112,20 +109,48 @@ TEST_CASE( "GLFWScene", "[scene]" )
         p_bufferManager->writeToBoundVertexBuffer( components );
         p_bufferManager->writeToBoundElementBuffer( triangles );
 
-        GLint64 numberOfElements, numberOfComponents;
-        glGetBufferParameteri64v( GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &numberOfElements );
-        glGetBufferParameteri64v( GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &numberOfComponents );
-        numberOfElements /= sizeof( GLuint );
-        numberOfComponents /= sizeof(GLfloat);
-        std::cout << "Drawing " << numberOfComponents << " components" << std::endl;
-        std::cout << "Drawing " << numberOfElements / 3.0 << " triangles" << std::endl;
-
-        glDrawElements( GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0 );
-
         CHECK_NOTHROW( p_window->update() );
 
-        std::cin.get();
+        CHECK_NOTHROW( p_window->removeScene(p_scene) );
     }
+
+//    {
+//        CIE_TEST_CASE_INIT( "multiple scenes" )
+//        // TODO
+//        ScenePtr p_secondScene;
+//
+//        CHECK_NOTHROW(
+//            p_scene = p_window->makeScene<TestScene>(
+//                "TestScene0",
+//                p_vertexShader,
+//                p_geometryShader,
+//                p_fragmentShader,
+//                p_bufferManager
+//            )
+//        );
+//
+//        AbsVertexBuffer::data_container_type components0 
+//        {
+//            0.0, 0.5, 0.0,
+//            0.5, -0.5, 0.0,
+//            -0.5, -0.5, 0.0
+//        };
+//
+//        AbsElementBuffer::data_container_type triangles0
+//        {
+//            0, 1, 2
+//        };
+//
+//        CHECK_NOTHROW(
+//            p_secondScene = p_window->makeScene<TestScene>(
+//                "TestScene1",
+//                p_vertexShader,
+//                p_geometryShader,
+//                p_fragmentShader,
+//                p_bufferManager
+//            )
+//        );
+//    }
 }
 
 

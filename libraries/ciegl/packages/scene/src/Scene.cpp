@@ -26,10 +26,10 @@ void Scene::update()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    this->update_impl();
-
-    for ( auto& rp_camera : _cameras )
+    for ( auto& rp_camera : this->_cameras )
         rp_camera->update();
+
+    this->update_impl();
 
     CIE_END_EXCEPTION_TRACING
 }
