@@ -5,45 +5,106 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 
+// --- STL Includes ---
+#include <memory>
+
 
 namespace cie::gl {
 
 
+/**
+ * Minimal class for keeping track of
+ * the position and orientation of a
+ * rigid body.
+ */
 class RigidBody
 {
 public:
-    RigidBody(  const glm::dvec3& position,
-                const glm::dvec3& direction,
-                const glm::dvec3& up );
+    using vector_type       = glm::dvec3;
+    using quaternion_type   = glm::dquat;
+    using matrix_type       = glm::dmat4;
+
+public:
+    RigidBody(  const vector_type& r_position,
+                const vector_type& r_direction,
+                const vector_type& r_up );
     RigidBody();
 
-    const glm::dvec3& position() const;
-    const glm::dvec3& direction() const;
-    const glm::dvec3& up() const;
-    const glm::dquat& quaternion() const;
+    const vector_type& position() const;
+    const vector_type& direction() const;
+    const vector_type& up() const;
+    const quaternion_type& quaternion() const;
 
-    virtual void setPosition(   const glm::dvec3& position );
-    virtual void setPose(   const glm::dvec3& position,
-                            const glm::dvec3& direction,
-                            const glm::dvec3& up );
+    /**
+     * Move body to the specified position
+     */
+    virtual void setPosition( const vector_type& r_position );
 
-    virtual void translate( const glm::dvec3& translation );
-    virtual void rotate(    double radians,
-                            const glm::dvec3& axis,
-                            const glm::dvec3& center  );
-    //void rotateLocal(   double yawRadians,
-    //                    double pitchRadians,
-    //                    double rollRadians );
-    //void rotateGlobal(  double zRadians,
-    //                    double yRadians,
-    //                    double xRadians );
+    /**
+     * Set position and orientation
+     */
+    virtual void setPose( const vector_type& r_position,
+                          const vector_type& r_direction,
+                          const vector_type& r_up );
+
+    /**
+     * Translate body by the specified vector
+     */
+    virtual void translate( const vector_type& r_translation );
+
+    /**
+     * Rotate body around an origin-bound axis
+     */
+    virtual void rotate( double radians,
+                         const vector_type& r_axis );
+
+    /**
+     * Rotate body around a general axis
+     */
+    virtual void rotate( double radians,
+                         const vector_type& r_axis,
+                         const vector_type& r_pointOnAxis );
+    
+    /**
+     * Rotate body around its local z axis
+     */
+    void rotateYaw( double radians );
+
+    /**
+     * Rotate body around its local y axis
+     */
+    void rotatePitch( double radians );
+
+    /**
+     * Rotate body around its local x axis
+     */
+    void rotateRoll( double radians );
+
+    /**
+     * Roll axis
+     */
+    vector_type getLocalXAxis() const;
+
+    /**
+     * Pitch axis
+     */
+    vector_type getLocalYAxis() const;
+
+    /**
+     * Yaw axis
+     */
+    vector_type getLocalZAxis() const;
 
 protected:
-    glm::dvec3   _position;
-    glm::dvec3   _direction;
-    glm::dvec3   _up;
-    glm::dquat   _quaternion;
+    vector_type     _position;
+    vector_type     _direction;
+    vector_type     _up;
+    quaternion_type _quaternion;
 };
+
+
+using RigidBodyPtr      = std::shared_ptr<RigidBody>;
+using RigidBodyConstPtr = std::shared_ptr<const RigidBody>;
 
 
 } // namespace cie::gl
