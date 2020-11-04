@@ -15,8 +15,6 @@ namespace cie::utils {
 template <class ...Args>
 Logger& Logger::logs( Args&&... args )
 {
-    CIE_BEGIN_EXCEPTION_TRACING
-
     auto argTuple = std::make_tuple( std::forward<Args>(args)... );
 
     std::stringstream stream;
@@ -28,8 +26,6 @@ Logger& Logger::logs( Args&&... args )
     this->log( stream.str() );
 
     return *this;
-
-    CIE_END_EXCEPTION_TRACING
 }
 
 

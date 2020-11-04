@@ -5,28 +5,31 @@
 #include "cieutils/packages/macros/inc/testing.hpp"
 
 // --- Internal Includes ---
-#include "ciegl/packages/scene/inc/GLFWScene.hpp"
+#include "ciegl/packages/scene/inc/Scene.hpp"
 #include "ciegl/packages/context/inc/GLFWContext.hpp"
 #include "ciegl/packages/context/inc/GLFWWindow.hpp"
 #include "ciegl/packages/context/inc/GLFWMonitor.hpp"
 #include "ciegl/packages/shaders/inc/GLFWShader.hpp"
 #include "ciegl/packages/buffer/inc/GLFWBufferManager.hpp"
+#include "ciegl/packages/camera/inc/Camera.hpp"
+#include "ciegl/packages/camera/inc/PerspectiveProjection.hpp"
+#include "ciegl/packages/camera/inc/OrthographicProjection.hpp"
 
 
 namespace cie::gl {
 
 
-class TestScene : public GLFWScene
+class TestScene : public Scene
 {
 public:
     template <class ...Args>
-    TestScene( Args&&... args ) : GLFWScene( std::forward<Args>(args)... ) {}
+    TestScene( Args&&... args ) : Scene( std::forward<Args>(args)... ) {}
 };
 
 
-TEST_CASE( "GLFWScene", "[scene]" )
+TEST_CASE( "Scene", "[scene]" )
 {
-    CIE_TEST_CASE_INIT( "GLFWScene" )
+    CIE_TEST_CASE_INIT( "Scene" )
 
     // Context
     std::pair<Size,Size> glVersion { 4, 5 };
@@ -35,7 +38,7 @@ TEST_CASE( "GLFWScene", "[scene]" )
         new GLFWContext( glVersion.first,
                          glVersion.second,
                          MSAASamples,
-                         TEST_OUTPUT_PATH + "/GLFWScene_test0.txt" )
+                         TEST_OUTPUT_PATH + "/GLFWScene_test.txt" )
     );
 
     // Window
@@ -81,6 +84,7 @@ TEST_CASE( "GLFWScene", "[scene]" )
 
     {
         CIE_TEST_CASE_INIT( "create scene" )
+        auto localBlock = p_context->newBlock( "basic scene" );
 
         REQUIRE_NOTHROW( 
             p_scene = p_window->makeScene<TestScene>(
@@ -151,6 +155,69 @@ TEST_CASE( "GLFWScene", "[scene]" )
 //            )
 //        );
 //    }
+
+
+
+    // Scene with uniforms
+    p_vertexShader = makeVertexShader<GLFWVertexShader>(
+        shaderPaths("pointVertexShader").first,
+        shaderPaths("pointVertexShader").second
+    );
+
+    p_geometryShader = makeGeometryShader<GLFWGeometryShader>(
+        shaderPaths("pointGeometryShader").first,
+        shaderPaths("pointGeometryShader").second
+    );
+
+    p_fragmentShader = makeFragmentShader<GLFWFragmentShader>(
+        shaderPaths("pointFragmentShader").first,
+        shaderPaths("pointFragmentShader").second
+    );
+
+    // Buffers
+    p_bufferManager = BufferManagerPtr(
+        new GLFWBufferManager( *p_context )
+    );
+
+    {
+        CIE_TEST_CASE_INIT( "scene with uniforms" )
+        auto localBlock = p_context->newBlock( "scene with uniforms" );
+
+        REQUIRE_NOTHROW( 
+            p_scene = p_window->makeScene<TestScene>(
+                "TestScene",
+                p_vertexShader,
+                p_geometryShader,
+                p_fragmentShader,
+                p_bufferManager )
+        );
+
+        p_vertexBuffer  = p_scene->bufferManager()->boundVertexBuffer();
+        p_elementBuffer = p_scene->bufferManager()->boundElementBuffer();
+
+        AbsVertexBuffer::data_container_type components 
+        {
+            0.0, 0.5, 0.0,
+            0.5, -0.5, 0.0,
+            -0.5, -0.5, 0.0
+        };
+
+        AbsElementBuffer::data_container_type triangles
+        {
+            0, 1, 2
+        };
+
+        p_bufferManager->writeToBoundVertexBuffer( components );
+        p_bufferManager->writeToBoundElementBuffer( triangles );
+
+        auto p_camera = p_scene->makeCamera<Camera<OrthographicProjection>>();
+        
+        CHECK_NOTHROW( p_scene->bindUniform( "transformation", p_camera->transformationMatrix() ) );
+
+        CHECK_NOTHROW( p_window->update() );
+
+        CHECK_NOTHROW( p_window->removeScene(p_scene) );
+    }
 }
 
 

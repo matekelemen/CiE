@@ -15,20 +15,20 @@
 
 
 #define CIE_CHECK( boolExpression, message )                        \
-    if ( !boolExpression )                                          \
+    if ( !(boolExpression) )  [[unlikely]]                          \
         CIE_THROW( Exception, message )
 
 
-#define CIE_CHECK_POINTER( pointer )                                                \
-    if (pointer == nullptr)                                                         \
-    {                                                                               \
-        CIE_THROW( cie::NullPtrException, "" )                                      \
+#define CIE_CHECK_POINTER( pointer )                                \
+    if (pointer == nullptr) [[unlikely]]                            \
+    {                                                               \
+        CIE_THROW( cie::NullPtrException, "" )                      \
     }
 
 
 #ifdef CIE_ENABLE_OUT_OF_RANGE_TESTS
     #define CIE_OUT_OF_RANGE_CHECK(boolExpression)                  \
-        if (!(boolExpression))                                      \
+        if (!(boolExpression)) [[unlikely]]                         \
         {                                                           \
             std::stringstream stream;                               \
             stream << #boolExpression;                              \
@@ -41,7 +41,7 @@
 
 #ifdef CIE_ENABLE_DIVISION_BY_ZERO_CHECKS
     #define CIE_DIVISION_BY_ZERO_CHECK(boolExpression)                  \
-        if (!(boolExpression))                                          \
+        if (!(boolExpression)) [[unlikely]]                             \
         {                                                               \
             std::stringstream stream;                                   \
             stream << #boolExpression;                                  \
@@ -53,15 +53,15 @@
 
 
 #ifdef CIE_ENABLE_RUNTIME_GEOMETRY_CHECKS
-    #define CIE_RUNTIME_GEOMETRY_CHECK(boolExpression, message)                 \
-        if (!(boolExpression))                                                  \
-        {                                                                       \
-            std::stringstream stream;                                           \
-            stream << #boolExpression;                                          \
-            stream << " (";                                                     \
-            stream << message;                                                  \
-            stream << ")";                                                      \
-            CIE_THROW( cie::GeometryException, stream.str() );                  \
+    #define CIE_RUNTIME_GEOMETRY_CHECK(boolExpression, message)         \
+        if (!(boolExpression)) [[unlikely]]                             \
+        {                                                               \
+            std::stringstream stream;                                   \
+            stream << #boolExpression;                                  \
+            stream << " (";                                             \
+            stream << message;                                          \
+            stream << ")";                                              \
+            CIE_THROW( cie::GeometryException, stream.str() );          \
         }
 #else
     #define CIE_RUNTIME_GEOMETRY_CHECK(boolExpression, message)
