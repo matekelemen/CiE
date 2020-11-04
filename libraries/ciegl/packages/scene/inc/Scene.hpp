@@ -5,7 +5,7 @@
 #include "cieutils/packages/logging/inc/Loggee.hpp"
 
 // --- Internal Includes ---
-#include "ciegl/packages/scene/inc/Camera.hpp"
+#include "ciegl/packages/camera/inc/AbsCamera.hpp"
 #include "ciegl/packages/shaders/inc/Shader.hpp"
 #include "ciegl/packages/buffer/inc/AbsBufferManager.hpp"
 

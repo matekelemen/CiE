@@ -112,6 +112,8 @@ public:
             _type( r_type )
         {}
 
+        Uniform( const Uniform& r_rhs ) = default;
+
         const Size size() const         { return _size; }
         const std::string& type() const { return _type; }
 

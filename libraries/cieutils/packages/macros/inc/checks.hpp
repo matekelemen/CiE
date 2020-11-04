@@ -14,6 +14,11 @@
 /* The preprocessor variables can be defined/undefined through CMake */
 
 
+#define CIE_CHECK( boolExpression, message )                        \
+    if ( !boolExpression )                                          \
+        CIE_THROW( Exception, message )
+
+
 #define CIE_CHECK_POINTER( pointer )                                                \
     if (pointer == nullptr)                                                         \
     {                                                                               \

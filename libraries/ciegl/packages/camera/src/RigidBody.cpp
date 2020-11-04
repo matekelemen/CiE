@@ -5,12 +5,11 @@
 
 // --- Utility Includes ---
 #include "cieutils/packages/macros/inc/exceptions.hpp"
+#include "cieutils/packages/macros/inc/checks.hpp"
 
 // --- Internal Includes ---
-#include "ciegl/packages/rigidbody/inc/RigidBody.hpp"
+#include "ciegl/packages/camera/inc/RigidBody.hpp"
 
-// --- STL Includes ---
-#include <iostream>
 
 namespace cie::gl {
 
@@ -20,8 +19,7 @@ RigidBody::RigidBody(   const RigidBody::vector_type& r_position,
                         const RigidBody::vector_type& r_up ) :
     _position( r_position ),
     _direction( r_direction ),
-    _up( r_up ),
-    _quaternion( 1.0f, 0.0f, 0.0f, 0.0f )
+    _up( r_up )
 {
 }
 
@@ -52,12 +50,6 @@ const RigidBody::vector_type& RigidBody::up() const
 }
 
 
-const RigidBody::quaternion_type& RigidBody::quaternion() const
-{
-    return _quaternion;
-}
-
-
 void RigidBody::setPosition( const RigidBody::vector_type& r_position )
 {
     _position = r_position;
@@ -65,10 +57,16 @@ void RigidBody::setPosition( const RigidBody::vector_type& r_position )
 
 
 void RigidBody::setPose( const RigidBody::vector_type& r_position,
-                               const RigidBody::vector_type& r_direction,
-                               const RigidBody::vector_type& r_up )
+                         const RigidBody::vector_type& r_direction,
+                         const RigidBody::vector_type& r_up )
 {
     CIE_BEGIN_EXCEPTION_TRACING
+
+    // Check whether direction and up are perpendicular
+    CIE_RUNTIME_GEOMETRY_CHECK(
+        std::abs(glm::dot( r_direction, r_up )) < 1e-15,
+        "Camera direction and up do not define a cartesian system!"
+    )
 
     _position   = r_position;
     _direction  = glm::normalize( r_direction );
@@ -85,9 +83,14 @@ void RigidBody::translate( const RigidBody::vector_type& r_translation )
 
 
 void RigidBody::rotate( double radians,
-                              const RigidBody::vector_type& r_axis )
+                        const RigidBody::vector_type& r_axis )
 {
     CIE_BEGIN_EXCEPTION_TRACING
+
+    CIE_RUNTIME_GEOMETRY_CHECK(
+        std::abs(r_axis[0]) + std::abs(r_axis[1]) + std::abs(r_axis[2]) > 1e-15,
+        "Rotation axis is a nullvector"
+    )
 
     RigidBody::matrix_type rotation = glm::rotate( radians, r_axis );
     _position  = rotation * glm::dvec4( _position, 1.0 );
@@ -99,10 +102,15 @@ void RigidBody::rotate( double radians,
 
 
 void RigidBody::rotate( double radians,
-                              const RigidBody::vector_type& r_axis,
-                              const RigidBody::vector_type& r_pointOnAxis )
+                        const RigidBody::vector_type& r_axis,
+                        const RigidBody::vector_type& r_pointOnAxis )
 {
     CIE_BEGIN_EXCEPTION_TRACING
+
+    CIE_RUNTIME_GEOMETRY_CHECK(
+        std::abs(r_axis[0]) + std::abs(r_axis[1]) + std::abs(r_axis[2]) > 1e-15,
+        "Rotation axis is a nullvector"
+    )
 
     // Create transformation tensors
     glm::dmat4 rotation = glm::rotate( radians, r_axis );
@@ -132,9 +140,8 @@ void RigidBody::rotateYaw( double radians )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    glm::dmat4 rotation = glm::rotate( radians, this->getLocalZAxis() );
-    _direction = rotation * glm::dvec4( _direction, 1.0 );
-    _up        = rotation * glm::dvec4( _up, 1.0 );
+    this->rotateInPlace( radians,
+                         this->getLocalZAxis() );
 
     CIE_END_EXCEPTION_TRACING
 }
@@ -144,9 +151,8 @@ void RigidBody::rotatePitch( double radians )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    glm::dmat4 rotation = glm::rotate( radians, this->getLocalYAxis() );
-    _direction = rotation * glm::dvec4( _direction, 1.0 );
-    _up        = rotation * glm::dvec4( _up, 1.0 );
+    this->rotateInPlace( radians,
+                         this->getLocalYAxis() );    
 
     CIE_END_EXCEPTION_TRACING
 }
@@ -156,9 +162,8 @@ void RigidBody::rotateRoll( double radians )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    glm::dmat4 rotation = glm::rotate( radians, this->getLocalXAxis() );
-    _direction = rotation * glm::dvec4( _direction, 1.0 );
-    _up        = rotation * glm::dvec4( _up, 1.0 );
+    this->rotateInPlace( radians,
+                         this->getLocalXAxis() );
 
     CIE_END_EXCEPTION_TRACING
 }
@@ -183,6 +188,25 @@ RigidBody::vector_type RigidBody::getLocalYAxis() const
 RigidBody::vector_type RigidBody::getLocalZAxis() const
 {
     return _up;
+}
+
+
+void RigidBody::rotateInPlace( double radians,
+                               const RigidBody::vector_type& r_axis )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    CIE_RUNTIME_GEOMETRY_CHECK(
+        std::abs(r_axis[0]) + std::abs(r_axis[1]) + std::abs(r_axis[2]) > 1e-15,
+        "Rotation axis is a nullvector"
+    )
+
+    glm::dmat4 rotation = glm::rotate( radians, r_axis );
+
+    _direction          = rotation * glm::dvec4( _direction, 1.0 );
+    _up                 = rotation * glm::dvec4( _up, 1.0 );
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 

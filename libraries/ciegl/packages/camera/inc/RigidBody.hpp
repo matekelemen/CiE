@@ -3,7 +3,6 @@
 
 // --- External Includes ---
 #include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
 
 // --- STL Includes ---
 #include <memory>
@@ -33,7 +32,6 @@ public:
     const vector_type& position() const;
     const vector_type& direction() const;
     const vector_type& up() const;
-    const quaternion_type& quaternion() const;
 
     /**
      * Move body to the specified position
@@ -96,10 +94,16 @@ public:
     vector_type getLocalZAxis() const;
 
 protected:
+    /**
+     * Rotate around an axis that goes through the body
+     */
+    virtual void rotateInPlace( double radians,
+                                const vector_type& r_axis );
+
+protected:
     vector_type     _position;
     vector_type     _direction;
     vector_type     _up;
-    quaternion_type _quaternion;
 };
 
 

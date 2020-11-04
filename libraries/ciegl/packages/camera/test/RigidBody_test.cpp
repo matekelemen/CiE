@@ -5,7 +5,7 @@
 #include "cieutils/packages/macros/inc/testing.hpp"
 
 // --- Internal Includes ---
-#include "ciegl/packages/rigidbody/inc/RigidBody.hpp"
+#include "ciegl/packages/camera/inc/RigidBody.hpp"
 
 // --- STL Includes ---
 #include <cmath>
