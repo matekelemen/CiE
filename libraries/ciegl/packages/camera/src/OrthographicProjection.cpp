@@ -22,7 +22,7 @@ void OrthographicProjection::zoom_impl( double scale )
         "Invalid zoom scale: " + std::to_string(scale)
     )
 
-    this->_fieldOfView *= scale;
+    this->_fieldOfView *= 1.0 / scale;
 }
 
 
