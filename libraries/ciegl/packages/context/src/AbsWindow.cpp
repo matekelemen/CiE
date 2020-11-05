@@ -51,6 +51,9 @@ void AbsWindow::update()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
     for ( auto& rp_scene : _scenes )
         rp_scene->update();
 

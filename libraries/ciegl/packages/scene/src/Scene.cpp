@@ -178,10 +178,6 @@ Scene::Scene( utils::Logger& r_logger,
                    LOG_TYPE_ERROR );
     }
 
-    // Initial clear
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
     CIE_END_EXCEPTION_TRACING
 }
 

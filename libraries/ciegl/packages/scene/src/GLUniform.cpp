@@ -80,7 +80,7 @@ FloatMat4GLUniform::FloatMat4GLUniform( const Shader::Uniform& r_shaderUniform,
 {
     CIE_CHECK(
         this->_properties.type == GL_FLOAT_MAT4,
-        "Uniform type mismatch"
+        "Uniform type mismatch: " + this->_name
     )
 }
 
@@ -94,7 +94,7 @@ void FloatMat4GLUniform::write()
                         GL_FALSE, 
                         glm::value_ptr(this->_r_uniform) );
 
-    checkGLErrors( "Failed to write uniform" );
+    checkGLErrors( "Failed to write uniform: " + this->_name );
 
     CIE_END_EXCEPTION_TRACING
 }

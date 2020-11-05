@@ -15,6 +15,10 @@
 #include "ciegl/packages/camera/inc/PerspectiveProjection.hpp"
 #include "ciegl/packages/camera/inc/OrthographicProjection.hpp"
 
+// --- STL Includes ---
+#include <chrono>
+#include <thread>
+
 
 namespace cie::gl {
 
@@ -165,8 +169,8 @@ TEST_CASE( "Scene", "[scene]" )
     );
 
     p_geometryShader = makeGeometryShader<GLFWGeometryShader>(
-        shaderPaths("pointGeometryShader").first,
-        shaderPaths("pointGeometryShader").second
+        shaderPaths("defaultGeometryShader").first,
+        shaderPaths("defaultGeometryShader").second
     );
 
     p_fragmentShader = makeFragmentShader<GLFWFragmentShader>(
@@ -198,8 +202,8 @@ TEST_CASE( "Scene", "[scene]" )
         AbsVertexBuffer::data_container_type components 
         {
             0.0, 0.5, 0.0,
-            0.5, -0.5, 0.0,
-            -0.5, -0.5, 0.0
+            0.0, -0.5, 0.0,
+            0.5, -0.5, 0.0
         };
 
         AbsElementBuffer::data_container_type triangles
@@ -210,11 +214,21 @@ TEST_CASE( "Scene", "[scene]" )
         p_bufferManager->writeToBoundVertexBuffer( components );
         p_bufferManager->writeToBoundElementBuffer( triangles );
 
-        auto p_camera = p_scene->makeCamera<Camera<OrthographicProjection>>();
-        
+        auto p_camera = p_scene->makeCamera<Camera<PerspectiveProjection>>();
+        p_camera->setAspectRatio( p_window->getSize().first / double(p_window->getSize().second) );
+        p_camera->setPosition( {0.0, 0.0, 1.5} );
+        p_camera->setFieldOfView( 10.0 );
+
         CHECK_NOTHROW( p_scene->bindUniform( "transformation", p_camera->transformationMatrix() ) );
 
-        CHECK_NOTHROW( p_window->update() );
+        for ( int i=0; i<360; ++i )
+        {
+            //p_camera->translate( {0.1,0.0,0.0} );
+            p_camera->rotate( M_PI / 180.0,
+                              { 0.0, 0.0, 1.0 } );
+            CHECK_NOTHROW( p_window->update() );
+            std::this_thread::sleep_for( std::chrono::milliseconds(10) );
+        }
 
         CHECK_NOTHROW( p_window->removeScene(p_scene) );
     }

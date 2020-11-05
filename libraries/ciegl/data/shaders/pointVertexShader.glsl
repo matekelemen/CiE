@@ -4,7 +4,7 @@
 //  position      : x, y, z
 
 
-in vec3     position;
+in vec3 position;
 
 uniform mat4 transformation;
 
