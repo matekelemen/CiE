@@ -45,14 +45,16 @@ ElementBufferPtr AbsBufferManager::makeElementBuffer()
 }
 
 
-AbsBufferManager& AbsBufferManager::bindVertexBuffer( VertexBufferPtr p_buffer )
+AbsBufferManager& AbsBufferManager::bindVertexBuffer( VertexBufferPtr p_buffer,
+                                                      bool log )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
     bindVertexBuffer_impl( p_buffer );
     _p_boundVertexBuffer = p_buffer;
 
-    this->logID( "bind vertex buffer", p_buffer->getID() );
+    if ( log )
+        this->logID( "bind vertex buffer", p_buffer->getID() );
 
     return *this;
 
@@ -60,14 +62,16 @@ AbsBufferManager& AbsBufferManager::bindVertexBuffer( VertexBufferPtr p_buffer )
 }
 
 
-AbsBufferManager& AbsBufferManager::bindElementBuffer( ElementBufferPtr p_buffer )
+AbsBufferManager& AbsBufferManager::bindElementBuffer( ElementBufferPtr p_buffer,
+                                                       bool log )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
     bindElementBuffer_impl( p_buffer );
     _p_boundElementBuffer = p_buffer;
 
-    this->logID( "bind element buffer", p_buffer->getID() );
+    if ( log )
+        this->logID( "bind element buffer", p_buffer->getID() );
 
     return *this;
 

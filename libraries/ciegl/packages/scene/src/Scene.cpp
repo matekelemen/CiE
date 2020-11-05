@@ -15,6 +15,9 @@
 namespace cie::gl {
 
 
+Size Scene::_activeSceneID = std::numeric_limits<Size>().max();
+
+
 Scene::Scene( utils::Logger& r_logger,
               const std::string& r_name,
               ShaderPtr p_vertexShader,
@@ -82,17 +85,13 @@ Scene::Scene( utils::Logger& r_logger,
                         LOG_TYPE_ERROR );
     }
 
-    // Set as active program
-    glUseProgram( this->getID() );
-    this->logID( "Set active program", this->getID() );
-
     // Vertex Array Object
     // TODO: wtf? also, is it okay here?
     glGenVertexArrays( 1, &this->_vaoID );
     this->logID( "Create Vertex Array Object", this->_vaoID );
 
-    glBindVertexArray( this->_vaoID );
-    this->logID( "Bind Vertex Array Object", this->_vaoID );
+    // Set active program and bind vertex array object
+    this->activate();
 
     // Check buffers
     //  - no buffers should be bound before binding the vertex array object
@@ -120,8 +119,8 @@ Scene::Scene( utils::Logger& r_logger,
     if ( !p_elementBuffer )
         p_elementBuffer = this->_p_bufferManager->makeElementBuffer();
 
-    this->_p_bufferManager->bindVertexBuffer( p_vertexBuffer );
-    this->_p_bufferManager->bindElementBuffer( p_elementBuffer );
+    this->_p_bufferManager->bindVertexBuffer( p_vertexBuffer, true );
+    this->_p_bufferManager->bindElementBuffer( p_elementBuffer, true );
 
     // Map vertex shader attributes
     for ( const auto& r_attribute : this->_p_vertexShader->attributes() )
@@ -196,6 +195,8 @@ void Scene::update()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
+    this->activate( false );
+
     // Update all cameras
     for ( auto& rp_camera : this->_cameras )
         rp_camera->update();
@@ -225,10 +226,12 @@ void Scene::update()
     for ( ; it_vertexBuffer!=it_vertexBufferEnd; ++it_vertexBuffer, ++it_elementBuffer )
     {
         this->_p_bufferManager->bindVertexBuffer( 
-            *it_vertexBuffer
+            *it_vertexBuffer,
+            false
         );
         this->_p_bufferManager->bindElementBuffer( 
-            *it_elementBuffer
+            *it_elementBuffer,
+            false
         );
 
         GLint64 numberOfIndices;
@@ -246,6 +249,31 @@ void Scene::update()
     this->_p_bufferManager->bindElementBuffer( p_boundElementBuffer );
 
     CIE_END_EXCEPTION_TRACING
+}
+
+
+void Scene::activate( bool log )
+{
+    if ( !this->isActive() )
+    {
+        glUseProgram( this->getID() );
+        if ( log )
+            this->logID( "Set active program", this->getID() );
+
+        glBindVertexArray( this->_vaoID );
+        if ( log )
+            this->logID( "Bind Vertex Array Object", this->_vaoID );
+
+        Scene::_activeSceneID = this->getID();
+
+        checkGLErrors( *this, "Scene activation failed" );
+    }
+}
+
+
+bool Scene::isActive() const
+{
+    return this->getID() == Scene::_activeSceneID;
 }
 
 

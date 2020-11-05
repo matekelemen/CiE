@@ -41,12 +41,14 @@ public:
     /**
      * Bind vertex buffer and set bound flag.
     */
-    AbsBufferManager& bindVertexBuffer( VertexBufferPtr p_vertexBuffer );
+    AbsBufferManager& bindVertexBuffer( VertexBufferPtr p_vertexBuffer,
+                                        bool log = true );
 
     /**
      * Bind vertex buffer and set bound flag.
     */
-    AbsBufferManager& bindElementBuffer( ElementBufferPtr p_elementBuffer );
+    AbsBufferManager& bindElementBuffer( ElementBufferPtr p_elementBuffer,
+                                         bool log = true );
 
     /**
      * Check whether a vertex buffer is bound

@@ -58,6 +58,17 @@ public:
     virtual void update();
 
     /**
+     * Set this scene as active
+     *  -> calls glUseProgram and binds the vertex array object
+     */
+    void activate( bool log = true );
+
+    /**
+     * Check whether this scene is active
+     */
+    bool isActive() const;
+
+    /**
      * Create a new camera and add it to this Scene
      */
     template <class CameraType, class ...Args>
@@ -108,10 +119,10 @@ protected:
     ShaderPtr           _p_fragmentShader;
 
     BufferManagerPtr    _p_bufferManager;
-
     uniform_container   _uniforms;
-
     GLuint              _vaoID;
+
+    static Size         _activeSceneID;
 };
 
 

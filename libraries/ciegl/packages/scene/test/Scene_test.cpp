@@ -169,8 +169,8 @@ TEST_CASE( "Scene", "[scene]" )
     );
 
     p_geometryShader = makeGeometryShader<GLFWGeometryShader>(
-        shaderPaths("defaultGeometryShader").first,
-        shaderPaths("defaultGeometryShader").second
+        shaderPaths("wireframeGeometryShader").first,
+        shaderPaths("wireframeGeometryShader").second
     );
 
     p_fragmentShader = makeFragmentShader<GLFWFragmentShader>(
@@ -199,35 +199,83 @@ TEST_CASE( "Scene", "[scene]" )
         p_vertexBuffer  = p_scene->bufferManager()->boundVertexBuffer();
         p_elementBuffer = p_scene->bufferManager()->boundElementBuffer();
 
+        const float a = 0.5;
+
+        // Origin-based cube vertices
         AbsVertexBuffer::data_container_type components 
         {
-            0.0, 0.5, 0.0,
-            0.0, -0.5, 0.0,
-            0.5, -0.5, 0.0
+            0.0, 0.0, 0.0,
+            a, 0.0, 0.0,
+            0.0, a, 0.0,
+            a, a, 0.0,
+            0.0, 0.0, a,
+            a, 0.0, a,
+            0.0, a, a,
+            a, a, a
         };
 
+        // Cube triangles
         AbsElementBuffer::data_container_type triangles
         {
-            0, 1, 2
+            1, 3, 7,    7, 5, 1,
+            0, 4, 6,    6, 2, 0,
+            2, 6, 7,    7, 3, 2,
+            0, 1, 5,    5, 4, 0,
+            4, 5, 7,    7, 6, 4,
+            0, 2, 3,    3, 1, 0
         };
 
         p_bufferManager->writeToBoundVertexBuffer( components );
         p_bufferManager->writeToBoundElementBuffer( triangles );
 
-        auto p_camera = p_scene->makeCamera<Camera<PerspectiveProjection>>();
+        using CameraType = Camera<PerspectiveProjection>;
+
+        auto p_camera = p_scene->makeCamera<CameraType>();
         p_camera->setAspectRatio( p_window->getSize().first / double(p_window->getSize().second) );
-        p_camera->setPosition( {0.0, 0.0, 1.5} );
-        p_camera->setFieldOfView( 10.0 );
+        p_camera->setPosition( {a/2.0, a/2.0, 3.0*a} );
+        p_camera->setFieldOfView( 60.0 * M_PI / 180.0 );
+
+        CameraType::vector_type center { a/2.0, a/2.0, a/2.0 };
 
         CHECK_NOTHROW( p_scene->bindUniform( "transformation", p_camera->transformationMatrix() ) );
 
-        for ( int i=0; i<360; ++i )
+        const int steps = 360;
+        std::chrono::microseconds delay( 1 );
+
+        // Translate
+        for ( int i=0; i<steps; ++i )
         {
-            //p_camera->translate( {0.1,0.0,0.0} );
-            p_camera->rotate( M_PI / 180.0,
-                              { 0.0, 0.0, 1.0 } );
+            p_camera->translate( { i<steps/2 ? 0.01 : -0.01 ,0.0,0.0} );
             CHECK_NOTHROW( p_window->update() );
-            std::this_thread::sleep_for( std::chrono::milliseconds(10) );
+            std::this_thread::sleep_for( delay );
+        }
+
+        // Rotate
+        for ( int i=0; i<steps; ++i )
+        {
+            p_camera->rotate( M_PI / 180.0,
+                              { 0.0, 0.0, 1.0 },
+                              center );
+            CHECK_NOTHROW( p_window->update() );
+            std::this_thread::sleep_for( delay );
+        }
+
+        // Rotate
+        for ( int i=0; i<steps; ++i )
+        {
+            p_camera->rotate( (i<steps/2 ? 1.0 : -1.0) * M_PI / 180.0,
+                              { 1.0, 0.0, 0.0 },
+                              center );
+            CHECK_NOTHROW( p_window->update() );
+            std::this_thread::sleep_for( delay );
+        }
+
+        // Zoom
+        for ( int i=0; i<steps; ++i )
+        {
+            p_camera->zoom( i<steps/2 ? 1.01 : 0.99 );
+            CHECK_NOTHROW( p_window->update() );
+            std::this_thread::sleep_for( delay );
         }
 
         CHECK_NOTHROW( p_window->removeScene(p_scene) );

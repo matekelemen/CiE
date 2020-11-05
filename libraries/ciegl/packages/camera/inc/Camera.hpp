@@ -42,7 +42,7 @@ public:
 
     const double fieldOfView() const override;
 
-    void setFieldOfView( double fieldOfView ) override;
+    void setFieldOfView( double radians ) override;
 
 protected:
     void updateProjectionMatrix() override;
