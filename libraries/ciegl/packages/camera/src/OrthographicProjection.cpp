@@ -49,9 +49,9 @@ std::pair<double,double> OrthographicProjection::sizes() const
 {
     std::pair<double,double> sizes;
 
-    sizes.first  = 2.0 * this->_clippingPlanes.first
+    sizes.second = 2.0 * this->_clippingPlanes.second
                    * std::tan( this->_fieldOfView * M_PI / 360.0 );
-    sizes.second = this->_aspectRatio * sizes.first;
+    sizes.first  = this->_aspectRatio * sizes.second;
 
     return sizes;
 }
