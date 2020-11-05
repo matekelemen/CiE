@@ -4,6 +4,7 @@
 
 // --- Internal Includes ---
 #include "ciegl/packages/scene/inc/Scene.hpp"
+#include "ciegl/packages/buffer/inc/GLFWBufferManager.hpp"
 #include "ciegl/packages/buffer/inc/GLFWBuffer.hpp"
 #include "ciegl/packages/utility/inc/GLError.hpp"
 
@@ -23,7 +24,6 @@ Scene::Scene( utils::Logger& r_logger,
               ShaderPtr p_vertexShader,
               ShaderPtr p_geometryShader,
               ShaderPtr p_fragmentShader,
-              BufferManagerPtr p_bufferManager,
               VertexBufferPtr p_vertexBuffer,
               ElementBufferPtr p_elementBuffer ) :
     utils::Loggee( r_logger, r_name ),
@@ -32,7 +32,7 @@ Scene::Scene( utils::Logger& r_logger,
     _p_vertexShader( p_vertexShader ),
     _p_geometryShader( p_geometryShader ),
     _p_fragmentShader( p_fragmentShader ),
-    _p_bufferManager( p_bufferManager ),
+    _p_bufferManager( nullptr ),
     _uniforms(),
     _vaoID( std::numeric_limits<GLuint>().max() )
 {
@@ -95,12 +95,9 @@ Scene::Scene( utils::Logger& r_logger,
 
     // Check buffers
     //  - no buffers should be bound before binding the vertex array object
-    this->setBufferManager( p_bufferManager );
-
-    if ( !this->_p_bufferManager )
-        this->logID( "Unset buffer manager!",
-                     this->getID(),
-                     LOG_TYPE_ERROR );
+    this->setBufferManager( BufferManagerPtr(
+        new GLFWBufferManager( this->logger() )
+    ));
 
     if ( this->_p_bufferManager->hasBoundVertexBuffer() )
         this->logID( "Bound vertex buffer before a vertex array object was created!",

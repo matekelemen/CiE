@@ -46,7 +46,6 @@ public:
            ShaderPtr p_vertexShader,
            ShaderPtr p_geometryShader,
            ShaderPtr p_fragmentShader,
-           BufferManagerPtr p_bufferManager,
            VertexBufferPtr p_vertexBuffer   = nullptr,
            ElementBufferPtr p_elementBuffer = nullptr );
 

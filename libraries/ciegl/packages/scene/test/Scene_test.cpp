@@ -75,16 +75,9 @@ TEST_CASE( "Scene", "[scene]" )
         shaderPaths("defaultFragmentShader").second
     );
 
-    // Buffers
-    auto p_bufferManager = BufferManagerPtr(
-        new GLFWBufferManager( *p_context )
-    );
-
-    VertexBufferPtr p_vertexBuffer;
-    ElementBufferPtr p_elementBuffer;
-
     // Scene
     ScenePtr p_scene;
+    BufferManagerPtr p_bufferManager;
 
     {
         CIE_TEST_CASE_INIT( "create scene" )
@@ -95,12 +88,8 @@ TEST_CASE( "Scene", "[scene]" )
                 "TestScene",
                 p_vertexShader,
                 p_geometryShader,
-                p_fragmentShader,
-                p_bufferManager )
+                p_fragmentShader )
         );
-
-        p_vertexBuffer  = p_scene->bufferManager()->boundVertexBuffer();
-        p_elementBuffer = p_scene->bufferManager()->boundElementBuffer();
 
         AbsVertexBuffer::data_container_type components 
         {
@@ -114,6 +103,7 @@ TEST_CASE( "Scene", "[scene]" )
             0, 1, 2
         };
 
+        REQUIRE_NOTHROW( p_bufferManager = p_scene->bufferManager() );
         p_bufferManager->writeToBoundVertexBuffer( components );
         p_bufferManager->writeToBoundElementBuffer( triangles );
 
@@ -122,43 +112,63 @@ TEST_CASE( "Scene", "[scene]" )
         CHECK_NOTHROW( p_window->removeScene(p_scene) );
     }
 
-//    {
-//        CIE_TEST_CASE_INIT( "multiple scenes" )
-//        // TODO
-//        ScenePtr p_secondScene;
-//
-//        CHECK_NOTHROW(
-//            p_scene = p_window->makeScene<TestScene>(
-//                "TestScene0",
-//                p_vertexShader,
-//                p_geometryShader,
-//                p_fragmentShader,
-//                p_bufferManager
-//            )
-//        );
-//
-//        AbsVertexBuffer::data_container_type components0 
-//        {
-//            0.0, 0.5, 0.0,
-//            0.5, -0.5, 0.0,
-//            -0.5, -0.5, 0.0
-//        };
-//
-//        AbsElementBuffer::data_container_type triangles0
-//        {
-//            0, 1, 2
-//        };
-//
-//        CHECK_NOTHROW(
-//            p_secondScene = p_window->makeScene<TestScene>(
-//                "TestScene1",
-//                p_vertexShader,
-//                p_geometryShader,
-//                p_fragmentShader,
-//                p_bufferManager
-//            )
-//        );
-//    }
+    {
+        CIE_TEST_CASE_INIT( "multiple scenes" )
+        auto localBlock = p_context->newBlock( "two scenes" );
+
+        ScenePtr p_secondScene;
+
+        CHECK_NOTHROW(
+            p_scene = p_window->makeScene<TestScene>(
+                "TestScene0",
+                p_vertexShader,
+                p_geometryShader,
+                p_fragmentShader
+            )
+        );
+
+        CHECK_NOTHROW(
+            p_secondScene = p_window->makeScene<TestScene>(
+                "TestScene1",
+                p_vertexShader,
+                p_geometryShader,
+                p_fragmentShader
+            )
+        );
+
+        AbsVertexBuffer::data_container_type components0 
+        {
+            0.0, 0.5, 0.0,
+            0.5, -0.5, 0.0,
+            0.0, -0.5, 0.0
+        };
+
+        AbsElementBuffer::data_container_type triangles0
+        {
+            0, 1, 2
+        };
+
+        AbsVertexBuffer::data_container_type components1
+        {
+            0.0, 0.5, 0.0,
+            0.5, 0.5, 0.0,
+            0.5, -0.5, 0.0
+        };
+
+        AbsElementBuffer::data_container_type triangles1
+        {
+            0, 1, 2
+        };
+
+        p_scene->bufferManager()->writeToBoundVertexBuffer( components0 );
+        p_scene->bufferManager()->writeToBoundElementBuffer( triangles0 );
+        
+        p_secondScene->bufferManager()->writeToBoundVertexBuffer( components1 );
+        p_secondScene->bufferManager()->writeToBoundElementBuffer( triangles1 );
+        
+        CHECK_NOTHROW( p_window->removeScene( p_scene ) );
+        CHECK_NOTHROW( p_window->removeScene( p_secondScene ) );
+    }
 
 
 
@@ -192,12 +202,8 @@ TEST_CASE( "Scene", "[scene]" )
                 "TestScene",
                 p_vertexShader,
                 p_geometryShader,
-                p_fragmentShader,
-                p_bufferManager )
+                p_fragmentShader )
         );
-
-        p_vertexBuffer  = p_scene->bufferManager()->boundVertexBuffer();
-        p_elementBuffer = p_scene->bufferManager()->boundElementBuffer();
 
         const float a = 0.5;
 
@@ -225,6 +231,7 @@ TEST_CASE( "Scene", "[scene]" )
             0, 2, 3,    3, 1, 0
         };
 
+        REQUIRE_NOTHROW( p_bufferManager = p_scene->bufferManager() );
         p_bufferManager->writeToBoundVertexBuffer( components );
         p_bufferManager->writeToBoundElementBuffer( triangles );
 
@@ -232,7 +239,7 @@ TEST_CASE( "Scene", "[scene]" )
 
         auto p_camera = p_scene->makeCamera<CameraType>();
         p_camera->setAspectRatio( p_window->getSize().first / double(p_window->getSize().second) );
-        p_camera->setPosition( {a/2.0, a/2.0, 3.0*a} );
+        p_camera->setPosition( {a/2.0, a/2.0, a + p_camera->clippingPlanes().first} );
         p_camera->setFieldOfView( 60.0 * M_PI / 180.0 );
 
         CameraType::vector_type center { a/2.0, a/2.0, a/2.0 };
@@ -240,7 +247,7 @@ TEST_CASE( "Scene", "[scene]" )
         CHECK_NOTHROW( p_scene->bindUniform( "transformation", p_camera->transformationMatrix() ) );
 
         const int steps = 360;
-        std::chrono::microseconds delay( 1 );
+        std::chrono::microseconds delay( 100 );
 
         // Translate
         for ( int i=0; i<steps; ++i )
