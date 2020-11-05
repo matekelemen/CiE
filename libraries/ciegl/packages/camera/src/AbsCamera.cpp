@@ -64,19 +64,6 @@ void AbsCamera::setPose( const AbsCamera::vector_type& r_position,
 }
 
 
-void AbsCamera::translate( const AbsCamera::vector_type& r_translation )
-{
-    CIE_BEGIN_EXCEPTION_TRACING
-
-    RigidBody::translate( r_translation );
-
-    this->updateViewMatrix();
-    this->updateTransformationMatrix();
-
-    CIE_END_EXCEPTION_TRACING
-}
-
-
 void AbsCamera::rotate( double radians,
                         const AbsCamera::vector_type& r_axis )
 {

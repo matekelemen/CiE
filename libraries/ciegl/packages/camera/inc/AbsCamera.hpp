@@ -62,12 +62,6 @@ public:
     virtual void setPose( const AbsCamera::vector_type& r_position,
                           const AbsCamera::vector_type& r_direction,
                           const AbsCamera::vector_type& r_up ) override;
-
-    /**
-     * Translate camera
-     * Trigger view and transformation matrix updates
-     */
-    virtual void translate( const AbsCamera::vector_type& r_translation ) override;
     
     /**
      * Rotate around axis going through the origin
@@ -126,15 +120,15 @@ public:
     virtual void setAspectRatio( double aspectRatio ) = 0;
 
     /**
-     * Field of view in degreesn (vertical FoV)
+     * Field of view in radians (vertical FoV)
      */
     virtual const double fieldOfView() const = 0;
 
     /**
-     * Field of view in degrees (vertical FoV)
+     * Field of view in radians (vertical FoV)
      * Trigger projection and transformation matrix updates
      */
-    virtual void setFieldOfView( double fieldOfView ) = 0;
+    virtual void setFieldOfView( double radians ) = 0;
 
 protected:
     /**

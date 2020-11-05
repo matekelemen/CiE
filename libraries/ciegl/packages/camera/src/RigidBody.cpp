@@ -78,7 +78,7 @@ void RigidBody::setPose( const RigidBody::vector_type& r_position,
 
 void RigidBody::translate( const RigidBody::vector_type& r_translation )
 {
-    _position += r_translation;
+    this->setPosition( this->_position + r_translation );
 }
 
 

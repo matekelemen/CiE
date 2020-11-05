@@ -5,6 +5,9 @@
 #include "cieutils/packages/macros/inc/exceptions.hpp"
 #include "cieutils/packages/macros/inc/checks.hpp"
 
+// --- STL Includes ---
+#include <cmath>
+
 
 namespace cie::gl {
 
@@ -50,14 +53,14 @@ Camera<ProjectionType>::fieldOfView() const
 
 template <concepts::ProjectionPolicy ProjectionType>
 inline void
-Camera<ProjectionType>::setFieldOfView( double fieldOfView )
+Camera<ProjectionType>::setFieldOfView( double radians )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    if ( fieldOfView < 0 || 180 < fieldOfView ) [[unlikely]]
-        CIE_THROW( Exception, "Invalid field of view: " + std::to_string(fieldOfView) );
+    if ( radians < 0 || M_PI / 2.0 < radians ) [[unlikely]]
+        CIE_THROW( Exception, "Invalid field of view: " + std::to_string(radians) );
 
-    this->_fieldOfView = fieldOfView;
+    this->_fieldOfView = radians;
     this->updateProjectionMatrix();
     this->updateTransformationMatrix();
 
