@@ -1,22 +1,27 @@
-project( dropmerge CXX )
+project( SpaceTreeGraphics CXX )
 
 # Define header path
-include_directories( "inc" )
+include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/inc" )
 
 # Collect headers and sources
-file( GLOB DROPMERGE_HEADER_FILES inc/*.h* )
-file( GLOB DROPMERGE_SOURCE_FILES src/*.cpp )
+file( GLOB HEADERS inc/*.h* )
+file( GLOB SOURCES src/*.cpp )
+file( GLOB DRIVERS drivers/*.cpp )
 
 # Build executable
-add_executable( dropmerge_executable ${DROPMERGE_HEADER_FILES} ${DROPMERGE_SOURCE_FILES} )
-TARGET_LINK_LIBRARIES_INSTALL( dropmerge_executable csg ciegl )
+foreach( driver ${DRIVERS} )
+    get_filename_component( executable_name ${driver} NAME_WE )
+    message( STATUS "Add executable: ${executable_name}" )
+    add_executable( ${executable_name} ${HEADERS} ${SOURCES} ${driver} )
+    TARGET_LINK_LIBRARIES_INSTALL( ${executable_name} csg ciegl )
+
+    INSTALL_APPLICATION_EXECUTABLE( ${executable_name} )
+endforeach()
 
 # Copy python scripts
-file( GLOB DROPMERGE_PYTHON_SCRIPTS scripts/*.py )
-INSTALL_APPLICATION_SCRIPTS( ${DROPMERGE_PYTHON_SCRIPTS} )
+file( GLOB PYTHON_SCRIPTS scripts/*.py )
+INSTALL_APPLICATION_SCRIPTS( ${PYTHON_SCRIPTS} )
 
-# Install binaries
-INSTALL_APPLICATION_EXECUTABLE( dropmerge_executable )
 
 if( MSVC )
     add_custom_command(TARGET dropmerge_executable POST_BUILD        	

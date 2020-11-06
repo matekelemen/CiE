@@ -5,7 +5,10 @@
 #include <csg/trees.hpp>
 
 // --- Utility Includes ---
-#include "cieutils/types.hpp"
+#include <cieutils/types.hpp>
+
+// --- STL Includes ---
+#include <memory>
 
 
 namespace cie::csg {
@@ -23,6 +26,7 @@ using PointType                         = typename CSGTraits<Dimension,Coordinat
 using PrimitiveType                     = Box<Dimension,CoordinateType>;
 using CellType                          = BoxCell<PrimitiveType>;
 using NodeType                          = SpaceTreeNode<CellType,ValueType>;
+using NodePtr                           = std::shared_ptr<NodeType>;
 
 using SamplerType                       = BoxSampler<Dimension,CoordinateType>;
 using SplitterType                      = WeightedSplitPolicy< typename NodeType::sample_point_iterator,

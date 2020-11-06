@@ -60,7 +60,7 @@ Camera<ProjectionType>::setFieldOfView( double radians )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    if ( radians < 0 || M_PI / 2.0 < radians ) [[unlikely]]
+    if ( radians < 0 || M_PI < radians ) [[unlikely]]
         CIE_THROW( Exception, "Invalid field of view: " + std::to_string(radians) );
 
     this->_fieldOfView = radians;
