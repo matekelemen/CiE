@@ -324,7 +324,9 @@ TEST_CASE( "Scene", "[scene]" )
         REQUIRE_NOTHROW( p_scene->bindUniform( "transformation", p_camera->transformationMatrix() ) );
         REQUIRE_NOTHROW( p_scene->bindUniform( "cameraPosition", p_camera->position() ) );
 
+        GLfloat wireframeScale = 1e-4;
         REQUIRE_NOTHROW( p_secondScene->bindUniform( "transformation", p_camera->transformationMatrix() ) );
+        REQUIRE_NOTHROW( p_secondScene->bindUniform( "wireframeScale", wireframeScale ) );
 
         const int steps = 360;
         std::chrono::microseconds delay( 100 );

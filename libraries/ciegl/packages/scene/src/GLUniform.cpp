@@ -103,4 +103,35 @@ void FloatMat4GLUniform::write()
 }
 
 
+
+
+/* --- FloatGLUniform --- */
+
+FloatGLUniform::FloatGLUniform( const Shader::Uniform& r_shaderUniform,
+                                Size programID,
+                                const FloatGLUniform::uniform_type& r_uniform ) :
+    GLUniform( r_shaderUniform, programID ),
+    _r_uniform( r_uniform )
+{
+    CIE_CHECK(
+        this->_properties.type == GL_FLOAT,
+        "Uniform type mismatch: " + this->_name
+        + " | type: " + std::to_string(this->_properties.type)
+    )
+}
+
+
+void FloatGLUniform::write()
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    glUniform1f( this->getID(),
+                 this->_r_uniform );
+
+    checkGLErrors( "Failed to write uniform: " + this->_name );
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
 } // namespace cie::gl

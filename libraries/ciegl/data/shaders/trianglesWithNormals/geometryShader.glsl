@@ -17,8 +17,8 @@ void main()
 {
     for ( int i=0; i<3; ++i )
     {
-        fPosition = vPosition[i];
         fNormal   = vNormal[i];
+        fPosition = vPosition[i];
         gl_Position = gl_in[i].gl_Position;
         EmitVertex();
     }

@@ -1,9 +1,11 @@
 <shader>
     <attributes>
         <a0 name="position" type="vec3" size="3" stride="6" offset="0"/>
+        <a1 name="normal" type="vec3" size="3" stride="6" offset="3"/>
     </attributes>
     <uniforms>
-        <u0 name="transformation" type="mat4" size="4"/>
+        <u0 name="transformation" type="mat4" size="16"/>
+        <u0 name="wireframeScale" type="float" size="1"/>
     </uniforms>
     <textures>
     </textures>

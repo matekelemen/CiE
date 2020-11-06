@@ -428,6 +428,58 @@ void Scene::bindUniform( const std::string& r_name,
 }
 
 
+void Scene::bindUniform( const std::string& r_name,
+                         const glm::vec3& r_uniform )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    // Find uniform in the internal list of uniforms
+    GLUniformPtr& rp_uniform = this->findUniform( r_name );
+
+    // Check uniform type
+    CIE_CHECK(
+        rp_uniform->properties().type == GL_FLOAT_VEC3,
+        "Attempt to bind mismatching uniform types: " + r_name
+        + " | type: " + std::to_string(rp_uniform->properties().type)
+    )
+
+    // Replace the uniform
+    rp_uniform.reset(
+        new FloatVec3GLUniform<glm::vec3>( *rp_uniform,
+                                           this->getID(),
+                                           r_uniform )
+    );
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+void Scene::bindUniform( const std::string& r_name,
+                         const GLfloat& r_uniform )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    // Find uniform in the internal list of uniforms
+    GLUniformPtr& rp_uniform = this->findUniform( r_name );
+
+    // Check uniform type
+    CIE_CHECK(
+        rp_uniform->properties().type == GL_FLOAT,
+        "Attempt to bind mismatching uniform types: " + r_name
+        + " | type: " + std::to_string(rp_uniform->properties().type)
+    )
+
+    // Replace the uniform
+    rp_uniform.reset(
+        new FloatGLUniform( *rp_uniform,
+                            this->getID(),
+                            r_uniform )
+    );
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
 GLUniformPtr& Scene::findUniform( const std::string& r_name )
 {
     auto itp_uniform = std::find_if(

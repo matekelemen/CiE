@@ -106,10 +106,22 @@ public:
                       const glm::mat4& r_uniform );
 
     /**
-     * Bind a 3D float vector to a uniform with the specified name
+     * Bind a 3D double vector to a uniform with the specified name
      */
     void bindUniform( const std::string& r_name,
                       const glm::dvec3& r_uniform );
+
+    /**
+     * Bind a 3D float vector to a uniform with the specified name
+     */
+    void bindUniform( const std::string& r_name,
+                      const glm::vec3& r_uniform );
+
+    /**
+     * Bind a float scalar to a uniform with the specified name
+     */
+    void bindUniform( const std::string& r_name,
+                      const GLfloat& r_uniform );
 
 protected:
     /**

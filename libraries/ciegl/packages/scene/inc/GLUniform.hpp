@@ -126,6 +126,30 @@ private:
 };
 
 
+
+/* --- FloatGLUniform --- */
+
+/**
+ * 4x4 float matrix uniform used mostly for 3D transformations.
+ * Should be bound to the transformation matrix of a camera.
+ */
+class FloatGLUniform final : public GLUniform
+{
+public:
+    using uniform_type = GLfloat;
+
+public:
+    FloatGLUniform( const Shader::Uniform& r_shaderUniform,
+                    Size programID,
+                    const uniform_type& r_uniform );
+
+    void write() override;
+
+private:
+    const uniform_type& _r_uniform;
+};
+
+
 } // namespace cie::gl
 
 #include "ciegl/packages/scene/impl/GLUniform_impl.hpp"
