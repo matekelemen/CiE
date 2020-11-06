@@ -1,14 +1,11 @@
-// attributes: color
-// sizes: 4
-// strides: 0
-// offsets: 0
-// uniforms: 
-// textures: 
-
 #version 450 core
 
+// --- InputDeclarations ---
 in vec3 fColor;
+
+// --- Output Declarations ---
 out vec4 color;
+
 
 void main()
 {

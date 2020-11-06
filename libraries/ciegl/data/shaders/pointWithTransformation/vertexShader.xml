@@ -1,0 +1,12 @@
+<shader>
+    <attributes>
+        <a0 name="position" type="vec3" size="3" stride="0" offset="0"/>
+    </attributes>
+    <uniforms>
+        <u0 name="transformation" type="mat4" size="16"/>
+    </uniforms>
+    <textures>
+    </textures>
+    <outputs>
+    </outputs>
+</shader>

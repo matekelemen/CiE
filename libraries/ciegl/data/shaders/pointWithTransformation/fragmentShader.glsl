@@ -1,6 +1,8 @@
 #version 450 core
 
+// --- Output Declarations ---
 out vec4 color;
+
 
 void main()
 {

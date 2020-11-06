@@ -1,12 +1,11 @@
 #version 450 core
 
-// Vertex layout:
-//  position      : x, y, z
-
-
+// --- Input Declarations ---
 in vec3 position;
 
+// --- Uniform Declarations ---
 uniform mat4 transformation;
+
 
 void main()
 {

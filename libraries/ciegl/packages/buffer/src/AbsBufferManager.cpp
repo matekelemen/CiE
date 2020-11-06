@@ -54,7 +54,7 @@ AbsBufferManager& AbsBufferManager::bindVertexBuffer( VertexBufferPtr p_buffer,
     _p_boundVertexBuffer = p_buffer;
 
     if ( log )
-        this->logID( "bind vertex buffer", p_buffer->getID() );
+        this->logID( "Bind vertex buffer", p_buffer->getID() );
 
     return *this;
 
@@ -71,7 +71,7 @@ AbsBufferManager& AbsBufferManager::bindElementBuffer( ElementBufferPtr p_buffer
     _p_boundElementBuffer = p_buffer;
 
     if ( log )
-        this->logID( "bind element buffer", p_buffer->getID() );
+        this->logID( "Bind element buffer", p_buffer->getID() );
 
     return *this;
 

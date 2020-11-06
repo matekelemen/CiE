@@ -27,7 +27,19 @@ class TestScene : public Scene
 {
 public:
     template <class ...Args>
-    TestScene( Args&&... args ) : Scene( std::forward<Args>(args)... ) {}
+    TestScene( Args&&... args ) : Scene( std::forward<Args>(args)... ) 
+    {
+        glEnable(GL_DEPTH_TEST);
+    }
+
+private:
+    void update_impl() override
+    {
+        GLint64 numberOfIndices;
+        glGetBufferParameteri64v( GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &numberOfIndices );
+        numberOfIndices /= sizeof( GLuint );
+        glDrawElements( GL_TRIANGLES, numberOfIndices, GL_UNSIGNED_INT, 0 );
+    }
 };
 
 
@@ -37,7 +49,7 @@ TEST_CASE( "Scene", "[scene]" )
 
     // Context
     std::pair<Size,Size> glVersion { 4, 5 };
-    Size MSAASamples = 0;
+    Size MSAASamples = 2;
     auto p_context = ContextPtr(
         new GLFWContext( glVersion.first,
                          glVersion.second,
@@ -61,18 +73,18 @@ TEST_CASE( "Scene", "[scene]" )
     };
 
     auto p_vertexShader = makeVertexShader<GLFWVertexShader>(
-        shaderPaths("defaultVertexShader").first,
-        shaderPaths("defaultVertexShader").second
+        shaderPaths("default/vertexShader").first,
+        shaderPaths("default/vertexShader").second
     );
 
     auto p_geometryShader = makeGeometryShader<GLFWGeometryShader>(
-        shaderPaths("defaultGeometryShader").first,
-        shaderPaths("defaultGeometryShader").second
+        shaderPaths("default/geometryShader").first,
+        shaderPaths("default/geometryShader").second
     );
 
     auto p_fragmentShader = makeFragmentShader<GLFWFragmentShader>(
-        shaderPaths("defaultFragmentShader").first,
-        shaderPaths("defaultFragmentShader").second
+        shaderPaths("default/fragmentShader").first,
+        shaderPaths("default/fragmentShader").second
     );
 
     // Scene
@@ -165,7 +177,10 @@ TEST_CASE( "Scene", "[scene]" )
         
         p_secondScene->bufferManager()->writeToBoundVertexBuffer( components1 );
         p_secondScene->bufferManager()->writeToBoundElementBuffer( triangles1 );
-        
+
+        CHECK_NOTHROW( p_window->update() );
+        std::this_thread::sleep_for( std::chrono::milliseconds(500) );
+
         CHECK_NOTHROW( p_window->removeScene( p_scene ) );
         CHECK_NOTHROW( p_window->removeScene( p_secondScene ) );
     }
@@ -174,77 +189,142 @@ TEST_CASE( "Scene", "[scene]" )
 
     // Scene with uniforms
     p_vertexShader = makeVertexShader<GLFWVertexShader>(
-        shaderPaths("pointVertexShader").first,
-        shaderPaths("pointVertexShader").second
+        shaderPaths("trianglesWithNormals/vertexShader").first,
+        shaderPaths("trianglesWithNormals/vertexShader").second
     );
 
     p_geometryShader = makeGeometryShader<GLFWGeometryShader>(
-        shaderPaths("wireframeGeometryShader").first,
-        shaderPaths("wireframeGeometryShader").second
+        shaderPaths("trianglesWithNormals/geometryShader").first,
+        shaderPaths("trianglesWithNormals/geometryShader").second
     );
 
     p_fragmentShader = makeFragmentShader<GLFWFragmentShader>(
-        shaderPaths("pointFragmentShader").first,
-        shaderPaths("pointFragmentShader").second
+        shaderPaths("trianglesWithNormals/fragmentShader").first,
+        shaderPaths("trianglesWithNormals/fragmentShader").second
     );
 
-    // Buffers
-    p_bufferManager = BufferManagerPtr(
-        new GLFWBufferManager( *p_context )
+    auto p_wireframeVertexShader = makeVertexShader<GLFWVertexShader>(
+        shaderPaths("wireframeWithNormal/vertexShader").first,
+        shaderPaths("wireframeWithNormal/vertexShader").second
     );
+
+    auto p_wireframeGeometryShader = makeGeometryShader<GLFWGeometryShader>(
+        shaderPaths("wireframeWithNormal/geometryShader").first,
+        shaderPaths("wireframeWithNormal/geometryShader").second
+    );
+
+    auto p_wireframeFragmentShader = makeFragmentShader<GLFWFragmentShader>(
+        shaderPaths("wireframeWithNormal/fragmentShader").first,
+        shaderPaths("wireframeWithNormal/fragmentShader").second
+    );
+
 
     {
         CIE_TEST_CASE_INIT( "scene with uniforms" )
         auto localBlock = p_context->newBlock( "scene with uniforms" );
 
+        // Primary scene for triangles
         REQUIRE_NOTHROW( 
             p_scene = p_window->makeScene<TestScene>(
-                "TestScene",
+                "Scene_triangles",
                 p_vertexShader,
                 p_geometryShader,
                 p_fragmentShader )
         );
 
+        // Secondary scene for the wireframe
+        ScenePtr p_secondScene;
+        REQUIRE_NOTHROW(
+            p_secondScene = p_window->makeScene<TestScene>(
+                "Scene_wireframe"
+                ,p_wireframeVertexShader
+                ,p_wireframeGeometryShader
+                ,p_wireframeFragmentShader
+                ,p_scene->bufferManager()->boundVertexBuffer()
+                ,p_scene->bufferManager()->boundElementBuffer()
+                )
+        );
+
+        CHECK( p_scene->bufferManager()->boundVertexBuffer() == p_secondScene->bufferManager()->boundVertexBuffer() );
+        CHECK( p_scene->bufferManager()->boundElementBuffer() == p_secondScene->bufferManager()->boundElementBuffer() );
+
         const float a = 0.5;
 
-        // Origin-based cube vertices
-        AbsVertexBuffer::data_container_type components 
+        typename AbsVertexBuffer::data_container_type vertexData
         {
-            0.0, 0.0, 0.0,
-            a, 0.0, 0.0,
-            0.0, a, 0.0,
-            a, a, 0.0,
-            0.0, 0.0, a,
-            a, 0.0, a,
-            0.0, a, a,
-            a, a, a
+            // position ----------- normal
+            a, 0.0, 0.0,    1.0, 0.0, 0.0,  // 1 
+            a, a, 0.0,      1.0, 0.0, 0.0,  // 3
+            a, a, a,        1.0, 0.0, 0.0,  // 7
+            a, a, a,        1.0, 0.0, 0.0,  // 7
+            a, 0.0, a,      1.0, 0.0, 0.0,  // 5
+            a, 0.0, 0.0,    1.0, 0.0, 0.0,  // 1
+
+            0.0, 0.0, 0.0,  -1.0, 0.0, 0.0, // 0
+            0.0, 0.0, a,    -1.0, 0.0, 0.0, // 4
+            0.0, a, a,      -1.0, 0.0, 0.0, // 6
+            0.0, a, a,      -1.0, 0.0, 0.0, // 6
+            0.0, a, 0.0,    -1.0, 0.0, 0.0, // 2
+            0.0, 0.0, 0.0,  -1.0, 0.0, 0.0, // 0
+
+            0.0, a, 0.0,    0.0, 1.0, 0.0,  // 2
+            0.0, a, a,      0.0, 1.0, 0.0,  // 6
+            a, a, a,        0.0, 1.0, 0.0,  // 7
+            a, a, a,        0.0, 1.0, 0.0,  // 7
+            a, a, 0.0,      0.0, 1.0, 0.0,  // 3
+            0.0, a, 0.0,    0.0, 1.0, 0.0,  // 2
+
+            0.0, 0.0, 0.0,  0.0, -1.0, 0.0, // 0
+            a, 0.0, 0.0,    0.0, -1.0, 0.0, // 1
+            a, 0.0, a,      0.0, -1.0, 0.0, // 5
+            a, 0.0, a,      0.0, -1.0, 0.0, // 5
+            0.0, 0.0, a,    0.0, -1.0, 0.0, // 4
+            0.0, 0.0, 0.0,  0.0, -1.0, 0.0, // 0
+
+            0.0, 0.0, a,    0.0, 0.0, 1.0,  // 4
+            a, 0.0, a,      0.0, 0.0, 1.0,  // 5
+            a, a, a,        0.0, 0.0, 1.0,  // 7
+            a, a, a,        0.0, 0.0, 1.0,  // 7
+            0.0, a, a,      0.0, 0.0, 1.0,  // 6
+            0.0, 0.0, a,    0.0, 0.0, 1.0,  // 4
+
+            0.0, 0.0, 0.0,  0.0, 0.0, -1.0, // 0
+            0.0, a, 0.0,    0.0, 0.0, -1.0, // 2
+            a, a, 0.0,      0.0, 0.0, -1.0, // 3
+            a, a, 0.0,      0.0, 0.0, -1.0, // 3
+            a, 0.0, 0.0,    0.0, 0.0, -1.0, // 1
+            0.0, 0.0, 0.0,  0.0, 0.0, -1.0  // 0
         };
 
         // Cube triangles
         AbsElementBuffer::data_container_type triangles
         {
-            1, 3, 7,    7, 5, 1,
-            0, 4, 6,    6, 2, 0,
-            2, 6, 7,    7, 3, 2,
-            0, 1, 5,    5, 4, 0,
-            4, 5, 7,    7, 6, 4,
-            0, 2, 3,    3, 1, 0
+            0, 1, 2,        3, 4, 5,
+            6, 7, 8,        9, 10, 11,
+            12, 13, 14,     15, 16, 17,
+            18, 19, 20,     21, 22, 23,
+            24, 25, 26,     27, 28, 29,
+            30, 31, 32,     33, 34, 35
         };
 
         REQUIRE_NOTHROW( p_bufferManager = p_scene->bufferManager() );
-        p_bufferManager->writeToBoundVertexBuffer( components );
+        p_bufferManager->writeToBoundVertexBuffer( vertexData );
         p_bufferManager->writeToBoundElementBuffer( triangles );
 
         using CameraType = Camera<PerspectiveProjection>;
-
         auto p_camera = p_scene->makeCamera<CameraType>();
+        p_secondScene->addCamera( p_camera );
+
         p_camera->setAspectRatio( p_window->getSize().first / double(p_window->getSize().second) );
-        p_camera->setPosition( {a/2.0, a/2.0, a + p_camera->clippingPlanes().first} );
+        p_camera->setPosition( {a/2.0, a/2.0, 2.0*a + p_camera->clippingPlanes().first} );
         p_camera->setFieldOfView( 60.0 * M_PI / 180.0 );
 
         CameraType::vector_type center { a/2.0, a/2.0, a/2.0 };
 
-        CHECK_NOTHROW( p_scene->bindUniform( "transformation", p_camera->transformationMatrix() ) );
+        REQUIRE_NOTHROW( p_scene->bindUniform( "transformation", p_camera->transformationMatrix() ) );
+        REQUIRE_NOTHROW( p_scene->bindUniform( "cameraPosition", p_camera->position() ) );
+
+        REQUIRE_NOTHROW( p_secondScene->bindUniform( "transformation", p_camera->transformationMatrix() ) );
 
         const int steps = 360;
         std::chrono::microseconds delay( 100 );
@@ -286,6 +366,7 @@ TEST_CASE( "Scene", "[scene]" )
         }
 
         CHECK_NOTHROW( p_window->removeScene(p_scene) );
+        CHECK_NOTHROW( p_window->removeScene(p_secondScene) );
     }
 }
 

@@ -1,0 +1,13 @@
+<shader>
+    <attributes>
+        <a0 name="position" type="vec3" size="3" stride="6" offset="0" />
+        <a1 name="vertexColor" type="vec3" size="3" stride="6" offset="3" />
+    </attributes>
+    <uniforms>
+        <u0 name="transformation" type="mat4" size="16" >
+    </uniforms>
+    <textures>
+    </textures>
+    <outputs>
+    </outputs>
+</shader>

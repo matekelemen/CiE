@@ -29,6 +29,8 @@ GLUniform::GLUniform( const Shader::Uniform& r_shaderUniform,
     // Find uniform in the shader program
     this->setID( glGetUniformLocation( programID, &this->_name[0] ) );
 
+    checkGLErrors( "Failed to find uniform location: " + this->_name );
+
     // Query uniform properties
     GLchar tmp;
     glGetActiveUniform( programID,
@@ -39,7 +41,7 @@ GLUniform::GLUniform( const Shader::Uniform& r_shaderUniform,
                         &this->_properties.type,
                         &tmp);
 
-    checkGLErrors( "Failed to initialize uniform: " + this->_name );
+    checkGLErrors( "Failed to query uniform: " + this->_name );
 
     CIE_END_EXCEPTION_TRACING
 }
@@ -81,6 +83,7 @@ FloatMat4GLUniform::FloatMat4GLUniform( const Shader::Uniform& r_shaderUniform,
     CIE_CHECK(
         this->_properties.type == GL_FLOAT_MAT4,
         "Uniform type mismatch: " + this->_name
+        + " | type: " + std::to_string(this->_properties.type)
     )
 }
 

@@ -52,7 +52,8 @@ public:
     ~Scene();
 
     /**
-     * Update all cameras and buffers.
+     * Update all cameras and uniforms,
+     * then call update_impl for all buffers
      */
     virtual void update();
 
@@ -103,6 +104,18 @@ public:
      */
     void bindUniform( const std::string& r_name,
                       const glm::mat4& r_uniform );
+
+    /**
+     * Bind a 3D float vector to a uniform with the specified name
+     */
+    void bindUniform( const std::string& r_name,
+                      const glm::dvec3& r_uniform );
+
+protected:
+    /**
+     * Implementation-specific drawing
+     */
+    virtual void update_impl() = 0;
 
 private:
     /**

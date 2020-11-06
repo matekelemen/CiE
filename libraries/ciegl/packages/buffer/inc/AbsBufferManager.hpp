@@ -39,6 +39,16 @@ public:
     [[nodiscard]] ElementBufferPtr makeElementBuffer();
 
     /**
+     * Register an existing vertex buffer
+     */
+    AbsBufferManager& addBuffer( VertexBufferPtr p_buffer );
+
+    /**
+     * Register an existing element buffer
+     */
+    AbsBufferManager& addBuffer( ElementBufferPtr p_buffer );
+
+    /**
      * Bind vertex buffer and set bound flag.
     */
     AbsBufferManager& bindVertexBuffer( VertexBufferPtr p_vertexBuffer,

@@ -1,7 +1,9 @@
 #version 450 core
 
+// --- Layout Definition ---
 layout(points) in;
 layout(points, max_vertices=1 ) out;
+
 
 void main()
 {

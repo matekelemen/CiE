@@ -9,6 +9,20 @@
 namespace cie::gl {
 
 
+inline AbsBufferManager& AbsBufferManager::addBuffer( VertexBufferPtr p_buffer )
+{
+    this->registerBuffer( p_buffer, this->_vertexBuffers );
+    return *this;
+}
+
+
+inline AbsBufferManager& AbsBufferManager::addBuffer( ElementBufferPtr p_buffer )
+{
+    this->registerBuffer( p_buffer, this->_elementBuffers );
+    return *this;
+}
+
+
 template <class BufferPtr, class BufferContainer>
 requires concepts::ClassContainer<BufferContainer,BufferPtr>
 inline void

@@ -5,6 +5,9 @@
 #include "cieutils/packages/macros/inc/exceptions.hpp"
 #include "cieutils/packages/macros/inc/checks.hpp"
 
+// --- Internal Includes ---
+#include "ciegl/packages/camera/inc/ProjectionPolicy.hpp"
+
 // --- STL Includes ---
 #include <cmath>
 

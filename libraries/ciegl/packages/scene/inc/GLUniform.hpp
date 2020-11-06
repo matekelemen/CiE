@@ -97,6 +97,37 @@ private:
 };
 
 
+
+/* --- FloatVec3GLUniform --- */
+
+/**
+ * 3-component float vector uniform used mostly for the position of
+ * cameras, light sources, or some sort of general direction.
+ * 
+ * The bound object is copied at every updating to allow conversion
+ * between different component types
+ */
+template <class BoundType>
+class FloatVec3GLUniform final : public GLUniform
+{
+public:
+    using bound_type    = BoundType;
+    using uniform_type  = glm::vec3;
+
+public:
+    FloatVec3GLUniform( const Shader::Uniform& r_shaderUniform,
+                        Size programID,
+                        const bound_type& r_uniform );
+
+    void write() override;
+
+private:
+    const bound_type& _r_uniform;
+};
+
+
 } // namespace cie::gl
+
+#include "ciegl/packages/scene/impl/GLUniform_impl.hpp"
 
 #endif

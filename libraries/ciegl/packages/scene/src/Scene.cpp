@@ -38,7 +38,7 @@ Scene::Scene( utils::Logger& r_logger,
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    glEnable( GL_DEPTH_TEST );
+    //glEnable( GL_DEPTH_TEST );
 
     // Set shaders
     this->setVertexShader( p_vertexShader );
@@ -99,22 +99,16 @@ Scene::Scene( utils::Logger& r_logger,
         new GLFWBufferManager( this->logger() )
     ));
 
-    if ( this->_p_bufferManager->hasBoundVertexBuffer() )
-        this->logID( "Bound vertex buffer before a vertex array object was created!",
-                     this->getID(),
-                     LOG_TYPE_WARNING );
-
-    if ( this->_p_bufferManager->hasBoundElementBuffer() )
-        this->logID( "Bound element buffer before a vertex array object was created!",
-                     this->getID(),
-                     LOG_TYPE_WARNING );
-
     // Initialize and bind buffers
     if ( !p_vertexBuffer )
         p_vertexBuffer = this->_p_bufferManager->makeVertexBuffer();
+    else
+        this->_p_bufferManager->addBuffer( p_vertexBuffer );
     
     if ( !p_elementBuffer )
         p_elementBuffer = this->_p_bufferManager->makeElementBuffer();
+    else
+        this->_p_bufferManager->addBuffer( p_elementBuffer );
 
     this->_p_bufferManager->bindVertexBuffer( p_vertexBuffer, true );
     this->_p_bufferManager->bindElementBuffer( p_elementBuffer, true );
@@ -125,6 +119,8 @@ Scene::Scene( utils::Logger& r_logger,
         GLint attributeID = glGetAttribLocation( this->getID(),
                                                  r_attribute.name().c_str() );
 
+        checkGLErrors( *this, "Could not find attribute: " + r_attribute.name() );
+
         glVertexAttribPointer( attributeID,
                                r_attribute.size(),
                                GL_FLOAT,
@@ -133,6 +129,8 @@ Scene::Scene( utils::Logger& r_logger,
                                (void*)(r_attribute.offset() * sizeof(float)) );
 
         glEnableVertexAttribArray( attributeID );
+
+        checkGLErrors( *this, "Failed to enable attribute: " + r_attribute.name() );
     }
 
 
@@ -144,6 +142,11 @@ Scene::Scene( utils::Logger& r_logger,
 
     // Create placeholders for uniforms
     for ( const auto& r_uniform : this->_p_vertexShader->uniforms() )
+        this->_uniforms.emplace_back(
+            new GLUniformPlaceholder( r_uniform, this->getID() )
+        );
+
+    for ( const auto& r_uniform : this->_p_fragmentShader->uniforms() )
         this->_uniforms.emplace_back(
             new GLUniformPlaceholder( r_uniform, this->getID() )
         );
@@ -231,19 +234,16 @@ void Scene::update()
             false
         );
 
-        GLint64 numberOfIndices;
-        glGetBufferParameteri64v( GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &numberOfIndices );
-        numberOfIndices /= sizeof( GLuint );
-
-        glDrawElements( GL_TRIANGLES, numberOfIndices, GL_UNSIGNED_INT, 0 );
+        // Draw
+        this->update_impl();
 
         checkGLErrors( *this,
                        "Error drawing from buffer" );
     }
 
     // Reset bound buffers
-    this->_p_bufferManager->bindVertexBuffer( p_boundVertexBuffer );
-    this->_p_bufferManager->bindElementBuffer( p_boundElementBuffer );
+    this->_p_bufferManager->bindVertexBuffer( p_boundVertexBuffer, false );
+    this->_p_bufferManager->bindElementBuffer( p_boundElementBuffer, false );
 
     CIE_END_EXCEPTION_TRACING
 }
@@ -388,6 +388,7 @@ void Scene::bindUniform( const std::string& r_name,
     CIE_CHECK(
         rp_uniform->properties().type == GL_FLOAT_MAT4,
         "Attempt to bind mismatching uniform types: " + r_name
+        + " | type: " + std::to_string(rp_uniform->properties().type)
     )
 
     // Replace the uniform
@@ -395,6 +396,32 @@ void Scene::bindUniform( const std::string& r_name,
         new FloatMat4GLUniform( *rp_uniform,
                                 this->getID(),
                                 r_uniform )
+    );
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+void Scene::bindUniform( const std::string& r_name,
+                         const glm::dvec3& r_uniform )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    // Find uniform in the internal list of uniforms
+    GLUniformPtr& rp_uniform = this->findUniform( r_name );
+
+    // Check uniform type
+    CIE_CHECK(
+        rp_uniform->properties().type == GL_FLOAT_VEC3,
+        "Attempt to bind mismatching uniform types: " + r_name
+        + " | type: " + std::to_string(rp_uniform->properties().type)
+    )
+
+    // Replace the uniform
+    rp_uniform.reset(
+        new FloatVec3GLUniform<glm::dvec3>( *rp_uniform,
+                                            this->getID(),
+                                            r_uniform )
     );
 
     CIE_END_EXCEPTION_TRACING
