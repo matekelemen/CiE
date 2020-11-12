@@ -1,13 +1,12 @@
-/*
-// --- CSG Includes ---
-#include <csg/trees.hpp>
 
 // --- GL Includes ---
-#include <ciegl/csgvisualization.hpp>
+#include <ciegl/ciegl.hpp>
 
 // --- Internal Includes ---
-#include "../inc/hilbert_determinant.hpp"
-#include "../inc/complex.hpp"
+#include "hilbert_determinant.hpp"
+#include "complex.hpp"
+#include "typedefs.hpp"
+#include "PointScene.hpp"
 
 
 // Define target function
@@ -21,7 +20,7 @@ const double OMEGA          = 1.0;
 const size_t N              = 5;
 const size_t M              = 5;
 
-auto targetFunction = [](const cie::DoubleArray<dimension>& parameters)
+auto targetFunction = [](const typename cie::csg::NodeType::point_type& parameters)
 {   
     cie::mathieu::Complex determinant = cie::mathieu::hilbertDeterminant( 
                                             parameters[0],
@@ -35,66 +34,90 @@ auto targetFunction = [](const cie::DoubleArray<dimension>& parameters)
 };
 
 
+namespace cie::csg {
+
+template <cie::detail::CubeType Node>
+std::shared_ptr<Node> makeRoot()
+{
+    return std::make_shared<Node>(
+        typename Node::sampler_ptr( new SamplerType(numberOfPointsPerDimension) ),
+        typename Node::split_policy_ptr( new SplitterType ),
+        0,
+        PointType{0.0,0.0,0.0},
+        10.0 );
+}
+
+
+template <cie::detail::BoxType Node>
+std::shared_ptr<Node> makeRoot()
+{
+    return std::make_shared<Node>(
+        typename Node::sampler_ptr( new SamplerType(numberOfPointsPerDimension) ),
+        typename Node::split_policy_ptr( new SplitterType ),
+        0,
+        PointType{0.0,0.0,0.0},
+        PointType{ 10.0, 10.0, 10.0 }
+    );
+}
+
+} // namespace cie::csg
+
+
+
 namespace cie {
-namespace mathieu {
 
 
 int main()
 {
-    // Define domain
-    DoubleArray<dimension> center   = { 5.0, 5.0, 5.0 };
-    double edgeLength               = 10.0;
-
     // Create root node and divide
-    csg::SpaceTreeNode<dimension,subdivision> root( center, edgeLength );
-    root.evaluate(targetFunction);
-    root.divide(targetFunction,depth);
+    auto p_root = csg::makeRoot<csg::NodeType>();
+    p_root->divide(targetFunction,depth);
 
     // Graphics setup
-    gl::GLContext context( 4,5,4,"mathieu_log.txt" );
-    context.useConsole(true);
-    context.openWindow();
-    context.makeContextCurrent();
+    auto p_context = gl::ContextPtr( new gl::GLFWContext(
+        4,                                          // <-- OpenGL version major
+        5,                                          // <-- OpenGL version minor
+        0,                                          // <-- Number of MSAA samples
+        OUTPUT_PATH + "/mathieu_stability_log.txt", // <-- log file
+        true                                        // <-- use console output
+    ) );
 
-    gl::SpaceTreeDrawManager<5> manager(root,context);
-    manager.setDrawFunction( [](){ return true; } );
-    manager.initialize();
+    auto p_window = p_context->newWindow(
+        800,
+        600
+    );
 
-    auto camera         = std::make_shared<gl::ArcballCamera>(context);
-    manager.camera()    = camera;
-    camera->setProperties(60.0, 0.1, 100.0);
-    camera->setPose(    glm::dvec3( center[0] + 2.0, center[1] + 2.0, center[2] + 2.0 ), 
-                        glm::dvec3( -1.0, -1.0, -1.0 ), 
-                        glm::dvec3( 0.0, 0.0, 1.0 ) );
-    camera->setCenter( glm::dvec3( center[0], center[1], center[2] ) );
-    camera->updateTransformationMatrix();
+    auto p_scene = std::make_shared<PointScene>( *p_context, "PointScene" );
+    p_scene->addRoot( p_root );
 
-    gl::KeyCallbackFunction keyCallback         = makeCallback( gl::ArcballCallbacks::keyCallback,
-                                                                &manager );
-    gl::CursorCallbackFunction cursorCallback   = makeCallback( gl::ArcballCallbacks::cursorCallback,
-                                                                &manager );
-    gl::MouseCallbackFunction mouseCallback     = makeCallback( gl::ArcballCallbacks::mouseCallback,
-                                                                &manager );
+    p_window->addScene( p_scene );
+
+    auto p_camera = p_scene->getCamera();
+
+    p_camera->setFieldOfView( 180.0 * M_PI/180.0 );
+    p_camera->setClippingPlanes( 0.1, 100.0 );
+    p_camera->setPosition( {0.0, 0.0, 10.0} );
+
+    p_camera->rotateYaw( -2.0 * M_PI / 4.0 );
+    p_camera->rotatePitch( -M_PI / 4.0 );
+
+    //p_camera->rotateRoll( -3.0 * M_PI / 4.0 );
+    //p_camera->rotate( M_PI / 4.0,
+    //                  { -1.0, 1.0, 0.0 } );
+    //p_camera->rotateRoll( -M_PI / 4.0 );
 
     // Start event loop
-    context.startEventLoop( std::bind(&gl::SpaceTreeDrawManager<5>::makeDrawFunction, &manager, std::placeholders::_1),
-                            keyCallback,
-                            cursorCallback,
-                            mouseCallback     );
-
-    // Write data
-    csg::writeSpaceTree<dimension,subdivision>(root, "mathieu_stability.csv");
+    p_window->update();
+    std::cin.get();
 
     return 0;
 }
 
 
-}
-}
+} // namespace cie
 
-*/
+
 int main()
 {
-    //return cie::mathieu::main();
-    return 0;
+    return cie::main();
 }
