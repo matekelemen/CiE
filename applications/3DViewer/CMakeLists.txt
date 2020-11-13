@@ -1,4 +1,4 @@
-project( SpaceTreeGraphics CXX )
+project( 3DViewer CXX )
 
 # Define header path
 include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/inc" )
@@ -13,16 +13,16 @@ foreach( driver ${DRIVERS} )
     get_filename_component( executable_name ${driver} NAME_WE )
     message( STATUS "Add executable: ${executable_name}" )
     add_executable( ${executable_name} ${HEADERS} ${SOURCES} ${driver} )
-    TARGET_LINK_LIBRARIES_INSTALL( ${executable_name} csg ciegl )
+    TARGET_LINK_LIBRARIES_INSTALL( ${executable_name} ciegl )
 
     INSTALL_APPLICATION_EXECUTABLE( ${executable_name} )
 
     if( MSVC )
         add_custom_command(TARGET ${executable_name} POST_BUILD        	
-            COMMAND ${CMAKE_COMMAND} -E copy 					
-                "$<TARGET_FILE_DIR:csg>/csg.dll"  
-                "${INSTALL_APPLICATION_PREFIX}/${PROJECT_NAME}" )
-                
+        COMMAND ${CMAKE_COMMAND} -E copy 					
+            "$<TARGET_FILE_DIR:linalg>/cieutils.dll"  
+            "${INSTALL_APPLICATION_PREFIX}/${PROJECT_NAME}" )
+
         add_custom_command(TARGET ${executable_name} POST_BUILD        	
             COMMAND ${CMAKE_COMMAND} -E copy 					
                 "$<TARGET_FILE_DIR:linalg>/linalg.dll"  
@@ -32,11 +32,6 @@ foreach( driver ${DRIVERS} )
             COMMAND ${CMAKE_COMMAND} -E copy 					
                 "$<TARGET_FILE_DIR:ciegl>/ciegl.dll"  
                 "${INSTALL_APPLICATION_PREFIX}/${PROJECT_NAME}" )
-
-        add_custom_command(TARGET ${executable_name} POST_BUILD        	
-            COMMAND ${CMAKE_COMMAND} -E copy 					
-                "$<TARGET_FILE_DIR:linalg>/cieutils.dll"  
-                "${INSTALL_APPLICATION_PREFIX}/${PROJECT_NAME}" )
     endif( )
 
 endforeach()
@@ -44,3 +39,6 @@ endforeach()
 # Copy python scripts
 file( GLOB PYTHON_SCRIPTS scripts/*.py )
 INSTALL_APPLICATION_SCRIPTS( ${PYTHON_SCRIPTS} )
+
+# Copy data
+INSTALL_APPLICATION_DATA( )

@@ -15,7 +15,7 @@ CommandLineArguments::CommandLineArguments( int argc, char const* argv[] ) :
 
     std::string tmp;
 
-    for ( Size argIndex=0; argIndex<Size(argc); ++argIndex )
+    for ( Size argIndex=1; argIndex<Size(argc); ++argIndex )
     {
         tmp = argv[argIndex];
 

@@ -49,6 +49,22 @@ AbsBufferManager::writeToBoundVertexBuffer( const ContainerType& r_data )
 
 template <class ContainerType>
 inline AbsBufferManager&
+AbsBufferManager::writeToBoundVertexBuffer( Size begin,
+                                            const ContainerType& r_data )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    CIE_CHECK_POINTER( this->_p_boundVertexBuffer )
+    this->_p_boundVertexBuffer->write(begin, r_data);
+
+    return *this;
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+template <class ContainerType>
+inline AbsBufferManager&
 AbsBufferManager::writeToBoundElementBuffer( const ContainerType& r_data )
 {
     CIE_BEGIN_EXCEPTION_TRACING
@@ -57,6 +73,20 @@ AbsBufferManager::writeToBoundElementBuffer( const ContainerType& r_data )
     this->_p_boundElementBuffer->write( r_data );
 
     return *this;
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+template <class ContainerType>
+inline AbsBufferManager&
+AbsBufferManager::writeToBoundElementBuffer( Size begin,
+                                             const ContainerType& r_data )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    CIE_CHECK_POINTER( this->_p_boundElementBuffer )
+    this->_p_boundElementBuffer->write( begin, r_data );
 
     CIE_END_EXCEPTION_TRACING
 }

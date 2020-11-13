@@ -6,6 +6,7 @@
 
 // --- STL Includes ---
 #include <vector>
+#include <memory>
 
 
 namespace cie::gl {
@@ -26,6 +27,9 @@ public:
 protected:
     data_container _data;
 };
+
+
+using PartPtr = std::shared_ptr<Part<float>>;
 
 
 } // namespace cie::gl

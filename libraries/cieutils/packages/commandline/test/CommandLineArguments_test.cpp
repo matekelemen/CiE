@@ -18,12 +18,13 @@ TEST_CASE( "CommandLineArguments", "[commandline]" )
 {
     CIE_TEST_CASE_INIT( "CommandLineArguments" )
 
-    const Size argc = 4;
+    const Size argc = 5;
 
     {
         CIE_TEST_CASE_INIT( "correct arguments" )
 
         char const* argv[argc] = {
+            "./",
             "https://github.com",
             "--name=best_name",
             "--float=3.14159265",
@@ -37,6 +38,7 @@ TEST_CASE( "CommandLineArguments", "[commandline]" )
         CIE_TEST_CASE_INIT( "no key specified" )
 
         char const* argv[argc] = {
+            "./",
             "https://github.com",
             "--name=best_name",
             "--=3.14159265",
@@ -50,6 +52,7 @@ TEST_CASE( "CommandLineArguments", "[commandline]" )
         CIE_TEST_CASE_INIT( "duplicate keys" )
 
         char const* argv[argc] = {
+            "./",
             "https://github.com",
             "--name=best_name",
             "--integer=3.14159265",
@@ -63,6 +66,7 @@ TEST_CASE( "CommandLineArguments", "[commandline]" )
         CIE_TEST_CASE_INIT( "no value specified" )
 
         char const* argv[argc] = {
+            "./",
             "https://github.com",
             "--name=best_name",
             "--float=",
@@ -76,6 +80,7 @@ TEST_CASE( "CommandLineArguments", "[commandline]" )
         CIE_TEST_CASE_INIT( "no separator" )
 
         char const* argv[argc] = {
+            "./",
             "https://github.com",
             "--name=best_name",
             "--float3.14159265",
@@ -89,6 +94,7 @@ TEST_CASE( "CommandLineArguments", "[commandline]" )
         CIE_TEST_CASE_INIT( "argument parsing" )
 
         char const* argv[argc] = {
+            "./",
             "--name=best_name",
             "https://github.com",
             "--float=-3.14159265",

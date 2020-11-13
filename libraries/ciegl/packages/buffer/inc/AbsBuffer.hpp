@@ -37,20 +37,40 @@ public:
     AbsBuffer( Size id );
 
 //protected:
+
     /**
-     * Write data to the GPU buffer. Only a buffer manager may issue
+     * Allocate the requested number of bytes
+     * (uninitialized data)
+     */
+    virtual void reserve( Size byteCount ) = 0;
+
+    /**
+     * Resize and write data to the GPU buffer. Only a buffer manager may issue
      * a write request, since it's the only entity that keeps track
      * of bound buffers.
     */
     virtual void write( const data_container_type& r_dataContainer ) = 0;
 
     /**
+     * Write data to an existing buffer
+     */
+    virtual void write( Size begin, const data_container_type& r_dataContainer ) = 0;
+
+    /**
      * Copy data to a contiguous internal container, then write
-     * it to the GPU buffer.
+     * it to the resized GPU buffer.
     */
     template <class ContainerType>
     requires concepts::detail::ClassContainerWithException<ContainerType,DataType,typename AbsBuffer<DataType>::data_container_type>
     void write( const ContainerType& r_dataContainer );
+
+    /**
+     * Copy data to a contiguous internal container, then write
+     * it to the existing GPU buffer.
+     */
+    template <class ContainerType>
+    requires concepts::detail::ClassContainerWithException<ContainerType,DataType,typename AbsBuffer<DataType>::data_container_type>
+    void write( Size begin, const ContainerType& r_dataContainer );
 };
 
 

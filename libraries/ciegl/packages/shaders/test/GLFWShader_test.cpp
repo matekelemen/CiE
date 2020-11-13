@@ -33,7 +33,7 @@ TEST_CASE( "GLFWShader", "[shader]" )
     REQUIRE_NOTHROW( p_window = p_context->newWindow() );
 
     // Shader setup
-    const std::string shaderDir   = SOURCE_PATH + "/libraries/ciegl/data/shaders";
+    const std::string shaderDir   = SOURCE_PATH + "/libraries/ciegl/data/shaders/default";
 
     auto shaderPaths = [&shaderDir]( const std::string& r_shaderName )
     {
@@ -47,8 +47,8 @@ TEST_CASE( "GLFWShader", "[shader]" )
         CIE_TEST_CASE_INIT( "default vertex shader" )
 
         ShaderPtr p_shader;
-        CHECK_NOTHROW( p_shader = makeVertexShader<GLFWVertexShader>( shaderPaths("defaultVertexShader").first,
-                                                                      shaderPaths("defaultVertexShader").second ) );
+        CHECK_NOTHROW( p_shader = makeVertexShader<GLFWVertexShader>( shaderPaths("vertexShader").first,
+                                                                      shaderPaths("vertexShader").second ) );
 
         REQUIRE( !p_shader->attributes().empty() );
         CHECK( p_shader->attributes().size() == 1 );
@@ -68,8 +68,8 @@ TEST_CASE( "GLFWShader", "[shader]" )
         CIE_TEST_CASE_INIT( "default geometry shader" )
 
         ShaderPtr p_shader;
-        CHECK_NOTHROW( p_shader = makeGeometryShader<GLFWGeometryShader>( shaderPaths("defaultGeometryShader").first,
-                                                                          shaderPaths("defaultGeometryShader").second ) );
+        CHECK_NOTHROW( p_shader = makeGeometryShader<GLFWGeometryShader>( shaderPaths("geometryShader").first,
+                                                                          shaderPaths("geometryShader").second ) );
         
         CHECK( p_shader->attributes().empty() );
         CHECK( p_shader->uniforms().empty() );
@@ -81,8 +81,8 @@ TEST_CASE( "GLFWShader", "[shader]" )
         CIE_TEST_CASE_INIT( "default fragment shader" )
 
         ShaderPtr p_shader;
-        CHECK_NOTHROW( p_shader = makeFragmentShader<GLFWFragmentShader>( shaderPaths("defaultFragmentShader").first,
-                                                                          shaderPaths("defaultFragmentShader").second ) );
+        CHECK_NOTHROW( p_shader = makeFragmentShader<GLFWFragmentShader>( shaderPaths("fragmentShader").first,
+                                                                          shaderPaths("fragmentShader").second ) );
     
         REQUIRE( !p_shader->outputs().empty() );
         CHECK( p_shader->outputs().size() == 1 );

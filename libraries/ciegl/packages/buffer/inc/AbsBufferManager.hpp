@@ -76,11 +76,19 @@ public:
     template <class ContainerType>
     AbsBufferManager& writeToBoundVertexBuffer( const ContainerType& r_data );
 
+    template <class ContainerType>
+    AbsBufferManager& writeToBoundVertexBuffer( Size begin,
+                                                const ContainerType& r_data );
+
     /**
      * Write to the bound element buffer
      */
     template <class ContainerType>
     AbsBufferManager& writeToBoundElementBuffer( const ContainerType& r_data );
+
+    template <class ContainerType>
+    AbsBufferManager& writeToBoundElementBuffer( Size begin,
+                                                 const ContainerType& r_data );
 
     const VertexBufferPtr& boundVertexBuffer() const;
     const ElementBufferPtr& boundElementBuffer() const;
