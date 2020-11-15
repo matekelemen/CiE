@@ -53,6 +53,18 @@ CommandLineArguments::CommandLineArguments( int argc, char const* argv[] ) :
 }
 
 
+CommandLineArguments& CommandLineArguments::addDefaultKeywordArgument( const std::string& r_key,
+                                                                       const std::string& r_value )
+{
+    this->_kwargs.try_emplace(
+        r_key,
+        r_value
+    );
+
+    return *this;
+}
+
+
 const typename CommandLineArguments::argument_container&
 CommandLineArguments::arguments() const
 {

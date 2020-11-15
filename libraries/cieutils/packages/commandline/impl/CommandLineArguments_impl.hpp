@@ -1,8 +1,53 @@
 // --- Utility Includes ---
 #include "cieutils/packages/macros/inc/exceptions.hpp"
+#include "cieutils/packages/macros/inc/checks.hpp"
 
 
 namespace cie::utils {
+
+
+template <class ContainerType>
+requires concepts::ClassContainer<ContainerType, std::pair<std::string,std::string>>
+CommandLineArguments&
+CommandLineArguments::addDefaultKeywordArguments( const ContainerType& r_keyValuePairs )
+{
+    for ( const auto& r_keyValuePair : r_keyValuePairs )
+        this->addDefaultKeywordArguments(
+            r_keyValuePair.first,
+            r_keyValuePair.second
+        );
+    return *this;
+}
+
+
+template <class KeyContainer, class ValueContainer>
+requires concepts::ClassContainer<KeyContainer, std::string>
+         && concepts::ClassContainer<ValueContainer, std::string>
+CommandLineArguments&
+CommandLineArguments::addDefaultKeywordArguments( const KeyContainer& r_keys,
+                                                  const ValueContainer& r_values )
+{
+    CIE_CHECK( 
+        r_keys.size() == r_values.size(),
+        "Number of keys ("
+            + std::to_string( r_keys.size() )
+            + ") and number of values ("
+            + std::to_string( r_values.size() )
+            + ") must match!" 
+    )
+
+    auto it_key    = r_keys.begin();
+    auto it_value  = r_values.begin();
+    auto it_keyEnd = r_keys.end();
+
+    for ( ; it_key!=it_keyEnd; ++it_key,++it_value )
+        this->addDefaultKeywordArgument(
+            *it_key,
+            *it_value
+        );
+
+    return *this;
+}
 
 
 /* --- std::string --- */

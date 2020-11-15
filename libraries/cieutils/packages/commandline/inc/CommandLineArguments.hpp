@@ -3,6 +3,7 @@
 
 // --- Utility Includes ---
 #include "cieutils/packages/types/inc/types.hpp"
+#include "cieutils/packages/concepts/inc/container_concepts.hpp"
 
 // --- STL Includes ---
 #include <string>
@@ -26,6 +27,28 @@ public:
 
 public:
     CommandLineArguments( int argc, char const* argv[] );
+
+    /**
+     * Add default keyword argument
+     */
+    CommandLineArguments& addDefaultKeywordArgument( const std::string& r_key,
+                                                     const std::string& r_value );
+
+    /**
+     * Add default keyword arguments
+     */
+    template <class ContainerType>
+    requires concepts::ClassContainer<ContainerType, std::pair<std::string,std::string>>
+    CommandLineArguments& addDefaultKeywordArguments( const ContainerType& r_keyValuePairs );
+
+    /**
+     * Add default keyword arguments
+     */
+    template <class KeyContainer, class ValueContainer>
+    requires concepts::ClassContainer<KeyContainer,std::string>
+             && concepts::ClassContainer<ValueContainer,std::string>
+    CommandLineArguments& addDefaultKeywordArguments( const KeyContainer& r_keys,
+                                                      const ValueContainer& r_values );
 
     /**
      * Check whether a keyword argument exists
