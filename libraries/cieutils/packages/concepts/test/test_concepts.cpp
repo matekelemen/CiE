@@ -22,16 +22,16 @@ template <concepts::NumericType T>
 void numericTest( T value )
 {}
 
-template <concepts::PointerType T>
+template <concepts::RawPointer T>
 void pointerTest( T ptr )
 {}
 
 template <class ValueType, class PointerType>
 void classPointerTest( PointerType ptr )
-requires concepts::ClassPointer<PointerType,ValueType>
+requires concepts::ClassRawPointer<PointerType,ValueType>
 {}
 
-template <concepts::NonPointerType T>
+template <concepts::NonRawPointer T>
 void nonPointerTest( T value )
 {}
 

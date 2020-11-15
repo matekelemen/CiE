@@ -57,13 +57,13 @@ concept NumericContainer
 template <class ContainerType>
 concept PointerContainer
 =   STLContainer<ContainerType>
-    && PointerType<typename ContainerType::value_type>;
+    && RawPointer<typename ContainerType::value_type>;
 
 
 template <class ContainerType>
 concept NonPointerContainer
 =   STLContainer<ContainerType>
-    && NonPointerType<typename ContainerType::value_type>;
+    && NonRawPointer<typename ContainerType::value_type>;
 
 
 template <class ContainerType>

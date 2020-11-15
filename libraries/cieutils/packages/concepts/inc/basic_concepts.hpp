@@ -165,22 +165,48 @@ concept ConvertibleTo
 // POINTERS
 // ---------------------------------------------------------
 template <class T>
-concept PointerType
+concept Dereferencable
+= requires ( T instance )
+{
+    { *instance };
+    { instance.operator->() };
+};
+
+
+template <class T>
+concept RawPointer
 = std::is_pointer_v<T>;
 
 
 template <class T>
-concept NonPointerType
+concept NonRawPointer
 = !std::is_pointer_v<T>;
 
 
-template <class PtrType, class ValueType>
+template <class T>
+concept Pointer
+= RawPointer<T>
+  || ( Dereferencable<T> && Incrementable<T> && Decrementable<T> );
+
+
+template <class T>
+concept NonPointer
+= !Pointer<T>;
+
+
+template <class PointerType, class ValueType>
 concept ClassPointer
-=   PointerType<PtrType>
-    && requires( PtrType ptr )
-        {
-            { *ptr } -> std::same_as<ValueType&>;
-        };
+= Pointer<PointerType>
+  && requires ( PointerType instance )
+{
+    { *instance } -> std::same_as<ValueType&>;
+};
+
+
+template <class PointerType, class ValueType>
+concept ClassRawPointer
+= RawPointer<PointerType>
+  && ClassPointer<PointerType, ValueType>;
 
 
 // ---------------------------------------------------------
