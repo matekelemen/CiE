@@ -9,7 +9,6 @@ Mutex::Mutex() :
     _isLocked(false),
     _threadID(-1)
 {
-    CIE_THROW( NotImplementedException, "Mutex does not work yet" )
     omp_init_lock(&_lock);
 }
 
@@ -31,9 +30,6 @@ void Mutex::lock()
 
 void Mutex::unlock()
 {
-    if ( !_isLocked )
-        return;
-
     if ( omp_get_thread_num() != _threadID )
     {
         CIE_THROW(

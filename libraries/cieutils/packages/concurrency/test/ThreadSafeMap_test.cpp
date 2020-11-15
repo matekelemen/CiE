@@ -9,6 +9,7 @@
 #include <map>
 #include <unordered_map>
 #include <functional>
+#include <algorithm>
 
 
 namespace cie::mp {
@@ -16,23 +17,36 @@ namespace cie::mp {
 
 namespace map {
 
-
 template <class MapType>
-bool fillTest( MapType& r_map )
+void fillTest( MapType& r_map, Size maxCount )
 {
     CIE_TEST_CASE_INIT( "fill test" )
 
-    int maxCount    = 1e2;
-
     #pragma omp parallel shared(r_map,maxCount)
     {
-        for ( int i=0; i<maxCount; ++i )
+        for ( int i=0; i<int(maxCount); ++i )
         {
             r_map.try_emplace( i, i );
         }
     }
+}
 
-    return true;
+template <class MapType>
+void checkContainer( MapType& r_map, Size maxCount )
+{
+    CHECK( r_map.size() == maxCount );
+
+    for ( const auto& r_pair : r_map )
+        CHECK( r_pair.first == r_pair.second );
+
+    CHECK(
+        std::accumulate( r_map.begin(),
+                         r_map.end(),
+                         Size(0),
+                         [](Size lhs, const auto& r_pair){ return lhs + r_pair.first; } )
+        ==
+        maxCount * (maxCount-1) / 2
+    );
 }
 
 } // namespace map
@@ -42,8 +56,10 @@ TEST_CASE( "ThreadSafeMap", "[concurrency]" )
 {
     CIE_TEST_CASE_INIT( "ThreadSafeMap" )
 
-    using KeyType       = int;
-    using ValueType     = double;
+    using KeyType         = int;
+    using ValueType       = double;
+
+    Size numberOfElements = 1e4;
 
     {
         CIE_TEST_CASE_INIT( "std::map base" )
@@ -56,7 +72,23 @@ TEST_CASE( "ThreadSafeMap", "[concurrency]" )
         CHECK_NOTHROW( map.clear() );
         CHECK( map.empty() );
 
-        map::fillTest( map );
+        map::fillTest( map, numberOfElements );
+        map::checkContainer( map, numberOfElements );
+    }
+
+    {
+        CIE_TEST_CASE_INIT( "std::unordered_map base" )
+        using MapBaseType   = std::unordered_map<KeyType,ValueType>;
+        using MapType       = ThreadSafeMap<MapBaseType>;
+
+        REQUIRE_NOTHROW( MapType() );
+        MapType map;
+
+        CHECK_NOTHROW( map.clear() );
+        CHECK( map.empty() );
+
+        map::fillTest( map, numberOfElements );
+        map::checkContainer( map, numberOfElements );
     }
 }
 

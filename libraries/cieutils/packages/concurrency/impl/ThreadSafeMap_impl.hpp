@@ -18,8 +18,9 @@ inline const typename ThreadSafeMap<MapType>::stored_type&
 ThreadSafeMap<MapType>::at( const typename MapType::key_type& r_key )
 {
     _mutex.lock();
-    return MapType::at( r_key );
+    auto& r_result = MapType::at( r_key );
     _mutex.unlock();
+    return r_result;
 }
 
 
@@ -29,8 +30,9 @@ inline typename ThreadSafeMap<MapType>::stored_type&
 ThreadSafeMap<MapType>::operator[]( const typename MapType::key_type& r_key )
 {
     _mutex.lock();
-    return MapType::operator[]( r_key );
+    auto& r_result = MapType::operator[]( r_key );
     _mutex.unlock();
+    return r_result;
 }
 
 
@@ -40,8 +42,9 @@ inline typename ThreadSafeMap<MapType>::stored_type&
 ThreadSafeMap<MapType>::operator[]( typename MapType::key_type&& key )
 {
     _mutex.lock();
-    return MapType::operator[]( std::move(key) );
+    auto& r_result = MapType::operator[]( std::move(key) );
     _mutex.unlock();
+    return r_result;
 }
 
 
@@ -52,7 +55,6 @@ template <class MapType>
 ThreadSafeMap<MapType>::ThreadSafeMap() :
     _mutex()
 {
-    CIE_THROW( NotImplementedException, "ThreadSafeMap does not work yet" );
 }
 
 
@@ -75,8 +77,9 @@ inline std::pair<typename MapType::iterator,bool>
 ThreadSafeMap<MapType>::insert( P&& value )
 {
     _mutex.lock();
-    return MapType::insert( std::move(value) );
+    auto result = MapType::insert( std::move(value) );
     _mutex.unlock();
+    return result;
 }
 
 
@@ -87,8 +90,9 @@ inline typename MapType::iterator
 ThreadSafeMap<MapType>::insert( InputIt it_first, InputIt it_last )
 {
     _mutex.lock();
-    return MapType::insert( it_first, it_last );
+    auto result = MapType::insert( it_first, it_last );
     _mutex.unlock();
+    return result;
 }
 
 
@@ -98,8 +102,9 @@ inline std::pair<typename MapType::iterator,bool>
 ThreadSafeMap<MapType>::insert( const typename MapType::value_type& r_value )
 {
     _mutex.lock();
-    return MapType::insert(r_value );
+    auto result = MapType::insert( r_value );
     _mutex.unlock();
+    return result;
 }
 
 
@@ -109,8 +114,9 @@ inline std::pair<typename MapType::iterator,bool>
 ThreadSafeMap<MapType>::insert( typename MapType::value_type&& value )
 {
     _mutex.lock();
-    MapType::insert( std::move(value) );
+    auto result = MapType::insert( std::move(value) );
     _mutex.unlock();
+    return result;
 }
 
 
@@ -121,8 +127,9 @@ inline std::pair<typename MapType::iterator,bool>
 ThreadSafeMap<MapType>::emplace( Args&&... args )
 {
     _mutex.lock();
-    return MapType::emplace( std::forward<Args>(args)... );
+    auto result = MapType::emplace( std::forward<Args>(args)... );
     _mutex.unlock();
+    return result;
 }
 
 
@@ -134,9 +141,10 @@ ThreadSafeMap<MapType>::try_emplace( const typename MapType::key_type& r_key,
                                       Args&& ...args )
 {
     _mutex.lock();
-    return MapType::try_emplace( r_key,
-                                 std::forward<Args>(args)... );
+    auto result = MapType::try_emplace( r_key,
+                                        std::forward<Args>(args)... );
     _mutex.unlock();
+    return result;
 }
 
 
@@ -148,9 +156,10 @@ ThreadSafeMap<MapType>::try_emplace( const typename MapType::key_type&& key,
                                       Args&& ...args )
 {
     _mutex.lock();
-    return MapType::try_emplace( std::move(key),
-                                 std::forward<Args>(args)... );
+    auto result = MapType::try_emplace( std::move(key),
+                                        std::forward<Args>(args)... );
     _mutex.unlock();
+    return result;
 }
 
 
@@ -160,8 +169,9 @@ inline typename MapType::iterator
 ThreadSafeMap<MapType>::erase( typename MapType::iterator it_pos )
 {
     _mutex.lock();
-    return MapType::erase( it_pos );
+    auto result = MapType::erase( it_pos );
     _mutex.unlock();
+    return result;
 }
 
 
@@ -171,8 +181,9 @@ inline typename MapType::iterator
 ThreadSafeMap<MapType>::erase( typename MapType::const_iterator it_pos )
 {
     _mutex.lock();
-    return MapType::erase( it_pos );
+    auto result = MapType::erase( it_pos );
     _mutex.unlock();
+    return result;
 }
 
 
@@ -183,8 +194,9 @@ ThreadSafeMap<MapType>::erase( typename MapType::const_iterator it_first,
                                 typename MapType::const_iterator it_last )
 {
     _mutex.lock();
-    return MapType::erase( it_first, it_last );
+    auto result = MapType::erase( it_first, it_last );
     _mutex.unlock();
+    return result;
 }
 
 
@@ -194,8 +206,9 @@ inline typename MapType::size_type
 ThreadSafeMap<MapType>::erase( const typename MapType::key_type& r_key )
 {
     _mutex.lock();
-    return MapType::erase( r_key );
+    auto result = MapType::erase( r_key );
     _mutex.unlock();
+    return result;
 }
 
 
@@ -219,8 +232,9 @@ inline typename MapType::size_type
 ThreadSafeMap<MapType>::count( const KeyType& r_key )
 {
     _mutex.lock();
-    return MapType::count( r_key );
+    auto result = MapType::count( r_key );
     _mutex.unlock();
+    return result;
 }
 
 
@@ -230,8 +244,9 @@ inline typename MapType::iterator
 ThreadSafeMap<MapType>::find( const typename MapType::key_type& r_key )
 {
     _mutex.lock();
-    return MapType::find( r_key );
+    auto result = MapType::find( r_key );
     _mutex.unlock();
+    return result;
 }
 
 
@@ -241,8 +256,9 @@ inline bool
 ThreadSafeMap<MapType>::contains( const typename MapType::key_type& r_key )
 {
     _mutex.lock();
-    return MapType::contains( r_key );
+    auto result = MapType::contains( r_key );
     _mutex.unlock();
+    return result;
 }
 
 
@@ -253,8 +269,9 @@ inline bool
 ThreadSafeMap<MapType>::contains( const KeyType& r_key )
 {
     _mutex.lock();
-    return MapType::contains( r_key );
+    auto result = MapType::contains( r_key );
     _mutex.unlock();
+    return result;
 }
 
 
@@ -264,8 +281,9 @@ inline bool
 ThreadSafeMap<MapType>::empty()
 {
     _mutex.lock();
-    return MapType::empty();
+    auto result = MapType::empty();
     _mutex.unlock();
+    return result;
 }
 
 
@@ -275,8 +293,9 @@ inline typename MapType::size_type
 ThreadSafeMap<MapType>::size()
 {
     _mutex.lock();
-    return MapType::size();
+    auto result = MapType::size();
     _mutex.unlock();
+    return result;
 }
 
 
@@ -286,8 +305,9 @@ inline typename MapType::iterator
 ThreadSafeMap<MapType>::begin()
 {
     _mutex.lock();
-    return MapType::begin();
+    auto result = MapType::begin();
     _mutex.unlock();
+    return result;
 }
 
 
@@ -297,8 +317,9 @@ inline typename MapType::iterator
 ThreadSafeMap<MapType>::end()
 {
     _mutex.lock();
-    return MapType::end();
+    auto result = MapType::end();
     _mutex.unlock();
+    return result;
 }
 
 
