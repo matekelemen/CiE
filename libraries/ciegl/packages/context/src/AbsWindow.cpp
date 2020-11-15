@@ -115,6 +115,8 @@ void AbsWindow::beginLoop()
 
     this->_continueLooping = true;
 
+    auto localBlock = this->newBlock( "Event loop" );
+
     while( this->_continueLooping )
     { this->update(); }
 }

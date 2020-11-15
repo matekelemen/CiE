@@ -82,8 +82,14 @@ GLFWWindow::GLFWWindow( Size id,
     {
         auto p_this = static_cast<GLFWWindow*>( glfwGetWindowUserPointer(p_window) );
         CIE_CHECK_POINTER( p_this )
+
         p_this->_size.first  = Size(width);
         p_this->_size.second = Size(height);
+
+        for ( auto& rp_scene : p_this->_scenes )
+            for ( auto& rp_camera : rp_scene->cameras() )
+                rp_camera->setAspectRatio( double(width)/height );
+
         p_this->_windowResizeCallback( Size(width), Size(height) );
     };
     glfwSetWindowSizeCallback( _p_window, windowResizeCallback );
