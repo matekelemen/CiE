@@ -101,8 +101,8 @@ void STLPart::load( std::istream& r_stream )
                 r_stream.read( reinterpret_cast<char*>(&tmp), sizeof(tmp) );
                 this->_data.push_back( tmp );
             }
-            for ( Size componentIndex=0; componentIndex<STLPart::dimension; ++componentIndex )
-                this->_data.push_back( normal[componentIndex] );
+            //for ( Size componentIndex=0; componentIndex<STLPart::dimension; ++componentIndex )
+            //    this->_data.push_back( normal[componentIndex] );
         }
 
         // Read "attribute byte count"

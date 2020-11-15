@@ -22,10 +22,10 @@ public:
     static const Size dimension = 3;
 
     /**
-     * Coordinates + normal for all vertices of the triangle,
+     * Coordinates for all vertices of the triangle,
      * all stored as 32-bit single-precision floats
      */
-    static const Size primitive_byte_size = 2 * 3 * dimension * sizeof(typename STLPart::data_type);
+    static const Size primitive_byte_size = 3 * dimension * sizeof(typename STLPart::data_type);
 
 public:
     STLPart( std::istream& r_stream );
