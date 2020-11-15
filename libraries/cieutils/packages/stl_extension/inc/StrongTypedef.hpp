@@ -24,12 +24,13 @@ public:
 
 public:
     AbsStrongTypedef();
-    AbsStrongTypedef( T base );
+    //AbsStrongTypedef( T base );
     AbsStrongTypedef( T& r_base );
     AbsStrongTypedef( const T& r_base );
 
     AbsStrongTypedef( const AbsStrongTypedef<T,Tag>& r_rhs );
     AbsStrongTypedef<T,Tag>& operator=( const AbsStrongTypedef<T,Tag>& r_rhs );
+    //AbsStrongTypedef<T,Tag>& operator=( const T& r_rhs );
 
     ~AbsStrongTypedef();
 
@@ -37,17 +38,19 @@ public:
 
     const T& get() const;
 
-private:
+protected:
     void throwIfUninitialized() const;
 
-private:
+protected:
     T* _p_base;
 };
 
 
+// TODO: class concept specializations for increment/decrement and dereference operators
 template <class T, class Tag>
 class StrongTypedef : public AbsStrongTypedef<T,Tag>
 {
+public:
     template <class ...Args>
     StrongTypedef( Args&&... args );
 };

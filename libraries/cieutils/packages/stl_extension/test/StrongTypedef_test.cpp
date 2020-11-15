@@ -61,6 +61,10 @@ concept ConvertibleTo
 };
 
 template <class T, class TT>
+concept NotConvertibleTo
+= !ConvertibleTo<T,TT>;
+
+template <class T, class TT>
 bool convertibleTo( T a, TT b )
 requires ConvertibleTo<T,TT>
 {
@@ -69,7 +73,7 @@ requires ConvertibleTo<T,TT>
 
 template <class T, class TT>
 bool convertibleTo( T a, TT b )
-requires (!ConvertibleTo<T,TT>)
+requires NotConvertibleTo<T,TT>
 {
     return false;
 }
@@ -85,16 +89,52 @@ TEST_CASE( "STRONG_TYPEDEF", "[stl_extension]" )
     CIE_TEST_CASE_INIT( "STRONG_TYPEDEF" )
 
     {
-        CIE_TEST_CASE_INIT( "vector" )
+        CIE_TEST_CASE_INIT( "std::vector" )
         VectorBase              base;
         SubVector1              sub1;
         SubVector2              sub2;
         TestClass::MemberVector member;
 
+        SubVector1 tmp(base);
+
         CHECK( testFunction(base) == 0 );
         CHECK( testFunction(sub1) == 1 );
         CHECK( testFunction(sub2) == 2 );
         CHECK( testFunction(member) == 3 );
+
+        CHECK( convertibleTo(base, sub1) );
+        CHECK( convertibleTo(sub1, base) );
+        CHECK( !convertibleTo(sub1, sub2) );
+    }
+
+    {
+        CIE_TEST_CASE_INIT( "int" )
+        IntBase              base = 0;
+        SubInt1              sub1;
+        SubInt2              sub2;
+        TestClass::MemberInt member;
+
+        CHECK( testFunction(base) == 4 );
+        CHECK( testFunction(sub1) == 5 );
+        CHECK( testFunction(sub2) == 6 );
+        CHECK( testFunction(member) == 7 );
+
+        CHECK( convertibleTo(base, sub1) );
+        CHECK( convertibleTo(sub1, base) );
+        CHECK( !convertibleTo(sub1, sub2) );
+    }
+
+    {
+        CIE_TEST_CASE_INIT( "int*" )
+        PointerBase              base = nullptr;
+        SubPointer1              sub1;
+        SubPointer2              sub2;
+        TestClass::MemberPointer member;
+
+        CHECK( testFunction(base) == 8 );
+        CHECK( testFunction(sub1) == 9 );
+        CHECK( testFunction(sub2) == 10 );
+        CHECK( testFunction(member) == 11 );
 
         CHECK( convertibleTo(base, sub1) );
         CHECK( convertibleTo(sub1, base) );

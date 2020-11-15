@@ -8,6 +8,9 @@
 namespace cie::utils {
 
 
+
+/* --- AbsStrongTypedef --- */
+
 template <class T, class Tag>
 AbsStrongTypedef<T,Tag>::AbsStrongTypedef() :
     _p_base( nullptr )
@@ -15,11 +18,11 @@ AbsStrongTypedef<T,Tag>::AbsStrongTypedef() :
 }
 
 
-template <class T, class Tag>
-AbsStrongTypedef<T,Tag>::AbsStrongTypedef( T base ) :
-    _p_base( new T( base ) )
-{
-}
+//template <class T, class Tag>
+//AbsStrongTypedef<T,Tag>::AbsStrongTypedef( T base ) :
+//    _p_base( new T( base ) )
+//{
+//}
 
 
 template <class T, class Tag>
@@ -52,16 +55,29 @@ template <class T, class Tag>
 AbsStrongTypedef<T,Tag>&
 AbsStrongTypedef<T,Tag>::operator=( const AbsStrongTypedef<T,Tag>& r_rhs )
 {
+    if ( this->_p_base )
+        delete this->_p_base;
+
     if ( r_rhs._p_base )
-    {
-        if ( this->_p_base )
-            *this->_p_base = *r_rhs._p_base;
-        else
-            this->_p_base = new T( *r_rhs._p_base );
-    }
+        this->_p_base = new T( *r_rhs._p_base );
     else
         this->_p_base = nullptr;
+
+    return *this;
 }
+
+
+//template <class T, class Tag>
+//AbsStrongTypedef<T,Tag>&
+//AbsStrongTypedef<T,Tag>::operator=( const T& r_rhs )
+//{
+//    if ( this->_p_base )
+//        delete this->_p_base;
+//
+//    this->_p_base = new T( r_rhs );
+//
+//    return *this;
+//}
 
 
 template <class T, class Tag>
@@ -95,6 +111,10 @@ AbsStrongTypedef<T,Tag>::throwIfUninitialized() const
     if ( !this->_p_base )
         CIE_THROW( NullPtrException, "Uninitialized strong typedef!" )
 }
+
+
+
+/* --- StrongTypedef --- */
 
 
 template <class T, class Tag>
