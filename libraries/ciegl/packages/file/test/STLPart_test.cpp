@@ -24,8 +24,6 @@ TEST_CASE( "STLPart", "[file]" )
 
 
     REQUIRE_NOTHROW( part = STLPart( SOURCE_PATH + "/libraries/ciegl/data/geometry/stl/Bunny.stl" ) );
-    for ( Size i=0; i<part.data().size(); ++i )
-        std::cout << (i%3==0 ? "\n" : "") << (i%12==0 ? "\n" : "") << part.data()[i] << " ";
 }
 
 

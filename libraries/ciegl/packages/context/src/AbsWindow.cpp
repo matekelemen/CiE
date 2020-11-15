@@ -1,3 +1,6 @@
+// --- External Includes ---
+#include "glad/glad.h"
+
 // --- Utility Includes ---
 #include "cieutils/packages/macros/inc/exceptions.hpp"
 
@@ -13,21 +16,39 @@ namespace cie::gl {
 
 /* --- DEFAULT CALLBACKS --- */
 namespace detail {
-void defaultKeyCallback( Size key,
-                         Size action,
-                         Size modifier )
+
+void defaultMouseButtonCallback( KeyEnum button,
+                                 KeyEnum action,
+                                 KeyEnum modifiers )
 {
-    std::cout << key << std::endl;
 }
 
-void defaultMouseCallback( double x,
-                           double y,
-                           Size button,
-                           Size action,
-                           Size modifier )
+void defaultCursorPositionCallback( double x,
+                                    double y )
 {
-    std::cout << x << " " << y << std::endl;
 }
+
+void defaultCursorEnterCallback( KeyEnum entered )
+{
+}
+
+void defaultScrollCallback( double xOffset,
+                            double yOffset )
+{
+}
+
+void defaultKeyboardCallback( KeyEnum key,
+                              KeyEnum action,
+                              KeyEnum modifiers )
+{
+}
+
+void defaultWindowResizeCallback( Size width,
+                                  Size height )
+{
+    glViewport( 0, 0, width, height );
+}
+
 } // namespace detail
 
 
@@ -41,8 +62,13 @@ AbsWindow::AbsWindow( Size id,
     utils::Loggee( r_logger, r_name ),
     _size( width, height ),
     _scenes(),
-    _keyCallback( detail::defaultKeyCallback ),
-    _mouseCallback( detail::defaultMouseCallback )
+    _continueLooping(false),
+    _mouseButtonCallback( detail::defaultMouseButtonCallback ),
+    _cursorPositionCallback( detail::defaultCursorPositionCallback ),
+    _cursorEnterCallback( detail::defaultCursorEnterCallback ),
+    _scrollCallback( detail::defaultScrollCallback ),
+    _keyboardCallback( detail::defaultKeyboardCallback ),
+    _windowResizeCallback( detail::defaultWindowResizeCallback )
 {
 }
 
@@ -78,6 +104,25 @@ void AbsWindow::setSize( Size width,
 const std::pair<Size,Size>& AbsWindow::getSize() const
 {
     return _size;
+}
+
+
+void AbsWindow::beginLoop()
+{
+    if ( this->_continueLooping )
+        this->log( "Attempt to begin loop while looping",
+                   LOG_TYPE_WARNING );
+
+    this->_continueLooping = true;
+
+    while( this->_continueLooping )
+    { this->update(); }
+}
+
+
+void AbsWindow::endLoop()
+{
+    this->_continueLooping = false;
 }
 
 
@@ -123,18 +168,6 @@ const typename AbsWindow::scene_container&
 AbsWindow::scenes() const
 {
     return _scenes;
-}
-
-
-void AbsWindow::setKeyCallback( typename AbsWindow::key_callback_function keyCallback )
-{
-    _keyCallback = keyCallback;
-}
-
-
-void AbsWindow::setMouseCallback( typename AbsWindow::mouse_callback_function mouseCallback )
-{
-    _mouseCallback = mouseCallback;
 }
 
 

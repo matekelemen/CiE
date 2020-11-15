@@ -8,5 +8,6 @@
 #include <ciegl/context.hpp>
 #include <ciegl/utility.hpp>
 #include <ciegl/file.hpp>
+#include <ciegl/control.hpp>
 
 #endif

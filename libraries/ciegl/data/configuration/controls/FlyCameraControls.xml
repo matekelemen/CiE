@@ -1,0 +1,32 @@
+<controls>
+    <c0 name="moveForward">
+        <key>w</key>
+        <key>up</key>
+    </c0>
+    <c1 name="moveBackward">
+        <key>s</key>
+        <key>down</key>
+    </c1>
+    <c2 name="strafeLeft">
+        <key>a</key>
+        <key>left</key>
+    </c2>
+    <c3 name="strafeRight">
+        <key>d</key>
+        <key>right</key>
+    </c3>
+    <c4 name="moveUp">
+        <key>r</key>
+        <key>space</key>
+    </c4>
+    <c5 name="moveDown">
+        <key>f</key>
+        <key>left_control</key>
+    </c5>
+    <c6 name="rollCounterClockwise">
+        <key>q</key>
+    </c6>
+    <c7 name="rollClockwise">
+        <key>e</key>
+    </c7>
+</controls>

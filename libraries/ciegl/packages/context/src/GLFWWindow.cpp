@@ -4,6 +4,7 @@
 
 // --- Internal Includes ---
 #include "ciegl/packages/context/inc/GLFWWindow.hpp"
+#include "ciegl/packages/utility/inc/GLError.hpp"
 
 
 namespace cie::gl {
@@ -36,47 +37,56 @@ GLFWWindow::GLFWWindow( Size id,
     // Set window pointer
     glfwSetWindowUserPointer( _p_window, this );
 
-    // Set window resize calbback
-    auto resizeCallback = []( GLFWwindow* p_window, int width, int height )
+    // Set callbacks
+    auto mouseButtonCallback = []( GLFWwindow* p_window, int button, int action, int modifiers )
     {
-        auto p_GLFWWindow = static_cast<GLFWWindow*>( glfwGetWindowUserPointer( p_window ) );
-        p_GLFWWindow->onResize( p_window, width, height );
-    };
-    glfwSetWindowSizeCallback( _p_window, resizeCallback );
-
-    // Set key callback
-    auto keyCallback = []( GLFWwindow* p_window, int key, int scanCode, int action, int modifier )
-    {
-        CIE_BEGIN_EXCEPTION_TRACING
         auto p_this = static_cast<GLFWWindow*>( glfwGetWindowUserPointer(p_window) );
         CIE_CHECK_POINTER( p_this )
-        p_this->_keyCallback( key, action, modifier );
-        CIE_END_EXCEPTION_TRACING
+        p_this->_mouseButtonCallback( button, action, modifiers );
     };
-    glfwSetKeyCallback( _p_window, keyCallback );
+    glfwSetMouseButtonCallback( _p_window, mouseButtonCallback );
 
-    // Set mouse callbacks
-    auto cursorCallback = []( GLFWwindow* p_window, double x, double y )
+    auto cursorPositionCallback = []( GLFWwindow* p_window, double x, double y )
     {
-        CIE_BEGIN_EXCEPTION_TRACING
         auto p_this = static_cast<GLFWWindow*>( glfwGetWindowUserPointer(p_window) );
         CIE_CHECK_POINTER( p_this )
-        p_this->_mouseCallback( x, y, 0, 0, 0 );
-        CIE_END_EXCEPTION_TRACING
+        p_this->_cursorPositionCallback( x, y );
     };
-    glfwSetCursorPosCallback( _p_window, cursorCallback );
+    glfwSetCursorPosCallback( _p_window, cursorPositionCallback );
 
-    auto mouseClickCallback = []( GLFWwindow* p_window, int button, int action, int modifier )
+    auto cursorEnterCallback = []( GLFWwindow* p_window, int entered )
     {
-        CIE_BEGIN_EXCEPTION_TRACING
-        double x,y;
-        glfwGetCursorPos( p_window, &x, &y );
         auto p_this = static_cast<GLFWWindow*>( glfwGetWindowUserPointer(p_window) );
         CIE_CHECK_POINTER( p_this )
-        p_this->_mouseCallback( x, y, button, action, modifier );
-        CIE_END_EXCEPTION_TRACING
+        p_this->_cursorEnterCallback( entered );
     };
-    glfwSetMouseButtonCallback( _p_window, mouseClickCallback );
+    glfwSetCursorEnterCallback( _p_window, cursorEnterCallback );
+
+    auto scrollCallback = []( GLFWwindow* p_window, double xOffset, double yOffset )
+    {
+        auto p_this = static_cast<GLFWWindow*>( glfwGetWindowUserPointer(p_window) );
+        CIE_CHECK_POINTER( p_this )
+        p_this->_scrollCallback( xOffset, yOffset );
+    };
+    glfwSetScrollCallback( _p_window, scrollCallback );
+
+    auto keyboardCallback = []( GLFWwindow* p_window, int key, int scanCode, int action, int modifiers )
+    {
+        auto p_this = static_cast<GLFWWindow*>( glfwGetWindowUserPointer(p_window) );
+        CIE_CHECK_POINTER( p_this )
+        p_this->_keyboardCallback( key, action, modifiers );
+    };
+    glfwSetKeyCallback( _p_window, keyboardCallback );
+
+    auto windowResizeCallback = []( GLFWwindow* p_window, int width, int height )
+    {
+        auto p_this = static_cast<GLFWWindow*>( glfwGetWindowUserPointer(p_window) );
+        CIE_CHECK_POINTER( p_this )
+        p_this->_size.first  = Size(width);
+        p_this->_size.second = Size(height);
+        p_this->_windowResizeCallback( Size(width), Size(height) );
+    };
+    glfwSetWindowSizeCallback( _p_window, windowResizeCallback );
 
     // Check whether the new window has the requested parameters
     int checkWidth, checkHeight;
@@ -91,6 +101,7 @@ GLFWWindow::GLFWWindow( Size id,
 GLFWWindow::~GLFWWindow()
 {
     glfwSetWindowShouldClose( _p_window, 1 );
+    glfwPollEvents();
 }
 
 
@@ -110,41 +121,23 @@ void GLFWWindow::update_impl()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    // Check for polling errors
-    GLint err = glGetError();
-    if (err!=0)
-        this->log( "Error before updating! Error code: " + std::to_string(err),
-                   LOG_TYPE_ERROR );
+    // Check for external errors
+    checkGLErrors( *this,
+                   "Error before updating!" );
 
     glfwPollEvents();
 
     // Check for polling errors
-    err = glGetError();
-    if (err!=0)
-        this->log( "Error polling events! Error code: " + std::to_string(err),
-                   LOG_TYPE_ERROR );
+    checkGLErrors( *this,
+                   "Error polling events!" );
     
     glfwSwapBuffers( this->_p_window );
 
     // Check for buffer errors
-    err = glGetError();
-    if (err!=0)
-        this->log( "Error swapping buffers! Error code: " + std::to_string(err),
-                   LOG_TYPE_ERROR );
+    checkGLErrors( *this,
+                   "Error swapping buffers!" );
 
     CIE_END_EXCEPTION_TRACING
-}
-
-
-void GLFWWindow::onResize( GLFWwindow* p_window,
-                     int width,
-                     int height )
-{
-    CIE_BEGIN_EXCEPTION_TRACING
-
-    this->_size = std::make_pair<Size,Size>( width, height );
-
-    CIE_END_EXCEPTION_TRACING 
 }
 
 
@@ -157,18 +150,6 @@ const GLFWwindow* GLFWWindow::get() const
 GLFWwindow* GLFWWindow::get()
 {
     return _p_window;
-}
-
-
-std::pair<double,double> GLFWWindow::getCursorPosition()
-{
-    CIE_BEGIN_EXCEPTION_TRACING
-
-    double x, y;
-    glfwGetCursorPos( _p_window, &x, &y );
-    return std::make_pair( x, y );
-
-    CIE_END_EXCEPTION_TRACING
 }
 
 

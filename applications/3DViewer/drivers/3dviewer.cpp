@@ -62,15 +62,14 @@ int main( int argc, char const* argv[] )
     p_camera->setClippingPlanes( 1.0,
                                  300.0 );
 
-    p_window->update();
+    // Set controls
+    auto p_controls = gl::CameraControlsPtr(
+        new gl::FlyCameraControls( p_window, p_camera )
+    );
 
-    while (true)
-    {
-        std::cin.get();
-        p_camera->rotate( 1.0*M_PI / 180.0,
-                          {0.0, 0.0, 1.0} );
-        p_window->update();
-    }
+    p_window->beginLoop();
+
+    return 0;
 }
 
 

@@ -25,6 +25,36 @@ AbsWindow::makeScene( const std::string& r_name, Args&&... args )
 }
 
 
+inline void
+AbsWindow::setMouseButtonCallback( MouseButtonCallback function )
+{ this->_mouseButtonCallback = function; }
+
+
+inline void
+AbsWindow::setCursorPositionCallback( CursorPositionCallback function )
+{ this->_cursorPositionCallback = function; }
+
+
+inline void
+AbsWindow::setCursorEnterCallback( CursorEnterCallback function )
+{ this->_cursorEnterCallback = function; }
+
+
+inline void
+AbsWindow::setScrollCallback( ScrollCallback function )
+{ this->_scrollCallback = function; }
+
+
+inline void
+AbsWindow::setKeyboardCallback( KeyboardCallback function )
+{ this->_keyboardCallback = function; }
+
+
+inline void
+AbsWindow::setWindowResizeCallback( WindowResizeCallback function )
+{ this->_windowResizeCallback = function; }
+
+
 } // namespace cie::gl
 
 #endif

@@ -20,12 +20,6 @@ public:
 public:
     ~GLFWWindow();
 
-    virtual std::pair<double,double> getCursorPosition() override;
-
-    void onResize( GLFWwindow* p_window,
-                   int width,
-                   int height );
-
     const GLFWwindow* get() const;
     GLFWwindow* get();
 

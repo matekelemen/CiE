@@ -10,6 +10,7 @@
 
 // --- Internal Includes ---
 #include "ciegl/packages/scene/inc/Scene.hpp"
+#include "ciegl/packages/control/inc/callback_types.hpp"
 
 // --- STL Includes ---
 #include <memory>
@@ -44,11 +45,6 @@ public:
     virtual void update();
 
     /**
-     * Return cursor position on this screen
-     */
-    virtual std::pair<double,double> getCursorPosition() = 0;
-
-    /**
      * Resize this window. Calls setSize_impl internally
      */
     void setSize( Size width,
@@ -76,27 +72,36 @@ public:
 
     const scene_container& scenes() const;
 
-    /**
-     * Set callback for keyboard actions
-     */
-    virtual void setKeyCallback( key_callback_function keyCallback );
+    void beginLoop();
+    void endLoop();
 
-    /**
-     * Set callback for mouse actions
-     */
-    virtual void setMouseCallback( mouse_callback_function mouseCallback );
+    void setMouseButtonCallback( MouseButtonCallback function );
+    void setCursorPositionCallback( CursorPositionCallback function );
+    void setCursorEnterCallback( CursorEnterCallback function );
+    void setScrollCallback( ScrollCallback function );
+    void setKeyboardCallback( KeyboardCallback function );
+    void setWindowResizeCallback( WindowResizeCallback function );
 
 protected:
     virtual void setSize_impl(  Size width,
                                 Size height ) = 0;
 
-    virtual void update_impl() = 0;
+    virtual void update_impl()
+    {}
 
 protected:
     std::pair<Size,Size>    _size;
     scene_container         _scenes;
-    key_callback_function   _keyCallback;
-    mouse_callback_function _mouseCallback;
+
+    bool                    _continueLooping;
+
+    MouseButtonCallback     _mouseButtonCallback;
+    CursorPositionCallback  _cursorPositionCallback;
+    CursorEnterCallback     _cursorEnterCallback;
+    ScrollCallback          _scrollCallback;
+    KeyboardCallback        _keyboardCallback;
+
+    WindowResizeCallback    _windowResizeCallback;
 };
 
 
