@@ -64,8 +64,9 @@ int main( int argc, char const* argv[] )
 
     // Set controls
     auto p_controls = gl::CameraControlsPtr(
-        new gl::FlyCameraControls( p_window, p_camera )
+        new gl::FlyCameraControls
     );
+    p_controls->bind( p_window, p_camera );
 
     p_window->beginLoop();
 

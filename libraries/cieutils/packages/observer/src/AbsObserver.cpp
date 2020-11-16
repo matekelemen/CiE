@@ -1,31 +1,31 @@
 // --- Internal Ipmorts ---
-#include "cieutils/packages/observer/inc/AbsObserver.hpp"
-#include "cieutils/packages/observer/inc/AbsSubject.hpp"
+#include "cieutils/packages/observer/inc/Observer.hpp"
+#include "cieutils/packages/observer/inc/Subject.hpp"
 #include "cieutils/packages/macros/inc/exceptions.hpp"
 #include "cieutils/packages/macros/inc/checks.hpp"
 
-namespace cie::utils {
+namespace cie::utils::observer {
 
 
-AbsObserver::AbsObserver() :
+Observer::Observer() :
     _subject( )
 {
 }
 
 
-AbsObserver::AbsObserver( AbsSubjectPtr subject ) :
+Observer::Observer( SubjectPtr subject ) :
     _subject( subject )
 {
 }
 
 
-AbsObserver::AbsObserver( const AbsObserverPtr& copy ) :
+Observer::Observer( const ObserverPtr& copy ) :
     _subject( copy->_subject )
 {
 }
 
 
-AbsObserverPtr AbsObserver::operator=( const AbsObserverPtr& copy )
+ObserverPtr Observer::operator=( const ObserverPtr& copy )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -37,13 +37,13 @@ AbsObserverPtr AbsObserver::operator=( const AbsObserverPtr& copy )
 }
 
 
-AbsObserver::~AbsObserver()
+Observer::~Observer()
 {
     _subject.reset();
 }
 
 
-void AbsObserver::detach()
+void Observer::detach()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -57,22 +57,22 @@ void AbsObserver::detach()
 }
 
 
-void AbsObserver::setSubject( AbsSubjectPtr subject )
+void Observer::setSubject( SubjectPtr subject )
 {
     _subject = subject;
 }
 
 
-AbsSubjectPtr AbsObserver::subject()
+SubjectPtr Observer::subject()
 {
     return _subject.lock();
 }
 
 
-const AbsSubjectPtr AbsObserver::subject() const
+const SubjectPtr Observer::subject() const
 {
     return _subject.lock();
 }
 
 
-} // namespace cie::utils
+} // namespace cie::utils::observer

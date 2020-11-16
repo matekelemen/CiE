@@ -5,8 +5,8 @@
 #include "cieutils/packages/types/inc/types.hpp"
 #include "cieutils/packages/types/inc/NamedObject.hpp"
 #include "cieutils/packages/types/inc/IDObject.hpp"
-#include "cieutils/packages/observer/inc/AbsSubject.hpp"
 #include "cieutils/packages/logging/inc/Loggee.hpp"
+#include "cieutils/packages/observer/inc/Subject.hpp"
 
 // --- Internal Includes ---
 #include "ciegl/packages/scene/inc/Scene.hpp"
@@ -24,8 +24,8 @@ namespace cie::gl {
 
 class AbsWindow :
     public utils::IDObject<Size>,
-    public utils::AbsSubject,
-    public utils::Loggee
+    public utils::Loggee,
+    public utils::observer::Subject
 {
 public:
     using scene_container           = std::list<ScenePtr>;

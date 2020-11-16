@@ -1,5 +1,5 @@
 // --- Internal Includes ---
-#include "cieutils/packages/observer/inc/AbsSubject.hpp"
+#include "cieutils/packages/observer/inc/Subject.hpp"
 #include "cieutils/packages/macros/inc/exceptions.hpp"
 
 // --- STL Includes ---
@@ -7,15 +7,15 @@
 #include <vector>
 
 
-namespace cie::utils{
+namespace cie::utils::observer {
 
 
-AbsSubject::AbsSubject( const AbsSubjectPtr& copy )
+Subject::Subject( const SubjectPtr& copy )
 {
 }
 
 
-AbsSubjectPtr AbsSubject::operator=( const AbsSubjectPtr& copy )
+SubjectPtr Subject::operator=( const SubjectPtr& copy )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -25,14 +25,14 @@ AbsSubjectPtr AbsSubject::operator=( const AbsSubjectPtr& copy )
 }
 
 
-AbsSubject::~AbsSubject()
+Subject::~Subject()
 {
     for (auto it=_observers.begin(); it!=_observers.end(); ++it)
         it->reset();
 }
 
 
-void AbsSubject::notifyObservers()
+void Subject::notifyObservers()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -43,7 +43,7 @@ void AbsSubject::notifyObservers()
 }
 
 
-int AbsSubject::attachObserver( AbsObserverPtr observer )
+int Subject::attachObserver( ObserverPtr observer )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -61,7 +61,7 @@ int AbsSubject::attachObserver( AbsObserverPtr observer )
 }
 
 
-void AbsSubject::detachObserver( AbsObserverPtr observer )
+void Subject::detachObserver( ObserverPtr observer )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -77,7 +77,7 @@ void AbsSubject::detachObserver( AbsObserverPtr observer )
 }
 
 
-int AbsSubject::observerID( AbsObserverPtr observer )
+int Subject::observerID( ObserverPtr observer )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -96,10 +96,10 @@ int AbsSubject::observerID( AbsObserverPtr observer )
 }
 
 
-const std::vector<AbsObserverPtr>& AbsSubject::observers() const
+const std::vector<ObserverPtr>& Subject::observers() const
 {
     return _observers;
 }
 
 
-} // namespace cie::utils
+} // namespace cie::utils::observer

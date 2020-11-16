@@ -2,99 +2,114 @@
 #include "catch.hpp"
 
 // --- Internal Imports ---
-#include "cieutils/packages/observer/inc/AbsObserver.hpp"
-#include "cieutils/packages/observer/inc/AbsSubject.hpp"
+#include "cieutils/packages/observer/inc/Observer.hpp"
+#include "cieutils/packages/observer/inc/Subject.hpp"
+#include "cieutils/packages/macros/inc/testing.hpp"
 
 // --- STD Imports ---
 #include <iostream>
 #include <typeinfo>
 
-namespace cie::utils {
+namespace cie::utils::observer {
 
 
 // Observer wrapper
-struct Observer : public AbsObserver
+struct TestObserver : public Observer
 {
-    Observer(int* counter) : AbsObserver(), _counter(counter) {++(*_counter);}
-    ~Observer() {--(*_counter);}
+    TestObserver(int* counter) : Observer(), _counter(counter) {++(*_counter);}
+    ~TestObserver() {--(*_counter);}
     void onSubjectChange( ) override {}
 
     int* _counter;
 };
-using ObserverPtr = std::shared_ptr<Observer>;
+using TestObserverPtr = std::shared_ptr<TestObserver>;
 
 
 // Subject wrapper
-struct Subject : public AbsSubject
+struct TestSubject : public Subject
 {
-    Subject(int* counter) : AbsSubject(), _counter(counter) {++(*_counter);}
-    ~Subject() {--(*_counter);}
+    TestSubject(int* counter) : Subject(), _counter(counter) {++(*_counter);}
+    ~TestSubject() {--(*_counter);}
 
     int* _counter;
 };
-using SubjectPtr = std::shared_ptr<Subject>;
+using TestSubjectPtr = std::shared_ptr<TestSubject>;
 
 
 
-TEST_CASE( "AbsObserver" )
+TEST_CASE( "Observer", "[observer]" )
 {
+    CIE_TEST_CASE_INIT( "Observer" )
+
     // Create counters
     int numberOfSubjects    = 0;
     int numberOfObservers   = 0;
 
     {
-        // Create subject
-        SubjectPtr subject      = std::make_shared<Subject>(&numberOfSubjects);
+        // Create p_subject
+        auto p_subject = SubjectPtr(
+            new TestSubject(&numberOfSubjects)
+        );
 
         // Create Observers
-        ObserverPtr observer1   = std::make_shared<Observer>(&numberOfObservers);
-        ObserverPtr observer2   = std::make_shared<Observer>(&numberOfObservers);
+        auto p_observer1 = ObserverPtr(
+            new TestObserver(&numberOfObservers)
+        );
+
+        auto p_observer2 = ObserverPtr(
+            new TestObserver(&numberOfObservers)
+        );
 
         // Check initial state of wrappers
         REQUIRE( numberOfSubjects   == 1 );
         REQUIRE( numberOfObservers  == 2 );
 
-        CHECK( observer1->subject().get() == nullptr );
-        CHECK_NOTHROW( observer1->onSubjectChange( ) );
+        CHECK( p_observer1->subject().get() == nullptr );
+        CHECK_NOTHROW( p_observer1->onSubjectChange( ) );
         
-        CHECK_NOTHROW( observer1->setSubject(subject) );
-        CHECK( observer1->subject().get() == subject.get() );
-        CHECK_NOTHROW( observer1->onSubjectChange( ) );
+        CHECK_NOTHROW( p_observer1->setSubject(p_subject) );
+        CHECK( p_observer1->subject().get() == p_subject.get() );
+        CHECK_NOTHROW( p_observer1->onSubjectChange( ) );
 
         // Check attaching a new observer
         int observerID = -1;
-        CHECK_NOTHROW( observerID = subject->attachObserver( observer1 ) );
+        CHECK_NOTHROW( observerID = p_subject->attachObserver( p_observer1 ) );
         CHECK( observerID == 0 );
-        CHECK_NOTHROW( observerID = subject->attachObserver( observer2 ) );
+        CHECK_NOTHROW( observerID = p_subject->attachObserver( p_observer2 ) );
         CHECK( observerID == 1 );
 
         // Check attaching an existing observer
-        CHECK_NOTHROW( observerID = subject->attachObserver( observer1 ) );
-        CHECK_NOTHROW( observerID = subject->observerID( observer1 ) );
+        CHECK_NOTHROW( observerID = p_subject->attachObserver( p_observer1 ) );
+        CHECK_NOTHROW( observerID = p_subject->observerID( p_observer1 ) );
         CHECK( observerID == 0 );
 
-        CHECK_NOTHROW( observerID = subject->attachObserver( observer2 ) );
-        CHECK_NOTHROW( observerID = subject->observerID( observer2 ) );
+        CHECK_NOTHROW( observerID = p_subject->attachObserver( p_observer2 ) );
+        CHECK_NOTHROW( observerID = p_subject->observerID( p_observer2 ) );
         CHECK( observerID == 1 );
 
         // Check detaching existing observer
-        CHECK_NOTHROW( observer1->detach() );
-        CHECK( subject->observerID( observer1 ) == -1 );
-        CHECK( subject->observerID( observer2 ) == 0 );
+        CHECK_NOTHROW( p_observer1->detach() );
+        CHECK( p_subject->observerID( p_observer1 ) == -1 );
+        CHECK( p_subject->observerID( p_observer2 ) == 0 );
 
         // Check detaching non-existent observer
-        CHECK_NOTHROW( observer1->detach() );
-        CHECK( subject->observerID( observer1 ) == -1 );
-        CHECK( subject->observerID( observer2 ) == 0 );
+        CHECK_NOTHROW( p_observer1->detach() );
+        CHECK( p_subject->observerID( p_observer1 ) == -1 );
+        CHECK( p_subject->observerID( p_observer2 ) == 0 );
 
-        // Check detaching observer from subject
-        CHECK_NOTHROW( subject->detachObserver( observer2 ) );
-        CHECK( subject->observerID( observer2 ) == -1 );
-        CHECK( subject->observerID( observer1 ) == -1 );
+        // Check detaching observer from p_subject
+        CHECK_NOTHROW( p_subject->detachObserver( p_observer2 ) );
+        CHECK( p_subject->observerID( p_observer2 ) == -1 );
+        CHECK( p_subject->observerID( p_observer1 ) == -1 );
 
         // Check casting
-        auto absSubject = subject->as<AbsSubject>();
-        CHECK( typeid(*absSubject) == typeid(*std::make_shared<AbsSubject>()) );
+        auto p_castSubject  = p_subject->as<TestSubject>();
+        CHECK( typeid(p_subject) == typeid(SubjectPtr) );
+        CHECK( typeid(p_castSubject) == typeid(TestSubjectPtr) );
+
+        auto p_castObserver = p_observer1->as<TestObserver>();
+        CHECK( typeid(p_observer1) == typeid(ObserverPtr) );
+        CHECK( typeid(p_castObserver) == typeid(TestObserverPtr) );
     }
 
     // Check final state of wrappers

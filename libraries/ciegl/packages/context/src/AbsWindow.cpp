@@ -58,8 +58,8 @@ AbsWindow::AbsWindow( Size id,
                       Size height,
                       utils::Logger& r_logger ) :
     utils::IDObject<Size>( id ),
-    utils::AbsSubject(),
     utils::Loggee( r_logger, r_name ),
+    utils::observer::Subject(),
     _size( width, height ),
     _scenes(),
     _continueLooping(false),
@@ -79,6 +79,8 @@ void AbsWindow::update()
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+    this->notifyObservers();
 
     for ( auto& rp_scene : _scenes )
         rp_scene->update();

@@ -16,7 +16,6 @@ AbsContext::AbsContext( Size versionMajor,
                         const std::string& r_logFileName,
                         bool useConsole ) :
     utils::Logger( r_logFileName, useConsole ),
-    utils::AbsSubject(),
     _version( versionMajor, versionMinor ),
     _MSAASamples( MSAASamples ),
     _windows()
@@ -82,6 +81,9 @@ void AbsContext::closeWindow( WindowPtr p_window )
     CIE_BEGIN_EXCEPTION_TRACING
 
     auto scopedBlock = this->newBlock( "close window" );
+
+    for ( auto& rp_observer : p_window->observers() )
+        rp_observer->detach();
 
     this->closeWindow_impl( p_window );
 

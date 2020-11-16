@@ -22,11 +22,6 @@ TEST_CASE( "FileManager - constructor" )
         {FileManager fileManager(testDir);};
     CHECK_NOTHROW( createFileManager() );
 
-    {
-        FileManager fileManager( testDir );
-        CHECK_THROWS( createFileManager() );
-    }
-
     CHECK_NOTHROW( createFileManager() );
 }
 

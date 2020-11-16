@@ -1,6 +1,9 @@
 #ifndef CIE_GL_ABS_CAMERA_CONTROLS_HPP
 #define CIE_GL_ABS_CAMERA_CONTROLS_HPP
 
+// --- Utility Includes ---
+#include "cieutils/packages/observer/inc/Observer.hpp"
+
 // --- Internal Includes ---
 #include "ciegl/packages/context/inc/AbsWindow.hpp"
 #include "ciegl/packages/camera/inc/AbsCamera.hpp"
@@ -9,16 +12,16 @@
 // --- STL Includes ---
 #include <functional>
 #include <memory>
+#include <set>
 
 
 namespace cie::gl {
 
 
-class AbsCameraControls
+class AbsCameraControls : public utils::observer::Observer
 {
 public:
-    AbsCameraControls( WindowPtr p_window,
-                       CameraPtr p_camera );
+    AbsCameraControls();
 
     void mouseButtonCallback( KeyEnum button,
                               KeyEnum action,
@@ -36,11 +39,16 @@ public:
                            KeyEnum action,
                            KeyEnum modifiers );
 
-    void bindToWindow( WindowPtr p_window );
+    void bind( WindowPtr p_window,
+               CameraPtr p_camera );
 
 protected:
     virtual void onMouseButtonPress( KeyEnum button,
                                      KeyEnum modifiers )
+    {}
+
+    virtual void onMouseButtonHold( KeyEnum button,
+                                    KeyEnum modifiers )
     {}
                                     
     virtual void onMouseButtonRelease( KeyEnum button,
@@ -66,8 +74,15 @@ protected:
     virtual void onKeyboardPress( KeyEnum key,
                                   KeyEnum modifiers );
 
+    virtual void onKeyboardHold( KeyEnum key,
+                                 KeyEnum modifiers )
+    {}
+
     virtual void onKeyboardRelease( KeyEnum key,
                                     KeyEnum modifiers )
+    {}
+
+    virtual void onSubjectChange() override
     {}
 
 protected:
@@ -75,6 +90,8 @@ protected:
     CameraPtr _p_camera;
     double    _x;
     double    _y;
+
+    std::set<KeyEnum> _activeKeys;
 };
 
 

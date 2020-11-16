@@ -4,7 +4,6 @@
 // --- Utility Includes ---
 #include "cieutils/packages/types/inc/types.hpp"
 #include "cieutils/packages/logging/inc/Logger.hpp"
-#include <cieutils/observer.hpp>
 
 // --- Internal Includes ---
 #include "ciegl/packages/context/inc/AbsMonitor.hpp"
@@ -24,8 +23,7 @@ namespace cie::gl {
  * Interface for an OpenGL context.
 */
 class AbsContext :
-    public utils::Logger,
-    public utils::AbsSubject
+    public utils::Logger
 {
 public:
     using window_container = std::list<WindowPtr>;

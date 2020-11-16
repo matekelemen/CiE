@@ -33,29 +33,6 @@ TEST_CASE( "Logger" )
         CHECK_NOTHROW( logger.noIndent() );
         CHECK_NOTHROW( logger.logElapsed( "test7", timerID ) );
     }
-
-    // Create manager and open test log
-    FileManager manager( loggerTestDir );
-    File& log = manager.open( "testLog.txt" );
-    std::string msg;
-
-    // Check lines
-    auto get = [&log, &msg](){std::getline( log, msg ); return msg;};
-    
-    REQUIRE_NOTHROW( get() );
-    CHECK( get() == "" );
-    CHECK( get() == "test1" );
-    CHECK( get() == "WARNING: test2" );
-    CHECK( get() == "ERROR: test3" );
-    CHECK_NOTHROW( get() );
-    CHECK( get() == "\ttest4" );
-    CHECK( get() == "\t\t\ttest5" );
-    CHECK( get() == "\t\ttest6" );
-    CHECK_NOTHROW( get() );
-    CHECK( msg.size() - msg.compare("test7 ") == std::string("test7 ").size() );
-
-    // Close file
-    log.close();
 }
 
 

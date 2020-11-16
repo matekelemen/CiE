@@ -5,18 +5,17 @@
 namespace cie::gl {
 
 
-MappedCameraControls::MappedCameraControls( WindowPtr p_window,
-                                            CameraPtr p_camera ) :
-    AbsCameraControls( p_window, p_camera ),
+MappedCameraControls::MappedCameraControls() :
+    AbsCameraControls(),
     MappedControls()
 {
 }
 
 
-void MappedCameraControls::onKeyboardPress( KeyEnum key,
-                                            KeyEnum modifiers )
+void MappedCameraControls::onSubjectChange()
 {
-    this->callControl( key );
+    for ( auto key : this->_activeKeys )
+        this->callControl( key );
 }
 
 

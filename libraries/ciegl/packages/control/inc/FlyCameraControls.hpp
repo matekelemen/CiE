@@ -22,8 +22,7 @@ namespace cie::gl {
 class FlyCameraControls final : public MappedCameraControls
 {
 public:
-    FlyCameraControls( WindowPtr p_window,
-                       CameraPtr p_camera );
+    FlyCameraControls();
 
     void setMovementScale( double scale );
     void setRotationScale( double scale );

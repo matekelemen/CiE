@@ -5,11 +5,11 @@
 #include "cieutils/packages/macros/inc/exceptions.hpp"
 
 
-namespace cie::utils {
+namespace cie::utils::observer {
 
 
 template <class DerivedObserver>
-std::shared_ptr<DerivedObserver> AbsObserver::as()
+std::shared_ptr<DerivedObserver> Observer::as()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -19,6 +19,6 @@ std::shared_ptr<DerivedObserver> AbsObserver::as()
 }
 
 
-} // namespace cie::utils
+} // namespace cie::utils::observer
 
 #endif

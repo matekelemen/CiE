@@ -14,12 +14,10 @@ class MappedCameraControls :
     public MappedControls
 {
 public:
-    MappedCameraControls( WindowPtr p_window,
-                          CameraPtr p_camera );
+    MappedCameraControls();
 
 protected:
-    virtual void onKeyboardPress( KeyEnum key,
-                                  KeyEnum modifiers ) override;
+    virtual void onSubjectChange() override;
 }; 
 
 

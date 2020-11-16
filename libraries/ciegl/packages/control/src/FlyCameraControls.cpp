@@ -20,14 +20,13 @@
 namespace cie::gl {
 
 
-FlyCameraControls::FlyCameraControls( WindowPtr p_window,
-                                      CameraPtr p_camera ) :
-    MappedCameraControls( p_window, p_camera ),
+FlyCameraControls::FlyCameraControls() :
+    MappedCameraControls(),
     _movementScale( 1.0 ),
     _rotationScale( 0.5 * M_PI / 180.0 ),
     _zoomScale( 1.1 ),
-    _x( p_window->getSize().first / 2 ),
-    _y( p_window->getSize().second / 2 ),
+    _x( 0.0 ),
+    _y( 0.0 ),
     _dx( 0.0 ),
     _dy( 0.0 ),
     _isLeftMouseButtonPressed( false ),
@@ -41,8 +40,7 @@ FlyCameraControls::FlyCameraControls( WindowPtr p_window,
     std::ifstream configFile( confiFilePath );
 
     if ( !configFile.is_open() )
-        this->_p_camera->log( "Failed to open control config file: " + confiFilePath,
-                              LOG_TYPE_ERROR );
+        CIE_THROW( Exception, "Failed to open control config file: " + confiFilePath );
 
     this->configure( configFile );
 

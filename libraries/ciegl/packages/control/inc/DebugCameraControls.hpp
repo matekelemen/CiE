@@ -11,8 +11,7 @@ namespace cie::gl {
 class DebugCameraControls final : public AbsCameraControls
 {
 public:
-    DebugCameraControls( WindowPtr p_window,
-                         CameraPtr p_camera );
+    DebugCameraControls();
 
     void onMouseButtonPress( KeyEnum button,
                              KeyEnum modifiers ) override;

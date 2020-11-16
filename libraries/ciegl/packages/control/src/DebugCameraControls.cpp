@@ -9,9 +9,8 @@
 namespace cie::gl {
 
 
-DebugCameraControls::DebugCameraControls( WindowPtr p_window,
-                                          CameraPtr p_camera ) :
-    AbsCameraControls( p_window, p_camera )
+DebugCameraControls::DebugCameraControls() :
+    AbsCameraControls()
 {
 }
 
