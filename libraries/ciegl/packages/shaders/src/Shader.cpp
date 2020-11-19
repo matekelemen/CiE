@@ -16,25 +16,25 @@
 namespace cie::gl {
 
 
-Shader::Shader( const std::string& r_configPath,
-                const std::string& r_codePath ) :
+Shader::Shader( const std::filesystem::path& r_configPath,
+                const std::filesystem::path& r_codePath ) :
     utils::IDObject<Size>( std::numeric_limits<Size>().max() )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
     // Check input files
     pugi::xml_document configuration;
-    pugi::xml_parse_result configParseResult = configuration.load_file( r_configPath.c_str() );
+    pugi::xml_parse_result configParseResult = configuration.load_file( std::string(r_configPath).c_str() );
     std::ifstream codeFile( r_codePath );
 
     if ( !configParseResult )
         CIE_THROW( 
             Exception,
-            "Error loading shader configuration file: " + r_configPath + "\n" + configParseResult.description()
+            "Error loading shader configuration file: " + std::string(r_configPath) + "\n" + configParseResult.description()
             )
 
     if ( !codeFile.is_open() )
-        CIE_THROW( Exception, "Unable to open shader code file: " + r_codePath )
+        CIE_THROW( Exception, "Unable to open shader code file: " + std::string(r_codePath) )
 
     // Get shader root
     pugi::xml_node root = configuration.child( "shader" );

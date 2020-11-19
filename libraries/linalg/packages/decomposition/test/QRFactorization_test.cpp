@@ -22,11 +22,11 @@ TEST_CASE("QR Factorization")
     
     auto qr = QRFactorization(matrix);
     
-    std::ofstream QFile( TEST_OUTPUT_PATH + "/QR_factorization_Q.csv");
+    std::ofstream QFile( TEST_OUTPUT_PATH / "QR_factorization_Q.csv");
     linalghelper::write(*(qr.first),QFile);
     QFile.close();
 
-    std::ofstream RFile(TEST_OUTPUT_PATH + "/QR_factorization_R.csv");
+    std::ofstream RFile(TEST_OUTPUT_PATH / "QR_factorization_R.csv");
     linalghelper::write(*(qr.second),RFile);
     RFile.close();
 }

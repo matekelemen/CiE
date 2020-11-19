@@ -22,7 +22,7 @@ TEST_CASE( "Camera", "[camera]" )
 {
     CIE_TEST_CASE_INIT( "Camera" )
 
-    utils::Logger logger( TEST_OUTPUT_PATH + "/Camera_test.txt" );
+    utils::Logger logger( TEST_OUTPUT_PATH / "Camera_test.txt" );
 
     {
         CIE_TEST_CASE_INIT( "OrthographicProjection" )

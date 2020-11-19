@@ -108,7 +108,7 @@ TEST_CASE( "SpaceTreeNode", "[trees]" )
         CHECK_NOTHROW( root.divide(unitCircle<PointType,BoolValue>, depth) );
         
         // Write output
-        CHECK_NOTHROW( writeToVTK( root, TEST_OUTPUT_PATH + "/SpaceTreeNode_cube_midpoint.vtu" ) );
+        CHECK_NOTHROW( writeToVTK( root, TEST_OUTPUT_PATH / "SpaceTreeNode_cube_midpoint.vtu" ) );
     }
 
     // Node with box cell
@@ -156,7 +156,7 @@ TEST_CASE( "SpaceTreeNode", "[trees]" )
             CHECK_NOTHROW( root.divide(unitCircle<PointType,BoolValue>, depth) );
             
             // Write output
-            CHECK_NOTHROW( writeToVTK( root, TEST_OUTPUT_PATH + "/SpaceTreeNode_box_midpoint.vtu" ) );
+            CHECK_NOTHROW( writeToVTK( root, TEST_OUTPUT_PATH / "SpaceTreeNode_box_midpoint.vtu" ) );
         } // Midpoint splitting
 
         { // Linear splitting
@@ -196,7 +196,7 @@ TEST_CASE( "SpaceTreeNode", "[trees]" )
             CHECK_NOTHROW( root.divide(unitCircle<PointType,NumericValue>, depth) );
             
             // Write output
-            CHECK_NOTHROW( writeToVTK( root, TEST_OUTPUT_PATH + "/SpaceTreeNode_box_linear.vtu" ) );
+            CHECK_NOTHROW( writeToVTK( root, TEST_OUTPUT_PATH / "SpaceTreeNode_box_linear.vtu" ) );
         } // Linear splitting
 
         { // Weighted splitting
@@ -236,7 +236,7 @@ TEST_CASE( "SpaceTreeNode", "[trees]" )
             CHECK_NOTHROW( root.divide(unitCircle<PointType,NumericValue>, depth) );
             
             // Write output
-            CHECK_NOTHROW( writeToVTK( root, TEST_OUTPUT_PATH + "/SpaceTreeNode_box_weighted.vtu" ) );
+            CHECK_NOTHROW( writeToVTK( root, TEST_OUTPUT_PATH / "SpaceTreeNode_box_weighted.vtu" ) );
         } // Weighted splitting
         
     } // Node with box cell

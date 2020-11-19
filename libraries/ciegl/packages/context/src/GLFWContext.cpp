@@ -63,7 +63,7 @@ bool GLFWContext::_isCurrent         = false;
 GLFWContext::GLFWContext( Size versionMajor,
                           Size versionMinor,
                           Size MSAASamples,
-                          const std::string& r_logFileName,
+                          const std::filesystem::path& r_logFileName,
                           bool useConsole  )   :
     AbsContext( versionMajor,
                 versionMinor,

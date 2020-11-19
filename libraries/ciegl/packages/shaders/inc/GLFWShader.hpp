@@ -21,8 +21,8 @@ public:
      *  GL_GEOMETRY_SHADER
      *  GL_FRAGMENT_SHADER
      */
-    GLFWShader( const std::string& r_configPath,
-                const std::string& r_codePath,
+    GLFWShader( const std::filesystem::path& r_configPath,
+                const std::filesystem::path& r_codePath,
                 Size shaderType );
     ~GLFWShader();
 };
@@ -30,8 +30,8 @@ public:
 
 struct GLFWVertexShader : public GLFWShader
 {
-    GLFWVertexShader( const std::string& r_configPath,
-                      const std::string& r_codePath ) :
+    GLFWVertexShader( const std::filesystem::path& r_configPath,
+                      const std::filesystem::path& r_codePath ) :
         GLFWShader( r_configPath,
                     r_codePath,
                     GL_VERTEX_SHADER )
@@ -41,8 +41,8 @@ struct GLFWVertexShader : public GLFWShader
 
 struct GLFWGeometryShader : public GLFWShader
 {
-    GLFWGeometryShader( const std::string& r_configPath,
-                        const std::string& r_codePath ) :
+    GLFWGeometryShader( const std::filesystem::path& r_configPath,
+                        const std::filesystem::path& r_codePath ) :
         GLFWShader( r_configPath,
                     r_codePath,
                     GL_GEOMETRY_SHADER )
@@ -52,8 +52,8 @@ struct GLFWGeometryShader : public GLFWShader
 
 struct GLFWFragmentShader : public GLFWShader
 {
-    GLFWFragmentShader( const std::string& r_configPath,
-                        const std::string& r_codePath ) :
+    GLFWFragmentShader( const std::filesystem::path& r_configPath,
+                        const std::filesystem::path& r_codePath ) :
         GLFWShader( r_configPath,
                     r_codePath,
                     GL_FRAGMENT_SHADER )

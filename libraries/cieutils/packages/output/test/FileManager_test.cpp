@@ -13,7 +13,7 @@
 namespace cie::utils {
 
 
-std::string testDir = TEST_OUTPUT_PATH + "/test";
+std::string testDir = TEST_OUTPUT_PATH / "test";
 
 
 TEST_CASE( "FileManager - constructor" )
@@ -56,7 +56,7 @@ TEST_CASE( "FileManager - file handling" )
     bool result = true;
     for ( const auto& name : fileList )
     {
-        CHECK( detail::isFile( testDir + "/" + name ) );
+        CHECK( detail::isFile( testDir + "" + name ) );
         if ( detail::fileName(name)!="outFile.txt" && detail::fileName(name)!="inFile.bin" )
             result = false;
         CHECK( result );
@@ -76,7 +76,7 @@ TEST_CASE( "FileManager - file handling" )
     REQUIRE_NOTHROW( fileList = manager.listFiles() );
     for ( const auto& name : fileList )
     {
-        CHECK( detail::isFile( testDir + "/" + name ) );
+        CHECK( detail::isFile( testDir + "" + name ) );
         if ( detail::fileName(name)=="outFile.txt" && detail::fileName(name)!="inFile.bin" )
             result = false;
         CHECK( result );

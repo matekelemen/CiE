@@ -21,7 +21,7 @@ FileManager::FileManager( const std::string& path ) :
     CIE_BEGIN_EXCEPTION_TRACING
 
     if (_path.size() == 0)
-        _path = INSTALL_PATH + "/output";
+        _path = INSTALL_PATH / "output";
 
     if ( !detail::isDirectory(_path) )
         std::filesystem::create_directory( _path );
@@ -37,7 +37,7 @@ FileManager::FileManager( const std::string& path ) :
 
 
 FileManager::FileManager() :
-    FileManager( INSTALL_PATH + "/output" )
+    FileManager( INSTALL_PATH / "output" )
 { 
 }
 
@@ -161,7 +161,7 @@ std::string FileManager::filePath( const std::string& fileName )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    return _path + "/" + detail::fileName(fileName);
+    return _path + "" + detail::fileName(fileName);
 
     CIE_END_EXCEPTION_TRACING
 }

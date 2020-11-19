@@ -17,9 +17,7 @@ TEST_CASE( "ObjPart", "[file]" )
 
     PartPtr p_part;
 
-    REQUIRE_NOTHROW(
-        p_part.reset( new ObjPart( "/home/mate/Downloads/panzer_iii.obj" ) )
-    );
+    // TODO
 }
 
 

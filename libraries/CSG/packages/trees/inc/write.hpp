@@ -7,6 +7,9 @@
 // --- Internal Includes ---
 #include "CSG/packages/trees/inc/spacetreenode.hpp"
 
+// --- STL Includes ---
+#include <filesystem>
+
 
 namespace cie::csg {
 
@@ -16,7 +19,7 @@ namespace cie::csg {
 */
 template <class NodeType>
 void writeToVTK( NodeType& node,
-                 const std::string& fileName );
+                 const std::filesystem::path& r_filePath );
 
 
 } // namespace cie::csg

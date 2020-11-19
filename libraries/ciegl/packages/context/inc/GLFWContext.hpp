@@ -19,6 +19,7 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <filesystem>
 
 namespace cie::gl {
 
@@ -65,7 +66,7 @@ public:
     GLFWContext( Size versionMajor                    = 4,
                  Size versionMinor                    = 5,
                  Size MSAASamples                     = 0, 
-                 const std::string& r_logFileName     = OUTPUT_PATH + "/ContextLogger.txt",
+                 const std::filesystem::path& r_logFileName     = OUTPUT_PATH / "ContextLogger.txt",
                  bool useConsole = false );
 
     ~GLFWContext();

@@ -14,6 +14,7 @@
 #include <memory>
 #include <string>
 #include <list>
+#include <filesystem>
 
 
 namespace cie::gl {
@@ -33,7 +34,7 @@ public:
     AbsContext( Size versionMajor,
                 Size versionMinor,
                 Size MSAASamples,
-                const std::string& r_logFileName,
+                const std::filesystem::path& r_logFileName,
                 bool useConsole = false );
 
     ~AbsContext();

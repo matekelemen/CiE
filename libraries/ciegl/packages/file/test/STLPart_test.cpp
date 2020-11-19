@@ -22,7 +22,7 @@ TEST_CASE( "STLPart", "[file]" )
     PartPtr p_part;
 
     REQUIRE_NOTHROW( p_part.reset( 
-        new STLPart( SOURCE_PATH + "/libraries/ciegl/data/geometry/stl/Bunny.stl" ))
+        new STLPart( SOURCE_PATH / "libraries/ciegl/data/geometry/stl/Bunny.stl" ))
     );
 }
 

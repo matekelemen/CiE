@@ -21,7 +21,7 @@ public:
 
 public:
     ObjPart( std::istream& r_stream );
-    ObjPart( const std::string& r_filePath );
+    ObjPart( const std::filesystem::path& r_filePath );
 
     void load( std::istream& r_stream ) override;
 };

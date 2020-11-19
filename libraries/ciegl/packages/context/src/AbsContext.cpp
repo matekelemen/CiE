@@ -13,7 +13,7 @@ namespace cie::gl {
 AbsContext::AbsContext( Size versionMajor,
                         Size versionMinor,
                         Size MSAASamples,
-                        const std::string& r_logFileName,
+                        const std::filesystem::path& r_logFileName,
                         bool useConsole ) :
     utils::Logger( r_logFileName, useConsole ),
     _version( versionMajor, versionMinor ),

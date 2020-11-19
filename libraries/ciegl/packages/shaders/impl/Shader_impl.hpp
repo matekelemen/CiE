@@ -10,8 +10,8 @@ namespace cie::gl {
 
 template <class ShaderType, class ...Args>
 inline ShaderPtr
-makeVertexShader( const std::string& r_configPath,
-                  const std::string& r_codePath,
+makeVertexShader( const std::filesystem::path& r_configPath,
+                  const std::filesystem::path& r_codePath,
                   Args&&... args )
 {
     CIE_BEGIN_EXCEPTION_TRACING
@@ -34,8 +34,8 @@ makeVertexShader( const std::string& r_configPath,
 
 template <class ShaderType, class ...Args>
 inline ShaderPtr
-makeGeometryShader( const std::string& r_configPath,
-                    const std::string& r_codePath,
+makeGeometryShader( const std::filesystem::path& r_configPath,
+                    const std::filesystem::path& r_codePath,
                     Args&&... args )
 {
     CIE_BEGIN_EXCEPTION_TRACING
@@ -55,8 +55,8 @@ makeGeometryShader( const std::string& r_configPath,
 
 template <class ShaderType, class ...Args>
 inline ShaderPtr
-makeFragmentShader( const std::string& r_configPath,
-                    const std::string& r_codePath,
+makeFragmentShader( const std::filesystem::path& r_configPath,
+                    const std::filesystem::path& r_codePath,
                     Args&&... args )
 {
     CIE_BEGIN_EXCEPTION_TRACING

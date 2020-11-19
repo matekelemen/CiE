@@ -36,7 +36,7 @@ FlyCameraControls::FlyCameraControls() :
     CIE_BEGIN_EXCEPTION_TRACING
 
     // Set default controls
-    std::string confiFilePath = SOURCE_PATH + "/libraries/ciegl/data/configuration/controls/FlyCameraControls.xml";
+    std::string confiFilePath = SOURCE_PATH / "libraries/ciegl/data/configuration/controls/FlyCameraControls.xml";
     std::ifstream configFile( confiFilePath );
 
     if ( !configFile.is_open() )

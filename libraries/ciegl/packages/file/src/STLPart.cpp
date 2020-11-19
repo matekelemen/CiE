@@ -26,18 +26,18 @@ STLPart::STLPart( std::istream& r_stream ) :
 }
 
 
-STLPart::STLPart( const std::string& r_fileName ) :
+STLPart::STLPart( const std::filesystem::path& r_filePath ) :
     Part( STLPart::dimension,
           STLPart::primitive_byte_size )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
     std::ifstream file;
-    file.open( r_fileName,
+    file.open( r_filePath,
                std::ios::binary );
 
     if ( !file )
-        CIE_THROW( Exception, "Failed to open file: " + r_fileName )
+        CIE_THROW( Exception, "Failed to open file: " + std::string(r_filePath) )
 
     this->load( file );
 

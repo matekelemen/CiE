@@ -54,7 +54,7 @@ TEST_CASE( "Scene", "[scene]" )
         new GLFWContext( glVersion.first,
                          glVersion.second,
                          MSAASamples,
-                         TEST_OUTPUT_PATH + "/GLFWScene_test.txt" )
+                         TEST_OUTPUT_PATH / "GLFWScene_test.txt" )
     );
 
     // Window
@@ -62,7 +62,7 @@ TEST_CASE( "Scene", "[scene]" )
     REQUIRE_NOTHROW( p_window = p_context->newWindow() );
 
     // Shaders
-    const std::string shaderDir   = SOURCE_PATH + "/libraries/ciegl/data/shaders";
+    const std::string shaderDir   = SOURCE_PATH / "libraries/ciegl/data/shaders";
 
     auto shaderPaths = [&shaderDir]( const std::string& r_shaderName )
     {

@@ -24,7 +24,7 @@ TEST_CASE( "GLFWBufferManager", "[buffer]" )
         new GLFWContext( glVersion.first,
                          glVersion.second,
                          MSAASamples,
-                         TEST_OUTPUT_PATH + "/GLFWBufferManager_test.txt" )
+                         TEST_OUTPUT_PATH / "GLFWBufferManager_test.txt" )
     );
 
     // Window

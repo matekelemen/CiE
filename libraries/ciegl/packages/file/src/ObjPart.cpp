@@ -24,7 +24,7 @@ ObjPart::ObjPart( std::istream& r_stream ) :
 }
 
 
-ObjPart::ObjPart( const std::string& r_filePath ) :
+ObjPart::ObjPart( const std::filesystem::path& r_filePath ) :
     Part( ObjPart::dimension,
           ObjPart::primitive_byte_size )
 {
@@ -34,7 +34,7 @@ ObjPart::ObjPart( const std::string& r_filePath ) :
     file.open( r_filePath );
 
     if ( !file )
-        CIE_THROW( Exception, "Failed to open file: " + r_filePath )
+        CIE_THROW( Exception, "Failed to open file: " + std::string(r_filePath) )
 
     this->load( file );
 

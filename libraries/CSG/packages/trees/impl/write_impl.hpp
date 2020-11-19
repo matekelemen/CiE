@@ -10,7 +10,7 @@ namespace cie::csg {
 
 template <class NodeType>
 void writeToVTK( NodeType& r_node,
-                 const std::string& r_fileName )
+                 const std::filesystem::path& r_filePath )
 {
     // Init
     const Size dimension = NodeType::dimension;
@@ -122,7 +122,7 @@ void writeToVTK( NodeType& r_node,
     piece.append_attribute( "NumberOfCells" ).set_value( numberOfNodes );
 
     // Write to file
-    document.save_file( r_fileName.c_str() );
+    document.save_file( r_filePath.c_str() );
 }
 
 

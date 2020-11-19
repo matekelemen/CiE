@@ -11,8 +11,8 @@
 namespace cie::gl {
 
 
-GLFWShader::GLFWShader( const std::string& r_configPath,
-                        const std::string& r_codePath,
+GLFWShader::GLFWShader( const std::filesystem::path& r_configPath,
+                        const std::filesystem::path& r_codePath,
                         Size shaderType ) :
     Shader( r_configPath,
             r_codePath )

@@ -35,7 +35,7 @@ TEST_CASE( "GLFWContext", "[context]" )
                 new GLFWContext( glVersion.first,
                                  glVersion.second,
                                  numberOfMSAASamples,
-                                 TEST_OUTPUT_PATH + "/GLFWContext_test0.txt",
+                                 TEST_OUTPUT_PATH / "GLFWContext_test0.txt",
                                  false )
             )
         );
@@ -48,7 +48,7 @@ TEST_CASE( "GLFWContext", "[context]" )
             new GLFWContext( glVersion.first,
                                 glVersion.second,
                                 numberOfMSAASamples,
-                                TEST_OUTPUT_PATH + "/GLFWContext_test1.txt",
+                                TEST_OUTPUT_PATH / "GLFWContext_test1.txt",
                                  false )
         );
 

@@ -24,7 +24,7 @@ public:
 
 public:
     STLPart( std::istream& r_stream );
-    STLPart( const std::string& r_fileName );
+    STLPart( const std::filesystem::path& r_filePath );
 
     void load( std::istream& r_stream ) override;
 

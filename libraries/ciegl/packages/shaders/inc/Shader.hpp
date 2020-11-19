@@ -11,6 +11,7 @@
 #include <deque>
 #include <iostream>
 #include <memory>
+#include <filesystem>
 
 
 /** --- XML SHADER CONFIGURATION LAYOUT ---
@@ -171,8 +172,8 @@ public:
     const output_container& outputs() const;
 
 protected:
-    Shader( const std::string& r_configPath,
-            const std::string& r_codePath );
+    Shader( const std::filesystem::path& r_configPath,
+            const std::filesystem::path& r_codePath );
 
 public:
     /* --- RELATED FREE FLOATS --- */
@@ -186,8 +187,8 @@ public:
      * is not checked.
      */
     template <class ShaderType, class ...Args>
-    friend ShaderPtr makeVertexShader( const std::string& r_configPath,
-                                       const std::string& r_codePath,
+    friend ShaderPtr makeVertexShader( const std::filesystem::path& r_configPath,
+                                       const std::filesystem::path& r_codePath,
                                        Args&&... args );
 
 
@@ -200,8 +201,8 @@ public:
      * is not checked.
      */
     template <class ShaderType, class ...Args>
-    friend ShaderPtr makeGeometryShader( const std::string& r_configPath,
-                                         const std::string& r_codePath,
+    friend ShaderPtr makeGeometryShader( const std::filesystem::path& r_configPath,
+                                         const std::filesystem::path& r_codePath,
                                          Args&&... args );
 
 
@@ -214,8 +215,8 @@ public:
      * is not checked.
      */
     template <class ShaderType, class ...Args>
-    friend ShaderPtr makeFragmentShader( const std::string& r_configPath,
-                                         const std::string& r_codePath,
+    friend ShaderPtr makeFragmentShader( const std::filesystem::path& r_configPath,
+                                         const std::filesystem::path& r_codePath,
                                          Args&&... args );
 
 protected:

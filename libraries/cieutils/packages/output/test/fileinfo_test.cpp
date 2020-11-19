@@ -26,7 +26,7 @@ TEST_CASE( "File Info" )
     CHECK( !isDirectory(invalid) );
     CHECK( !isFile(invalid) );
 
-    std::string testDirName         = TEST_OUTPUT_PATH + "/test";
+    std::string testDirName         = TEST_OUTPUT_PATH / "test";
 
     std::filesystem::create_directory( testDirName );
     std::string testFileBase        = "test_file_name_123";
