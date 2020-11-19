@@ -82,7 +82,9 @@ void Loggee::toc(   const std::string& message,
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    _logger->logElapsed( "[" + _name + "] " + message, timerID, reset );
+    _logger->logElapsed( "[" + _name + "] " + message + " | duration: ",
+                         timerID,
+                         reset );
 
     CIE_END_EXCEPTION_TRACING
 }

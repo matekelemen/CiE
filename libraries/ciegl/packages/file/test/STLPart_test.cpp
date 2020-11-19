@@ -19,11 +19,11 @@ TEST_CASE( "STLPart", "[file]" )
 {
     CIE_TEST_CASE_INIT( "STLPart" )
 
-    REQUIRE_NOTHROW( STLPart() );
-    STLPart part;
+    PartPtr p_part;
 
-
-    REQUIRE_NOTHROW( part = STLPart( SOURCE_PATH + "/libraries/ciegl/data/geometry/stl/Bunny.stl" ) );
+    REQUIRE_NOTHROW( p_part.reset( 
+        new STLPart( SOURCE_PATH + "/libraries/ciegl/data/geometry/stl/Bunny.stl" ))
+    );
 }
 
 

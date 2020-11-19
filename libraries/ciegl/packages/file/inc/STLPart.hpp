@@ -1,22 +1,17 @@
 #ifndef CIE_GL_STL_PART_HPP
 #define CIE_GL_STL_PART_HPP
 
-// --- Utility Includes ---
-#include "cieutils/packages/types/inc/types.hpp"
-
 // --- Internal Includes ---
 #include "ciegl/packages/file/inc/Part.hpp"
 
 // --- STL Includes ---
 #include <string>
-#include <fstream>
-#include <memory>
 
 
 namespace cie::gl {
 
 
-class STLPart : public Part<float>
+class STLPart final : public Part
 {
 public:
     static const Size dimension = 3;
@@ -30,24 +25,8 @@ public:
 public:
     STLPart( std::istream& r_stream );
     STLPart( const std::string& r_fileName );
-    STLPart() = default;
 
-    /**
-     * Total size of all attributes in bytes
-     */
-    Size byteCount() const;
-
-    /**
-     * Number of stored triangles
-     */
-    Size primitiveCount() const;
-
-    /**
-     * Read normals and vertices of the model and organize them
-     * in the internal storage for direct forwarding to an array buffer
-     * ( vertex - normal pairs )
-     */
-    void load( std::istream& r_stream );
+    void load( std::istream& r_stream ) override;
 
     /**
      * Check whether the order of triangle vertices is consistent

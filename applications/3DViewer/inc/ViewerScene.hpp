@@ -16,8 +16,8 @@ class ViewerScene final : public gl::Scene
 public:
     ViewerScene( utils::Logger& r_logger );
 
-    void addModel( gl::STLPartPtr p_model );
-    void removeModel( gl::STLPartPtr p_model );
+    void addModel( gl::PartPtr p_model );
+    void removeModel( gl::PartPtr p_model );
     gl::CameraPtr getCamera();
 
 private:
@@ -25,8 +25,8 @@ private:
     void update_impl() override;
 
 private:
-    std::list<gl::STLPartPtr> _models;
-    bool                      _updateModels;
+    std::list<gl::PartPtr> _models;
+    bool                   _updateModels;
 };
 
 

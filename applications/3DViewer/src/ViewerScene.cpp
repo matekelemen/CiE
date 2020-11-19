@@ -41,14 +41,14 @@ ViewerScene::ViewerScene( utils::Logger& r_logger ) :
 }
 
 
-void ViewerScene::addModel( gl::STLPartPtr p_model )
+void ViewerScene::addModel( gl::PartPtr p_model )
 {
     this->_models.push_back( p_model );
     this->_updateModels = true;
 }
 
 
-void ViewerScene::removeModel( gl::STLPartPtr p_model )
+void ViewerScene::removeModel( gl::PartPtr p_model )
 {
     auto it = std::find(
         this->_models.begin(),
@@ -78,7 +78,7 @@ void ViewerScene::updateModels()
     for ( const auto& rp_model : this->_models )
     {
         byteCount     += rp_model->byteCount();
-        triangleCount += rp_model->primitiveCount();
+        triangleCount += rp_model->numberOfPrimitives();
     }
 
     this->_p_bufferManager->boundVertexBuffer()->reserve( byteCount );

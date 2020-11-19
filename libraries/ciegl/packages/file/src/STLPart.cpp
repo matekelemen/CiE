@@ -3,6 +3,7 @@
 
 // --- Utility Includes ---
 #include "cieutils/packages/macros/inc/exceptions.hpp"
+#include "cieutils/packages/macros/inc/checks.hpp"
 
 // --- Internal Includes ---
 #include "ciegl/packages/file/inc/STLPart.hpp"
@@ -11,18 +12,23 @@
 #include <cstdint>
 #include <array>
 #include <algorithm>
+#include <fstream>
 
 
 namespace cie::gl {
 
 
-STLPart::STLPart( std::istream& r_stream )
+STLPart::STLPart( std::istream& r_stream ) :
+    Part( STLPart::dimension,
+          STLPart::primitive_byte_size,
+          r_stream )
 {
-    this->load( r_stream );
 }
 
 
-STLPart::STLPart( const std::string& r_fileName )
+STLPart::STLPart( const std::string& r_fileName ) :
+    Part( STLPart::dimension,
+          STLPart::primitive_byte_size )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -39,21 +45,11 @@ STLPart::STLPart( const std::string& r_fileName )
 }
 
 
-Size STLPart::byteCount() const
-{
-    return this->_data.size() * sizeof( typename STLPart::data_type );
-}
-
-
-Size STLPart::primitiveCount() const
-{
-    return this->byteCount() / STLPart::primitive_byte_size;
-}
-
-
 void STLPart::load( std::istream& r_stream )
 {
     CIE_BEGIN_EXCEPTION_TRACING
+
+    this->_data.clear();
 
     // Header - 80 chars
     {
@@ -76,7 +72,7 @@ void STLPart::load( std::istream& r_stream )
     }
 
     // Allocate memory for the data
-    this->_data.reserve( numberOfTriangles * STLPart::primitive_byte_size / sizeof(typename STLPart::data_type) );
+    this->_data.reserve( numberOfTriangles * this->_primitiveByteSize / sizeof(typename STLPart::data_type) );
 
     // Triangles and their normals
     using data_type = typename STLPart::data_type;
@@ -87,7 +83,7 @@ void STLPart::load( std::istream& r_stream )
     for ( Size triangleIndex=0; triangleIndex<numberOfTriangles; ++triangleIndex )
     {
         // Read normal
-        for ( Size componentIndex=0; componentIndex<STLPart::dimension; ++componentIndex )
+        for ( Size componentIndex=0; componentIndex<this->_dimension; ++componentIndex )
         {
             r_stream.read( reinterpret_cast<char*>(&tmp), sizeof(tmp) );
             normal[componentIndex] = tmp;
@@ -96,12 +92,12 @@ void STLPart::load( std::istream& r_stream )
         // Read points
         for ( Size pointIndex=0; pointIndex<3; pointIndex++ )
         {
-            for ( Size componentIndex=0; componentIndex<STLPart::dimension; ++componentIndex )
+            for ( Size componentIndex=0; componentIndex<this->_dimension; ++componentIndex )
             {
                 r_stream.read( reinterpret_cast<char*>(&tmp), sizeof(tmp) );
                 this->_data.push_back( tmp );
             }
-            //for ( Size componentIndex=0; componentIndex<STLPart::dimension; ++componentIndex )
+            //for ( Size componentIndex=0; componentIndex<this->_dimension; ++componentIndex )
             //    this->_data.push_back( normal[componentIndex] );
         }
 
@@ -121,7 +117,7 @@ void STLPart::repairOrientation()
     CIE_BEGIN_EXCEPTION_TRACING
 
     // Total number of attributes for a single vertex/triangle
-    const Size vertexAttributeCount   = 2 * STLPart::dimension;
+    const Size vertexAttributeCount   = 2 * this->_dimension;
     const Size triangleAttributeCount = 3 * vertexAttributeCount;
     Size baseIndex;
 
@@ -161,7 +157,7 @@ void STLPart::repairOrientation()
         {
             baseIndex = attributeIndex + vertexAttributeCount;
 
-            for ( Size componentIndex=0; componentIndex<STLPart::dimension; ++componentIndex )
+            for ( Size componentIndex=0; componentIndex<this->_dimension; ++componentIndex )
                 std::swap(
                     _data[attributeIndex+componentIndex],
                     _data[baseIndex + componentIndex]

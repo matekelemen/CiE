@@ -10,9 +10,24 @@
 // --- STL Includes ---
 #include <deque>
 #include <iostream>
+#include <filesystem>
 
 
 namespace cie {
+
+
+
+void configureGLFWWindow( gl::WindowPtr p_window )
+{
+    GLFWwindow* p_GLFWWindow = std::dynamic_pointer_cast<gl::GLFWWindow>(p_window)->get();
+
+    glfwSetInputMode(p_GLFWWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+
+    if (glfwRawMouseMotionSupported())
+        glfwSetInputMode(p_GLFWWindow, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+}
+
+
 
 
 int main( int argc, char const* argv[] )
@@ -34,6 +49,7 @@ int main( int argc, char const* argv[] )
         1024,
         768
     );
+    configureGLFWWindow( p_window );
 
     auto p_scene = std::make_shared<ViewerScene>( *p_context );
     p_window->addScene( p_scene );
@@ -42,12 +58,26 @@ int main( int argc, char const* argv[] )
     // TODO: add support for other file types too
     for ( const auto& r_filePath : args.arguments() )
     {
+        auto timerID = p_scene->tic();
         p_scene->log( "Loading " + r_filePath );
 
-        auto p_model = gl::STLPartPtr( new gl::STLPart(
-            r_filePath
-        ) );
-        //p_model->repairOrientation();
+        gl::PartPtr p_model;
+
+        std::filesystem::path filePath( r_filePath );
+        auto extension = filePath.extension();
+
+        if ( extension == ".stl" )
+            p_model.reset( 
+                new gl::STLPart( r_filePath )
+                );
+        else if ( extension == ".obj" )
+            p_model.reset(
+                new gl::ObjPart( r_filePath )
+                );
+        else
+            CIE_THROW( Exception, "Unsupported file format: " + std::string(extension) )
+
+        p_scene->toc( "Finished loading " + r_filePath, timerID );
 
         p_scene->addModel( p_model );
     }

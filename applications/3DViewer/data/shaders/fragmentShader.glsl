@@ -18,7 +18,7 @@ void main()
         normalize( cameraPosition - fPosition )
     );
 
-    float ambient = 0.1;
+    float ambient = 0.15;
 
     colorIntensity = (1.0 - ambient) * max( 0.0, colorIntensity );
     colorIntensity *= colorIntensity * colorIntensity;
