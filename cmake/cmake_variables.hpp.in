@@ -2,21 +2,21 @@
 #define CIEUTILS_CMAKE_VARIABLES_HPP
 
 // --- STL Includes ---
+#include <filesystem>
 #include <string>
 
 
 namespace cie {
 
-const std::string INSTALL_PATH          = "@CMAKE_INSTALL_PREFIX@";
-const std::string BINARY_PATH           = "@CMAKE_BINARY_DIR@";
-const std::string SOURCE_PATH           = "@CMAKE_SOURCE_DIR@";
-const std::string DATA_PATH             = "@INSTALL_DATA_PREFIX@";
-const bool USE_OPENMP                   = std::string("@CIE_OPENMP@") == std::string("ON") ? true : false;
+const std::filesystem::path INSTALL_PATH      = "@CMAKE_INSTALL_PREFIX@";
+const std::filesystem::path BINARY_PATH       = "@CMAKE_BINARY_DIR@";
+const std::filesystem::path SOURCE_PATH       = "@CMAKE_SOURCE_DIR@";
+const std::filesystem::path DATA_PATH         = "@INSTALL_DATA_PREFIX@";
+const bool USE_OPENMP                         = std::string("@CIE_OPENMP@") == std::string("ON") ? true : false;
 
-
-const std::string OUTPUT_PATH           = "@CIE_INSTALL_OUTPUT_PREFIX@";
-const std::string DEBUG_OUTPUT_PATH     = "@INSTALL_DEBUG_OUTPUT_PREFIX@";
-const std::string TEST_OUTPUT_PATH      = "@INSTALL_TEST_OUTPUT_PREFIX@";
+const std::filesystem::path OUTPUT_PATH       = "@CIE_INSTALL_OUTPUT_PREFIX@";
+const std::filesystem::path DEBUG_OUTPUT_PATH = "@INSTALL_DEBUG_OUTPUT_PREFIX@";
+const std::filesystem::path TEST_OUTPUT_PATH  = "@INSTALL_TEST_OUTPUT_PREFIX@";
 
 
 }

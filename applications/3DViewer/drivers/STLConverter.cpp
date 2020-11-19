@@ -17,7 +17,7 @@ namespace cie {
 int main( int argc, char const* argv[] )
 {
     // Set up logging
-    utils::Logger log( INSTALL_PATH + "/STLConverter.log", true );
+    utils::Logger log( INSTALL_PATH / "/STLConverter.log", true );
 
     // Parse command line arguments
     utils::CommandLineArguments args( argc, argv );
@@ -52,6 +52,8 @@ int main( int argc, char const* argv[] )
         log.log( "Write STL to " + std::string(outputFileName) );
         p_model->writeSTL( outputFileName );
     }
+
+    return 0;
 }
 
 

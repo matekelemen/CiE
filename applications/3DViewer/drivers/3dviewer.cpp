@@ -41,7 +41,7 @@ int main( int argc, char const* argv[] )
         4,                                      // <-- OpenGL version major
         5,                                      // <-- OpenGL version minor
         4,                                      // <-- Number of MSAA samples
-        OUTPUT_PATH + "/3dviewer_log.txt",      // <-- log file
+        OUTPUT_PATH / "3dviewer_log.txt",       // <-- log file
         true                                    // <-- use console output
     ) );
 

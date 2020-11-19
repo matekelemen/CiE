@@ -11,24 +11,25 @@
 // --- STL Includes ---
 #include <numeric>
 #include <algorithm>
+#include <filesystem>
 
 
 namespace cie {
 
 
-const std::string SHADER_DIR = SOURCE_PATH + "/applications/3DViewer/data/shaders";
+const std::filesystem::path SHADER_DIR = SOURCE_PATH / "applications/3DViewer/data/shaders";
 
 
 ViewerScene::ViewerScene( utils::Logger& r_logger ) :
     gl::Scene(
         r_logger,
         "3dViewerScene",
-        gl::makeVertexShader<gl::GLFWVertexShader>( SHADER_DIR + "/vertexShader.xml",
-                                                    SHADER_DIR + "/vertexShader.glsl" ),
-        gl::makeGeometryShader<gl::GLFWGeometryShader>( SHADER_DIR + "/geometryShader.xml",
-                                                        SHADER_DIR + "/geometryShader.glsl" ),
-        gl::makeFragmentShader<gl::GLFWFragmentShader>( SHADER_DIR + "/fragmentShader.xml",
-                                                        SHADER_DIR + "/fragmentShader.glsl" )
+        gl::makeVertexShader<gl::GLFWVertexShader>( SHADER_DIR / "vertexShader.xml",
+                                                    SHADER_DIR / "vertexShader.glsl" ),
+        gl::makeGeometryShader<gl::GLFWGeometryShader>( SHADER_DIR / "geometryShader.xml",
+                                                        SHADER_DIR / "geometryShader.glsl" ),
+        gl::makeFragmentShader<gl::GLFWFragmentShader>( SHADER_DIR / "fragmentShader.xml",
+                                                        SHADER_DIR / "fragmentShader.glsl" )
     ),
     _models(),
     _updateModels(true)

@@ -15,7 +15,7 @@ namespace cie {
 namespace detail {
 
 // Shader directories
-const std::string POINT_SHADER_PATH = SOURCE_PATH + "/libraries/ciegl/data/shaders/pointWithTransformation";
+const std::string POINT_SHADER_PATH = SOURCE_PATH / "libraries/ciegl/data/shaders/pointWithTransformation";
 
 // Get centers of different objects
 

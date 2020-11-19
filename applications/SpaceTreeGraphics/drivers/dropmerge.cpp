@@ -61,7 +61,7 @@ int main( std::function<ValueType(const PointType&,Double)> targetFunction,
         4,                                      // <-- OpenGL version major
         5,                                      // <-- OpenGL version minor
         0,                                      // <-- Number of MSAA samples
-        OUTPUT_PATH + "/drop_merge_log.txt",    // <-- log file
+        OUTPUT_PATH / "drop_merge_log.txt",     // <-- log file
         true                                    // <-- use console output
     ));
 
