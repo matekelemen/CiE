@@ -9,133 +9,103 @@
 namespace cie::utils::detail {
 
 
-const std::string fileExtension( const std::string& fileName )
+std::filesystem::path fileExtension( const std::filesystem::path& r_filePath )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    // Find extension begin
-    size_t begin = fileName.find_last_of( '.' );
-    if ( begin == std::string::npos )
-        begin = 0;
-    else if ( fileName.size()>begin )
-        ++begin;
-
-    auto extension = fileName.substr( begin );
-    return extension;
+    return r_filePath.extension();
 
     CIE_END_EXCEPTION_TRACING
 }
 
 
-const std::string fileName( const std::string& fileName )
+std::filesystem::path fileName(const std::filesystem::path& r_filePath )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    // Find last folder separator
-    size_t begin = fileName.find_last_of( '/' );
-    if ( begin == std::string::npos )
-        begin = 0;
-    else
-        ++begin;
-
-    auto name = fileName.substr( begin );
-    return name;
+    return std::filesystem::path(r_filePath).replace_extension("");
 
     CIE_END_EXCEPTION_TRACING
 }
 
 
-const std::string fileDirectory( const std::string& fileName )
+std::filesystem::path fileDirectory(const std::filesystem::path& r_filePath )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    // Find last folder separator
-    size_t end = fileName.find_last_of( '/' );
-    if ( end == std::string::npos )
-        end = 0;
-
-    auto name = fileName.substr( 0, end );
-    return name;
+    return r_filePath.parent_path();
 
     CIE_END_EXCEPTION_TRACING
 }
 
 
-bool isFile( const std::string& fileName )
+bool isFile(const std::filesystem::path& r_filePath )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    return std::filesystem::is_regular_file( fileName );
+    return std::filesystem::is_regular_file( r_filePath );
 
     CIE_END_EXCEPTION_TRACING
 }
 
 
-bool isTextExtension( const std::string& fileName )
+bool isTextExtension(const std::filesystem::path& r_extension )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    bool result     = false;
-    for ( auto it=textExtensions.begin(); it!=textExtensions.end(); ++it )
-        if ( fileName == *it )
-        {
-            result = true;
-            break;
-        }
-    return result;
+    for ( const auto& r_textExtension : textExtensions )
+        if ( r_extension == r_textExtension )
+            return true;
+    return false;
 
     CIE_END_EXCEPTION_TRACING
 }
 
 
-bool isBinaryExtension( const std::string& fileName )
+bool isBinaryExtension(const std::filesystem::path& r_extension)
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    bool result     = false;
-    for ( auto it=binaryExtensions.begin(); it!=binaryExtensions.end(); ++it )
-        if ( fileName == *it )
-        {
-            result = true;
-            break;
-        }
-    return result;
+    for ( const auto& r_binaryExtension : binaryExtensions )
+        if ( r_extension == r_binaryExtension )
+            return true;
+    return false;
 
     CIE_END_EXCEPTION_TRACING
 }
 
 
-bool isTextFile( const std::string& fileName )
+bool isTextFile(const std::filesystem::path& r_filePath )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    if ( !isFile(fileName) )
+    if ( !isFile(r_filePath) )
         return false;
 
-    return isTextExtension( fileExtension(fileName) );
+    return isTextExtension( fileExtension(r_filePath) );
 
     CIE_END_EXCEPTION_TRACING
 }
 
 
-bool isBinaryFile( const std::string& fileName )
+bool isBinaryFile(const std::filesystem::path& r_filePath )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    if ( !isFile(fileName) )
+    if ( !isFile(r_filePath) )
         return false;
 
-    return isBinaryExtension( fileExtension(fileName) );
+    return isBinaryExtension( fileExtension(r_filePath) );
 
     CIE_END_EXCEPTION_TRACING
 }
 
 
-bool isDirectory( const std::string& fileName )
+bool isDirectory(const std::filesystem::path& r_filePath )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    return std::filesystem::is_directory( fileName );
+    return std::filesystem::is_directory( r_filePath );
 
     CIE_END_EXCEPTION_TRACING
 }

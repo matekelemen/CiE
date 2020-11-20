@@ -14,7 +14,7 @@
 namespace cie::utils {
 
 
-std::string loggeeTestDir = TEST_OUTPUT_PATH;
+std::filesystem::path loggeeTestDir = TEST_OUTPUT_PATH;
 
 
 struct TestLoggee : public Loggee
@@ -26,7 +26,7 @@ struct TestLoggee : public Loggee
 TEST_CASE( "Loggee" )
 {
     // Create Logger
-    Logger logger( loggeeTestDir + "/loggee_test.txt" );
+    Logger logger( loggeeTestDir / "loggee_test.txt" );
 
     {
         // Create Loggee

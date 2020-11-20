@@ -37,9 +37,9 @@ std::string getDate()
 } // namespace detail
 
 
-Logger::Logger( const std::string& fileName,
+Logger::Logger( const std::filesystem::path& r_filePath,
                 bool useConsole ) :
-    _manager( detail::fileDirectory(fileName) ),
+    _manager( detail::fileDirectory( r_filePath ) ),
     _timeLog( {detail::getTime()} ),
     _prefix( "" ),
     _useConsole( useConsole ),
@@ -48,8 +48,8 @@ Logger::Logger( const std::string& fileName,
     CIE_BEGIN_EXCEPTION_TRACING
 
     // Create log file
-    File& logFile = _manager.newFile(fileName);
-    addStream( _manager.filePtr(logFile) );
+    File& logFile = _manager.newFile( r_filePath );
+    addStream( _manager.filePtr( logFile ) );
 
     // Log time
     logDate( "Log file created on" );

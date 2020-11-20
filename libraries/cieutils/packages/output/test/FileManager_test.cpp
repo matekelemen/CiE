@@ -13,7 +13,7 @@
 namespace cie::utils {
 
 
-std::string testDir = TEST_OUTPUT_PATH / "test";
+std::filesystem::path testDir = TEST_OUTPUT_PATH / "test";
 
 
 TEST_CASE( "FileManager - constructor" )
@@ -32,7 +32,7 @@ TEST_CASE( "FileManager - file handling" )
     FileManager manager( testDir );
 
     // Clear directory
-    std::vector<std::string> fileList;
+    std::vector<std::filesystem::path> fileList;
     REQUIRE_NOTHROW( fileList = manager.listFiles() );
     for ( const auto& name : fileList )
         CHECK_NOTHROW( manager.deleteFile( name ) );
@@ -54,10 +54,10 @@ TEST_CASE( "FileManager - file handling" )
 
     // Check file names and validity in directory
     bool result = true;
-    for ( const auto& name : fileList )
+    for ( const auto& r_name : fileList )
     {
-        CHECK( detail::isFile( testDir + "" + name ) );
-        if ( detail::fileName(name)!="outFile.txt" && detail::fileName(name)!="inFile.bin" )
+        CHECK( detail::isFile( testDir / r_name ) );
+        if ( detail::fileName( r_name )!="outFile.txt" && detail::fileName( r_name )!="inFile.bin" )
             result = false;
         CHECK( result );
     }
@@ -74,10 +74,10 @@ TEST_CASE( "FileManager - file handling" )
 
     // Check if file was deleted
     REQUIRE_NOTHROW( fileList = manager.listFiles() );
-    for ( const auto& name : fileList )
+    for ( const auto& r_name : fileList )
     {
-        CHECK( detail::isFile( testDir + "" + name ) );
-        if ( detail::fileName(name)=="outFile.txt" && detail::fileName(name)!="inFile.bin" )
+        CHECK( detail::isFile( testDir / r_name ) );
+        if ( detail::fileName( r_name )=="outFile.txt" && detail::fileName( r_name )!="inFile.bin" )
             result = false;
         CHECK( result );
     }

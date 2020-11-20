@@ -118,13 +118,13 @@ TEST_CASE( "Iterator Concepts", "[concepts]" )
 
 TEST_CASE( "Container Concepts", "[concepts]" )
 {
-    std::array<int,2>                       a;
-    std::vector<int>                        b;
-    std::deque<int>                         c;
-    std::map<int,int>                       d;
-    std::unordered_map<int,int>             e;
-    std::deque<int*>                        f;
-    std::deque<std::deque<int>::iterator>   g;
+    std::array<int,2>                       a{};
+    std::vector<int>                        b{};
+    std::deque<int>                         c{};
+    std::map<int,int>                       d{};
+    std::unordered_map<int,int>             e{};
+    std::deque<int*>                        f{};
+    std::deque<std::deque<int>::iterator>   g{};
 
     containerTest( a );
     containerTest( b );

@@ -17,8 +17,8 @@ namespace detail {
 
 TEST_CASE( "File Info" )
 {
-    std::string validDirectory      = TEST_OUTPUT_PATH;
-    std::string invalid             = "abcd/efgh/jklmn/3.145/whatever.cpp/test";
+    std::filesystem::path validDirectory      = TEST_OUTPUT_PATH;
+    std::filesystem::path invalid             = "abcd/efgh/jklmn/3.145/whatever.cpp/test";
 
     // Check validity
     CHECK( isDirectory(validDirectory) );
@@ -26,20 +26,20 @@ TEST_CASE( "File Info" )
     CHECK( !isDirectory(invalid) );
     CHECK( !isFile(invalid) );
 
-    std::string testDirName         = TEST_OUTPUT_PATH / "test";
+    std::filesystem::path testDirName         = TEST_OUTPUT_PATH / "test";
 
     std::filesystem::create_directory( testDirName );
-    std::string testFileBase        = "test_file_name_123";
-    std::string testFileName        = testDirName + "/" + testFileBase;
-    std::string textExtension       = "txt";
-    std::string binaryExtension     = "bin";
+    std::filesystem::path testFileBase        = "test_file_name_123";
+    std::filesystem::path testFileName        = testDirName / testFileBase;
+    std::filesystem::path textExtension       = ".txt";
+    std::filesystem::path binaryExtension     = ".bin";
     
     CHECK( isTextExtension(textExtension) );
     CHECK( isBinaryExtension(binaryExtension) );
     CHECK( fileName( testFileBase ) == testFileBase );
 
-    std::string textTestName        = testFileName + "." + textExtension;
-    std::string binaryTestName      = testFileName + "." + binaryExtension;
+    std::filesystem::path textTestName        = testFileName.string() + textExtension.string();
+    std::filesystem::path binaryTestName      = testFileName.string() + binaryExtension.string();
 
     // Check extensions
     CHECK( fileExtension(textTestName) == textExtension );
@@ -51,8 +51,8 @@ TEST_CASE( "File Info" )
     CHECK( fileExtension(binaryExtension) == binaryExtension );
 
     // Check file name
-    CHECK( fileName(textTestName) == testFileBase + "." + textExtension );
-    CHECK( fileName(binaryTestName) == testFileBase + "." + binaryExtension );
+    CHECK( fileName(textTestName) == testFileBase.string() + textExtension.string() );
+    CHECK( fileName(binaryTestName) == testFileBase.string() + binaryExtension.string() );
 
     // Check directory name
     CHECK( fileDirectory(textTestName) == testDirName );

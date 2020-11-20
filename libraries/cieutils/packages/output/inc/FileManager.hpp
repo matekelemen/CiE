@@ -6,8 +6,10 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <filesystem>
 
 namespace cie::utils {
+
 
 using File      = std::fstream;
 using FilePtr   = std::shared_ptr<File>;
@@ -17,25 +19,25 @@ class FileManager
 {
 public:
     FileManager();
-    FileManager( const std::string& path );
+    FileManager( const std::filesystem::path& r_path );
     ~FileManager();
 
-    File& newFile( const std::string& fileName );
-    File& open( const std::string& fileName );
+    File& newFile(const std::filesystem::path& r_filePath );
+    File& open(const std::filesystem::path& r_filePath );
 
     FilePtr filePtr( const File& file );
 
-    void deleteFile( const std::string& fileName );
+    void deleteFile(const std::filesystem::path& r_filePath );
     void closeAll();
 
-    const std::vector<std::string> listFiles();
+    const std::vector<std::filesystem::path> listFiles();
 
 private:
-    std::string filePath( const std::string& fileName );
+    std::filesystem::path filePath(const std::filesystem::path& r_fileName );
 
-    std::vector<FilePtr>                _files;
-    std::string                         _path;
-    static std::vector<std::string>     _paths;
+    std::vector<FilePtr>                      _files;
+    std::filesystem::path                     _path;
+    static std::vector<std::filesystem::path> _paths;
 };
 
 

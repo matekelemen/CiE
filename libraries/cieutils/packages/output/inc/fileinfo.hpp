@@ -4,29 +4,30 @@
 // --- STL Includes ---
 #include <string>
 #include <vector>
+#include <filesystem>
 
 
 namespace cie::utils::detail {
 
 
-const std::vector<std::string> textExtensions = {   "txt",
-                                                    "csv"   };
-const std::vector<std::string> binaryExtensions = { "bin",
-                                                    "b"     };
+const std::vector<std::filesystem::path> textExtensions = {   ".txt",
+                                                    ".csv"   };
+const std::vector<std::filesystem::path> binaryExtensions = { ".bin",
+                                                    ".b"     };
 
 
 
-const std::string fileExtension( const std::string& fileName );
-const std::string fileName( const std::string& fileName );
-const std::string fileDirectory( const std::string& fileName );
+std::filesystem::path fileExtension(const std::filesystem::path& r_filePath );
+std::filesystem::path fileName(const std::filesystem::path& r_filePath );
+std::filesystem::path fileDirectory(const std::filesystem::path& r_filePath );
 
-bool isTextExtension( const std::string& fileName );
-bool isBinaryExtension( const std::string& fileName );
+bool isTextExtension(const std::filesystem::path& r_extension);
+bool isBinaryExtension(const std::filesystem::path& r_extension);
 
-bool isFile( const std::string& fileName );
-bool isTextFile( const std::string& fileName );
-bool isBinaryFile( const std::string& fileName );
-bool isDirectory( const std::string& fileName );
+bool isFile(const std::filesystem::path& r_filePath );
+bool isTextFile(const std::filesystem::path& r_filePath );
+bool isBinaryFile(const std::filesystem::path& r_filePath );
+bool isDirectory( const std::filesystem::path& r_filePath );
 
 
 } // namespace cie::utils::detail

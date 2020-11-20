@@ -13,6 +13,7 @@
 #include <string>
 #include <chrono>
 #include <ctime>
+#include <filesystem>
 
 
 namespace cie::utils {
@@ -44,7 +45,7 @@ public:
 
 public:
     Logger() = delete;
-    Logger( const std::string& fileName,
+    Logger( const std::filesystem::path& r_filePath,
             bool useConsole = false );
     Logger( const Logger& copy ) = delete;
     ~Logger();

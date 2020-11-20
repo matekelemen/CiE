@@ -11,9 +11,9 @@ namespace cie::utils {
 
 TEST_CASE( "LogBlock", "[logging]" )
 {
-    std::string loggerTestDir = TEST_OUTPUT_PATH;
+    std::filesystem::path loggerTestDir = TEST_OUTPUT_PATH;
 
-    Logger logger( loggerTestDir + "/LogBlock_test.txt" );
+    Logger logger( loggerTestDir / "LogBlock_test.log" );
     
     for (Size i=0; i<10; ++i)
         if ( i % 2 == 0 )

@@ -12,25 +12,41 @@
 namespace cie::utils {
 
 
-std::vector<std::string> FileManager::_paths = {};
+std::vector<std::filesystem::path> FileManager::_paths = {};
 
 
-FileManager::FileManager( const std::string& path ) :
-    _path( path )
+FileManager::FileManager(const std::filesystem::path& r_path ) :
+    _path( r_path )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    if (_path.size() == 0)
-        _path = INSTALL_PATH / "output";
+    if ( _path.empty() )
+    {
+        try
+        {
+            _path = INSTALL_PATH / "output";
+        }
+        catch ( std::exception exception )
+        {
+            CIE_THROW( Exception, exception.what() )
+        }
+    }
 
-    if ( !detail::isDirectory(_path) )
-        std::filesystem::create_directory( _path );
+    if (!detail::isDirectory(_path))
+    {
+        try
+        {
+            std::filesystem::create_directory( _path );
+        }
+        catch (std::exception exception)
+        {
+            CIE_THROW( Exception, exception.what() )
+        }
+    }
 
     auto it = std::find( _paths.begin(), _paths.end(), _path );
     if (it == _paths.end() )
         _paths.push_back(_path);
-    //else
-    //    CIE_THROW( std::runtime_error, "A FileManager is already active in " + _path )
 
     CIE_END_EXCEPTION_TRACING
 }
@@ -51,12 +67,12 @@ FileManager::~FileManager()
 }
 
 
-File& FileManager::newFile( const std::string& fileName )
+File& FileManager::newFile( const std::filesystem::path& r_filePath )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
     // Get file path
-    auto path = filePath(fileName);
+    auto path = filePath( r_filePath );
     std::ios_base::openmode mode = std::ios::out;
 
     // Determine modifier bits
@@ -65,32 +81,32 @@ File& FileManager::newFile( const std::string& fileName )
 
     // Register file stream
     _files.push_back( std::make_shared<std::fstream>( path, mode ) );
-    return *_files[ _files.size()-1 ];
+    return *_files.back();
 
     CIE_END_EXCEPTION_TRACING
 }
 
 
-File& FileManager::open( const std::string& fileName )
+File& FileManager::open( const std::filesystem::path& r_filePath )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
     // Get file path
-    auto path = filePath(fileName);
+    auto path = filePath( r_filePath );
 
     // Check whether file exists
     if ( !detail::isFile(path) )
-        throw std::runtime_error( path + " not found!" );
+        CIE_THROW( Exception, "Path not found: " + path.string() )
 
     // Determine modifier bits
     std::ios_base::openmode mode = std::ios::in;
 
-    if ( detail::isBinaryExtension( detail::fileExtension(fileName) ) )
+    if ( detail::isBinaryExtension( detail::fileExtension( r_filePath ) ) )
         mode = mode | std::ios::binary;
 
     // Register file stream
     _files.push_back( std::make_shared<std::fstream>( path, mode ) );
-    return *_files[ _files.size()-1 ];
+    return *_files.back();
 
     CIE_END_EXCEPTION_TRACING
 }
@@ -101,12 +117,16 @@ FilePtr FileManager::filePtr( const File& file )
     CIE_BEGIN_EXCEPTION_TRACING
 
     int index = -1;
-    for (auto it=_files.begin(); it!=_files.end(); ++it)
+    for ( auto it=_files.begin(); it!=_files.end(); ++it )
         if (it->get() == &file)
         {
-            index = std::distance( _files.begin(), it );
+            index = int(std::distance( _files.begin(), it ));
             break;
         }
+
+    if ( index == -1 || index >= _files.size() )
+        CIE_THROW( Exception, "File stream not found in FileManager")
+
     return _files[index];
 
     CIE_END_EXCEPTION_TRACING
@@ -117,21 +137,21 @@ void FileManager::closeAll()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    for ( auto it=_files.begin(); it!=_files.end(); ++it )
+    for ( auto& rp_file : this->_files )
     {
-        (*it)->close();
+        rp_file->close();
     }
 
     CIE_END_EXCEPTION_TRACING
 }
 
 
-void FileManager::deleteFile( const std::string& fileName )
+void FileManager::deleteFile(const std::filesystem::path& r_filePath )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
     // Get file path
-    auto path = filePath(fileName);
+    auto path = filePath( r_filePath );
 
     // Remove file if it exists
     if ( detail::isFile(path) )
@@ -141,15 +161,15 @@ void FileManager::deleteFile( const std::string& fileName )
 }
 
 
-const std::vector<std::string> FileManager::listFiles( )
+const std::vector<std::filesystem::path> FileManager::listFiles( )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    std::vector<std::string> fileList;
+    std::vector<std::filesystem::path> fileList;
 
     for ( const auto& entry : std::filesystem::directory_iterator(_path) )
         if ( detail::isFile( entry.path().string() ) )
-            fileList.push_back( detail::fileName(entry.path().string()) );
+            fileList.push_back( detail::fileName( entry.path() ) );
     
     return fileList;
 
@@ -157,11 +177,11 @@ const std::vector<std::string> FileManager::listFiles( )
 }
 
 
-std::string FileManager::filePath( const std::string& fileName )
+std::filesystem::path FileManager::filePath( const std::filesystem::path& r_fileName )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    return _path + "" + detail::fileName(fileName);
+    return _path / detail::fileName( r_fileName );
 
     CIE_END_EXCEPTION_TRACING
 }
