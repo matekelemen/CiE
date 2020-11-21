@@ -62,13 +62,13 @@ TEST_CASE( "Scene", "[scene]" )
     REQUIRE_NOTHROW( p_window = p_context->newWindow() );
 
     // Shaders
-    const std::string shaderDir   = SOURCE_PATH / "libraries/ciegl/data/shaders";
+    const std::filesystem::path shaderDir   = SOURCE_PATH / "libraries/ciegl/data/shaders";
 
-    auto shaderPaths = [&shaderDir]( const std::string& r_shaderName )
+    auto shaderPaths = [&shaderDir]( const std::filesystem::path& r_shaderName )
     {
-        return std::pair<std::string,std::string>(
-            shaderDir + "/" + r_shaderName + ".xml",
-            shaderDir + "/" + r_shaderName + ".glsl"
+        return std::pair<std::filesystem::path,std::filesystem::path>(
+            (shaderDir / r_shaderName) += ".xml",
+            (shaderDir / r_shaderName) += ".glsl"
         );
     };
 

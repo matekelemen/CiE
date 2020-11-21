@@ -53,12 +53,15 @@ TEST_CASE( "FileManager - file handling" )
     REQUIRE_NOTHROW( fileList = manager.listFiles() );
 
     // Check file names and validity in directory
-    bool result = true;
+    bool result;
     for ( const auto& r_name : fileList )
     {
         CHECK( detail::isFile( testDir / r_name ) );
-        if ( detail::fileName( r_name )!="outFile.txt" && detail::fileName( r_name )!="inFile.bin" )
+        result = true;
+
+        if (detail::fileName(r_name) != "outFile.txt" && detail::fileName(r_name) != "inFile.bin")
             result = false;
+
         CHECK( result );
     }
 
@@ -76,6 +79,8 @@ TEST_CASE( "FileManager - file handling" )
     REQUIRE_NOTHROW( fileList = manager.listFiles() );
     for ( const auto& r_name : fileList )
     {
+        result = true;
+
         CHECK( detail::isFile( testDir / r_name ) );
         if ( detail::fileName( r_name )=="outFile.txt" && detail::fileName( r_name )!="inFile.bin" )
             result = false;

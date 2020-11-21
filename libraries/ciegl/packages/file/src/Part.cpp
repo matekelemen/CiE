@@ -74,7 +74,7 @@ void Part::writeSTL( const std::filesystem::path& r_path ) const
     file.open( r_path, std::ios::binary );
 
     if ( !file.is_open() )
-        CIE_THROW( Exception, "Could not create file: " + std::string(r_path) )
+        CIE_THROW( Exception, "Could not create file: " + r_path.string() )
 
     // Header
     char header = ' ';

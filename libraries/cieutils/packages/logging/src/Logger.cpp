@@ -276,8 +276,10 @@ Logger& Logger::noIndent()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    while( _prefix.back() == '\t' )
-        _prefix.pop_back();
+    if ( !_prefix.empty())
+        while( _prefix.back() == '\t' )
+            _prefix.pop_back();
+    
     return *this;
     
     CIE_END_EXCEPTION_TRACING

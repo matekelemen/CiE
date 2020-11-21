@@ -33,13 +33,13 @@ TEST_CASE( "GLFWShader", "[shader]" )
     REQUIRE_NOTHROW( p_window = p_context->newWindow() );
 
     // Shader setup
-    const std::string shaderDir   = SOURCE_PATH / "libraries/ciegl/data/shaders/default";
+    const std::filesystem::path shaderDir   = SOURCE_PATH / "libraries/ciegl/data/shaders/default";
 
-    auto shaderPaths = [&shaderDir]( const std::string& r_shaderName )
+    auto shaderPaths = [&shaderDir]( const std::filesystem::path& r_shaderName )
     {
-        return std::pair<std::string,std::string>(
-            shaderDir / std::filesystem::path(r_shaderName + ".xml"),
-            shaderDir / std::filesystem::path(r_shaderName + ".glsl")
+        return std::pair<std::filesystem::path,std::filesystem::path>(
+            (shaderDir / r_shaderName) += ".xml",
+            (shaderDir / r_shaderName) += ".glsl"
         );
     };
 

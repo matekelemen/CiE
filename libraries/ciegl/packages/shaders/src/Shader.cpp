@@ -24,17 +24,17 @@ Shader::Shader( const std::filesystem::path& r_configPath,
 
     // Check input files
     pugi::xml_document configuration;
-    pugi::xml_parse_result configParseResult = configuration.load_file( std::string(r_configPath).c_str() );
+    pugi::xml_parse_result configParseResult = configuration.load_file( r_configPath.string().c_str() );
     std::ifstream codeFile( r_codePath );
 
     if ( !configParseResult )
         CIE_THROW( 
             Exception,
-            "Error loading shader configuration file: " + std::string(r_configPath) + "\n" + configParseResult.description()
+            "Error loading shader configuration file: " + r_configPath.string() + "\n" + configParseResult.description()
             )
 
     if ( !codeFile.is_open() )
-        CIE_THROW( Exception, "Unable to open shader code file: " + std::string(r_codePath) )
+        CIE_THROW( Exception, "Unable to open shader code file: " + r_codePath.string() )
 
     // Get shader root
     pugi::xml_node root = configuration.child( "shader" );

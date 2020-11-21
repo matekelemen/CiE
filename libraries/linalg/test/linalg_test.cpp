@@ -119,7 +119,7 @@ namespace linalgtesthelper
     template<typename ContainerType>
     std::vector<Double> writeAndParse( const ContainerType& container )
     {
-        const std::string testFileName = TEST_OUTPUT_PATH / "Matrix_linearized_input.csv";
+        const std::filesystem::path testFileName = TEST_OUTPUT_PATH / "Matrix_linearized_input.csv";
         std::ofstream outfile( testFileName );
 
         REQUIRE_NOTHROW( linalghelper::write( container, outfile ) );

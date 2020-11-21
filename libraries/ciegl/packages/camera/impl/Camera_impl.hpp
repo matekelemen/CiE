@@ -1,6 +1,8 @@
 #ifndef CIE_GL_CAMERA_IMPL_HPP
 #define CIE_GL_CAMERA_IMPL_HPP
 
+#define _USE_MATH_DEFINES
+
 // --- Utility Includes ---
 #include "cieutils/packages/macros/inc/exceptions.hpp"
 #include "cieutils/packages/macros/inc/checks.hpp"
@@ -9,7 +11,7 @@
 #include "ciegl/packages/camera/inc/ProjectionPolicy.hpp"
 
 // --- STL Includes ---
-#include <cmath>
+#include <math.h>
 
 
 namespace cie::gl {
@@ -39,7 +41,7 @@ Camera<ProjectionType>::Camera( utils::Logger& r_logger,
 
 
 template <concepts::ProjectionPolicy ProjectionType>
-inline const typename Camera<ProjectionType>::internal_matrix_type&
+inline const typename AbsCamera::internal_matrix_type&
 Camera<ProjectionType>::projectionMatrix() const
 {
     return this->_projectionMatrix;

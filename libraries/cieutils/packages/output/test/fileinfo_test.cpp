@@ -47,8 +47,8 @@ TEST_CASE( "File Info" )
     CHECK( fileExtension(binaryTestName) != textExtension );
     CHECK( fileExtension(binaryTestName) == binaryExtension );
 
-    CHECK( fileExtension(textExtension) == textExtension );
-    CHECK( fileExtension(binaryExtension) == binaryExtension );
+    CHECK( fileExtension(textTestName) == textExtension );
+    CHECK( fileExtension(binaryTestName) == binaryExtension );
 
     // Check file name
     CHECK( fileName(textTestName) == testFileBase.string() + textExtension.string() );

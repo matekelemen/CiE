@@ -29,12 +29,12 @@ public:
     CSGObject<N,ValueType,CoordinateType>& emplaceRhs( Args&&... args )
         requires concepts::DerivedFrom<CSGObjectType,CSGObject<N,ValueType,CoordinateType>>;
 
-    std::shared_ptr<typename UnaryOperator::abstract_base_type>& rhs();
+    std::shared_ptr<typename UnaryOperator<N,ValueType,CoordinateType>::abstract_base_type>& rhs();
 
 protected:
-    virtual ValueType at(const typename UnaryOperator::point_type& point) const override = 0;
+    virtual ValueType at(const typename UnaryOperator<N, ValueType, CoordinateType>::point_type& point) const override = 0;
 
-    std::shared_ptr<typename UnaryOperator::abstract_base_type> _rhs;
+    std::shared_ptr<typename UnaryOperator<N, ValueType, CoordinateType>::abstract_base_type> _rhs;
 };
 
 
@@ -58,12 +58,12 @@ public:
     CSGObject<N,ValueType,CoordinateType>& emplaceLhs( Args&&... args )
         requires concepts::DerivedFrom<CSGObjectType,CSGObject<N,ValueType,CoordinateType>>;
 
-    std::shared_ptr<typename BinaryOperator::abstract_base_type>& lhs();
+    std::shared_ptr<typename BinaryOperator<N, ValueType, CoordinateType>::abstract_base_type>& lhs();
 
 protected:
-    virtual ValueType at(const typename BinaryOperator::point_type& point) const override = 0;
+    virtual ValueType at(const typename BinaryOperator<N, ValueType, CoordinateType>::point_type& point) const override = 0;
 
-    std::shared_ptr<typename BinaryOperator::abstract_base_type> _lhs;
+    std::shared_ptr<typename BinaryOperator<N, ValueType, CoordinateType>::abstract_base_type> _lhs;
 };
 
 

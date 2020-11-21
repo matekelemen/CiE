@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+
 // --- External Includes ---
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
@@ -14,7 +16,7 @@
 #include <fstream>
 #include <algorithm>
 #include <functional>
-#include <cmath>
+#include <math.h>
 
 
 namespace cie::gl {
@@ -36,11 +38,11 @@ FlyCameraControls::FlyCameraControls() :
     CIE_BEGIN_EXCEPTION_TRACING
 
     // Set default controls
-    std::string confiFilePath = SOURCE_PATH / "libraries/ciegl/data/configuration/controls/FlyCameraControls.xml";
+    std::filesystem::path confiFilePath = SOURCE_PATH / "libraries/ciegl/data/configuration/controls/FlyCameraControls.xml";
     std::ifstream configFile( confiFilePath );
 
     if ( !configFile.is_open() )
-        CIE_THROW( Exception, "Failed to open control config file: " + confiFilePath );
+        CIE_THROW( Exception, "Failed to open control config file: " + confiFilePath.string() );
 
     this->configure( configFile );
 

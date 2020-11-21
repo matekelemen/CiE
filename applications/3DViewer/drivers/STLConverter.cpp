@@ -44,12 +44,12 @@ int main( int argc, char const* argv[] )
         else if ( extension == ".obj" )
             p_model.reset( new gl::ObjPart(filePath) );
         else
-            CIE_THROW( Exception, "Unsuppoerted file extension: " + std::string(extension) )
+            CIE_THROW( Exception, "Unsuppoerted file extension: " + extension.string() )
         
 
         // Write file
         auto outputFileName = filePath.replace_extension( ".stl" );
-        log.log( "Write STL to " + std::string(outputFileName) );
+        log.log( "Write STL to " + outputFileName.string() );
         p_model->writeSTL( outputFileName );
     }
 

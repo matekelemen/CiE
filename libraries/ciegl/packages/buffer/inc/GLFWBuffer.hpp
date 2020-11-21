@@ -21,9 +21,9 @@ public:
 
     virtual void reserve( Size byteCount ) override;
 
-    virtual void write( const typename GLFWBuffer::data_container_type& r_dataContainer ) override;
+    virtual void write( const typename GLFWBuffer<DataType>::data_container_type& r_dataContainer ) override;
 
-    virtual void write( Size begin, const typename GLFWBuffer::data_container_type& r_dataContainer ) override;
+    virtual void write( Size begin, const typename GLFWBuffer<DataType>::data_container_type& r_dataContainer ) override;
 
     void setDrawMode( Size drawMode );
     const GLuint getDrawMode() const;

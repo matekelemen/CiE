@@ -75,7 +75,7 @@ int main( int argc, char const* argv[] )
                 new gl::ObjPart( r_filePath )
                 );
         else
-            CIE_THROW( Exception, "Unsupported file format: " + std::string(extension) )
+            CIE_THROW( Exception, "Unsupported file format: " + extension.string() )
 
         p_scene->toc( "Finished loading " + r_filePath, timerID );
 

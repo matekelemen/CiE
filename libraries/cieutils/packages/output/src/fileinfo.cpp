@@ -23,7 +23,7 @@ std::filesystem::path fileName(const std::filesystem::path& r_filePath )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    return std::filesystem::path(r_filePath).replace_extension("");
+    return std::filesystem::path( r_filePath ).filename();
 
     CIE_END_EXCEPTION_TRACING
 }

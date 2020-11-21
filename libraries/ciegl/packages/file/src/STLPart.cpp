@@ -37,7 +37,7 @@ STLPart::STLPart( const std::filesystem::path& r_filePath ) :
                std::ios::binary );
 
     if ( !file )
-        CIE_THROW( Exception, "Failed to open file: " + std::string(r_filePath) )
+        CIE_THROW( Exception, "Failed to open file: " + r_filePath.string() )
 
     this->load( file );
 

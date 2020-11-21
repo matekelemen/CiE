@@ -166,25 +166,25 @@ class AbsElement1D : public AbsElement<BasisType>
 {
 public:
     template <class ...Args>
-    AbsElement1D(   const std::pair<typename AbsElement1D::NT, typename AbsElement1D::NT>& domain,
+    AbsElement1D(   const std::pair<typename AbsElement1D<BasisType>::NT, typename AbsElement1D<BasisType>::NT>& domain,
                     Args&&... );
 
 protected:
-    virtual void toLocalCoordinates(    const typename AbsElement1D::point_type& point,
-                                        AbsElement1D::LocalCoordinates& localPoint ) const override;
+    virtual void toLocalCoordinates(    const typename AbsElement1D<BasisType>::point_type& point,
+                                        typename AbsElement1D<BasisType>::LocalCoordinates& localPoint ) const override;
 
     // Coordinate transformation specialized for 1D cases
-    typename AbsElement1D::NT toLocalCoordinates( typename AbsElement1D::NT coordinate ) const;
+    typename AbsElement1D<BasisType>::NT toLocalCoordinates( typename AbsElement1D<BasisType>::NT coordinate ) const;
 
-    virtual void _derivative(   const typename AbsElement1D::coefficient_container& coefficients,
-                                const typename AbsElement1D::basis_value_container& basisValues,
-                                const typename AbsElement1D::basis_value_container& basisDerivativeValues,
-                                typename AbsElement1D::point_type& gradient ) override;
+    virtual void _derivative(   const typename AbsElement1D<BasisType>::coefficient_container& coefficients,
+                                const typename AbsElement1D<BasisType>::basis_value_container& basisValues,
+                                const typename AbsElement1D<BasisType>::basis_value_container& basisDerivativeValues,
+                                typename AbsElement1D<BasisType>::point_type& gradient ) override;
 
 protected:
-    std::pair<typename AbsElement1D::NT, typename AbsElement1D::NT> _domain;
-    typename AbsElement1D::NT                                       _jacobian;
-    typename AbsElement1D::NT                                       _invJacobian;
+    std::pair<typename AbsElement1D<BasisType>::NT, typename AbsElement1D<BasisType>::NT> _domain;
+    typename AbsElement1D<BasisType>::NT                                                  _jacobian;
+    typename AbsElement1D<BasisType>::NT                                                  _invJacobian;
 }; // class AbsElement1D
 
 

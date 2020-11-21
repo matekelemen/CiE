@@ -34,7 +34,7 @@ ObjPart::ObjPart( const std::filesystem::path& r_filePath ) :
     file.open( r_filePath );
 
     if ( !file )
-        CIE_THROW( Exception, "Failed to open file: " + std::string(r_filePath) )
+        CIE_THROW( Exception, "Failed to open file: " + r_filePath.string() )
 
     this->load( file );
 

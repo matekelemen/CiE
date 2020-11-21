@@ -15,7 +15,7 @@ namespace cie {
 namespace detail {
 
 // Shader directories
-const std::string POINT_SHADER_PATH = SOURCE_PATH / "libraries/ciegl/data/shaders/pointWithTransformation";
+const std::filesystem::path POINT_SHADER_PATH = SOURCE_PATH / "libraries/ciegl/data/shaders/pointWithTransformation";
 
 // Get centers of different objects
 
@@ -55,9 +55,9 @@ PointScene::PointScene( utils::Logger& r_logger,
     Scene(
         r_logger,
         r_name,
-        gl::makeVertexShader<gl::GLFWVertexShader>( detail::POINT_SHADER_PATH + "/vertexShader.xml", detail::POINT_SHADER_PATH + "/vertexShader.glsl" ),
-        gl::makeGeometryShader<gl::GLFWGeometryShader>( detail::POINT_SHADER_PATH + "/geometryShader.xml", detail::POINT_SHADER_PATH + "/geometryShader.glsl" ),
-        gl::makeFragmentShader<gl::GLFWFragmentShader>( detail::POINT_SHADER_PATH + "/fragmentShader.xml", detail::POINT_SHADER_PATH + "/fragmentShader.glsl" )
+        gl::makeVertexShader<gl::GLFWVertexShader>( detail::POINT_SHADER_PATH / "vertexShader.xml", detail::POINT_SHADER_PATH / "vertexShader.glsl" ),
+        gl::makeGeometryShader<gl::GLFWGeometryShader>( detail::POINT_SHADER_PATH / "geometryShader.xml", detail::POINT_SHADER_PATH / "geometryShader.glsl" ),
+        gl::makeFragmentShader<gl::GLFWFragmentShader>( detail::POINT_SHADER_PATH / "fragmentShader.xml", detail::POINT_SHADER_PATH / "fragmentShader.glsl" )
     )
 {
     auto p_camera = this->makeCamera<gl::Camera<gl::OrthographicProjection>>();

@@ -104,14 +104,14 @@ public:
 
     virtual Bool isDegenerate() const override;
 
-    const typename Cube::point_type& base() const;
-    const typename Cube::coordinate_type& length() const;
-    typename Cube::point_type& base();
-    typename Cube::coordinate_type& length();
+    const typename Cube<Dimension,CoordinateType>::point_type& base() const;
+    const typename Cube<Dimension, CoordinateType>::coordinate_type& length() const;
+    typename Cube<Dimension, CoordinateType>::point_type& base();
+    typename Cube<Dimension, CoordinateType>::coordinate_type& length();
 
 protected:
-    typename Cube::point_type       _base;
-    typename Cube::coordinate_type  _length;
+    typename Cube<Dimension, CoordinateType>::point_type       _base;
+    typename Cube<Dimension, CoordinateType>::coordinate_type  _length;
 };
 
 
@@ -136,14 +136,14 @@ public:
 
     virtual Bool isDegenerate() const override;
 
-    const typename Box::point_type& base() const;
-    const typename Box::point_type& lengths() const;
-    typename Box::point_type& base();
-    typename Box::point_type& lengths();
+    const typename Box<N,CoordinateType>::point_type& base() const;
+    const typename Box<N,CoordinateType>::point_type& lengths() const;
+    typename Box<N,CoordinateType>::point_type& base();
+    typename Box<N,CoordinateType>::point_type& lengths();
 
 protected:
-    typename Box::point_type     _base;
-    typename Box::point_type     _lengths;
+    typename Box<N,CoordinateType>::point_type     _base;
+    typename Box<N,CoordinateType>::point_type     _lengths;
 };
 
 
@@ -168,7 +168,7 @@ public:
         requires concepts::ClassContainer<ContainerType,CoordinateType>;
 
 protected:
-    virtual Bool at( const typename CSGCube::point_type& point ) const override;
+    virtual Bool at( const typename CSGCube<N,CoordinateType>::point_type& point ) const override;
 };
 
 
@@ -188,7 +188,7 @@ public:
                     && concepts::ClassContainer<ContainerType2,CoordinateType>;
 
 protected:
-    virtual Bool at( const typename CSGBox::point_type& point ) const override;
+    virtual Bool at( const typename CSGBox<N,CoordinateType>::point_type& point ) const override;
 };
 
 } // namespace boolean

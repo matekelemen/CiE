@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+
 // --- External Includes ---
 #include "catch.hpp"
 
@@ -8,7 +10,7 @@
 #include "ciegl/packages/camera/inc/RigidBody.hpp"
 
 // --- STL Includes ---
-#include <cmath>
+#include <math.h>
 
 
 namespace cie::gl {

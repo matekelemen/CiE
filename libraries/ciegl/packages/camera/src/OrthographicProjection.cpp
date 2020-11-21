@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+
 // --- External Includes ---
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -9,7 +11,7 @@
 #include "ciegl/packages/camera/inc/OrthographicProjection.hpp"
 
 // --- STL Includes ---
-#include <cmath>
+#include <math.h>
 
 
 namespace cie::gl {

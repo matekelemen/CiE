@@ -273,7 +273,7 @@ AbsElement<BasisType>::localCoordinates(  const typename AbsElement<BasisType>::
 
 template <class BasisType>
 template <class ...Args>
-AbsElement1D<BasisType>::AbsElement1D(  const std::pair<typename AbsElement1D::NT, typename AbsElement1D::NT>& domain,
+AbsElement1D<BasisType>::AbsElement1D(  const std::pair<typename AbsElement1D<BasisType>::NT, typename AbsElement1D<BasisType>::NT>& domain,
                                         Args&&... args ) :
     AbsElement<BasisType>( std::forward<Args>(args)... ),
     _domain(domain),
@@ -286,8 +286,8 @@ AbsElement1D<BasisType>::AbsElement1D(  const std::pair<typename AbsElement1D::N
 
 template <class BasisType>
 inline void
-AbsElement1D<BasisType>::toLocalCoordinates(    const typename AbsElement1D::point_type& point,
-                                                typename AbsElement1D::LocalCoordinates& localPoint ) const
+AbsElement1D<BasisType>::toLocalCoordinates(    const typename AbsElement1D<BasisType>::point_type& point,
+                                                typename AbsElement1D<BasisType>::LocalCoordinates& localPoint ) const
 {
     CIE_ASSERT(
         (_domain.first <= point[0]) && (point[0] <= _domain.second),
@@ -313,10 +313,10 @@ AbsElement1D<BasisType>::toLocalCoordinates( typename AbsElement1D<BasisType>::N
 
 template <class BasisType>
 void 
-AbsElement1D<BasisType>::_derivative(   const typename AbsElement1D::coefficient_container& coefficients,
-                                        const typename AbsElement1D::basis_value_container& basisValues,
-                                        const typename AbsElement1D::basis_value_container& basisDerivativeValues,
-                                        typename AbsElement1D::point_type& gradient )
+AbsElement1D<BasisType>::_derivative(   const typename AbsElement1D<BasisType>::coefficient_container& coefficients,
+                                        const typename AbsElement1D<BasisType>::basis_value_container& basisValues,
+                                        const typename AbsElement1D<BasisType>::basis_value_container& basisDerivativeValues,
+                                        typename AbsElement1D<BasisType>::point_type& gradient )
 {
     std::fill(  gradient.begin(),
                 gradient.end(),

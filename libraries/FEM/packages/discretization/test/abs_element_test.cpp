@@ -29,8 +29,8 @@ public:
     {}
 
 protected:
-    void toLocalCoordinates(    const typename TestElement::point_type& point,
-                                TestElement::LocalCoordinates& localPoint ) const override
+    void toLocalCoordinates(    const typename TestElement<BasisType>::point_type& point,
+                                typename TestElement<BasisType>::LocalCoordinates& localPoint ) const override
     {
         std::copy(  point.begin(),
                     point.end(),
