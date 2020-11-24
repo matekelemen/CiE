@@ -5,6 +5,9 @@
 #include "cieutils/packages/output/inc/FileManager.hpp"
 #include "cieutils/packages/output/inc/fileinfo.hpp"
 
+#include "cieutils/packages/concepts/inc/streamable.hpp"
+#include "cieutils/packages/concepts/inc/container_concepts.hpp"
+
 // --- STL Includes ---
 #include <fstream>
 #include <iostream>
@@ -104,10 +107,46 @@ protected:
 
 using LoggerPtr = std::shared_ptr<Logger>;
 
-Logger& operator<<( Logger& r_logger, const std::string& r_message );
+
+} // namespace cie::utils
+
+
+
+/* --- LOG STREAM OVERLOADS --- */
+
+namespace cie::concepts {
+
+template <class T>
+concept Log
+= requires ( T& r_instance, const std::string& r_message )
+{
+    { r_instance.log( r_message ) };
+};
+
+} // namespace cie::concepts
+
+namespace cie::utils {
+
+
+template <concepts::Log LogType>
+LogType& operator<<( LogType& r_log,
+                     const std::string& r_message );
+
+
+template <concepts::Log LogType, class ContainerType>
+requires concepts::STLContainer<ContainerType>
+         && concepts::StringStreamable<typename ContainerType::value_type>
+LogType& operator<<( LogType& r_log,
+                     const ContainerType& r_messageContainer );
+
+
+template <concepts::Log LogType, concepts::StringStreamable MessageType>
+LogType& operator<<( LogType& r_log,
+                     const MessageType& r_message );
 
 
 } // namespace cie::utils
+
 
 #include "cieutils/packages/logging/impl/Logger_impl.hpp"
 

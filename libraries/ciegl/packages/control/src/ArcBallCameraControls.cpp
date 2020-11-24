@@ -23,7 +23,7 @@ namespace cie::gl {
 ArcBallCameraControls::ArcBallCameraControls( bool verbose ) :
     MappedCameraControls(),
     _rotationScale( 0.1 * M_PI / 180.0 ),
-    _zoomScale( 1.1 ),
+    _zoomScale( 1.05 ),
     _zoomScaleIncrement( 0.05 ),
     _x( 0.0 ),
     _y( 0.0 ),
@@ -129,7 +129,7 @@ void ArcBallCameraControls::rotate()
 
     // Rotate 'horizontally'
     this->_p_camera->rotate(
-        this->_rotationScale * this->_dx,
+        -this->_rotationScale * this->_dx,
         { 0.0, 0.0, 1.0 },
         this->_center
     );
@@ -141,7 +141,7 @@ void ArcBallCameraControls::rotate()
     );
 
     this->_p_camera->rotate(
-        this->_rotationScale * this->_dy,
+        -this->_rotationScale * this->_dy,
         axis,
         this->_center
     );
@@ -158,7 +158,7 @@ void ArcBallCameraControls::rotateLeft()
     CIE_BEGIN_EXCEPTION_TRACING
 
     this->_p_camera->rotate(
-        this->_rotationScale,
+        -this->_rotationScale,
         { 0.0, 0.0, 1.0 },
         this->_center
     );
@@ -175,7 +175,7 @@ void ArcBallCameraControls::rotateRight()
     CIE_BEGIN_EXCEPTION_TRACING
 
     this->_p_camera->rotate(
-        -this->_rotationScale,
+        this->_rotationScale,
         { 0.0, 0.0, 1.0 },
         this->_center
     );

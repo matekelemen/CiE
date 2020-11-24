@@ -98,6 +98,7 @@ int main( int argc, char const* argv[] )
     );
     p_controls->bind( p_window, p_camera );
 
+    // Loop
     p_window->beginLoop();
 
     return 0;

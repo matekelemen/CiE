@@ -6,9 +6,6 @@
 #include "cieutils/packages/logging/inc/LogBlock.hpp"
 #include "cieutils/packages/types/inc/NamedObject.hpp"
 
-#include "cieutils/packages/concepts/inc/streamable.hpp"
-#include "cieutils/packages/concepts/inc/container_concepts.hpp"
-
 // --- STL Includes ---
 #include <string>
 
@@ -59,24 +56,6 @@ private:
 };
 
 
-Loggee& operator<<( Loggee& r_loggee,
-                    const std::string& r_message );
-
-
-template <class ContainerType>
-requires concepts::STLContainer<ContainerType>
-         && concepts::StringStreamable<typename ContainerType::value_type>
-Loggee& operator<<( Loggee& r_loggee,
-                    const ContainerType& r_messageContainer );
-
-
-template <concepts::StringStreamable MessageType>
-Loggee& operator<<( Loggee& r_loggee,
-                    const MessageType& r_message );
-
-
 } // namespace cie::utils
-
-#include "cieutils/packages/logging/impl/Loggee_impl.hpp"
 
 #endif
