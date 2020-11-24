@@ -124,7 +124,7 @@ FilePtr FileManager::filePtr( const File& file )
             break;
         }
 
-    if ( index == -1 || index >= _files.size() )
+    if ( index == -1 || index >= int(_files.size()) )
         CIE_THROW( Exception, "File stream not found in FileManager")
 
     return _files[index];

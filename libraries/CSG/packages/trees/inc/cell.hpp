@@ -2,7 +2,7 @@
 #define CIE_CSG_CELL_HPP
 
 // --- Internal Includes ---
-#include "CSG/packages/primitives/inc/primitives.hpp"
+#include "CSG/packages/primitives/inc/Primitive.hpp"
 #include "CSG/packages/trees/inc/indexconverter.hpp"
 
 // --- Utility Includes ---

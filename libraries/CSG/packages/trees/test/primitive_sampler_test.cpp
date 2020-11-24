@@ -6,7 +6,6 @@
 
 // --- Internal Inludes ---
 #include "CSG/packages/trees/inc/primitive_sampler.hpp"
-#include "CSG/packages/primitives/inc/primitives.hpp"
 
 // --- STL Includes ---
 #include <memory>
@@ -24,8 +23,8 @@ TEST_CASE( "CubeSampler", "[trees]" )
     typedef Double  CT;
 
     // Primitive and sampler types
-    typedef boolean::CSGCube<Dimension,CT>  PrimitiveType;
-    typedef CubeSampler<Dimension,CT>       Sampler;
+    typedef boolean::Cube<Dimension,CT> PrimitiveType;
+    typedef CubeSampler<Dimension,CT>   Sampler;
 
     // Primitive properties
     const typename PrimitiveType::point_type        base = {1.0, 2.0};
@@ -87,8 +86,8 @@ TEST_CASE( "BoxSampler", "[trees]" )
     const Size      Dimension = 2;
 
     // Primitive and sampler types
-    typedef boolean::CSGBox<Dimension,CT>   PrimitiveType;
-    typedef BoxSampler<Dimension,CT>        Sampler;
+    typedef boolean::Box<Dimension,CT> PrimitiveType;
+    typedef BoxSampler<Dimension,CT>   Sampler;
 
     // Primitive properties
     const typename PrimitiveType::point_type        base = {1.0, 2.0};

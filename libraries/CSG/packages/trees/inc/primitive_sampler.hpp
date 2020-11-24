@@ -6,7 +6,10 @@
 #include "cieutils/packages/concepts/inc/basic_concepts.hpp"
 
 // --- Internal Includes ---
-#include "CSG/packages/primitives/inc/primitives.hpp"
+#include "CSG/packages/primitives/inc/Box.hpp"
+#include "CSG/packages/primitives/inc/Cube.hpp"
+#include "CSG/packages/primitives/inc/Primitive.hpp"
+
 #include "CSG/packages/trees/inc/indexconverter.hpp"
 #include "CSG/packages/primitives/inc/csgobject.hpp"
 

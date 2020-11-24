@@ -9,7 +9,9 @@
 #include "linalg/packages/types/inc/arraytypes.hpp"
 
 // --- Internal Includes ---
-#include "CSG/packages/primitives/inc/primitives.hpp"
+#include "CSG/packages/primitives/inc/Primitive.hpp"
+#include "CSG/packages/primitives/inc/Box.hpp"
+#include "CSG/packages/primitives/inc/Cube.hpp"
 
 namespace cie::csg {
 
@@ -112,16 +114,16 @@ TEST_CASE( "Box", "[primitives]" )
 
 
 
-TEST_CASE( "boolean::CSGCube", "[primitives]" )
+TEST_CASE( "boolean::Cube", "[primitives]" )
 {
-    CIE_TEST_CASE_INIT( "boolean::CSGCube" )
+    CIE_TEST_CASE_INIT( "boolean::Cube" )
 
     const Size dimension = 2;
 
-    REQUIRE_NOTHROW( CSGCube<dimension,Double>(DoubleArray<dimension>({10.0,20.0}),2.0) );
-    CSGCube<dimension,Double> cube( DoubleArray<dimension>({10.0,20.0}), 
+    REQUIRE_NOTHROW( Cube<dimension,Double>(DoubleArray<dimension>({10.0,20.0}),2.0) );
+    Cube<dimension,Double> cube( DoubleArray<dimension>({10.0,20.0}), 
                                     2.0 );
-    CHECK( CSGCube<dimension,Double>::dimension == dimension );
+    CHECK( Cube<dimension,Double>::dimension == dimension );
 
     DoubleArray<dimension> point = {0.0, 0.0};
 
@@ -136,13 +138,13 @@ TEST_CASE( "boolean::CSGCube", "[primitives]" )
 }
 
 
-TEST_CASE( "boolean::CSGBox", "[primitives]" )
+TEST_CASE( "boolean::Box", "[primitives]" )
 {
-    CIE_TEST_CASE_INIT( "boolean::CSGBox" )
+    CIE_TEST_CASE_INIT( "boolean::Box" )
 
     const Size dimension = 2;
-    CSGBox<dimension,Double> box(   DoubleArray<dimension>({10.0,20.0}), 
-                                    DoubleArray<dimension>({1.0,2.0}) );
+    Box<dimension,Double> box( DoubleArray<dimension>({10.0,20.0}), 
+                               DoubleArray<dimension>({1.0,2.0}) );
     DoubleArray<dimension> point = {0.0, 0.0};
 
     REQUIRE_NOTHROW( box.evaluate(point) );
