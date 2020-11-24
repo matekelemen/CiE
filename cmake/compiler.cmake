@@ -5,7 +5,7 @@ message( STATUS "Compile CiE in ${CIE_COMPILE_OPTIONS} mode" )
 # -------------------------------------------------
 # GCC
 # -------------------------------------------------
-if ( CMAKE_CXX_COMPILER_ID STREQUAL "GNU" )
+if ( CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )
 
 	# Compiler definition in preprocessor
 	add_compile_definitions( GCC )

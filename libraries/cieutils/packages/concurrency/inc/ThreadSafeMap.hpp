@@ -13,7 +13,7 @@ namespace cie::mp {
  * TODO: make it threadsafe
 */
 template <class MapType>
-class ThreadSafeMap : private MapType
+class ThreadSafeMap : public MapType
 {
 public:
     using map_type      = MapType;

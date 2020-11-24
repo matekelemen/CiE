@@ -38,20 +38,24 @@ concept BoxType
 class PointScene final : public gl::Scene
 {
 public:
-    using node_container = std::deque<csg::NodePtr>;
+    using node_container             = std::deque<csg::NodePtr>;
+    using vertex_attribute_container = typename gl::VertexBuffer::data_container_type;
 
 public:
     PointScene( utils::Logger& r_logger,
                 const std::string& r_name );
 
     PointScene& addRoot( csg::NodePtr p_root );
+
+    void updatePoints();
+
     gl::CameraPtr getCamera();
 
 private:
     void update_impl() override;
 
 private:
-    node_container _roots;
+    node_container             _roots;
 };
 
 

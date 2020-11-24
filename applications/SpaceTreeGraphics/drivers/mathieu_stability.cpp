@@ -8,10 +8,11 @@
 #include "typedefs.hpp"
 #include "PointScene.hpp"
 
+// --- STL Includes ---
+#include <algorithm>
+
 
 // Define target function
-const size_t dimension      = 3;
-const size_t subdivision    = 5;
 const size_t depth          = 7;
 
 const double GAMMA          = 0.2;
@@ -39,11 +40,16 @@ namespace cie::csg {
 template <cie::detail::CubeType Node>
 std::shared_ptr<Node> makeRoot()
 {
+    PointType base;
+    std::fill( base.begin(),
+               base.end(),
+               0.0 );
+
     return std::make_shared<Node>(
         typename Node::sampler_ptr( new SamplerType(numberOfPointsPerDimension) ),
         typename Node::split_policy_ptr( new SplitterType ),
         0,
-        PointType{0.0,0.0,0.0},
+        base,
         10.0 );
 }
 
@@ -51,12 +57,20 @@ std::shared_ptr<Node> makeRoot()
 template <cie::detail::BoxType Node>
 std::shared_ptr<Node> makeRoot()
 {
+    PointType base, end;
+    std::fill( base.begin(),
+               base.end(),
+               0.0 );
+    std::fill( end.begin(),
+               end.end(),
+               10.0 );
+
     return std::make_shared<Node>(
         typename Node::sampler_ptr( new SamplerType(numberOfPointsPerDimension) ),
         typename Node::split_policy_ptr( new SplitterType ),
         0,
-        PointType{0.0,0.0,0.0},
-        PointType{ 10.0, 10.0, 10.0 }
+        base,
+        end
     );
 }
 
@@ -93,6 +107,11 @@ int main()
     p_window->addScene( p_scene );
 
     auto p_camera = p_scene->getCamera();
+    
+    auto p_cameraControls = gl::CameraControlsPtr(
+        new gl::FlyCameraControls
+    );
+    p_cameraControls->bind( p_window, p_camera );
 
     p_camera->setFieldOfView( 180.0 * M_PI/180.0 );
     p_camera->setClippingPlanes( 0.1, 100.0 );
@@ -107,8 +126,8 @@ int main()
     //p_camera->rotateRoll( -M_PI / 4.0 );
 
     // Start event loop
-    p_window->update();
-    std::cin.get();
+    p_scene->updatePoints();
+    p_window->beginLoop();
 
     return 0;
 }

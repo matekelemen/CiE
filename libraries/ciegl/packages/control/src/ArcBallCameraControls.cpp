@@ -9,25 +9,22 @@
 #include "cieutils/packages/macros/inc/exceptions.hpp"
 
 // --- Internal Includes ---
-#include "ciegl/packages/control/inc/FlyCameraControls.hpp"
+#include "ciegl/packages/control/inc/ArcBallCameraControls.hpp"
 #include "ciegl/packages/utility/inc/glm_overloads.hpp"
 #include "cmake_variables.hpp"
 
 // --- STL Includes ---
-#include <fstream>
-#include <algorithm>
-#include <functional>
 #include <math.h>
 
 
 namespace cie::gl {
 
 
-FlyCameraControls::FlyCameraControls( bool verbose ) :
+ArcBallCameraControls::ArcBallCameraControls( bool verbose ) :
     MappedCameraControls(),
-    _movementScale( 1.0 ),
-    _rotationScale( 0.5 * M_PI / 180.0 ),
+    _rotationScale( 0.1 * M_PI / 180.0 ),
     _zoomScale( 1.1 ),
+    _zoomScaleIncrement( 0.05 ),
     _x( 0.0 ),
     _y( 0.0 ),
     _dx( 0.0 ),
@@ -39,7 +36,7 @@ FlyCameraControls::FlyCameraControls( bool verbose ) :
     CIE_BEGIN_EXCEPTION_TRACING
 
     // Set default controls
-    std::filesystem::path confiFilePath = SOURCE_PATH / "libraries/ciegl/data/configuration/controls/FlyCameraControls.xml";
+    std::filesystem::path confiFilePath = SOURCE_PATH / "libraries/ciegl/data/configuration/controls/ArcBallCameraControls.xml";
     std::ifstream configFile( confiFilePath );
 
     if ( !configFile.is_open() )
@@ -51,20 +48,27 @@ FlyCameraControls::FlyCameraControls( bool verbose ) :
 }
 
 
-void FlyCameraControls::setMovementScale( double scale )
+const AbsCamera::vector_type& ArcBallCameraControls::getCenter() const
 {
-    if ( scale < 0.0 )
-        this->_p_camera->log( "Movement scale must be non-negative (" + std::to_string(scale) + ")",
-                              LOG_TYPE_ERROR );
-    
-    this->_movementScale = scale;
-
-    if ( this->_verbose )
-        *this->_p_camera << "Set movement scale to " + std::to_string( scale );
+    return this->_center;
 }
 
 
-void FlyCameraControls::setRotationScale( double scale )
+void ArcBallCameraControls::setCenter( const AbsCamera::vector_type& r_center )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    this->_p_camera->translate( r_center - this->_center );
+    this->_center = r_center;
+
+    if ( this->_verbose )
+        *this->_p_camera  << "Set center to" << r_center;
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+void ArcBallCameraControls::setRotationScale( double scale )
 {
     if ( scale < 0.0 )
         this->_p_camera->log( "Rotation scale must be non-negative (" + std::to_string(scale) + ")",
@@ -77,7 +81,7 @@ void FlyCameraControls::setRotationScale( double scale )
 }
 
 
-void FlyCameraControls::setZoomScale( double scale )
+void ArcBallCameraControls::setZoomScale( double scale )
 {
     if ( scale <= 0.0 )
         this->_p_camera->log( "Zoom scale must be positive (" + std::to_string(scale) + ")",
@@ -89,12 +93,12 @@ void FlyCameraControls::setZoomScale( double scale )
 }
 
 
-void FlyCameraControls::moveForward()
+void ArcBallCameraControls::moveForward()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
     this->_p_camera->translate(
-        this->_movementScale * this->_p_camera->direction()
+        this->_zoomScale * this->_p_camera->direction()
     );
 
     if ( this->_verbose )
@@ -104,12 +108,12 @@ void FlyCameraControls::moveForward()
 }
 
 
-void FlyCameraControls::moveBackward()
+void ArcBallCameraControls::moveBackward()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
     this->_p_camera->translate(
-        -this->_movementScale * this->_p_camera->direction()
+        -this->_zoomScale * this->_p_camera->direction()
     );
 
     if ( this->_verbose )
@@ -119,129 +123,115 @@ void FlyCameraControls::moveBackward()
 }
 
 
-void FlyCameraControls::strafeLeft()
+void ArcBallCameraControls::rotate()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    auto unitVectorRight = glm::cross(
-        this->_p_camera->direction(),
-        this->_p_camera->up()
+    // Rotate 'horizontally'
+    this->_p_camera->rotate(
+        this->_rotationScale * this->_dx,
+        { 0.0, 0.0, 1.0 },
+        this->_center
     );
 
-    this->_p_camera->translate(
-        -this->_movementScale * unitVectorRight
+    // Rotate 'vertically'
+    auto axis = glm::cross(
+        { 0.0, 0.0, 1.0 },
+        this->_p_camera->direction()
     );
 
-    if ( this->_verbose )
-        *this->_p_camera << "Strafe left to " << this->_p_camera->position();
-
-    CIE_END_EXCEPTION_TRACING
-}
-
-
-void FlyCameraControls::strafeRight()
-{
-    CIE_BEGIN_EXCEPTION_TRACING
-
-    auto unitVectorRight = glm::cross(
-        this->_p_camera->direction(),
-        this->_p_camera->up()
-    );
-
-    this->_p_camera->translate(
-        this->_movementScale * unitVectorRight
+    this->_p_camera->rotate(
+        this->_rotationScale * this->_dy,
+        axis,
+        this->_center
     );
 
     if ( this->_verbose )
-        *this->_p_camera << "Strafe right to " << this->_p_camera->position();
+        *this->_p_camera << "Rotate to " << this->_p_camera->position();
 
     CIE_END_EXCEPTION_TRACING
 }
 
 
-void FlyCameraControls::moveUp()
+void ArcBallCameraControls::rotateLeft()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    this->_p_camera->translate(
-        this->_movementScale * this->_p_camera->up()
+    this->_p_camera->rotate(
+        this->_rotationScale,
+        { 0.0, 0.0, 1.0 },
+        this->_center
     );
 
     if ( this->_verbose )
-        *this->_p_camera << "Move up to " << this->_p_camera->position();
+        *this->_p_camera << "Rotate left to " << this->_p_camera->position();
 
     CIE_END_EXCEPTION_TRACING
 }
 
 
-void FlyCameraControls::moveDown()
+void ArcBallCameraControls::rotateRight()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    this->_p_camera->translate(
-        -this->_movementScale * this->_p_camera->up()
+    this->_p_camera->rotate(
+        -this->_rotationScale,
+        { 0.0, 0.0, 1.0 },
+        this->_center
     );
 
     if ( this->_verbose )
-        *this->_p_camera << "Move down to " << this->_p_camera->position();
+        *this->_p_camera << "Rotate right to " << this->_p_camera->position();
 
     CIE_END_EXCEPTION_TRACING
 }
 
 
-void FlyCameraControls::rotate()
+void ArcBallCameraControls::rotateUp()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    if ( this->_dx!=0.0 || this->_dy!=0.0 )
-    {
-        auto unitVectorRight = glm::cross(
-            this->_p_camera->direction(),
-            this->_p_camera->up()
-        );
+    auto axis = glm::cross(
+        { 0.0, 0.0, 1.0 },
+        this->_p_camera->direction()
+    );
 
-        auto axis = this->_dy * unitVectorRight
-                    - this->_dx * this->_p_camera->up();
-
-        this->_p_camera->rotate( this->_rotationScale,
-                                 axis,
-                                 this->_p_camera->position() );
-    }
+    this->_p_camera->rotate(
+        this->_rotationScale,
+        axis,
+        this->_center
+    );
 
     if ( this->_verbose )
-        *this->_p_camera << "Rotate view";
+        *this->_p_camera << "Rotate up to " << this->_p_camera->position();
 
     CIE_END_EXCEPTION_TRACING
 }
 
 
-void FlyCameraControls::rollCounterClockwise()
+void ArcBallCameraControls::rotateDown()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    this->_p_camera->rotateRoll( -this->_rotationScale );
+    auto axis = glm::cross(
+        { 0.0, 0.0, 1.0 },
+        this->_p_camera->direction()
+    );
+
+    this->_p_camera->rotate(
+        -this->_rotationScale,
+        axis,
+        this->_center
+    );
 
     if ( this->_verbose )
-        *this->_p_camera << "Roll counter clockwise";
+        *this->_p_camera << "Rotate down to " << this->_p_camera->position();
 
     CIE_END_EXCEPTION_TRACING
 }
 
 
-void FlyCameraControls::rollClockwise()
-{
-    CIE_BEGIN_EXCEPTION_TRACING
-
-    this->_p_camera->rotateRoll( this->_rotationScale );
-
-    if ( this->_verbose )
-        *this->_p_camera << "Roll clockwise";
-
-    CIE_END_EXCEPTION_TRACING
-}
-
-
-void FlyCameraControls::zoomIn()
+void ArcBallCameraControls::zoomIn()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -254,7 +244,7 @@ void FlyCameraControls::zoomIn()
 }
 
 
-void FlyCameraControls::zoomOut()
+void ArcBallCameraControls::zoomOut()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -267,8 +257,37 @@ void FlyCameraControls::zoomOut()
 }
 
 
-void FlyCameraControls::onMouseButtonPress( KeyEnum button,
-                                            KeyEnum modifiers )
+void ArcBallCameraControls::increaseZoomScale()
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    this->_zoomScale += this->_zoomScaleIncrement;
+
+    if ( this->_verbose )
+        *this->_p_camera << "Increase zoom scale to " + std::to_string( this->_zoomScale );    
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+void ArcBallCameraControls::decreaseZoomScale()
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    this->_zoomScale -= this->_zoomScaleIncrement;
+
+    if ( this->_zoomScale <= 1.0 )
+        this->_zoomScale = 1.0 + this->_zoomScaleIncrement;
+
+    if ( this->_verbose )
+        *this->_p_camera << "Decrease zoom scale to " + std::to_string( this->_zoomScale );    
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+void ArcBallCameraControls::onMouseButtonPress( KeyEnum button,
+                                                KeyEnum modifiers )
 {
     if ( button == GLFW_MOUSE_BUTTON_1 )
         this->_isLeftMouseButtonPressed = true;
@@ -277,8 +296,8 @@ void FlyCameraControls::onMouseButtonPress( KeyEnum button,
 }
 
 
-void FlyCameraControls::onMouseButtonRelease( KeyEnum button,
-                                              KeyEnum modifiers )
+void ArcBallCameraControls::onMouseButtonRelease( KeyEnum button,
+                                                  KeyEnum modifiers )
 {
     if ( button == GLFW_MOUSE_BUTTON_1 )
         this->_isLeftMouseButtonPressed = false;
@@ -287,8 +306,8 @@ void FlyCameraControls::onMouseButtonRelease( KeyEnum button,
 }
 
 
-void FlyCameraControls::onCursorMovement( double x,
-                                          double y )
+void ArcBallCameraControls::onCursorMovement( double x,
+                                              double y )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -309,20 +328,7 @@ void FlyCameraControls::onCursorMovement( double x,
 }
 
 
-void FlyCameraControls::onHorizontalScroll( double offset )
-{
-    CIE_BEGIN_EXCEPTION_TRACING
-
-    if ( offset > 0.0 )
-        this->strafeRight();
-    else if ( offset < 0.0 )
-        this->strafeLeft();
-
-    CIE_END_EXCEPTION_TRACING
-}
-
-
-void FlyCameraControls::onVerticalScroll( double offset )
+void ArcBallCameraControls::onVerticalScroll( double offset )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -335,20 +341,20 @@ void FlyCameraControls::onVerticalScroll( double offset )
 }
 
 
-FlyCameraControls::configuration_map_type
-FlyCameraControls::makeConfigurationMap( FlyCameraControls::configuration_contents& r_configContents )
+ArcBallCameraControls::configuration_map_type
+ArcBallCameraControls::makeConfigurationMap( ArcBallCameraControls::configuration_contents& r_configContents )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    FlyCameraControls::configuration_map_type configMap;
+    ArcBallCameraControls::configuration_map_type configMap;
     
     auto findControl = [&r_configContents, this]( const std::string& r_controlName )
-    -> typename FlyCameraControls::configuration_contents::iterator
+    -> typename ArcBallCameraControls::configuration_contents::iterator
     {
         auto it = std::find_if(
             r_configContents.begin(),
             r_configContents.end(),
-            [&r_controlName]( typename FlyCameraControls::configuration_contents::value_type& r_pair )
+            [&r_controlName]( typename ArcBallCameraControls::configuration_contents::value_type& r_pair )
             {
                 if ( r_controlName == r_pair.first )
                     return true;
@@ -366,49 +372,49 @@ FlyCameraControls::makeConfigurationMap( FlyCameraControls::configuration_conten
     auto it_pair = findControl( "moveForward" );
     configMap.emplace(
         it_pair->second,
-        std::bind( &FlyCameraControls::moveForward, this )
+        std::bind( &ArcBallCameraControls::moveForward, this )
     );
 
     it_pair = findControl( "moveBackward" );
     configMap.emplace(
         it_pair->second,
-        std::bind( &FlyCameraControls::moveBackward, this )
+        std::bind( &ArcBallCameraControls::moveBackward, this )
     );
 
-    it_pair = findControl( "strafeLeft" );
+    it_pair = findControl( "rotateLeft" );
     configMap.emplace(
         it_pair->second,
-        std::bind( &FlyCameraControls::strafeLeft, this )
+        std::bind( &ArcBallCameraControls::rotateLeft, this )
     );
 
-    it_pair = findControl( "strafeRight" );
+    it_pair = findControl( "rotateRight" );
     configMap.emplace(
         it_pair->second,
-        std::bind( &FlyCameraControls::strafeRight, this )
+        std::bind( &ArcBallCameraControls::rotateRight, this )
     );
 
-    it_pair = findControl( "moveUp" );
+    it_pair = findControl( "rotateUp" );
     configMap.emplace(
         it_pair->second,
-        std::bind( &FlyCameraControls::moveUp, this )
+        std::bind( &ArcBallCameraControls::rotateUp, this )
     );
 
-    it_pair = findControl( "moveDown" );
+    it_pair = findControl( "rotateDown" );
     configMap.emplace(
         it_pair->second,
-        std::bind( &FlyCameraControls::moveDown, this )
+        std::bind( &ArcBallCameraControls::rotateDown, this )
     );
 
-    it_pair = findControl( "rollCounterClockwise" );
+    it_pair = findControl( "increaseZoomScale" );
     configMap.emplace(
         it_pair->second,
-        std::bind( &FlyCameraControls::rollCounterClockwise, this )
+        std::bind( &ArcBallCameraControls::increaseZoomScale, this )
     );
 
-    it_pair = findControl( "rollClockwise" );
+    it_pair = findControl( "decreaseZoomScale" );
     configMap.emplace(
         it_pair->second,
-        std::bind( &FlyCameraControls::rollClockwise, this )
+        std::bind( &ArcBallCameraControls::decreaseZoomScale, this )
     );
 
     // Escape for closing the window

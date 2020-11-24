@@ -1,0 +1,30 @@
+<controls>
+    <c0 name="rotateUp">
+        <key>w</key>
+        <key>up</key>
+    </c0>
+    <c1 name="rotateDown">
+        <key>s</key>
+        <key>down</key>
+    </c1>
+    <c2 name="rotateLeft">
+        <key>a</key>
+        <key>left</key>
+    </c2>
+    <c3 name="rotateRight">
+        <key>d</key>
+        <key>right</key>
+    </c3>
+    <c4 name="moveForward">
+        <key>r</key>
+    </c4>
+    <c5 name="moveBackward">
+        <key>f</key>
+    </c5>
+    <c6 name="increaseZoomScale">
+        <key>kp_add</key>
+    </c6>
+    <c7 name="decreaseZoomScale">
+        <key>kp_subtract</key>
+    </c7>
+</controls>

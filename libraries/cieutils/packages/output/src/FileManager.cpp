@@ -26,9 +26,9 @@ FileManager::FileManager(const std::filesystem::path& r_path ) :
         {
             _path = INSTALL_PATH / "output";
         }
-        catch ( std::exception exception )
+        catch ( const std::exception& r_exception )
         {
-            CIE_THROW( Exception, exception.what() )
+            CIE_THROW( Exception, r_exception.what() )
         }
     }
 
@@ -38,9 +38,9 @@ FileManager::FileManager(const std::filesystem::path& r_path ) :
         {
             std::filesystem::create_directory( _path );
         }
-        catch (std::exception exception)
+        catch ( const std::exception& r_exception )
         {
-            CIE_THROW( Exception, exception.what() )
+            CIE_THROW( Exception, r_exception.what() )
         }
     }
 

@@ -3,19 +3,23 @@
 
 // --- Internal Includes ---
 #include "cieutils/packages/logging/inc/Logger.hpp"
+#include "cieutils/packages/macros/inc/testing.hpp"
 #include "cmake_variables.hpp"
 
 
 namespace cie::utils {
 
 
-TEST_CASE( "Logger" )
+TEST_CASE( "Logger", "[logger]" )
 {
+    CIE_TEST_CASE_INIT( "Logger" )
+
     std::filesystem::path loggerTestDir = TEST_OUTPUT_PATH;
 
     {
         // Construct logger
-        Logger logger( loggerTestDir / "testLog.txt" );
+        Logger logger( loggerTestDir / "testLog.txt",
+                       true );
 
         CHECK_NOTHROW( logger.log( "test1" ) );
         CHECK_NOTHROW( logger.warn( "test2" ) );

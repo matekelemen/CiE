@@ -74,11 +74,11 @@ public:
 };
 
 
-using AbsVertexBuffer    = AbsBuffer<float>;
-using AbsElementBuffer   = AbsBuffer<unsigned int>;
+using VertexBuffer       = AbsBuffer<float>;
+using ElementBuffer      = AbsBuffer<unsigned int>;
 
-using VertexBufferPtr    = std::shared_ptr<AbsVertexBuffer>;
-using ElementBufferPtr   = std::shared_ptr<AbsElementBuffer>;
+using VertexBufferPtr    = std::shared_ptr<VertexBuffer>;
+using ElementBufferPtr   = std::shared_ptr<ElementBuffer>;
 
 
 } // namespace cie::gl

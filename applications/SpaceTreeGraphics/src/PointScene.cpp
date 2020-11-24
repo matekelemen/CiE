@@ -58,39 +58,53 @@ PointScene::PointScene( utils::Logger& r_logger,
         gl::makeVertexShader<gl::GLFWVertexShader>( detail::POINT_SHADER_PATH / "vertexShader.xml", detail::POINT_SHADER_PATH / "vertexShader.glsl" ),
         gl::makeGeometryShader<gl::GLFWGeometryShader>( detail::POINT_SHADER_PATH / "geometryShader.xml", detail::POINT_SHADER_PATH / "geometryShader.glsl" ),
         gl::makeFragmentShader<gl::GLFWFragmentShader>( detail::POINT_SHADER_PATH / "fragmentShader.xml", detail::POINT_SHADER_PATH / "fragmentShader.glsl" )
-    )
+    ),
+    _roots()
 {
-    auto p_camera = this->makeCamera<gl::Camera<gl::OrthographicProjection>>();
+    auto p_camera = this->makeCamera<gl::Camera<gl::PerspectiveProjection>>();
     this->bindUniform( "transformation", p_camera->transformationMatrix() );
+}
+
+
+void PointScene::updatePoints()
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    // Clear stored centers
+    PointScene::vertex_attribute_container centerComponents;
+
+    // Send lambda down the tree that collects all leaf centers
+    auto getLeafCenter = [&centerComponents]( csg::NodeType* p_node ) -> bool
+    {
+        // Return if not a leaf node
+        if ( !p_node->children().empty() )
+            return true;
+        else
+            for ( auto& rp_child : p_node->children() )
+                if ( rp_child->values().empty() )
+                    return true;
+        
+
+        auto center = detail::getCenter( *p_node );
+        for ( const auto& r_component : center )
+            centerComponents.push_back( r_component );
+
+        return true;
+    };
+
+    for ( auto& rp_root : this->_roots )
+        rp_root->visit( getLeafCenter );
+
+    // Write leaf centers to buffer
+    this->_p_bufferManager->writeToBoundVertexBuffer( centerComponents );
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
 void PointScene::update_impl()
 {
     CIE_BEGIN_EXCEPTION_TRACING
-
-    // Collect leaf node centers
-    std::vector<GLfloat> centerComponents;
-
-    auto getLeafCenter = [&centerComponents]( csg::NodeType* p_node ) -> bool
-    {
-        //if ( p_node->children().empty() )
-        {
-            auto center = detail::getCenter( *p_node );
-            for ( const auto& r_component : center )
-                centerComponents.push_back( r_component );
-        }
-
-        return true;
-    };
-
-
-    for ( auto& rp_root : this->_roots )
-        rp_root->visit( getLeafCenter );
-
-
-    // Write leaf centers to buffer
-    this->_p_bufferManager->writeToBoundVertexBuffer( centerComponents );
 
     // Get number of components to draw
     GLint64 numberOfComponents;

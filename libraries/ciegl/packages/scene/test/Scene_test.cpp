@@ -103,14 +103,14 @@ TEST_CASE( "Scene", "[scene]" )
                 p_fragmentShader )
         );
 
-        AbsVertexBuffer::data_container_type components 
+        VertexBuffer::data_container_type components 
         {
             0.0, 0.5, 0.0,
             0.5, -0.5, 0.0,
             -0.5, -0.5, 0.0
         };
 
-        AbsElementBuffer::data_container_type triangles
+        ElementBuffer::data_container_type triangles
         {
             0, 1, 2
         };
@@ -148,26 +148,26 @@ TEST_CASE( "Scene", "[scene]" )
             )
         );
 
-        AbsVertexBuffer::data_container_type components0 
+        VertexBuffer::data_container_type components0 
         {
             0.0, 0.5, 0.0,
             0.5, -0.5, 0.0,
             0.0, -0.5, 0.0
         };
 
-        AbsElementBuffer::data_container_type triangles0
+        ElementBuffer::data_container_type triangles0
         {
             0, 1, 2
         };
 
-        AbsVertexBuffer::data_container_type components1
+        VertexBuffer::data_container_type components1
         {
             0.0, 0.5, 0.0,
             0.5, 0.5, 0.0,
             0.5, -0.5, 0.0
         };
 
-        AbsElementBuffer::data_container_type triangles1
+        ElementBuffer::data_container_type triangles1
         {
             0, 1, 2
         };
@@ -250,7 +250,7 @@ TEST_CASE( "Scene", "[scene]" )
 
         const float a = 0.5;
 
-        typename AbsVertexBuffer::data_container_type vertexData
+        typename VertexBuffer::data_container_type vertexData
         {
             // position ----------- normal
             a, 0.0, 0.0,    1.0, 0.0, 0.0,  // 1 
@@ -297,7 +297,7 @@ TEST_CASE( "Scene", "[scene]" )
         };
 
         // Cube triangles
-        AbsElementBuffer::data_container_type triangles
+        ElementBuffer::data_container_type triangles
         {
             0, 1, 2,        3, 4, 5,
             6, 7, 8,        9, 10, 11,

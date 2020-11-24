@@ -94,7 +94,7 @@ int main( int argc, char const* argv[] )
 
     // Set controls
     auto p_controls = gl::CameraControlsPtr(
-        new gl::FlyCameraControls
+        new gl::ArcBallCameraControls(true)
     );
     p_controls->bind( p_window, p_camera );
 

@@ -1,5 +1,5 @@
-#ifndef CIE_GL_FLY_CAMERA_CONTROLS_HPP
-#define CIE_GL_FLY_CAMERA_CONTROLS_HPP
+#ifndef CIE_GL_ARCBALL_CAMERA_CONTROLS_HPP
+#define CIE_GL_ARCBALL_CAMERA_CONTROLS_HPP
 
 // --- Internal Includes ---
 #include "ciegl/packages/control/inc/MappedCameraControls.hpp"
@@ -10,38 +10,41 @@ namespace cie::gl {
 
 /**
  * Configurable key controls:
- *  moveForward ( "w", "up" )
- *  moveBackward ( "s", "down" )
- *  strafeLeft ( "a", "left" )
- *  strafeRight ( "d", "right" )
- *  moveUp ( "r", "space" )
- *  moveDown ( "f", "left_control" )
- *  rollCounterClockwise( "q" )
- *  rollClockwise( "r" )
+ *  rotateUp ( "w", "up" )
+ *  rotateDown ( "s", "down" )
+ *  rotateLeft ( "a", "left" )
+ *  rotateRight ( "d", "right" )
+ *  moveForward ( "r" )
+ *  moveBackward ( "f" )
+ *  increaseZoomScale ( "kp_add" )
+ *  decreaseZoomScale ( "kp_subtract" )
  */
-class FlyCameraControls final : public MappedCameraControls
+class ArcBallCameraControls final : public MappedCameraControls
 {
 public:
-    FlyCameraControls( bool verbose = true );
+    ArcBallCameraControls( bool verbose = false );
 
-    void setMovementScale( double scale );
+    const AbsCamera::vector_type& getCenter() const;
+    void setCenter( const AbsCamera::vector_type& r_center );
+
     void setRotationScale( double scale );
     void setZoomScale( double scale );
 
 private:
     void moveForward();
     void moveBackward();
-    void strafeLeft();
-    void strafeRight();
-    void moveUp();
-    void moveDown();
 
     void rotate();
-    void rollCounterClockwise();
-    void rollClockwise();
-    
+    void rotateLeft();
+    void rotateRight();
+    void rotateUp();
+    void rotateDown();
+
     void zoomIn();
     void zoomOut();
+
+    void increaseZoomScale();
+    void decreaseZoomScale();
 
 private:
     void onMouseButtonPress( KeyEnum button,
@@ -53,16 +56,16 @@ private:
     void onCursorMovement( double x,
                            double y ) override;
 
-    void onHorizontalScroll( double offset ) override;
-
     void onVerticalScroll( double offset ) override;
 
-    FlyCameraControls::configuration_map_type makeConfigurationMap( FlyCameraControls::configuration_contents& r_configContents ) override;
+    ArcBallCameraControls::configuration_map_type makeConfigurationMap( ArcBallCameraControls::configuration_contents& r_configContents ) override;
 
 private:
-    double _movementScale;
+    AbsCamera::vector_type _center;
+
     double _rotationScale;
     double _zoomScale;
+    double _zoomScaleIncrement;
 
     double _x;
     double _y;

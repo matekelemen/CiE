@@ -38,15 +38,17 @@ inline bool
 SpaceTreeNode<CellType,ValueType>::divide(  const TargetFunction<typename CellType::point_type,ValueType>& r_target,
                                             Size level )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    // Clear children
+    this->_children.clear();
+
     // Evaluate target and set boundary flag
     evaluate( r_target );
 
     // Do nothing if this is the last level
     if ( this->_level >= level )
         return false;
-
-    // Clear children
-    this->_children.clear();
 
     // Split if boundary
     if ( _isBoundary == 1 )
@@ -85,6 +87,75 @@ SpaceTreeNode<CellType,ValueType>::divide(  const TargetFunction<typename CellTy
     }
 
     return false;
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+template <  class CellType,
+            class ValueType >
+inline bool
+SpaceTreeNode<CellType,ValueType>::divide(  const TargetFunction<typename CellType::point_type,ValueType>& r_target,
+                                            Size level,
+                                            typename SpaceTreeNode<CellType,ValueType>::target_map_ptr p_targetMap )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    // Create target map if it doesn't exist yet
+    if ( p_targetMap == nullptr )
+        p_targetMap = typename SpaceTreeNode<CellType,ValueType>::target_map_ptr(
+            new typename SpaceTreeNode<CellType,ValueType>::target_map_type
+        );
+
+    // Evaluate target and set boundary flag
+    evaluateMap( r_target, p_targetMap );
+
+    // Do nothing if this is the last level
+    if ( this->_level >= level )
+        return false;
+
+    // Clear children
+    this->_children.clear();
+
+    // Split if boundary
+    if ( _isBoundary == 1 )
+    {
+        auto splitPoint = _p_splitPolicy->operator()(
+            _values.begin(),
+            _values.end(),
+            typename SpaceTreeNode<CellType,ValueType>::sample_point_iterator(0,*this)
+        );
+
+        auto nodeConstructor    = std::make_tuple(  _p_sampler,
+                                                    _p_splitPolicy,
+                                                    this->_level + 1 );
+        auto p_cellConstructors = this->split( splitPoint );
+
+        for ( const auto& cellConstructor : *p_cellConstructors )
+        {
+            // Construct a child
+            auto compoundConstructor = std::tuple_cat(nodeConstructor,cellConstructor);
+            auto p_node = utils::make_shared_from_tuple<SpaceTreeNode<CellType,ValueType>>(compoundConstructor);
+            
+            // Check whether child is valid
+            if ( p_node->isDegenerate() )
+                continue;
+
+            this->_children.push_back(p_node);
+
+            // Call divide on child
+            #pragma omp task
+            {
+            p_node->divide( r_target, level, p_targetMap );
+            }
+        }
+
+        return true;
+    }
+
+    return false;
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -94,6 +165,9 @@ template <  class CellType,
 inline void
 SpaceTreeNode<CellType,ValueType>::evaluate( const TargetFunction<typename CellType::point_type,ValueType>& r_target )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    // Init
     _isBoundary = -1;
     cie::utils::resize( _values, _p_sampler->size() );
     auto it_value = _values.begin();
@@ -119,6 +193,8 @@ SpaceTreeNode<CellType,ValueType>::evaluate( const TargetFunction<typename CellT
     // If the boundary flag hasn't been modified -> not a boundary
     if ( _isBoundary < 0 )
         _isBoundary = 0;
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -129,13 +205,9 @@ inline typename SpaceTreeNode<CellType,ValueType>::target_map_ptr
 SpaceTreeNode<CellType,ValueType>::evaluateMap( const TargetFunction<typename CellType::point_type,value_type>& r_target,
                                                 typename SpaceTreeNode<CellType,ValueType>::target_map_ptr p_targetMap )
 {
-    CIE_THROW( NotImplementedException, "SpaceTreeNode::evaluateMap needs a threadsafe map implementation" )
+    CIE_BEGIN_EXCEPTION_TRACING
 
-    // Create target map if it doesn't exist yet
-    if ( p_targetMap == nullptr )
-        p_targetMap = typename SpaceTreeNode<CellType,ValueType>::target_map_ptr(
-            new typename SpaceTreeNode<CellType,ValueType>::target_map_type
-        );
+    CIE_CHECK_POINTER( p_targetMap )
 
     // Init
     _isBoundary = -1;
@@ -144,11 +216,21 @@ SpaceTreeNode<CellType,ValueType>::evaluateMap( const TargetFunction<typename Ce
     typename SpaceTreeNode<CellType,ValueType>::sample_point_iterator it_point(0,*this);
 
     // Evaluate first point separately and set sign flag
-    auto it_targetMap = p_targetMap->find( *it_point++ );
+    auto p_point      = &*it_point;
+    auto it_targetMap = p_targetMap->find( *p_point );
 
-    //if ( auto it_targetMap )
-    *it_value = r_target(*it_point++);
+    if ( it_targetMap == p_targetMap->end() )
+    {
+        it_targetMap = p_targetMap->emplace(
+            *p_point,
+            r_target( *p_point )
+        ).first;
+    }
+
+    *it_value = it_targetMap->second;
     bool isFirstValuePositive = *it_value > 0;
+
+    it_point++;
     it_value++;
 
     auto it_valueEnd = _values.end();
@@ -156,7 +238,18 @@ SpaceTreeNode<CellType,ValueType>::evaluateMap( const TargetFunction<typename Ce
     // Evaluate the rest of the points
     for ( ; it_value!=it_valueEnd; ++it_value,++it_point )
     {
-        *it_value = r_target(*it_point);
+        p_point      = &*it_point;
+        it_targetMap = p_targetMap->find( *p_point );
+
+        if ( it_targetMap == p_targetMap->end() )
+        {
+            it_targetMap = p_targetMap->emplace(
+                *p_point,
+                r_target( *p_point )
+            ).first;
+        }
+
+        *it_value = it_targetMap->second;
 
         // Boundary check
         if ( ((*it_value>0) != isFirstValuePositive) && (_isBoundary < 0)  )
@@ -168,6 +261,8 @@ SpaceTreeNode<CellType,ValueType>::evaluateMap( const TargetFunction<typename Ce
         _isBoundary = 0;
 
     return p_targetMap;
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 

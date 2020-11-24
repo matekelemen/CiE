@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <chrono>
 #include <thread>
+#include <algorithm>
 
 
 namespace cie::csg {
@@ -21,11 +22,16 @@ namespace cie::csg {
 template <cie::detail::CubeType Node>
 std::shared_ptr<Node> makeRoot()
 {
+    PointType base;
+    std::fill( base.begin(),
+               base.end(),
+               -2.0 );
+
     return std::make_shared<Node>(
         typename Node::sampler_ptr( new SamplerType(numberOfPointsPerDimension) ),
         typename Node::split_policy_ptr( new SplitterType ),
         0,
-        PointType{-2.0,-2.0,-2.0},
+        base,
         4.0 );
 }
 
@@ -33,12 +39,20 @@ std::shared_ptr<Node> makeRoot()
 template <cie::detail::BoxType Node>
 std::shared_ptr<Node> makeRoot()
 {
+    PointType base, end;
+    std::fill( base.begin(),
+               base.end(),
+               -2.0 );
+    std::fill( end.begin(),
+               end.end(),
+               4.0 );
+
     return std::make_shared<Node>(
         typename Node::sampler_ptr( new SamplerType(numberOfPointsPerDimension) ),
         typename Node::split_policy_ptr( new SplitterType ),
         0,
-        PointType{-2.0,-2.0,-2.0},
-        PointType{ 4.0, 4.0, 4.0 }
+        base,
+        end
     );
 }
 
@@ -78,16 +92,26 @@ int main( std::function<ValueType(const PointType&,Double)> targetFunction,
 
     auto p_camera = p_scene->getCamera();
 
-    p_camera->setPosition( {0.0, 0.0, 2.0} );
+    p_camera->setPosition( {0.0, 0.0, 3.0} );
 
-    p_camera->rotateRoll( -3.0 * M_PI / 4.0 );
-    p_camera->rotate( M_PI / 4.0,
-                      { -1.0, 1.0, 0.0 } );
-    p_camera->rotateRoll( -M_PI / 4.0 );
-
-    p_camera->setClippingPlanes( 0.5, 3.0 );
+    if ( Dimension == 3 )
+    {
+        p_camera->rotateRoll( -3.0 * M_PI / 4.0 );
+        p_camera->rotate( M_PI / 4.0,
+                        { -1.0, 1.0, 0.0 } );
+        p_camera->rotateRoll( -M_PI / 4.0 );
+    }
+    
+    p_camera->setClippingPlanes( 1e-3, 1e2 );
     p_camera->setAspectRatio( p_window->getSize().first / double(p_window->getSize().second) );
-    //p_camera->setFieldOfView( 90.0 * M_PI / 180.0 );
+    p_camera->setFieldOfView( 60.0 * M_PI / 180.0 );
+
+    // Camera controls
+    auto p_controls = gl::CameraControlsPtr(
+        new gl::FlyCameraControls
+    );
+
+    p_controls->bind( p_window, p_camera );
 
     // Loop function setup
     auto t0   = std::chrono::high_resolution_clock::now();
@@ -115,8 +139,8 @@ int main( std::function<ValueType(const PointType&,Double)> targetFunction,
         { return targetFunction(point, offset); };
 
         auto timerID = p_scene->tic();
-        p_root->clear();
 
+        // Divide
         #pragma omp parallel
         {
         #pragma omp single
@@ -125,7 +149,14 @@ int main( std::function<ValueType(const PointType&,Double)> targetFunction,
         }
         }
 
-        p_scene->toc( "Dividing took", timerID );
+        p_scene->toc( "Dividing",
+                      timerID,
+                      false );
+
+        // Collect leaf centers
+        p_scene->updatePoints();
+
+        // Draw
         p_window->update();
 
         return true;
@@ -153,7 +184,7 @@ int main(int argc, char *argv[])
         depth = std::atoi(argv[2]);
 
     auto targetFunction =  [](const cie::csg::PointType& r_point, double offset) 
-        {return cie::csg::exponentialMergeFunction<3>(r_point,offset);};
+        {return cie::csg::exponentialMergeFunction<cie::csg::Dimension>(r_point,offset);};
 
     cie::csg::main(targetFunction, speed, depth);
     std::cout << "\nTotal merge function calls: " << cie::csg::mergeCounter << "\n";

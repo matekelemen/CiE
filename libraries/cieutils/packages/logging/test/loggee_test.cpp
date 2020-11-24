@@ -4,11 +4,13 @@
 // --- Internal Includes ---
 #include "cieutils/packages/logging/inc/Loggee.hpp"
 #include "cieutils/packages/logging/inc/Logger.hpp"
+#include "cieutils/packages/macros/inc/testing.hpp"
 #include "cmake_variables.hpp"
 
 // --- STL Includes ---
 #include <iostream>
 #include <string>
+#include <vector>
 
 
 namespace cie::utils {
@@ -23,10 +25,13 @@ struct TestLoggee : public Loggee
 };
 
 
-TEST_CASE( "Loggee" )
+TEST_CASE( "Loggee", "[logging]" )
 {
+    CIE_TEST_CASE_INIT( "Loggee" )
+
     // Create Logger
-    Logger logger( loggeeTestDir / "loggee_test.txt" );
+    Logger logger( loggeeTestDir / "loggee_test.txt",
+                   true );
 
     {
         // Create Loggee
@@ -48,6 +53,10 @@ TEST_CASE( "Loggee" )
         CHECK_NOTHROW( loggee.toc(timerID, false) );
         CHECK_NOTHROW( loggee.toc( "test9", timerID, false) );
         CHECK_NOTHROW( loggee.toc(timerID) );
+
+        CHECK_NOTHROW( loggee << "test10" );
+        CHECK_NOTHROW( loggee << 11 );
+        CHECK_NOTHROW( loggee << std::vector<int>{ 12, 13 } );
 
         CHECK_NOTHROW( loggee.separate() );
         CHECK_NOTHROW( loggee.fileManager() );

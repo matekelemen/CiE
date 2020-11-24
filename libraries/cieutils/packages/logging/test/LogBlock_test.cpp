@@ -3,6 +3,7 @@
 
 // --- Internal Includes ---
 #include "cieutils/packages/logging/inc/LogBlock.hpp"
+#include "cieutils/packages/macros/inc/testing.hpp"
 #include "cmake_variables.hpp"
 
 
@@ -11,9 +12,12 @@ namespace cie::utils {
 
 TEST_CASE( "LogBlock", "[logging]" )
 {
+    CIE_TEST_CASE_INIT( "LogBlock" )
+
     std::filesystem::path loggerTestDir = TEST_OUTPUT_PATH;
 
-    Logger logger( loggerTestDir / "LogBlock_test.log" );
+    Logger logger( loggerTestDir / "LogBlock_test.log",
+                   true );
     
     for (Size i=0; i<10; ++i)
         if ( i % 2 == 0 )

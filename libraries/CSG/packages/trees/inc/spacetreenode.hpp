@@ -6,6 +6,7 @@
 
 // --- Utility Includes ---
 #include "cieutils/packages/trees/inc/abstree.hpp"
+#include "cieutils/packages/concurrency/inc/ThreadSafeMap.hpp"
 
 // --- Internal Includes ---
 #include "CSG/packages/trees/inc/cell.hpp"
@@ -17,7 +18,7 @@
 #include <stdint.h>
 #include <memory>
 #include <functional>
-#include <unordered_map>
+#include <map>
 
 namespace cie::csg {
 
@@ -82,7 +83,8 @@ public:
     using sampler_ptr           = PrimitiveSamplerPtr<typename CellType::primitive_type>;
     using split_policy_ptr      = SplitPolicyPtr<sample_point_iterator,value_iterator>;
 
-    using target_map_type       = std::unordered_map<typename cell_type::point_type, value_type>;
+    using target_map_base_type  = std::map<typename cell_type::point_type, value_type>;
+    using target_map_type       = mp::ThreadSafeMap<target_map_base_type>;
     using target_map_ptr        = std::shared_ptr<target_map_type>;
 
 public:
@@ -102,6 +104,14 @@ public:
     */
     bool divide(    const TargetFunction<typename CellType::point_type,value_type>& r_target,
                     Size level );
+
+    /**
+     * Evaluate the target function at all sample points, store the results in a map,
+     * and split the node if the results have mixed signs.
+    */
+    bool divide(    const TargetFunction<typename CellType::point_type,value_type>& r_target,
+                    Size level,
+                    target_map_ptr p_targetMap );
 
     /**
      * Evaluate the target function at all sample points and store the results.
