@@ -97,8 +97,8 @@ template <concepts::PrimitiveType BoxType>
 class BoxCell : public AbsCell<BoxType>
 {
 public:
-    BoxCell(    const typename BoxCell<BoxType>::point_type& base, 
-                const typename BoxCell<BoxType>::point_type& lengths );
+    BoxCell( const typename BoxCell<BoxType>::point_type& base, 
+             const typename BoxCell<BoxType>::point_type& lengths );
 
 protected:
     virtual typename BoxCell<BoxType>::primitive_constructor_container_ptr split_internal( const typename BoxCell<BoxType>::point_type& point ) override;

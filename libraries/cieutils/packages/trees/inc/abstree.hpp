@@ -13,7 +13,7 @@ namespace cie::utils {
 
 // Define visitor function
 template <class NodeType>
-using NodeVisitFunction         = std::function<bool( NodeType* node )>;
+using NodeVisitFunction = std::function<bool( NodeType* node )>;
 
 
 
@@ -26,17 +26,25 @@ public:
     typedef std::shared_ptr<SelfType>                   self_pointer_type;
     typedef ContainerType<self_pointer_type,Args...>    child_container_type;
 
-    AbsTree(Size level);
+public:
+    AbsTree( Size level );
     AbsTree();
 
     const child_container_type& children() const;
     child_container_type& children();
+
     const self_pointer_type child( Size index ) const;
     self_pointer_type child( Size index );
+
     Size level() const;
 
     // Send a function down the tree and execute it on all nodes while it returns true
     virtual bool visit( NodeVisitFunction<SelfType> function );
+
+    /**
+     * Check whether this node is a leaf node
+     */
+    virtual bool isLeaf() const;
 
 protected:
     child_container_type    _children;

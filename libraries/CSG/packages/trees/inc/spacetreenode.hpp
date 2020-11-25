@@ -121,6 +121,8 @@ public:
     /**
      * Alternative to evaluate.
      * Record sample points and their values in a global map, then set the isBoundary flag.
+     * 
+     * Note: insane overhead; probably only worth it if the target function is very expensive
     */
     target_map_ptr evaluateMap( const TargetFunction<typename CellType::point_type,value_type>& r_target,
                                 target_map_ptr p_targetMap = nullptr );

@@ -76,6 +76,23 @@ AbsTree<ContainerType,SelfType,Args...>::visit( NodeVisitFunction<SelfType> func
 }
 
 
+template <template <class ...> class ContainerType, class SelfType, class ...Args>
+inline bool
+AbsTree<ContainerType,SelfType,Args...>::isLeaf() const
+{
+    // Has no children, or all children are nullptrs
+    
+    if ( this->_children.empty() )
+        return true;
+
+    for ( const auto& rp_child : this->_children )
+        if ( rp_child )
+            return false;
+
+    return true;
 }
+
+
+} // namespace cie::utils
 
 #endif
