@@ -19,7 +19,7 @@ namespace cie::csg {
 // ABSTRACT CELL
 // ---------------------------------------------------------
 
-template <concepts::PrimitiveType PrimitiveType>
+template <concepts::Primitive PrimitiveType>
 template <class ...Args>
 AbsCell<PrimitiveType>::AbsCell( Args&&... args ) :
     PrimitiveType( std::forward<Args>(args) ... )
@@ -28,7 +28,7 @@ AbsCell<PrimitiveType>::AbsCell( Args&&... args ) :
 
 
 
-template <concepts::PrimitiveType PrimitiveType>
+template <concepts::Primitive PrimitiveType>
 inline typename AbsCell<PrimitiveType>::primitive_constructor_container_ptr
 AbsCell<PrimitiveType>::split( const typename AbsCell<PrimitiveType>::point_type& point )
 {
@@ -43,12 +43,12 @@ AbsCell<PrimitiveType>::split( const typename AbsCell<PrimitiveType>::point_type
 /* --- CubeCell --- */
 
 // 2 children per dimension
-template <concepts::PrimitiveType CubeType>
+template <concepts::Primitive CubeType>
 const GridIndexConverter<CubeType::dimension>
     CubeCell<CubeType>::_childIndexConverter(2);
 
 
-template <concepts::PrimitiveType CubeType>
+template <concepts::Primitive CubeType>
 CubeCell<CubeType>::CubeCell(   const typename CubeCell<CubeType>::point_type& base, 
                                 typename CubeCell<CubeType>::coordinate_type length ) :
     CubeCell<CubeType>::cell_base_type( base, length )
@@ -56,7 +56,7 @@ CubeCell<CubeType>::CubeCell(   const typename CubeCell<CubeType>::point_type& b
 }
 
 
-template <concepts::PrimitiveType CubeType>
+template <concepts::Primitive CubeType>
 inline typename CubeCell<CubeType>::primitive_constructor_container_ptr
 CubeCell<CubeType>::split_internal( const typename CubeCell<CubeType>::point_type& point )
 {
@@ -85,7 +85,7 @@ CubeCell<CubeType>::split_internal( const typename CubeCell<CubeType>::point_typ
 
 
 
-template <concepts::PrimitiveType CubeType>
+template <concepts::Primitive CubeType>
 inline typename CubeCell<CubeType>::primitive_constructor_container_ptr
 CubeCell<CubeType>::split( const typename CubeCell<CubeType>::point_type& r_point )
 {
@@ -93,7 +93,7 @@ CubeCell<CubeType>::split( const typename CubeCell<CubeType>::point_type& r_poin
 }
 
 
-template <concepts::PrimitiveType CubeType>
+template <concepts::Primitive CubeType>
 inline typename CubeCell<CubeType>::primitive_constructor_container_ptr
 CubeCell<CubeType>::split( )
 {
@@ -104,12 +104,12 @@ CubeCell<CubeType>::split( )
 /* --- BoxCell --- */
 
 // 2 children per dimension
-template <concepts::PrimitiveType BoxType>
+template <concepts::Primitive BoxType>
 const GridIndexConverter<BoxType::dimension> 
     BoxCell<BoxType>::_childIndexConverter(2);
 
 
-template <concepts::PrimitiveType BoxType>
+template <concepts::Primitive BoxType>
 BoxCell<BoxType>::BoxCell(  const typename BoxCell<BoxType>::point_type& base, 
                             const typename BoxCell<BoxType>::point_type& lengths ) :
     BoxCell<BoxType>::cell_base_type( base, lengths )
@@ -117,7 +117,7 @@ BoxCell<BoxType>::BoxCell(  const typename BoxCell<BoxType>::point_type& base,
 }
 
 
-template <concepts::PrimitiveType BoxType>
+template <concepts::Primitive BoxType>
 inline typename BoxCell<BoxType>::primitive_constructor_container_ptr
 BoxCell<BoxType>::split_internal( const typename BoxCell<BoxType>::point_type& point )
 {

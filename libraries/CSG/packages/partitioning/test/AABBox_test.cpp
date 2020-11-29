@@ -223,7 +223,7 @@ TEST_CASE( "AABBox", "[partitioning]" )
         // Touch negative side from the inside
         testBox = BoundingBox( { 0.0, hL-hl },
                                { l, l } );
-        CHECK( referenceBox.contains(testBox) == false );
+        CHECK( referenceBox.contains(testBox) == true );
         CHECK( referenceBox.intersects(testBox) == false );
 
         // Touch positive side from the outside
@@ -235,7 +235,7 @@ TEST_CASE( "AABBox", "[partitioning]" )
         // Touch negative corner from the inside
         testBox = BoundingBox( { 0.0, 0.0 },
                                { l, l } );
-        CHECK( referenceBox.contains(testBox) == false );
+        CHECK( referenceBox.contains(testBox) == true );
         CHECK( referenceBox.intersects(testBox) == false );
 
         // Touch positive corner from the outside
@@ -243,6 +243,24 @@ TEST_CASE( "AABBox", "[partitioning]" )
                                { l, l } );
         CHECK( referenceBox.contains(testBox) == false );
         CHECK( referenceBox.intersects(testBox) == false );
+
+        /* --- Box expansion --- */
+
+        testBox = BoundingBox( { 0.0, 0.0 },
+                               { L2, l } );
+        CHECK_NOTHROW( referenceBox.include(testBox) );
+        CHECK( referenceBox.base()[0] == Approx(0.0) );
+        CHECK( referenceBox.base()[1] == Approx(0.0) );
+        CHECK( referenceBox.lengths()[0] == Approx(L2) );
+        CHECK( referenceBox.lengths()[1] == Approx(L) );
+
+        testBox = BoundingBox( { -l, -hl },
+                               { l, L2 } );
+        CHECK_NOTHROW( referenceBox.include(testBox) );
+        CHECK( referenceBox.base()[0] == Approx(-l) );
+        CHECK( referenceBox.base()[1] == Approx(-hl) );
+        CHECK( referenceBox.lengths()[0] == Approx(L2 + l) );
+        CHECK( referenceBox.lengths()[1] == Approx(L2) );
     }
 }
 

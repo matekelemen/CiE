@@ -31,6 +31,11 @@ public:
     Cube( const ContainerType& base,
           CoordinateType length );
 
+    Cube();
+
+    Cube( const Cube<Dimension,CoordinateType>& r_rhs ) = default;
+    Cube<Dimension,CoordinateType>& operator=( const Cube<Dimension,CoordinateType>& r_rhs ) = default;
+
     virtual Bool isDegenerate() const override;
 
     const typename Cube<Dimension,CoordinateType>::point_type& base() const;
@@ -68,6 +73,25 @@ protected:
 
 
 } // namespace cie::csg
+
+
+
+namespace cie::concepts {
+
+template <class T>
+concept Cube
+= Primitive<T>
+  && requires ( T instance, const T constInstance )
+{
+    { instance.base() }         -> std::same_as<typename T::point_type&>;
+    { constInstance.base() }    -> std::same_as<const typename T::point_type&>;
+    { instance.length() }       -> std::same_as<typename T::coordinate_type&>;
+    { constInstance.length() }  -> std::same_as<const typename T::coordinate_type&>;
+};
+
+} // namespace cie::concepts
+
+
 
 #include "CSG/packages/primitives/impl/Cube_impl.hpp"
 

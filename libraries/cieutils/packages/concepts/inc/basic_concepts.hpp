@@ -11,6 +11,14 @@ namespace concepts {
 
 
 // ---------------------------------------------------------
+// STL Extension
+// ---------------------------------------------------------
+
+template <class T, class TT>
+concept same_as_noqualifiers
+= std::is_same_v<T,TT> || std::is_same_v<std::remove_const<T>::type,TT>;
+
+// ---------------------------------------------------------
 // TRAITS
 // ---------------------------------------------------------
 template <class T>
@@ -186,7 +194,7 @@ concept NonRawPointer
 template <class T>
 concept Pointer
 = RawPointer<T>
-  || ( Dereferencable<T> && Incrementable<T> && Decrementable<T> );
+  || Dereferencable<T>;
 
 
 template <class T>

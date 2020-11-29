@@ -26,7 +26,7 @@ namespace cie::csg {
  * The 'split' interface supplies a set of tuples necessary for constructing
  * a set of primitives (results of the split).
 */
-template <concepts::PrimitiveType PrimitiveType>
+template <concepts::Primitive PrimitiveType>
 class AbsCell : public PrimitiveType
 {
 public:
@@ -67,7 +67,7 @@ protected:
 
 /* --- CubeCell --- */
 
-template <concepts::PrimitiveType CubeType>
+template <concepts::Primitive CubeType>
 class CubeCell : public AbsCell<CubeType>
 {
 public:
@@ -93,7 +93,7 @@ protected:
 
 /* --- BoxCell --- */
 
-template <concepts::PrimitiveType BoxType>
+template <concepts::Primitive BoxType>
 class BoxCell : public AbsCell<BoxType>
 {
 public:

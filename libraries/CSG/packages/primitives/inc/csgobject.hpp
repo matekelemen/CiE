@@ -60,6 +60,18 @@ template <  Size N,
 using CSGObjectPtr = std::shared_ptr<CSGObject<N,ValueType,CoordinateType>>;
 
 
+
+/* --- Convenience Functions --- */
+
+namespace detail {
+
+template < Size Dimension,
+           concepts::NumericType CoordinateType >
+typename CSGTraits<Dimension,CoordinateType>::point_type makeOrigin();
+
+} // namespace detail
+
+
 } // namespace cie::csg
 
 #include "CSG/packages/primitives/impl/csgobject_impl.hpp"

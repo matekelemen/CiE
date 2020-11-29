@@ -3,9 +3,11 @@
 
 // --- Utility Includes ---
 #include "cieutils/packages/macros/inc/checks.hpp"
+#include "cieutils/packages/stl_extension/inc/resize.hpp"
 
 // --- STL Includes ---
 #include <utility>
+
 
 namespace cie::csg {
 
@@ -46,6 +48,26 @@ CSGObject<N,ValueType,CoordinateType>::evaluate( ContainerType&& point ) const
                 internalPoint.begin() );
     return this->at(internalPoint);
 }
+
+
+/* --- Convenience Functions --- */
+
+namespace detail {
+
+template < Size Dimension,
+           concepts::NumericType CoordinateType >
+typename CSGTraits<Dimension,CoordinateType>::point_type makeOrigin()
+{
+    typename CSGTraits<Dimension,CoordinateType>::point_type origin;
+    utils::resize( origin, Dimension );
+
+    for ( auto& r_component : origin )
+        r_component = 0;
+
+    return origin;
+}
+
+} // namespace detail
 
 
 } // namespace cie::csg

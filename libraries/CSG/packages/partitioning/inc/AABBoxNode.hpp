@@ -24,7 +24,8 @@ namespace cie::csg {
 template <concepts::BoxBoundable ObjectType>
 class AABBoxNode :
     public BoxCell<typename ObjectType::bounding_box>,
-    public utils::AbsTree<std::deque,AABBoxNode<ObjectType>>
+    public utils::AbsTree<std::deque,AABBoxNode<ObjectType>>,
+    public std::enable_shared_from_this<AABBoxNode<ObjectType>>
 {
 public:
     using object_type          = ObjectType;
@@ -44,19 +45,22 @@ public:
      * and send it down the tree
      * 
      * \param p_object pointer to object to add
-     * 
-     * \return false if the object could not be added (is outside the box)
      */
-    bool addObject( object_ptr p_object );
+    void addObject( object_ptr p_object );
 
     /**
-     * Erase expired objects and readjust box to fit all remaining ones,
-     * then adjust children sizes
+     * Recursively erase expired objects from storage
+     */
+    void eraseExpired();
+
+    /**
+     * Readjust box to fit all remaining objects,
+     * then adjust children sizes as well
      */
     void shrink();
 
     /**
-     * \brief Find leaf node that contains the query object
+     * \brief Find highest level node that contains the query object
      * 
      * \param p_object pointer to query object
      *

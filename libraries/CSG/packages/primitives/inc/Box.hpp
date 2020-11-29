@@ -32,6 +32,11 @@ public:
     Box( const ContainerType1& r_base, 
          const ContainerType2& r_lengths );
 
+    Box();
+
+    Box( const Box<Dimension,CoordinateType>& r_rhs ) = default;
+    Box<Dimension,CoordinateType>& operator=( const Box<Dimension,CoordinateType>& r_rhs ) = default;
+
     virtual Bool isDegenerate() const override;
 
     const typename Box<Dimension,CoordinateType>::point_type& base() const;
@@ -70,6 +75,23 @@ protected:
 
 
 } // namespace cie::csg
+
+
+namespace cie::concepts {
+
+template <class T>
+concept Box
+= Primitive<T>
+  && requires ( T instance, const T constInstance )
+{
+    { instance.base() }         -> std::same_as<typename T::point_type&>;
+    { constInstance.base() }    -> std::same_as<const typename T::point_type&>;
+    { instance.lengths() }      -> std::same_as<typename T::point_type&>;
+    { constInstance.lengths() } -> std::same_as<const typename T::point_type&>;
+};
+
+} // namespace cie::concepts
+
 
 #include "CSG/packages/primitives/impl/Box_impl.hpp"
 

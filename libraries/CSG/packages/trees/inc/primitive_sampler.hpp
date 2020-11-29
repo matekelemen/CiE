@@ -24,7 +24,7 @@ namespace cie::csg {
 /**
  * Interface for computing sample points on primitives.
 */
-template <concepts::PrimitiveType PrimitiveType>
+template <concepts::Primitive PrimitiveType>
 class PrimitiveSampler :
     public CSGTraits<PrimitiveType::dimension,typename PrimitiveType::coordinate_type>
 {
@@ -45,7 +45,7 @@ using PrimitiveSamplerPtr   = std::shared_ptr<PrimitiveSampler<PrimitiveType>>;
 /**
  * Interface for grid-based samplers. 
 */
-template <concepts::PrimitiveType PrimitiveType>
+template <concepts::Primitive PrimitiveType>
 class GridSampler : public PrimitiveSampler<PrimitiveType>
 {
 public:

@@ -11,9 +11,9 @@ namespace cie::utils::detail {
 
 
 const std::vector<std::filesystem::path> textExtensions = {   ".txt",
-                                                    ".csv"   };
+                                                              ".csv"   };
 const std::vector<std::filesystem::path> binaryExtensions = { ".bin",
-                                                    ".b"     };
+                                                              ".b"     };
 
 
 

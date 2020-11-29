@@ -10,7 +10,7 @@ namespace cie::csg {
 // PRIMITIVE SAMPLER INTERFACE
 // ---------------------------------------------------------
 
-template <concepts::PrimitiveType PrimitiveType>
+template <concepts::Primitive PrimitiveType>
 GridSampler<PrimitiveType>::GridSampler( Size numberOfPointsPerDimension ) :
     _p_indexConverter( new GridIndexConverter<PrimitiveType::dimension>(numberOfPointsPerDimension) ),
     _numberOfPointsPerDimension( numberOfPointsPerDimension )
@@ -19,7 +19,7 @@ GridSampler<PrimitiveType>::GridSampler( Size numberOfPointsPerDimension ) :
 }
 
 
-template <concepts::PrimitiveType PrimitiveType>
+template <concepts::Primitive PrimitiveType>
 inline Size
 GridSampler<PrimitiveType>::size() const
 {
@@ -27,7 +27,7 @@ GridSampler<PrimitiveType>::size() const
 }
 
 
-template <concepts::PrimitiveType PrimitiveType>
+template <concepts::Primitive PrimitiveType>
 inline Size
 GridSampler<PrimitiveType>::numberOfPointsPerDimension() const
 {
@@ -35,7 +35,7 @@ GridSampler<PrimitiveType>::numberOfPointsPerDimension() const
 }
 
 
-template <concepts::PrimitiveType PrimitiveType>
+template <concepts::Primitive PrimitiveType>
 GridSampler<PrimitiveType>&
 GridSampler<PrimitiveType>::setNumberOfPointsPerDimension( Size numberOfPointsPerDimension )
 {
@@ -46,7 +46,7 @@ GridSampler<PrimitiveType>::setNumberOfPointsPerDimension( Size numberOfPointsPe
 }
 
 
-template <concepts::PrimitiveType PrimitiveType>
+template <concepts::Primitive PrimitiveType>
 const GridIndexConverter<PrimitiveType::dimension>&
 GridSampler<PrimitiveType>::indexConverter() const
 {

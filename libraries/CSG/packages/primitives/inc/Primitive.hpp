@@ -76,7 +76,7 @@ concept hasIsDegenerate
  *  - primitive_constructor_arguments
 */
 template <class T>
-concept PrimitiveType
+concept Primitive
 = detail::is_primitive<T>::value
     && detail::hasIsDegenerate<T>;
 

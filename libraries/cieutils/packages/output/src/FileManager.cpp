@@ -15,28 +15,19 @@ namespace cie::utils {
 std::vector<std::filesystem::path> FileManager::_paths = {};
 
 
-FileManager::FileManager(const std::filesystem::path& r_path ) :
+FileManager::FileManager( const std::filesystem::path& r_path ) :
     _path( r_path )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
     if ( _path.empty() )
-    {
-        try
-        {
-            _path = INSTALL_PATH / "output";
-        }
-        catch ( const std::exception& r_exception )
-        {
-            CIE_THROW( Exception, r_exception.what() )
-        }
-    }
+        _path = INSTALL_PATH / "output";
 
-    if (!detail::isDirectory(_path))
+    if ( !detail::isDirectory( _path ) )
     {
         try
         {
-            std::filesystem::create_directory( _path );
+            this->createPath( _path );
         }
         catch ( const std::exception& r_exception )
         {
@@ -67,20 +58,53 @@ FileManager::~FileManager()
 }
 
 
+bool FileManager::createPath( const std::filesystem::path& r_path )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    if ( !std::filesystem::exists( r_path ) )
+    {
+        std::filesystem::create_directories( r_path );
+        return true;
+    }
+    else
+        return false;
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
 File& FileManager::newFile( const std::filesystem::path& r_filePath )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    // Get file path
-    auto path = filePath( r_filePath );
     std::ios_base::openmode mode = std::ios::out;
 
     // Determine modifier bits
-    if ( detail::isBinaryExtension( detail::fileExtension(path) ) )
+    if ( detail::isBinaryExtension( detail::fileExtension(r_filePath) ) )
         mode = mode | std::ios::binary;
 
     // Register file stream
-    _files.push_back( std::make_shared<std::fstream>( path, mode ) );
+    return this->newFile( r_filePath, mode );
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+File& FileManager::newFile( const std::filesystem::path& r_filePath,
+                            std::ios_base::openmode openMode )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    // Get file path
+    auto filePath = this->filePath( r_filePath );
+
+    // Create path if it doesn't exist yet
+    auto path = detail::fileDirectory( filePath );
+    this->createPath( path );
+
+    // Register file stream
+    _files.push_back( std::make_shared<std::fstream>( filePath, openMode ) );
     return *_files.back();
 
     CIE_END_EXCEPTION_TRACING
@@ -92,7 +116,7 @@ File& FileManager::open( const std::filesystem::path& r_filePath )
     CIE_BEGIN_EXCEPTION_TRACING
 
     // Get file path
-    auto path = filePath( r_filePath );
+    auto path = this->filePath( r_filePath );
 
     // Check whether file exists
     if ( !detail::isFile(path) )
@@ -151,7 +175,7 @@ void FileManager::deleteFile(const std::filesystem::path& r_filePath )
     CIE_BEGIN_EXCEPTION_TRACING
 
     // Get file path
-    auto path = filePath( r_filePath );
+    auto path = this->filePath( r_filePath );
 
     // Remove file if it exists
     if ( detail::isFile(path) )

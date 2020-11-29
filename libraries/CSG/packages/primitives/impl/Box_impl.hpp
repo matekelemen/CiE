@@ -51,6 +51,15 @@ Box<Dimension,CoordinateType>::Box( const ContainerType1& r_base,
 
 template < Size Dimension,
            concepts::NumericType CoordinateType >
+Box<Dimension,CoordinateType>::Box() :
+    Box<Dimension,CoordinateType>( detail::makeOrigin<Dimension,CoordinateType>(),
+                                   detail::makeOrigin<Dimension,CoordinateType>() )
+{
+}
+
+
+template < Size Dimension,
+           concepts::NumericType CoordinateType >
 inline Bool
 Box<Dimension,CoordinateType>::isDegenerate() const
 {

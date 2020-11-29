@@ -22,8 +22,12 @@ public:
     FileManager( const std::filesystem::path& r_path );
     ~FileManager();
 
-    File& newFile(const std::filesystem::path& r_filePath );
-    File& open(const std::filesystem::path& r_filePath );
+    bool createPath( const std::filesystem::path& r_path );
+
+    File& newFile( const std::filesystem::path& r_filePath );
+    File& newFile( const std::filesystem::path& r_filePath,
+                   std::ios_base::openmode openMode );
+    File& open( const std::filesystem::path& r_filePath );
 
     FilePtr filePtr( const File& file );
 
