@@ -9,6 +9,7 @@
 
 // --- STL Includes ---
 #include <tuple>
+#include <array>
 
 
 namespace cie::csg {

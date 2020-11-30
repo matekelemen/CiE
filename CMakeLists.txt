@@ -29,9 +29,12 @@ SET( CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}:$ORIGIN" )
 # ---------------------------------------------------------
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-if( WIN32 )
-    set( EXECUTABLE_OUTPUT_PATH ${CMAKE_INSTALL_PREFIX}/bin )
-    set( LIBRARY_OUTPUT_PATH ${CMAKE_INSTALL_PREFIX}/bin )
+if( MSVC )
+    set( EXECUTABLE_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/bin" )
+    set( LIBRARY_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/bin" )
+    
+    install( DIRECTORY DESTINATION "${EXECUTABLE_INSTALL_PATH}" )
+    install( DIRECTORY DESTINATION "${LIBRARY_INSTALL_PATH}" )
 endif(  )
 
 # ---------------------------------------------------------

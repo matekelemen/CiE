@@ -7,6 +7,7 @@
 
 // --- STL Includes ---
 #include <memory>
+#include <array>
 
 namespace cie::csg {
 

@@ -30,12 +30,12 @@ INSTALL_TEST( csg_testrunner )
 # ---------------------------------------------------------
 # To be able to debug in Windows we have to copy the desired library to the project debug folder.
 # This adds a post build command that after building the executable copies the library over.
-if( MSVC )
-    add_custom_command(TARGET csg_testrunner POST_BUILD        	
-        COMMAND ${CMAKE_COMMAND} -E copy 					
-            "$<TARGET_FILE_DIR:linalg>/linalg.dll"  
-            $<TARGET_FILE_DIR:csg_testrunner>)
-endif( )
+#if( MSVC )
+#    add_custom_command(TARGET csg_testrunner POST_BUILD        	
+#        COMMAND ${CMAKE_COMMAND} -E copy 					
+#            "$<TARGET_FILE_DIR:linalg>/linalg.dll"  
+#            $<TARGET_FILE_DIR:csg_testrunner>)
+#endif( )
 
 # ---------------------------------------------------------
 # PYTHON

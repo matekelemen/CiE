@@ -6,8 +6,8 @@
 #include <type_traits>
 #include <cstdint>
 
-namespace cie {
-namespace concepts {
+
+namespace cie::concepts {
 
 
 // ---------------------------------------------------------
@@ -16,7 +16,7 @@ namespace concepts {
 
 template <class T, class TT>
 concept same_as_noqualifiers
-= std::is_same_v<T,TT> || std::is_same_v<std::remove_const<T>::type,TT>;
+= std::is_same_v<T,TT> || std::is_same_v<typename std::remove_const<T>::type,TT>;
 
 // ---------------------------------------------------------
 // TRAITS
@@ -225,7 +225,6 @@ concept DerivedFrom
 = std::derived_from<DerivedType,BaseType>;
 
 
-}
-}
+} // namespace cie::concepts
 
 #endif
