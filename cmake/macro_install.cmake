@@ -69,15 +69,15 @@ MACRO( INSTALL_APPLICATION_EXECUTABLE target )
     if( MSVC )
         install( TARGETS ${target} RUNTIME DESTINATION "${EXECUTABLE_INSTALL_PATH}/" )
         # Copy dependencies
-        get_target_property( LINKED_DEPENDENCIES ${target} LINK_LIBRARIES )
-        foreach( dependency ${LINKED_DEPENDENCIES} )
-            add_custom_command(
-                TARGET ${target} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                "$<TARGET_FILE_DIR:${dependency}>/${dependency}.dll"
-                "${EXECUTABLE_INSTALL_PATH}/${dependency}.dll"
-            )
-        endforeach()
+        #get_target_property( LINKED_DEPENDENCIES ${target} LINK_LIBRARIES )
+        #foreach( dependency ${LINKED_DEPENDENCIES} )
+        #    add_custom_command(
+        #        TARGET ${target} POST_BUILD
+        #        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        #        "$<TARGET_FILE_DIR:${dependency}>/${dependency}.dll"
+        #        "${EXECUTABLE_INSTALL_PATH}/${dependency}.dll"
+        #    )
+        #endforeach()
     else()
         MAKE_INSTALL_DIR( "${INSTALL_APPLICATION_PREFIX}/${PROJECT_NAME}" )
         install( TARGETS ${target} RUNTIME DESTINATION "${INSTALL_APPLICATION_PREFIX}/${PROJECT_NAME}" )
@@ -97,7 +97,7 @@ ENDMACRO()
 
 MACRO( INSTALL_APPLICATION_PYTHON_BINDINGS target )
     MAKE_INSTALL_DIR( "${INSTALL_APPLICATION_PREFIX}/${PROJECT_NAME}" )
-    install( TARGETS ${target} LIBRARY DESTINATION "${INSTALL_APPLICATION_PREFIX}/${PROJECT_NAME}" )
+    install( TARGETS ${target} LIBRARY DESTINATION "${INSTALL_APPLICATION_PREFIX}/${PROJECT_NAME}/" )
 ENDMACRO()
 
 

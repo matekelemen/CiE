@@ -6,13 +6,11 @@ set(PYBIND11_CPP_STANDARD -std=c++17)
 add_subdirectory( "${CIE_SOURCE_DIR}/external/pybind11" )
 
 # Graphics
-if( CIE_USE_CPP_GRAPHICS )
-    find_package( OpenGL REQUIRED )
-    add_subdirectory( "${CIE_SOURCE_DIR}/external/glfw" )
-    add_subdirectory( "${CIE_SOURCE_DIR}/external/glm" )
-    add_subdirectory( "${CIE_SOURCE_DIR}/external/glad" )
-    set( BUILD_SHARED_LIBS ON "Always build shared libraries" CACHE BOOL "Always build shared libraries" FORCE )
-endif(  )
+find_package( OpenGL REQUIRED )
+add_subdirectory( "${CIE_SOURCE_DIR}/external/glfw" )
+add_subdirectory( "${CIE_SOURCE_DIR}/external/glm" )
+add_subdirectory( "${CIE_SOURCE_DIR}/external/glad" )
+set( BUILD_SHARED_LIBS ON "Always build shared libraries" CACHE BOOL "Always build shared libraries" FORCE )
 
 # FileIO
 add_subdirectory( "${CIE_SOURCE_DIR}/external/xml" )
