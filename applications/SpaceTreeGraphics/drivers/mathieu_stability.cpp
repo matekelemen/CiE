@@ -88,13 +88,13 @@ int main()
     p_root->divide(targetFunction,depth);
 
     // Graphics setup
-    auto p_context = gl::ContextPtr( new gl::GLFWContext(
+    auto p_context = gl::GLFWContextSingleton::get(
         4,                                          // <-- OpenGL version major
         5,                                          // <-- OpenGL version minor
         0,                                          // <-- Number of MSAA samples
         OUTPUT_PATH / "mathieu_stability_log.txt",  // <-- log file
         true                                        // <-- use console output
-    ) );
+    );
 
     auto p_window = p_context->newWindow(
         800,

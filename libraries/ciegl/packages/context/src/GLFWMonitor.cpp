@@ -79,6 +79,8 @@ std::shared_ptr<std::vector<MonitorPtr>> makeAllGLFWMonitors()
         ));
     }
 
+    return p_monitors;
+
     CIE_END_EXCEPTION_TRACING
 }
 

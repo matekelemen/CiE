@@ -45,7 +45,7 @@ struct GLFWRAII
     const Size _versionMinor;
     const Size _MSAASamples;
 };
-}
+} // namespace detail
 
 
 class GLFWContext;
@@ -63,12 +63,9 @@ DrawFunction makeEmptyDrawFunction( GLFWContext& );
 class GLFWContext final : public AbsContext
 {
 public:
-    GLFWContext( Size versionMajor                    = 4,
-                 Size versionMinor                    = 5,
-                 Size MSAASamples                     = 0, 
-                 const std::filesystem::path& r_logFileName     = OUTPUT_PATH / "ContextLogger.txt",
-                 bool useConsole = false );
+    friend class GLFWContextSingleton;
 
+public:
     ~GLFWContext();
 
     void focusWindow( WindowPtr p_window ) override;
@@ -79,6 +76,12 @@ public:
     const WindowPtr window() const;
 
 private:
+    GLFWContext( Size versionMajor                    = 4,
+                 Size versionMinor                    = 5,
+                 Size MSAASamples                     = 0, 
+                 const std::filesystem::path& r_logFileName = OUTPUT_PATH / "GLFWContext.log",
+                 bool useConsole = false );
+
     void initializeGLADIfNecessary();
 
     WindowPtr newWindow_impl( size_t width              = 800,
@@ -93,6 +96,62 @@ private:
     static bool                     _isGLADInitialized;
     static bool                     _isCurrent;
 };
+
+
+
+/**
+ * GLFWContext manager
+ */
+class GLFWContextSingleton
+{
+public:
+    /**
+     * Check whether the GLFWContext was initialized with the specified
+     * parameters and create one if it was not.
+     * 
+     * @param versionMajor OpenGL standard version major specifier
+     * (must match the version of the existing context)
+     * @param versionMinor OpenGL standard version minor specifier
+     * (must match the version of the existing context)
+     * @param MSAASamples number of MSAASamples
+     * (must match the version of the existing context)
+     * @param r_logFilePath path to the log file
+     * @param useConsole print log output to std::cout
+     * 
+     * @return a pointer to the GLFW context
+     * @note throw an error if the requested parameters do not match the
+     * parameters of the existing context
+     */
+    static ContextPtr get( Size versionMajor = 4,
+                           Size versionMinor = 5,
+                           Size MSAASamples  = 0,
+                           const std::filesystem::path& r_logFilePath = OUTPUT_PATH / "GLFWContext.log",
+                           bool useConsole = false );
+
+    /**
+     * Initialize the GLFW context or return the existing one,
+     * and add a log file to its list of streams
+     * 
+     * @param r_logFilePath path to the log file
+     * @return a pointer to the GLFW context
+     */
+    static ContextPtr get( const std::filesystem::path& r_logFilePath );
+
+    /**
+     * Initialize the GLFW context or return the existing one,
+     * and add a log file to its list of streams
+     * 
+     * @param r_logFilePath path to the log file
+     * @param useConsole print log output to std::cout
+     * @return a pointer to the GLFW context
+     */
+    static ContextPtr get( const std::filesystem::path& r_logFilePath,
+                           bool useConsole );
+
+private:
+    static ContextPtr _p_context;
+};
+
 
 
 } // namespace cie::gl

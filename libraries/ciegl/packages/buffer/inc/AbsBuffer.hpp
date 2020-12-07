@@ -1,9 +1,15 @@
 #ifndef CIE_GL_ABS_BUFFER_HPP
 #define CIE_GL_ABS_BUFFER_HPP
 
+// --- External Includes ---
+#include "glad/glad.h"
+
 // --- Utility Includes ---
 #include "cieutils/packages/types/inc/IDObject.hpp"
 #include "cieutils/packages/concepts/inc/container_concepts.hpp"
+
+// --- Internal Includes ---
+#include "ciegl/packages/buffer/inc/AttributeContainer.hpp"
 
 // --- STL Includes ---
 #include <memory>
@@ -22,12 +28,13 @@ concept ClassContainerWithException
 namespace cie::gl {
 
 
-template <class DataType>
+template <class DataType, class DataContainer = std::vector<DataType>>
+requires concepts::ClassContainer<DataContainer,DataType>
 class AbsBuffer : public utils::IDObject<Size>
 {
 public:
     using data_type             = DataType;
-    using data_container_type   = std::vector<data_type>;   // <-- contiguous data container
+    using data_container_type   = DataContainer;   // <-- contiguous data container
 
 public:
     friend class AbsBufferManager;
@@ -74,8 +81,8 @@ public:
 };
 
 
-using VertexBuffer       = AbsBuffer<float>;
-using ElementBuffer      = AbsBuffer<unsigned int>;
+using VertexBuffer       = AbsBuffer<GLfloat,AttributeContainer>;
+using ElementBuffer      = AbsBuffer<GLuint>;
 
 using VertexBufferPtr    = std::shared_ptr<VertexBuffer>;
 using ElementBufferPtr   = std::shared_ptr<ElementBuffer>;

@@ -80,7 +80,7 @@ GLFWContext::GLFWContext( Size versionMajor,
                                              MSAASamples,
                                              *this );
 
-    // Check version a sampling
+    // Check version and sampling
     // --> once set up with a particular set of parameters,
     //     other contexts must have the identical ones
     if ( this->_version.first != glfwInitializer._versionMajor
@@ -246,6 +246,88 @@ void GLFWContext::initializeGLADIfNecessary()
     CIE_END_EXCEPTION_TRACING
 }
 
+
+
+
+/* --- GLFWContextSingleton --- */
+
+ContextPtr GLFWContextSingleton::_p_context = nullptr;
+
+
+ContextPtr GLFWContextSingleton::get( Size versionMajor,
+                                      Size versionMinor,
+                                      Size MSAASamples,
+                                      const std::filesystem::path& r_logFilePath,
+                                      bool useConsole )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    if ( GLFWContextSingleton::_p_context ) // context is already initialized
+    {
+        // Check context parameters
+        if (
+            GLFWContextSingleton::_p_context->version().first != versionMajor
+            ||
+            GLFWContextSingleton::_p_context->version().second != versionMinor
+            ||
+            GLFWContextSingleton::_p_context->MSAASamples() != MSAASamples
+        )
+            GLFWContextSingleton::_p_context->error( "GLFWContext parameter mismatch!" );
+
+        // TODO: Add stream if necessary
+    }
+    else // initialize the context
+    {
+        GLFWContextSingleton::_p_context = ContextPtr( new GLFWContext(
+            versionMajor,
+            versionMinor,
+            MSAASamples,
+            r_logFilePath,
+            useConsole
+        ) );
+    }
+
+    return GLFWContextSingleton::_p_context;
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+ContextPtr GLFWContextSingleton::get( const std::filesystem::path& r_logFilePath )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    // Make sure the context is initialized 
+    GLFWContextSingleton::get();
+
+    // Create log file if it's not currently in use
+    auto& r_fileManager = GLFWContextSingleton::_p_context->fileManager();
+
+    try{
+        auto p_file = r_fileManager.filePtr(
+            r_fileManager.newFile( r_logFilePath )
+        );
+        GLFWContextSingleton::_p_context->addStream( p_file );
+    }
+    catch ( const std::exception& r_exception )
+    {
+        GLFWContextSingleton::_p_context->warn( r_exception.what() );
+    }
+
+    return GLFWContextSingleton::_p_context;
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+ContextPtr GLFWContextSingleton::get( const std::filesystem::path& r_logFilePath,
+                                      bool useConsole )
+{
+    GLFWContextSingleton::get( r_logFilePath );
+    GLFWContextSingleton::_p_context->useConsole( useConsole );
+
+    return GLFWContextSingleton::_p_context;
+}
 
 
 } // namespace cie::gl

@@ -37,13 +37,13 @@ int main( int argc, char const* argv[] )
     auto filePath = args.get<std::string>(0);
 
     // Graphics setup
-    auto p_context = gl::ContextPtr( new gl::GLFWContext(
+    auto p_context = gl::GLFWContextSingleton::get(
         4,                                      // <-- OpenGL version major
         5,                                      // <-- OpenGL version minor
         4,                                      // <-- Number of MSAA samples
         OUTPUT_PATH / "3dviewer_log.txt",       // <-- log file
         true                                    // <-- use console output
-    ) );
+    );
 
     auto p_window = p_context->newWindow(
         1024,

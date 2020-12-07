@@ -71,14 +71,14 @@ int main( std::function<ValueType(const PointType&,Double)> targetFunction,
     p_root->divide(target,depth);
 
     // Context creation
-    auto p_context = gl::ContextPtr( new gl::GLFWContext(
-        4,                                      // <-- OpenGL version major
-        5,                                      // <-- OpenGL version minor
-        0,                                      // <-- Number of MSAA samples
-        OUTPUT_PATH / "drop_merge_log.txt",     // <-- log file
-        true                                    // <-- use console output
-    ));
-
+    auto p_context = gl::GLFWContextSingleton::get(
+        4,                               // <-- OpenGL version major
+        5,                               // <-- OpenGL version minor
+        0,                               // <-- Number of MSAA samples
+        OUTPUT_PATH / "drop_merge.log",  // <-- log file
+        true                             // <-- use console output
+    );
+    
     auto p_window = p_context->newWindow(
         //800,
         //600

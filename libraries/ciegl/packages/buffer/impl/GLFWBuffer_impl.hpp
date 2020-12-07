@@ -11,9 +11,9 @@
 namespace cie::gl {
 
 
-template <class DataType>
-GLFWBuffer<DataType>::GLFWBuffer() :
-    AbsBuffer<DataType>( std::numeric_limits<Size>().max() ),
+template <class DataType, class DataContainer>
+GLFWBuffer<DataType,DataContainer>::GLFWBuffer() :
+    AbsBuffer<DataType,DataContainer>( std::numeric_limits<Size>().max() ),
     _drawMode( GL_STATIC_DRAW )
 {
     CIE_BEGIN_EXCEPTION_TRACING
@@ -26,17 +26,17 @@ GLFWBuffer<DataType>::GLFWBuffer() :
 }
 
 
-template <class DataType>
-GLFWBuffer<DataType>::~GLFWBuffer()
+template <class DataType, class DataContainer>
+GLFWBuffer<DataType,DataContainer>::~GLFWBuffer()
 {
     GLuint id = this->getID();
     glDeleteBuffers( 1, &id );
 }
 
 
-template <class DataType>
+template <class DataType, class DataContainer>
 inline void
-GLFWBuffer<DataType>::reserve( Size byteCount )
+GLFWBuffer<DataType,DataContainer>::reserve( Size byteCount )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -49,15 +49,15 @@ GLFWBuffer<DataType>::reserve( Size byteCount )
 }
 
 
-template <class DataType>
+template <class DataType, class DataContainer>
 inline void
-GLFWBuffer<DataType>::write( const typename GLFWBuffer<DataType>::data_container_type& r_dataContainer )
+GLFWBuffer<DataType,DataContainer>::write( const typename GLFWBuffer<DataType,DataContainer>::data_container_type& r_dataContainer )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
     glNamedBufferData(
         GLuint( this->_id ),
-        r_dataContainer.size() * sizeof(typename GLFWBuffer<DataType>::data_type),
+        r_dataContainer.size() * sizeof(typename GLFWBuffer<DataType,DataContainer>::data_type),
         &*r_dataContainer.begin(),
         _drawMode
     );
@@ -66,16 +66,16 @@ GLFWBuffer<DataType>::write( const typename GLFWBuffer<DataType>::data_container
 }
 
 
-template <class DataType>
+template <class DataType, class DataContainer>
 inline void
-GLFWBuffer<DataType>::write( Size begin, const typename GLFWBuffer<DataType>::data_container_type& r_dataContainer )
+GLFWBuffer<DataType,DataContainer>::write( Size begin, const typename GLFWBuffer<DataType,DataContainer>::data_container_type& r_dataContainer )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
     glNamedBufferSubData(
         GLuint( this->_id ),
         begin,
-        r_dataContainer.size() * sizeof( typename GLFWBuffer<DataType>::data_type ),
+        r_dataContainer.size() * sizeof( typename GLFWBuffer<DataType,DataContainer>::data_type ),
         &*r_dataContainer.begin()
     );
 
@@ -83,17 +83,17 @@ GLFWBuffer<DataType>::write( Size begin, const typename GLFWBuffer<DataType>::da
 }
 
 
-template <class DataType>
+template <class DataType, class DataContainer>
 void
-GLFWBuffer<DataType>::setDrawMode( Size drawMode )
+GLFWBuffer<DataType,DataContainer>::setDrawMode( Size drawMode )
 {
     _drawMode = drawMode;
 }
 
 
-template <class DataType>
+template <class DataType, class DataContainer>
 const GLuint
-GLFWBuffer<DataType>::getDrawMode() const
+GLFWBuffer<DataType,DataContainer>::getDrawMode() const
 {
     return _drawMode;
 }

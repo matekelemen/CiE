@@ -134,6 +134,8 @@ void AbsWindow::addScene( ScenePtr p_scene )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
+    CIE_CHECK_POINTER( p_scene )
+
     auto it_scene = std::find(
         _scenes.begin(),
         _scenes.end(),

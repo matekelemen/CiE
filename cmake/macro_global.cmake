@@ -33,8 +33,8 @@ ENDMACRO()
 MACRO( COLLECT_PACKAGES headers sources tests )
     SUBDIRLIST( packageNames "${CMAKE_CURRENT_SOURCE_DIR}/packages" )
     foreach( packageName ${packageNames} )
-        COLLECT_PACKAGE(    "${CMAKE_CURRENT_SOURCE_DIR}/packages/${packageName}"
-                            _headers _sources _tests )
+        COLLECT_PACKAGE( "${CMAKE_CURRENT_SOURCE_DIR}/packages/${packageName}"
+                         _headers _sources _tests )
         LIST( APPEND ${headers} ${_headers} )
         LIST( APPEND ${sources} ${_sources} )
         LIST( APPEND ${tests} ${_tests} )

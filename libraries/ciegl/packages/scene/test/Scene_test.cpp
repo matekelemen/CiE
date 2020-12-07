@@ -50,12 +50,12 @@ TEST_CASE( "Scene", "[scene]" )
     // Context
     std::pair<Size,Size> glVersion { 4, 5 };
     Size MSAASamples = 0;
-    auto p_context = ContextPtr(
-        new GLFWContext( glVersion.first,
-                         glVersion.second,
-                         MSAASamples,
-                         TEST_OUTPUT_PATH / "GLFWScene_test.txt" )
-    );
+    auto p_context = gl::GLFWContextSingleton::get(
+            glVersion.first,
+            glVersion.second,
+            MSAASamples,
+            TEST_OUTPUT_PATH / "GLFWScene_test.txt"
+        );
 
     // Window
     WindowPtr p_window;

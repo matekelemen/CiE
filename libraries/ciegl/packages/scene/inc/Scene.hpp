@@ -37,7 +37,7 @@ public:
      * Create new GL program, collect shaders, link program,
      * create a new vertex array object, and activate the program.
      * 
-     * NOTE: the scene must be constructed with no bound buffers,
+     * @note the scene must be constructed with no bound buffers,
      *       but will bind them during construction. New buffers are
      *       generated if none are supplied.
      */

@@ -13,25 +13,25 @@
 namespace cie::gl {
 
 
-template <class DataType>
-AbsBuffer<DataType>::AbsBuffer() :
+template <class DataType, class DataContainer>
+AbsBuffer<DataType,DataContainer>::AbsBuffer() :
     utils::IDObject<Size>()
 {
 }
 
 
-template <class DataType>
-AbsBuffer<DataType>::AbsBuffer( Size id ) :
+template <class DataType, class DataContainer>
+AbsBuffer<DataType,DataContainer>::AbsBuffer( Size id ) :
     utils::IDObject<Size>(id)
 {
 }
 
 
-template <class DataType>
+template <class DataType, class DataContainer>
 template <class ContainerType>
 requires concepts::detail::ClassContainerWithException<ContainerType,DataType,typename AbsBuffer<DataType>::data_container_type>
 inline void
-AbsBuffer<DataType>::write( const ContainerType& r_dataContainer )
+AbsBuffer<DataType,DataContainer>::write( const ContainerType& r_dataContainer )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -46,11 +46,11 @@ AbsBuffer<DataType>::write( const ContainerType& r_dataContainer )
 }
 
 
-template <class DataType>
+template <class DataType, class DataContainer>
 template <class ContainerType>
 requires concepts::detail::ClassContainerWithException<ContainerType,DataType,typename AbsBuffer<DataType>::data_container_type>
 inline void
-AbsBuffer<DataType>::write( Size begin, const ContainerType& r_dataContainer )
+AbsBuffer<DataType,DataContainer>::write( Size begin, const ContainerType& r_dataContainer )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
