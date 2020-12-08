@@ -32,10 +32,7 @@ TEST_CASE( "GLFWContext", "[context]" )
 
         REQUIRE_NOTHROW(
             p_context = gl::GLFWContextSingleton::get(
-                glVersion.first,
-                glVersion.second,
-                numberOfMSAASamples,
-                TEST_OUTPUT_PATH / "GLFWContext_test0.txt",
+                TEST_OUTPUT_PATH / "GLFWContext_test0.log",
                 false
             )
         );
@@ -45,10 +42,7 @@ TEST_CASE( "GLFWContext", "[context]" )
         CIE_TEST_CASE_INIT( "Window creation" )
 
         auto p_context = gl::GLFWContextSingleton::get(
-            glVersion.first,
-            glVersion.second,
-            numberOfMSAASamples,
-            TEST_OUTPUT_PATH / "GLFWContext_test1.txt",
+            TEST_OUTPUT_PATH / "GLFWContext_test1.log",
             false
         );
 

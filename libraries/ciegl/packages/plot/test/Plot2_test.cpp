@@ -27,13 +27,13 @@ TEST_CASE( "Plot2", "[plot]" )
     Size n    = 100;
     double dx = 2.0 * M_PI / double(n);
 
-    for ( double x=0.0; x<2.0*M_PI; x+=dx )
+    for ( double x=0.0; x<=2.0*M_PI; x+=dx )
     {
         X.push_back( x );
         Y.push_back( std::cos(x) );
     }
 
-    auto p_plot = plot( X, Y );
+    plot( X, Y );
 }
 
 

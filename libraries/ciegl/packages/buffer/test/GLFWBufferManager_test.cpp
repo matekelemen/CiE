@@ -54,6 +54,8 @@ TEST_CASE( "GLFWBufferManager", "[buffer]" )
         CHECK_NOTHROW( p_bufferManager->bindVertexBuffer(p_vertexBuffer) );
         CHECK_NOTHROW( p_bufferManager->bindElementBuffer(p_elementBuffer) );
     }
+
+    p_context->closeWindow( p_window );
 }
 
 

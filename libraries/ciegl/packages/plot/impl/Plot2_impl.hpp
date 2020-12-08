@@ -5,13 +5,16 @@
 #include "cieutils/packages/macros/inc/checks.hpp"
 #include "cieutils/packages/stl_extension/inc/resize.hpp"
 
+// --- STL Includes ---
+#include <limits>
+
 
 namespace cie::gl {
 
 
 template < concepts::NumericContainer XContainer,
            concepts::NumericContainer YContainer >
-Plot2Ptr plot( const XContainer& r_xContainer,
+void plot( const XContainer& r_xContainer,
                const YContainer& r_yContainer )
 {
     CIE_BEGIN_EXCEPTION_TRACING
@@ -51,9 +54,10 @@ Plot2Ptr plot( const XContainer& r_xContainer,
             r_yContainer[vertexIndex]
         ) );
 
-    //p_plot->update();
+    // Adjust camera
+    p_plot->fit();
 
-    return p_plot;
+    p_plot->_p_window->beginLoop();
 
     CIE_END_EXCEPTION_TRACING
 }

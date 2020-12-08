@@ -6,6 +6,6 @@
     <textures>
     </textures>
     <outputs>
-        <o0 name="color" size="4" stride="0" offset="0" type="float"/>
+        <o0 name="color" size="4" stride="4" offset="0" type="float"/>
     </outputs>
 </shader>

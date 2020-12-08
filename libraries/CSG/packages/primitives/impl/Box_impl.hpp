@@ -16,6 +16,15 @@ namespace cie::csg {
 
 template < Size Dimension,
            concepts::NumericType CoordinateType >
+Box<Dimension,CoordinateType>::Box( typename Box<Dimension,CoordinateType>::point_type& r_base,
+                                    typename Box<Dimension,CoordinateType>::point_type& r_lengths ) :
+    Box<Dimension,CoordinateType>( r_base, r_lengths )
+{
+}
+
+
+template < Size Dimension,
+           concepts::NumericType CoordinateType >
 template <class ContainerType1, class ContainerType2>
 requires concepts::ClassContainer<ContainerType1,CoordinateType>
          && concepts::ClassContainer<ContainerType2,CoordinateType>

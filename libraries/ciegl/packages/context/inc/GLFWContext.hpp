@@ -23,31 +23,6 @@
 
 namespace cie::gl {
 
-
-/**
- * Used as a static in the constructor of GLFWContext. Initializes GLFW
- * exactly once, when the first GLFWContext is created, and terminates
- * GLFW exactly once at program termination.
- * 
- * As a sideeffect, only one version of GLFW context can be created and
- * attempts to create a different one will result in an exception.
- */
-namespace detail {
-struct GLFWRAII
-{
-    explicit GLFWRAII( Size versionMajor,
-                       Size versionMinor,
-                       Size MSAASamples,
-                       utils::Logger& r_logger );
-    ~GLFWRAII();
-
-    const Size _versionMajor;
-    const Size _versionMinor;
-    const Size _MSAASamples;
-};
-} // namespace detail
-
-
 class GLFWContext;
 using DrawFunction          = std::function<bool()>;
 using DrawFunctionFactory   = std::function<DrawFunction(GLFWContext&)>;

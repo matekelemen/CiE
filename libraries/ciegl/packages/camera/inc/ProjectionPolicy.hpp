@@ -21,7 +21,7 @@ protected:
     ProjectionPolicy();
 
     virtual void zoom_impl( double scale ) = 0;
-    virtual void updateProjectionMatrix_impl() = 0;    
+    virtual void updateProjectionMatrix_impl() = 0;
 
 protected:
     internal_matrix_type      _projectionMatrix;

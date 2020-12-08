@@ -27,6 +27,9 @@ public:
         = std::tuple<typename Box::point_type, typename Box::point_type>;
 
 public:
+    Box( typename Box<Dimension,CoordinateType>::point_type& r_base,
+         typename Box<Dimension,CoordinateType>::point_type& r_lengths );
+
     template <class ContainerType1, class ContainerType2>
     requires concepts::ClassContainer<ContainerType1,CoordinateType>
              && concepts::ClassContainer<ContainerType2,CoordinateType>

@@ -36,12 +36,14 @@ void OrthographicProjection::updateProjectionMatrix_impl()
     tmpSizes.first  /= 2.0;
     tmpSizes.second /= 2.0;
 
-    this->_projectionMatrix = glm::ortho( -tmpSizes.first,
-                                          tmpSizes.first,
-                                          -tmpSizes.second,
-                                          tmpSizes.second,
-                                          this->_clippingPlanes.first,
-                                          this->_clippingPlanes.second );
+    this->_projectionMatrix = glm::ortho( 
+        -tmpSizes.first
+        ,tmpSizes.first
+        ,-tmpSizes.second
+        ,tmpSizes.second
+        ,this->_clippingPlanes.first
+        ,this->_clippingPlanes.second
+    );
 
     CIE_END_EXCEPTION_TRACING
 }

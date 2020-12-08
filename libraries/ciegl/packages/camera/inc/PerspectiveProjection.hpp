@@ -11,8 +11,8 @@ namespace cie::gl {
 class PerspectiveProjection : public ProjectionPolicy
 {
 protected:
-    void zoom_impl( double scale ) override;
-    void updateProjectionMatrix_impl() override;
+    virtual void zoom_impl( double scale ) override;
+    virtual void updateProjectionMatrix_impl() override;
 };
 
 

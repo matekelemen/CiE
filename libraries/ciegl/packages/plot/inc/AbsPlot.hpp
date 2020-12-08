@@ -22,6 +22,7 @@ public:
     AbsPlot();
 
     virtual void update();
+    virtual void fit() = 0;
 
     const AttributeContainer& attributes() const;
 

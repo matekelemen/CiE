@@ -13,37 +13,6 @@
 namespace cie::gl {
 
 
-namespace detail {
-GLFWRAII::GLFWRAII( Size versionMajor,
-                    Size versionMinor,
-                    Size MSAASamples,
-                    utils::Logger& r_logger ) :
-    _versionMajor( versionMajor ),
-    _versionMinor( versionMinor ),
-    _MSAASamples( MSAASamples )
-{
-    glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, versionMajor );
-    glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, versionMinor );
-    glfwWindowHint( GLFW_SAMPLES, MSAASamples );
-    //glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE );
-    glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
-    glfwWindowHint( GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE );
-
-    glfwSetErrorCallback( callback_errorPrint );
-
-    if ( !glfwInit() )
-        r_logger.error<Exception>( "Failed to initialize GLFW" );
-    else
-        r_logger.log( "GLFW initialization successful" );
-}
-
-GLFWRAII::~GLFWRAII()
-{
-    glfwTerminate();
-}
-} // namespace detail
-
-
 /* --- Default callbacks --- */
 
 DrawFunction makeEmptyDrawFunction( GLFWContext& )
@@ -75,18 +44,19 @@ GLFWContext::GLFWContext( Size versionMajor,
 
     auto scopedBlock = this->newBlock( "GLFWContext init" );
 
-    static detail::GLFWRAII glfwInitializer( versionMajor,
-                                             versionMinor,
-                                             MSAASamples,
-                                             *this );
+    glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, versionMajor );
+    glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, versionMinor );
+    glfwWindowHint( GLFW_SAMPLES, MSAASamples );
+    //glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE );
+    glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
+    glfwWindowHint( GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE );
 
-    // Check version and sampling
-    // --> once set up with a particular set of parameters,
-    //     other contexts must have the identical ones
-    if ( this->_version.first != glfwInitializer._versionMajor
-         || this->_version.second != glfwInitializer._versionMinor
-         || this->_MSAASamples != glfwInitializer._MSAASamples )
-        CIE_THROW( Exception, "GLFWContext initialization mismatch!" )
+    glfwSetErrorCallback( callback_errorPrint );
+
+    if ( !glfwInit() )
+        this->error<Exception>( "Failed to initialize GLFW" );
+    else
+        this->log( "GLFW initialization successful" );
 
     log( "Open context" );
     
@@ -97,6 +67,7 @@ GLFWContext::GLFWContext( Size versionMajor,
 GLFWContext::~GLFWContext()
 {
     this->closeAllWindows();
+    glfwTerminate();
 }
 
 

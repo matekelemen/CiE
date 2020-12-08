@@ -106,7 +106,7 @@ Camera<ProjectionType>::clippingPlanes() const
 template <concepts::ProjectionPolicy ProjectionType>
 inline void
 Camera<ProjectionType>::setClippingPlanes( double nearClippingPlane,
-                                             double farClippingPlane )
+                                           double farClippingPlane )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 

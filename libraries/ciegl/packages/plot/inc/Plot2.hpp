@@ -9,6 +9,10 @@
 #include "ciegl/packages/buffer/inc/Vertex2.hpp"
 #include "ciegl/packages/scene/inc/Scene.hpp"
 
+#include "ciegl/packages/camera/inc/Camera.hpp"
+#include "ciegl/packages/camera/inc/OrthographicProjection.hpp"
+#include "ciegl/packages/control/inc/PanZoomCameraControls.hpp"
+
 // --- STL Includes ---
 #include <vector>
 #include <memory>
@@ -28,14 +32,20 @@ public:
     using vertex_ptr       = Vertex2Ptr;
     using vertex_container = std::vector<vertex_ptr>;
 
+    using camera_type      = Camera<OrthographicProjection>;
+    using controls_type    = PanZoomCameraControls;
+    using controls_ptr     = std::shared_ptr<controls_type>;
+
 public:
     Plot2( WindowPtr p_window );
     Plot2();
 
     template < concepts::NumericContainer XContainer,
                concepts::NumericContainer YContainer >
-    friend Plot2Ptr plot( const XContainer& r_xContainer,
-                          const YContainer& r_yContainer );
+    friend void plot( const XContainer& r_xContainer,
+                      const YContainer& r_yContainer );
+
+    void fit() override;
 
 private:
     void initializeScene();
@@ -67,9 +77,10 @@ protected:
     };
 
 protected:
-    vertex_container _vertices;
-    ScenePtr         _p_scene;
-    CameraPtr        _p_camera;
+    vertex_container            _vertices;
+    CameraPtr                   _p_camera;
+    std::shared_ptr<Plot2Scene> _p_scene;
+    controls_ptr                _p_controls;
 };
 
 
