@@ -1,0 +1,24 @@
+<controls>
+    <c0 name="moveUp">
+        <key>w</key>
+        <key>up</key>
+    </c0>
+    <c1 name="moveDown">
+        <key>s</key>
+        <key>down</key>
+    </c1>
+    <c2 name="moveLeft">
+        <key>a</key>
+        <key>left</key>
+    </c2>
+    <c3 name="moveRight">
+        <key>d</key>
+        <key>right</key>
+    </c3>
+    <c4 name="zoomIn">
+        <key>kp_add</key>
+    </c4>
+    <c5 name="zoomOut">
+        <key>kp_subtract</key>
+    </c5>
+</controls>
