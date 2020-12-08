@@ -13,15 +13,6 @@
 namespace cie::gl {
 
 
-/* --- Default callbacks --- */
-
-DrawFunction makeEmptyDrawFunction( GLFWContext& )
-{
-    auto function = [&]() -> bool { return true; };
-    return function;
-}
-
-
 /* --- GLFWContext --- */
 
 GLFWContext::GLFWContext( Size versionMajor,
