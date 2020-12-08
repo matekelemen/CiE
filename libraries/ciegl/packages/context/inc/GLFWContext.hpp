@@ -45,18 +45,22 @@ public:
 
     void focusWindow( WindowPtr p_window ) override;
 
-    void startEventLoop( DrawFunctionFactory eventLoopGenerator = makeEmptyDrawFunction );
-
-    WindowPtr window();
-    const WindowPtr window() const;
-
 private:
+    /**
+     * Initialize the GLFW context
+     * 
+     * @note this constructor is private and should not be called directly from anywhere
+     * except from GLFWContextSingleton. See the overloads of GLFWContextSingleton::get
+     */
     GLFWContext( Size versionMajor                    = 4,
                  Size versionMinor                    = 5,
                  Size MSAASamples                     = 0, 
                  const std::filesystem::path& r_logFileName = OUTPUT_PATH / "GLFWContext.log",
                  bool useConsole = false );
 
+    /**
+     * Check whether GLAD was initialized and initialize it if it wasn't
+     */
     void initializeGLADIfNecessary();
 
     WindowPtr newWindow_impl( size_t width              = 800,
@@ -66,10 +70,8 @@ private:
     void closeWindow_impl( WindowPtr p_window ) override;
 
 private:
-    DrawFunction                    _drawFunction;
-
-    static bool                     _isGLADInitialized;
-    static bool                     _isCurrent;
+    bool  _isGLADInitialized;
+    bool  _isCurrent;
 };
 
 

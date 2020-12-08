@@ -22,11 +22,6 @@ DrawFunction makeEmptyDrawFunction( GLFWContext& )
 }
 
 
-/* --- STATIC INITIALIZATION --- */
-bool GLFWContext::_isGLADInitialized = false;
-bool GLFWContext::_isCurrent         = false;
-
-
 /* --- GLFWContext --- */
 
 GLFWContext::GLFWContext( Size versionMajor,
@@ -38,7 +33,9 @@ GLFWContext::GLFWContext( Size versionMajor,
                 versionMinor,
                 MSAASamples,
                 r_logFileName,
-                useConsole )
+                useConsole ),
+    _isGLADInitialized( false ),
+    _isCurrent( false )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -108,6 +105,7 @@ void GLFWContext::focusWindow( WindowPtr p_window )
 
     if ( p_window != nullptr )
     {
+        // TODO
         log( "Focus on window " );
     }
     else
@@ -124,80 +122,6 @@ void GLFWContext::closeWindow_impl( WindowPtr p_window )
     glfwSetWindowShouldClose( detail::getGLFWwindow(p_window), 1 );
     CIE_END_EXCEPTION_TRACING
 }
-
-
-
-void GLFWContext::startEventLoop( DrawFunctionFactory eventLoopGenerator )
-{
-    CIE_BEGIN_EXCEPTION_TRACING
-
-    // Bind loop
-    _drawFunction = eventLoopGenerator( *this );
-
-    WindowPtr p_window = nullptr;
-    if ( !this->windows().empty() )
-        p_window = this->window();
-
-    auto p_rawWindow = detail::getGLFWwindow(p_window);
-
-    if ( !p_rawWindow )
-        error<Exception>( "Attempt to start event loop without an existing window!" );
-
-    // Start event loop
-    {
-        auto scopedBlock = this->newBlock( "Event Loop" );
-
-        while( !glfwWindowShouldClose(p_rawWindow) )
-        {
-            if ( !_drawFunction() )
-                this->closeWindow( p_window );
-
-            // Check for drawing errors
-            GLuint err = glGetError();
-            if (err!=0)
-                error<Exception>( "Error drawing! Error code: " + std::to_string(err) );
-
-            glfwPollEvents();
-
-            // Check for polling errors
-            err = glGetError();
-            if (err!=0)
-                error<Exception>( "Error polling events! Error code: " + std::to_string(err) );
-            
-            glfwSwapBuffers( p_rawWindow );
-
-            // Check for buffer errors
-            err = glGetError();
-            if (err!=0)
-                error<Exception>( "Error swapping buffers! Error code: " + std::to_string(err) );
-        }
-    }
-
-    CIE_END_EXCEPTION_TRACING
-}
-
-
-
-WindowPtr GLFWContext::window()
-{
-    CIE_BEGIN_EXCEPTION_TRACING
-
-    return *this->windows().begin();
-
-    CIE_END_EXCEPTION_TRACING
-}
-
-
-
-const WindowPtr GLFWContext::window() const
-{
-    CIE_BEGIN_EXCEPTION_TRACING
-
-    return *this->windows().begin();
-
-    CIE_END_EXCEPTION_TRACING
-}
-
 
 
 void GLFWContext::initializeGLADIfNecessary()

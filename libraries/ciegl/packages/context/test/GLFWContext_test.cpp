@@ -17,10 +17,6 @@ TEST_CASE( "GLFWContext", "[context]" )
 {
     CIE_TEST_CASE_INIT( "GLFWContext" )
 
-    // Context parameters
-    std::pair<Size,Size> glVersion    { 4, 5 };
-    Size numberOfMSAASamples        = 0;
-
     // Window parameters
     std::pair<Size,Size> windowSize   { 800, 600 };
     const std::string windowName    = "GLFW testwindow";
