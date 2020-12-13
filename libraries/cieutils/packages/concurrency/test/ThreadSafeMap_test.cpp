@@ -1,5 +1,6 @@
 // --- Internal Includes ---
 #include "cieutils/packages/testing/inc/essentials.hpp"
+#include "cieutils/packages/testing/inc/ConstructorTracker.hpp"
 #include "cieutils/packages/concurrency/inc/ThreadSafeMap.hpp"
 
 // --- STL Includes ---
@@ -11,6 +12,17 @@
 
 
 namespace cie::mp {
+
+
+struct TrackedInteger : public utils::ConstructorTracker<TrackedInteger>
+{
+    TrackedInteger() : _value(0) {}
+    explicit TrackedInteger( int value ) : _value(value) {}
+    const int get() const { return _value; }
+
+private:
+    int _value;
+};
 
 
 namespace map {
@@ -35,7 +47,7 @@ void checkContainer( MapType& r_map, Size maxCount )
     CIE_TEST_CHECK( r_map.size() == maxCount );
 
     for ( const auto& r_pair : r_map )
-        CIE_TEST_CHECK( r_pair.first == r_pair.second );
+        CIE_TEST_CHECK( r_pair.first == r_pair.second.get() );
 
     CIE_TEST_CHECK(
         std::accumulate( r_map.begin(),
@@ -55,7 +67,7 @@ CIE_TEST_CASE( "ThreadSafeMap", "[concurrency]" )
     CIE_TEST_CASE_INIT( "ThreadSafeMap" )
 
     using KeyType         = int;
-    using ValueType       = double;
+    using ValueType       = TrackedInteger;
 
     Size numberOfElements = 1e4;
 

@@ -8,8 +8,12 @@
 namespace cie::utils {
 
 
+template <class Tag>
 class ConstructorTracker
 {
+public:
+    using tag_type = Tag;
+
 public:
     ConstructorTracker();
     ConstructorTracker( const ConstructorTracker& r_rhs );
@@ -23,6 +27,8 @@ public:
     static const Size numberOfCopyAssignmentCalls();
     static const Size numberOfDestructorCalls();
 
+    static void resetCounters();
+
 private:
     Size _localNumberOfConstructions;
 
@@ -35,5 +41,7 @@ private:
 
 
 } // namespace cie::utils
+
+#include "cieutils/packages/testing/impl/ConstructorTracker_impl.hpp"
 
 #endif
