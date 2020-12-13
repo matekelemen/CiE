@@ -1,10 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
-
-// --- Utility Includes ---
-#include "cieutils/packages/macros/inc/testing.hpp"
-
 // --- Internal Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 #include "cieutils/packages/commandline/inc/CommandLineArguments.hpp"
 
 

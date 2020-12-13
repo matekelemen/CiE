@@ -1,13 +1,10 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Linalg Includes ---
 #include "linalg/packages/types/inc/matrix.hpp"
 #include "linalg/packages/utilities/inc/linalghelper.hpp"
 
 // --- Utility Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 #include "cieutils/packages/macros/inc/fileio.hpp"
-#include "cieutils/packages/macros/inc/testing.hpp"
 
 // --- Internal Includes ---
 #include "splinekernel/inc/interpolation.hpp"

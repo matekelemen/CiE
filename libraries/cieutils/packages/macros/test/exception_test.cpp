@@ -1,9 +1,6 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Internal Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 #include "cieutils/packages/macros/inc/exceptions.hpp"
-#include "cieutils/packages/macros/inc/testing.hpp"
 
 
 namespace cie {

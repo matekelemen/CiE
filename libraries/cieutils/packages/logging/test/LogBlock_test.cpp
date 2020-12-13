@@ -1,9 +1,6 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Internal Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 #include "cieutils/packages/logging/inc/LogBlock.hpp"
-#include "cieutils/packages/macros/inc/testing.hpp"
 #include "cmake_variables.hpp"
 
 

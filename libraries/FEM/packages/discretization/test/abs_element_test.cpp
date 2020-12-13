@@ -1,12 +1,9 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Linalg Includes ---
 #include "linalg/packages/overloads/inc/vectoroperators.hpp"
 
 // --- Utility Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 #include "cieutils/packages/stl_extension/inc/resize.hpp"
-#include "cieutils/packages/macros/inc/testing.hpp"
 
 // --- Internal Includes ---
 #include "FEM/packages/discretization/inc/abs_element.hpp"

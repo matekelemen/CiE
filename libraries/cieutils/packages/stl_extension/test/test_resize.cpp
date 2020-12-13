@@ -1,7 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Internal Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 #include "cieutils/inc/cieutils/stl_extension.hpp"
 
 // --- STL Includes ---

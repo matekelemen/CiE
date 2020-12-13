@@ -1,5 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
+// --- Utility Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
 #include "CSG/packages/trees/inc/spacetreenode.hpp"

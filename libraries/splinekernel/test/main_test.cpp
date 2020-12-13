@@ -1,6 +1,3 @@
-#include "cieutils/packages/macros/inc/testing.hpp"
-
+#define CIE_DEFINE_TESTRUNNER_MAIN
+#include "cieutils/packages/testing/inc/essentials.hpp"
 CIE_TESTRUNNER_INIT( "splinekernel" )
-
-#define CATCH_CONFIG_MAIN
-#include "catch.hpp"

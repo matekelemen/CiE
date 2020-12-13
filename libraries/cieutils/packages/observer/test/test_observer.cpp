@@ -1,10 +1,7 @@
-// --- External Imports ---
-#include "catch.hpp"
-
 // --- Internal Imports ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 #include "cieutils/packages/observer/inc/Observer.hpp"
 #include "cieutils/packages/observer/inc/Subject.hpp"
-#include "cieutils/packages/macros/inc/testing.hpp"
 
 // --- STD Imports ---
 #include <iostream>

@@ -1,7 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Internal Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 #include "cieutils/packages/concepts/inc/container_concepts.hpp"
 #include "cieutils/packages/concepts/inc/iterator_concepts.hpp"
 #include "cieutils/packages/concepts/inc/basic_concepts.hpp"

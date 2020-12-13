@@ -1,9 +1,6 @@
 /*
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Utility Includes ---
-#include "cieutils/packages/macros/inc/testing.hpp"
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
 #include "ciegl/packages/context/inc/GLFWContext.hpp"

@@ -1,8 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Utility Includes ---
-#include "cieutils/packages/macros/inc/testing.hpp"
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Inludes ---
 #include "CSG/packages/trees/inc/primitive_sampler.hpp"

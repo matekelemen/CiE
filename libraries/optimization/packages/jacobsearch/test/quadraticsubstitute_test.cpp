@@ -1,5 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
+// --- Utility Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Linalg Includes ---
 #include "linalg/packages/types/inc/vectortypes.hpp"

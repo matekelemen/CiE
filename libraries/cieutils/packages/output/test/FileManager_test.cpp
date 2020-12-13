@@ -1,7 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Internal Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 #include "cieutils/packages/output/inc/FileManager.hpp"
 #include "cieutils/packages/output/inc/fileinfo.hpp"
 #include "cmake_variables.hpp"

@@ -1,10 +1,7 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Utility Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 #include "cieutils/packages/concepts/inc/container_concepts.hpp"
 #include "cieutils/packages/stl_extension/inc/resize.hpp"
-#include "cieutils/packages/macros/inc/testing.hpp"
 
 // --- Internal Includes ---
 #include "FEM/packages/numeric/inc/basisfunctions.hpp"

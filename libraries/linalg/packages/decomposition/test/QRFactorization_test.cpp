@@ -1,5 +1,5 @@
-// --- External includes ---
-#include "catch.hpp"
+// --- Utility Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
 #include "linalg/packages/decomposition/inc/QRFactorization.hpp"

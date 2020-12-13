@@ -1,5 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
+// --- Utility Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
 #include "optimization/packages/jacobsearch/inc/jacobsearch.hpp"

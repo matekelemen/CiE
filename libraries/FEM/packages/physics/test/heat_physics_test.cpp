@@ -1,9 +1,6 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Utility Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 #include <cieutils/file.hpp>
-#include "cieutils/packages/macros/inc/testing.hpp"
 
 // --- Internal Includes ---
 #include "FEM/packages/physics/inc/heat_physics.hpp"
