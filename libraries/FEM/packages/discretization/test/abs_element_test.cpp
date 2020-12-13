@@ -70,7 +70,7 @@ protected:
 
 CIE_TEST_CASE( "AbsElement", "[discretization]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "AbsElement" )
+    CIE_TEST_CASE_INIT( "AbsElement" )
 
     // General init
     const Size                                      Dimension = 2;
@@ -104,7 +104,7 @@ CIE_TEST_CASE( "AbsElement", "[discretization]" )
 
     // Test field values
     {
-        CIE_CIE_TEST_CASE_INIT( "field values" )
+        CIE_TEST_CASE_INIT( "field values" )
         for (const auto& point : localPoints)
         {
             auto xi     = point[0];
@@ -120,7 +120,7 @@ CIE_TEST_CASE( "AbsElement", "[discretization]" )
     
     // Test field derivatives
     {
-        CIE_CIE_TEST_CASE_INIT( "field derivatives" )
+        CIE_TEST_CASE_INIT( "field derivatives" )
         for (const auto& point : localPoints)
         {
             auto xi     = point[0];
@@ -148,7 +148,7 @@ CIE_TEST_CASE( "AbsElement", "[discretization]" )
 
 CIE_TEST_CASE( "AbsElement1D", "[discretization]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "AbsElement1D" )
+    CIE_TEST_CASE_INIT( "AbsElement1D" )
 
     // General init
     const Size                                      Dimension = 1;
@@ -186,7 +186,7 @@ CIE_TEST_CASE( "AbsElement1D", "[discretization]" )
 
     // Check field values
     {
-        CIE_CIE_TEST_CASE_INIT( "field values" )
+        CIE_TEST_CASE_INIT( "field values" )
         for (const auto& point : localPoints)
         {
             CHECK(
@@ -200,7 +200,7 @@ CIE_TEST_CASE( "AbsElement1D", "[discretization]" )
 
     // Check field derivatives
     {
-        CIE_CIE_TEST_CASE_INIT( "field derivatives" )
+        CIE_TEST_CASE_INIT( "field derivatives" )
         for (const auto& point : localPoints)
         {
             CHECK(

@@ -17,12 +17,12 @@ namespace cie::gl {
 
 CIE_TEST_CASE( "Camera", "[camera]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "Camera" )
+    CIE_TEST_CASE_INIT( "Camera" )
 
     utils::Logger logger( TEST_OUTPUT_PATH / "Camera_test.txt" );
 
     {
-        CIE_CIE_TEST_CASE_INIT( "OrthographicProjection" )
+        CIE_TEST_CASE_INIT( "OrthographicProjection" )
 
         using CameraType = Camera<OrthographicProjection>;
         CameraPtr p_camera;
@@ -33,7 +33,7 @@ CIE_TEST_CASE( "Camera", "[camera]" )
     }
 
     {
-        CIE_CIE_TEST_CASE_INIT( "PerspectiveProjection" )
+        CIE_TEST_CASE_INIT( "PerspectiveProjection" )
 
         using CameraType = Camera<PerspectiveProjection>;
         CameraPtr p_camera;

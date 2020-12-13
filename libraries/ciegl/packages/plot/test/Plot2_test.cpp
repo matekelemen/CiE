@@ -16,7 +16,7 @@ namespace cie::gl {
 
 CIE_TEST_CASE( "Plot2", "[plot]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "Plot2" )
+    CIE_TEST_CASE_INIT( "Plot2" )
 
     std::deque<double> X;
     std::vector<double> Y;

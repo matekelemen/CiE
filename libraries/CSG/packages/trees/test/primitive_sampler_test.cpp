@@ -13,7 +13,7 @@ namespace cie::csg {
 
 CIE_TEST_CASE( "CubeSampler", "[trees]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "CubeSampler" )
+    CIE_TEST_CASE_INIT( "CubeSampler" )
 
     // Dimension and coordinate type
     const Size      Dimension = 2;
@@ -76,7 +76,7 @@ CIE_TEST_CASE( "CubeSampler", "[trees]" )
 
 CIE_TEST_CASE( "BoxSampler", "[trees]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "BoxSampler" )
+    CIE_TEST_CASE_INIT( "BoxSampler" )
 
     // Dimension and coordinate type
     typedef Double  CT;

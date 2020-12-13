@@ -13,7 +13,7 @@ namespace cie::csg {
 
 CIE_TEST_CASE( "CubeCell", "[trees]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "CubeCell" )
+    CIE_TEST_CASE_INIT( "CubeCell" )
     /**
      *    y
      *    ^
@@ -64,7 +64,7 @@ CIE_TEST_CASE( "CubeCell", "[trees]" )
 
 CIE_TEST_CASE( "boolean::BoxCell", "[trees]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "boolean::BoxCell" )
+    CIE_TEST_CASE_INIT( "boolean::BoxCell" )
     /**
      *    y
      *    ^

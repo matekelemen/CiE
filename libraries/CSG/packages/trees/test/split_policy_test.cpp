@@ -15,7 +15,7 @@ namespace cie::csg {
 
 CIE_TEST_CASE( "MidPointSplitPolicy", "[trees]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "MidPointSplitPolicy" )
+    CIE_TEST_CASE_INIT( "MidPointSplitPolicy" )
 
     const Size Dimension    = 2;
     using CoordinateType    = Double;
@@ -46,7 +46,7 @@ CIE_TEST_CASE( "MidPointSplitPolicy", "[trees]" )
 
 CIE_TEST_CASE( "LinearSplitPolicy", "[trees]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "LinearSplitPolicy" )
+    CIE_TEST_CASE_INIT( "LinearSplitPolicy" )
 
     const Size Dimension    = 2;
     using CoordinateType    = Double;

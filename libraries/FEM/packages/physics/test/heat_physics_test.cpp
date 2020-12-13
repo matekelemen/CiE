@@ -17,7 +17,7 @@ namespace cie::fem {
 
 CIE_TEST_CASE( "StaticLinearHeatPhysics1D", "[physics]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "StaticLinearHeatPhysics1D" )
+    CIE_TEST_CASE_INIT( "StaticLinearHeatPhysics1D" )
 
     using NT                    = Double;
     using BasisSet             = LinearBasisFunctionSet<1,NT>;

@@ -13,7 +13,7 @@ namespace cie::fem {
 
 CIE_TEST_CASE( "basis_wrappers", "[discretization]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "Basis wrappers" )
+    CIE_TEST_CASE_INIT( "Basis wrappers" )
 
     const Size Dimension        = 2;
     using NT                    = Double;
@@ -38,7 +38,7 @@ CIE_TEST_CASE( "basis_wrappers", "[discretization]" )
     BasisDerivatives basisDerivative(basisValues,derivativeValues);
 
     {
-        CIE_CIE_TEST_CASE_INIT( "TensorProductBasis" )
+        CIE_TEST_CASE_INIT( "TensorProductBasis" )
         for (Size j=0; j<Dimension; ++j)
             for (Size i=0; i<Dimension; ++i)
             {
@@ -50,7 +50,7 @@ CIE_TEST_CASE( "basis_wrappers", "[discretization]" )
     }
 
     {
-        CIE_CIE_TEST_CASE_INIT( "TensorProductDerivatives" )
+        CIE_TEST_CASE_INIT( "TensorProductDerivatives" )
         typename BasisDerivatives::point_type derivative;
 
         REQUIRE_NOTHROW( derivative = basisDerivative.product() );

@@ -14,7 +14,7 @@ namespace cie::gl {
 
 CIE_TEST_CASE( "STLPart", "[file]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "STLPart" )
+    CIE_TEST_CASE_INIT( "STLPart" )
 
     PartPtr p_part;
 

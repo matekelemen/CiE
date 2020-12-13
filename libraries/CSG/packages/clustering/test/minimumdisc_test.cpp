@@ -12,7 +12,7 @@ namespace cie::csg {
 
 CIE_TEST_CASE( "Disc", "[clustering]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "Disc" )
+    CIE_TEST_CASE_INIT( "Disc" )
 
     // Disc defined by center and radius
     Disc disc( {0.1,0.2}, 0.5 );

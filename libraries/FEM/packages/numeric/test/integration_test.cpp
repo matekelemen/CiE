@@ -10,7 +10,7 @@ namespace cie::fem {
 
 CIE_TEST_CASE( "AbsQuadrature", "[numeric]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "AbsQuadrature" )
+    CIE_TEST_CASE_INIT( "AbsQuadrature" )
 
     const Size                              dimension = 2;
     typedef Double                          NT;
@@ -53,7 +53,7 @@ CIE_TEST_CASE( "AbsQuadrature", "[numeric]" )
 
 CIE_TEST_CASE( "Quadratures", "[numeric]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "Quadratures" )
+    CIE_TEST_CASE_INIT( "Quadratures" )
 
     // General init
     const Size                          Dimension = 2;
@@ -100,7 +100,7 @@ CIE_TEST_CASE( "Quadratures", "[numeric]" )
     };
 
     {
-        CIE_CIE_TEST_CASE_INIT( "GaussLegendreQuadrature" )
+        CIE_TEST_CASE_INIT( "GaussLegendreQuadrature" )
         typedef GaussLegendreQuadrature<Dimension, NT> Integrator;
 
         for (Size integrationOrder=3; integrationOrder<6; ++integrationOrder)
@@ -113,7 +113,7 @@ CIE_TEST_CASE( "Quadratures", "[numeric]" )
     }
 
     {
-        CIE_CIE_TEST_CASE_INIT( "GaussLobattoQuadrature" )
+        CIE_TEST_CASE_INIT( "GaussLobattoQuadrature" )
         typedef GaussLobattoQuadrature<Dimension, NT> Integrator;
 
         for (Size integrationOrder=3; integrationOrder<6; ++integrationOrder)

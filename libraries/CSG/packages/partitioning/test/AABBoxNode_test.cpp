@@ -30,7 +30,7 @@ private:
 
 CIE_TEST_CASE( "AABBoxNode", "[partitioning]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "AABBoxNode" )
+    CIE_TEST_CASE_INIT( "AABBoxNode" )
 
     using Object = TestAABBoxNodeObjectType;
     using Node   = AABBoxNode<Object>;

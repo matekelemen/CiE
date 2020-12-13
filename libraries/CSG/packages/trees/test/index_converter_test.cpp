@@ -10,7 +10,7 @@ namespace cie::csg {
 
 CIE_TEST_CASE( "GridIndexConverter", "[trees]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "GridIndexConverter" )
+    CIE_TEST_CASE_INIT( "GridIndexConverter" )
 
     const Size Dimension            = 2;
     Size numberOfPointsPerDimension = 3;

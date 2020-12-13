@@ -12,14 +12,14 @@ namespace cie::gl {
 
 CIE_TEST_CASE( "GLFWContext", "[context]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "GLFWContext" )
+    CIE_TEST_CASE_INIT( "GLFWContext" )
 
     // Window parameters
     std::pair<Size,Size> windowSize   { 800, 600 };
     const std::string windowName    = "GLFW testwindow";
 
     {
-        CIE_CIE_TEST_CASE_INIT( "Context creation" )
+        CIE_TEST_CASE_INIT( "Context creation" )
 
         ContextPtr p_context;
 
@@ -32,7 +32,7 @@ CIE_TEST_CASE( "GLFWContext", "[context]" )
     }
 
     {
-        CIE_CIE_TEST_CASE_INIT( "Window creation" )
+        CIE_TEST_CASE_INIT( "Window creation" )
 
         auto p_context = gl::GLFWContextSingleton::get(
             TEST_OUTPUT_PATH / "GLFWContext_test1.log",

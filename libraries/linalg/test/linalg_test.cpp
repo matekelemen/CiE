@@ -16,7 +16,7 @@ namespace cie::linalg
 
 CIE_TEST_CASE( "Matrix", "[matrix]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "Matrix" )
+    CIE_TEST_CASE_INIT( "Matrix" )
 
     CHECK( Matrix<Double>( 1, 3, 0.0 ).size1( ) == 1 );
     CHECK( Matrix<Double>( 1, 3, 0.0 ).size2( ) == 3 );
@@ -54,7 +54,7 @@ CIE_TEST_CASE( "Matrix", "[matrix]" )
 
 CIE_TEST_CASE( "zero size Matrix", "[matrix]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "zero size Matrix" )
+    CIE_TEST_CASE_INIT( "zero size Matrix" )
 
     Matrix<Double> m( 1, 2, 3.0 );
 
@@ -71,7 +71,7 @@ CIE_TEST_CASE( "zero size Matrix", "[matrix]" )
 
 CIE_TEST_CASE( "inconsistent input to Matrix", "[matrix]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "inconsistent input to Matrix" )
+    CIE_TEST_CASE_INIT( "inconsistent input to Matrix" )
 
     std::vector<DoubleVector> inconsistentData
     {
@@ -91,7 +91,7 @@ CIE_TEST_CASE( "inconsistent input to Matrix", "[matrix]" )
 
 CIE_TEST_CASE( "linearized input to Matrix", "[matrix]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "linearized input to Matrix" )
+    CIE_TEST_CASE_INIT( "linearized input to Matrix" )
 
     std::vector<Double> data{ 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
 
@@ -147,7 +147,7 @@ namespace linalgtesthelper
 
 CIE_TEST_CASE( "write vector", "[io]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "write vector" )
+    CIE_TEST_CASE_INIT( "write vector" )
 
     DoubleVector v{ 0.0, 2.0, 4.0 };
 
@@ -162,7 +162,7 @@ CIE_TEST_CASE( "write vector", "[io]" )
 
 CIE_TEST_CASE( "write matrix", "[io]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "write matrix" )
+    CIE_TEST_CASE_INIT( "write matrix" )
 
     Matrix<Double> m( { DoubleVector{ 1.0, -2.0 },
                 DoubleVector{ -8.0, 4.0 } } );
@@ -179,7 +179,7 @@ CIE_TEST_CASE( "write matrix", "[io]" )
 
 CIE_TEST_CASE( "norm", "[utility]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "norm" )
+    CIE_TEST_CASE_INIT( "norm" )
 
     DoubleVector vector { 4.0, 3.0 };
 
@@ -196,7 +196,7 @@ CIE_TEST_CASE( "norm", "[utility]" )
 
 CIE_TEST_CASE( "solve", "[solvers]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "solve" )
+    CIE_TEST_CASE_INIT( "solve" )
 
     Matrix<Double> matrix( { DoubleVector{  5.2,  1.2,  7.3, -2.3 },
                      DoubleVector{  8.9, -7.6, -0.2,  3.4 },
@@ -222,7 +222,7 @@ CIE_TEST_CASE( "solve", "[solvers]" )
 
 CIE_TEST_CASE( "solve singular", "[solvers]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "solve singular" )
+    CIE_TEST_CASE_INIT( "solve singular" )
 
     Matrix<Double> matrix( { DoubleVector{  1.0, -1.0 },
                      DoubleVector{ -1.0,  1.0 } } );
@@ -237,7 +237,7 @@ CIE_TEST_CASE( "solve singular", "[solvers]" )
 
 CIE_TEST_CASE( "solve zero pivot", "[solvers]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "solve zero pivot" )
+    CIE_TEST_CASE_INIT( "solve zero pivot" )
 
     Matrix<Double> matrix( {    DoubleVector{ 0.0       , 1.85943691, 6.97111553, 8.69227093 },
 					            DoubleVector{ 3.28991871, 1.53597987, 7.61514532, 3.60326283 },

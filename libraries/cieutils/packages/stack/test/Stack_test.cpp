@@ -8,7 +8,7 @@ namespace cie::utils {
 
 CIE_TEST_CASE( "Stack", "[stack]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "Stack" )
+    CIE_TEST_CASE_INIT( "Stack" )
 
     Stack<Size> stack( 0, 5 );
 

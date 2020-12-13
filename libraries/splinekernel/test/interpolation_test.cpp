@@ -18,7 +18,7 @@ namespace cie::splinekernel
 
 CIE_TEST_CASE( "centripetal parameter positions", "[splinekernel]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "centripetal parameter positions" )
+    CIE_TEST_CASE_INIT( "centripetal parameter positions" )
 
     // Define points to be interpolated
     ControlPoints2D interpolationPoints;
@@ -44,7 +44,7 @@ CIE_TEST_CASE( "centripetal parameter positions", "[splinekernel]" )
 
 CIE_TEST_CASE( "averaged knot vector", "[splinekernel]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "averaged knot vector" )
+    CIE_TEST_CASE_INIT( "averaged knot vector" )
 
     // Define parameter positions
     std::vector<double> parameterPositions{ 0.0, 1.0 / 2.0, 2.0 / 3.0, 3.0 / 4.0, 1.0 };
@@ -106,7 +106,7 @@ CIE_TEST_CASE( "averaged knot vector", "[splinekernel]" )
 
 CIE_TEST_CASE( "interpolate with BSpline", "[splinekernel]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "interpolate with BSpline" )
+    CIE_TEST_CASE_INIT( "interpolate with BSpline" )
 
     ControlPoints2D interpolationPoints;
     ControlPointsAndKnotVector result;
@@ -246,7 +246,7 @@ CIE_TEST_CASE( "interpolate with BSpline", "[splinekernel]" )
 
 CIE_TEST_CASE( "interpolate with BSpline surface", "[splinekernel]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "interpolate with BSpline surface" )
+    CIE_TEST_CASE_INIT( "interpolate with BSpline surface" )
 
     // Interpolation points
     linalg::Matrix xGrid(

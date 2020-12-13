@@ -81,10 +81,10 @@ requires NotConvertibleTo<T,TT>
 
 CIE_TEST_CASE( "STRONG_TYPEDEF", "[stl_extension]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "STRONG_TYPEDEF" )
+    CIE_TEST_CASE_INIT( "STRONG_TYPEDEF" )
 
     {
-        CIE_CIE_TEST_CASE_INIT( "std::vector" )
+        CIE_TEST_CASE_INIT( "std::vector" )
         VectorBase              base;
         SubVector1              sub1;
         SubVector2              sub2;
@@ -103,7 +103,7 @@ CIE_TEST_CASE( "STRONG_TYPEDEF", "[stl_extension]" )
     }
 
     {
-        CIE_CIE_TEST_CASE_INIT( "int" )
+        CIE_TEST_CASE_INIT( "int" )
         IntBase              base = 0;
         SubInt1              sub1;
         SubInt2              sub2;
@@ -120,7 +120,7 @@ CIE_TEST_CASE( "STRONG_TYPEDEF", "[stl_extension]" )
     }
 
     {
-        CIE_CIE_TEST_CASE_INIT( "int*" )
+        CIE_TEST_CASE_INIT( "int*" )
         PointerBase              base = nullptr;
         SubPointer1              sub1;
         SubPointer2              sub2;

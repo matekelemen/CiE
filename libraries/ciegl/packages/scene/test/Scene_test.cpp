@@ -42,7 +42,7 @@ private:
 
 CIE_TEST_CASE( "Scene", "[scene]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "Scene" )
+    CIE_TEST_CASE_INIT( "Scene" )
 
     // Context
     std::pair<Size,Size> glVersion { 4, 5 };
@@ -89,7 +89,7 @@ CIE_TEST_CASE( "Scene", "[scene]" )
     BufferManagerPtr p_bufferManager;
 
     {
-        CIE_CIE_TEST_CASE_INIT( "create scene" )
+        CIE_TEST_CASE_INIT( "create scene" )
         auto localBlock = p_context->newBlock( "basic scene" );
 
         REQUIRE_NOTHROW( 
@@ -122,7 +122,7 @@ CIE_TEST_CASE( "Scene", "[scene]" )
     }
 
     {
-        CIE_CIE_TEST_CASE_INIT( "multiple scenes" )
+        CIE_TEST_CASE_INIT( "multiple scenes" )
         auto localBlock = p_context->newBlock( "two scenes" );
 
         ScenePtr p_secondScene;
@@ -217,7 +217,7 @@ CIE_TEST_CASE( "Scene", "[scene]" )
 
 
     {
-        CIE_CIE_TEST_CASE_INIT( "scene with uniforms" )
+        CIE_TEST_CASE_INIT( "scene with uniforms" )
         auto localBlock = p_context->newBlock( "scene with uniforms" );
 
         // Primary scene for triangles

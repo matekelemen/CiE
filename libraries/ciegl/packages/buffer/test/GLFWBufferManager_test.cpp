@@ -12,7 +12,7 @@ namespace cie::gl {
 
 CIE_TEST_CASE( "GLFWBufferManager", "[buffer]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "GLFWBufferManager" )
+    CIE_TEST_CASE_INIT( "GLFWBufferManager" )
 
     // Context
     std::pair<Size,Size> glVersion { 4, 5 };
@@ -34,19 +34,19 @@ CIE_TEST_CASE( "GLFWBufferManager", "[buffer]" )
     ElementBufferPtr p_elementBuffer;
 
     {
-        CIE_CIE_TEST_CASE_INIT( "create buffer manager" )
+        CIE_TEST_CASE_INIT( "create buffer manager" )
         REQUIRE_NOTHROW( p_bufferManager.reset( new GLFWBufferManager(*p_context) ));
     }
 
     {
-        CIE_CIE_TEST_CASE_INIT( "generate buffers" )
+        CIE_TEST_CASE_INIT( "generate buffers" )
 
         CHECK_NOTHROW( p_vertexBuffer = p_bufferManager->makeVertexBuffer() );
         CHECK_NOTHROW( p_elementBuffer = p_bufferManager->makeElementBuffer() );
     }
 
     {
-        CIE_CIE_TEST_CASE_INIT( "bind buffers" )
+        CIE_TEST_CASE_INIT( "bind buffers" )
 
         CHECK_NOTHROW( p_bufferManager->bindVertexBuffer(p_vertexBuffer) );
         CHECK_NOTHROW( p_bufferManager->bindElementBuffer(p_elementBuffer) );

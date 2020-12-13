@@ -18,7 +18,7 @@ namespace cie::fem
 
 CIE_TEST_CASE( "PolynomialBasisFunctionSet", "numeric" )
 {
-    CIE_CIE_TEST_CASE_INIT( "PolynomialBasisFunctionSet" )
+    CIE_TEST_CASE_INIT( "PolynomialBasisFunctionSet" )
 
     const Size dim = 2;
 
@@ -184,7 +184,7 @@ CIE_TEST_CASE( "PolynomialBasisFunctionSet", "numeric" )
 
 CIE_TEST_CASE( "LinearBasisFunctionSet", "[numeric]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "LinearBasisFunctionSet" )
+    CIE_TEST_CASE_INIT( "LinearBasisFunctionSet" )
 
     const Size dim = 2;
     typedef LinearBasisFunctionSet<dim,Double> Basis;

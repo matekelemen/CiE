@@ -41,7 +41,7 @@ protected:
 
 CIE_TEST_CASE( "BinaryOperator", "[primitives]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "BinaryOperator" )
+    CIE_TEST_CASE_INIT( "BinaryOperator" )
 
     REQUIRE_NOTHROW( TestBinaryOperator() );
     TestBinaryOperator op;

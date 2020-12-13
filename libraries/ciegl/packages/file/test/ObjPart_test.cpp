@@ -10,7 +10,7 @@ namespace cie::gl {
 
 CIE_TEST_CASE( "ObjPart", "[file]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "ObjPart" )
+    CIE_TEST_CASE_INIT( "ObjPart" )
 
     PartPtr p_part;
 

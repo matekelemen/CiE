@@ -109,7 +109,7 @@ CIE_TEST_CASE( "GLFWContext" )
 
 CIE_TEST_CASE( "DrawManager", "[ciegl]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "DrawManager" )
+    CIE_TEST_CASE_INIT( "DrawManager" )
 
     // Create context
     WindowPtr p_window;

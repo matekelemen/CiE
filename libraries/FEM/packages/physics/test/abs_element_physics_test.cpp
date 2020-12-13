@@ -16,7 +16,7 @@ namespace cie::fem {
 
 CIE_TEST_CASE( "AbsElementPhysics", "[physics]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "AbsElementPhysics" )
+    CIE_TEST_CASE_INIT( "AbsElementPhysics" )
 
     const Size Dimension            = 1;
     const Size integrationOrder     = 5;

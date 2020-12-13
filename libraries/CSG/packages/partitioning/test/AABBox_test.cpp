@@ -10,10 +10,10 @@ namespace cie::csg {
 
 CIE_TEST_CASE( "AABBox", "[partitioning]" )
 {
-    CIE_CIE_TEST_CASE_INIT( "AABBox" )
+    CIE_TEST_CASE_INIT( "AABBox" )
 
     {
-        CIE_CIE_TEST_CASE_INIT( "2D floating point" )
+        CIE_TEST_CASE_INIT( "2D floating point" )
 
         using BoundingBox = AABBox<2,Double>;
 
