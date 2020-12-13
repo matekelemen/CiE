@@ -13,7 +13,7 @@ CIE_TEST_CASE( "AttributeContainer", "[buffer]" )
 {
     CIE_TEST_CASE_INIT( "AttributeContainer" )
 
-    REQUIRE_NOTHROW( AttributeContainerPtr( new AttributeContainer ) );
+    CIE_TEST_REQUIRE_NOTHROW( AttributeContainerPtr( new AttributeContainer ) );
 
     AttributeContainerPtr attributeContainer(
         new AttributeContainer

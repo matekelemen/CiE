@@ -26,8 +26,8 @@ CIE_TEST_CASE( "Gradient estimation", "[gradientdescent]" )
     RNRObjectivePtr<2> objective = parabola;
     DoubleArray<2> gradient;
 
-    REQUIRE_NOTHROW( gradient = gradientEstimate( RNRElement<2>({0.0,0.0}), objective, 1e-11 ) );
-    CHECK( gradient[0] == Approx(gradient[1]) );
+    CIE_TEST_REQUIRE_NOTHROW( gradient = gradientEstimate( RNRElement<2>({0.0,0.0}), objective, 1e-11 ) );
+    CIE_TEST_CHECK( gradient[0] == Approx(gradient[1]) );
 }
 
 } // namespace cie::opt

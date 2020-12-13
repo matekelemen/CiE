@@ -32,12 +32,12 @@ void fillTest( MapType& r_map, Size maxCount )
 template <class MapType>
 void checkContainer( MapType& r_map, Size maxCount )
 {
-    CHECK( r_map.size() == maxCount );
+    CIE_TEST_CHECK( r_map.size() == maxCount );
 
     for ( const auto& r_pair : r_map )
-        CHECK( r_pair.first == r_pair.second );
+        CIE_TEST_CHECK( r_pair.first == r_pair.second );
 
-    CHECK(
+    CIE_TEST_CHECK(
         std::accumulate( r_map.begin(),
                          r_map.end(),
                          Size(0),
@@ -64,11 +64,11 @@ CIE_TEST_CASE( "ThreadSafeMap", "[concurrency]" )
         using MapBaseType   = std::map<KeyType,ValueType>;
         using MapType       = ThreadSafeMap<MapBaseType>;
 
-        REQUIRE_NOTHROW( MapType() );
+        CIE_TEST_REQUIRE_NOTHROW( MapType() );
         MapType map;
 
-        CHECK_NOTHROW( map.clear() );
-        CHECK( map.empty() );
+        CIE_TEST_CHECK_NOTHROW( map.clear() );
+        CIE_TEST_CHECK( map.empty() );
 
         map::fillTest( map, numberOfElements );
         map::checkContainer( map, numberOfElements );
@@ -79,11 +79,11 @@ CIE_TEST_CASE( "ThreadSafeMap", "[concurrency]" )
         using MapBaseType   = std::unordered_map<KeyType,ValueType>;
         using MapType       = ThreadSafeMap<MapBaseType>;
 
-        REQUIRE_NOTHROW( MapType() );
+        CIE_TEST_REQUIRE_NOTHROW( MapType() );
         MapType map;
 
-        CHECK_NOTHROW( map.clear() );
-        CHECK( map.empty() );
+        CIE_TEST_CHECK_NOTHROW( map.clear() );
+        CIE_TEST_CHECK( map.empty() );
 
         map::fillTest( map, numberOfElements );
         map::checkContainer( map, numberOfElements );

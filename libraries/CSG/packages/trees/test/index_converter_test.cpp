@@ -15,106 +15,106 @@ CIE_TEST_CASE( "GridIndexConverter", "[trees]" )
     const Size Dimension            = 2;
     Size numberOfPointsPerDimension = 3;
 
-    REQUIRE_NOTHROW( GridIndexConverter<Dimension>(numberOfPointsPerDimension) );
+    CIE_TEST_REQUIRE_NOTHROW( GridIndexConverter<Dimension>(numberOfPointsPerDimension) );
     GridIndexConverter<Dimension> converter(numberOfPointsPerDimension);
 
-    REQUIRE( converter.numberOfPoints() == 9 );
+    CIE_TEST_REQUIRE( converter.numberOfPoints() == 9 );
     
     UIntArray<Dimension> test;
     Size counter = 0;
 
     // 0
-    CHECK_NOTHROW( test = converter.convert(counter++) );
-    REQUIRE( test.size() == Dimension );
-    CHECK( test[0] == 0 );
-    CHECK( test[1] == 0 );
+    CIE_TEST_CHECK_NOTHROW( test = converter.convert(counter++) );
+    CIE_TEST_REQUIRE( test.size() == Dimension );
+    CIE_TEST_CHECK( test[0] == 0 );
+    CIE_TEST_CHECK( test[1] == 0 );
 
     // 1
-    CHECK_NOTHROW( test = converter.convert(counter++) );
-    REQUIRE( test.size() == Dimension );
-    CHECK( test[0] == 1 );
-    CHECK( test[1] == 0 );
+    CIE_TEST_CHECK_NOTHROW( test = converter.convert(counter++) );
+    CIE_TEST_REQUIRE( test.size() == Dimension );
+    CIE_TEST_CHECK( test[0] == 1 );
+    CIE_TEST_CHECK( test[1] == 0 );
 
     // 2
-    CHECK_NOTHROW( test = converter.convert(counter++) );
-    REQUIRE( test.size() == Dimension );
-    CHECK( test[0] == 2 );
-    CHECK( test[1] == 0 );
+    CIE_TEST_CHECK_NOTHROW( test = converter.convert(counter++) );
+    CIE_TEST_REQUIRE( test.size() == Dimension );
+    CIE_TEST_CHECK( test[0] == 2 );
+    CIE_TEST_CHECK( test[1] == 0 );
 
     // 3
-    CHECK_NOTHROW( test = converter.convert(counter++) );
-    REQUIRE( test.size() == Dimension );
-    CHECK( test[0] == 0 );
-    CHECK( test[1] == 1 );
+    CIE_TEST_CHECK_NOTHROW( test = converter.convert(counter++) );
+    CIE_TEST_REQUIRE( test.size() == Dimension );
+    CIE_TEST_CHECK( test[0] == 0 );
+    CIE_TEST_CHECK( test[1] == 1 );
 
     // 4
-    CHECK_NOTHROW( test = converter.convert(counter++) );
-    REQUIRE( test.size() == Dimension );
-    CHECK( test[0] == 1 );
-    CHECK( test[1] == 1 );
+    CIE_TEST_CHECK_NOTHROW( test = converter.convert(counter++) );
+    CIE_TEST_REQUIRE( test.size() == Dimension );
+    CIE_TEST_CHECK( test[0] == 1 );
+    CIE_TEST_CHECK( test[1] == 1 );
 
     // 5
-    CHECK_NOTHROW( test = converter.convert(counter++) );
-    REQUIRE( test.size() == Dimension );
-    CHECK( test[0] == 2 );
-    CHECK( test[1] == 1 );
+    CIE_TEST_CHECK_NOTHROW( test = converter.convert(counter++) );
+    CIE_TEST_REQUIRE( test.size() == Dimension );
+    CIE_TEST_CHECK( test[0] == 2 );
+    CIE_TEST_CHECK( test[1] == 1 );
 
     // 6
-    CHECK_NOTHROW( test = converter.convert(counter++) );
-    REQUIRE( test.size() == Dimension );
-    CHECK( test[0] == 0 );
-    CHECK( test[1] == 2 );
+    CIE_TEST_CHECK_NOTHROW( test = converter.convert(counter++) );
+    CIE_TEST_REQUIRE( test.size() == Dimension );
+    CIE_TEST_CHECK( test[0] == 0 );
+    CIE_TEST_CHECK( test[1] == 2 );
 
     // 7
-    CHECK_NOTHROW( test = converter.convert(counter++) );
-    REQUIRE( test.size() == Dimension );
-    CHECK( test[0] == 1 );
-    CHECK( test[1] == 2 );
+    CIE_TEST_CHECK_NOTHROW( test = converter.convert(counter++) );
+    CIE_TEST_REQUIRE( test.size() == Dimension );
+    CIE_TEST_CHECK( test[0] == 1 );
+    CIE_TEST_CHECK( test[1] == 2 );
 
     // 8
-    CHECK_NOTHROW( test = converter.convert(counter++) );
-    REQUIRE( test.size() == Dimension );
-    CHECK( test[0] == 2 );
-    CHECK( test[1] == 2 );
+    CIE_TEST_CHECK_NOTHROW( test = converter.convert(counter++) );
+    CIE_TEST_REQUIRE( test.size() == Dimension );
+    CIE_TEST_CHECK( test[0] == 2 );
+    CIE_TEST_CHECK( test[1] == 2 );
 
     #ifdef CIE_ENABLE_OUT_OF_RANGE_TESTS
     // 9 - error
-    CHECK_THROWS( test = converter.convert(counter++) );
+    CIE_TEST_CHECK_THROWS( test = converter.convert(counter++) );
     #endif
 
     numberOfPointsPerDimension = 2;
     converter.setNumberOfPointsPerDimension( numberOfPointsPerDimension );
-    REQUIRE( converter.numberOfPoints() == 4 );
+    CIE_TEST_REQUIRE( converter.numberOfPoints() == 4 );
 
     counter = 0;
 
     // 0
-    CHECK_NOTHROW( test = converter.convert(counter++) );
-    REQUIRE( test.size() == Dimension );
-    CHECK( test[0] == 0 );
-    CHECK( test[1] == 0 );
+    CIE_TEST_CHECK_NOTHROW( test = converter.convert(counter++) );
+    CIE_TEST_REQUIRE( test.size() == Dimension );
+    CIE_TEST_CHECK( test[0] == 0 );
+    CIE_TEST_CHECK( test[1] == 0 );
 
     // 1
-    CHECK_NOTHROW( test = converter.convert(counter++) );
-    REQUIRE( test.size() == Dimension );
-    CHECK( test[0] == 1 );
-    CHECK( test[1] == 0 );
+    CIE_TEST_CHECK_NOTHROW( test = converter.convert(counter++) );
+    CIE_TEST_REQUIRE( test.size() == Dimension );
+    CIE_TEST_CHECK( test[0] == 1 );
+    CIE_TEST_CHECK( test[1] == 0 );
 
     // 2
-    CHECK_NOTHROW( test = converter.convert(counter++) );
-    REQUIRE( test.size() == Dimension );
-    CHECK( test[0] == 0 );
-    CHECK( test[1] == 1 );
+    CIE_TEST_CHECK_NOTHROW( test = converter.convert(counter++) );
+    CIE_TEST_REQUIRE( test.size() == Dimension );
+    CIE_TEST_CHECK( test[0] == 0 );
+    CIE_TEST_CHECK( test[1] == 1 );
 
     // 3
-    CHECK_NOTHROW( test = converter.convert(counter++) );
-    REQUIRE( test.size() == Dimension );
-    CHECK( test[0] == 1 );
-    CHECK( test[1] == 1 );
+    CIE_TEST_CHECK_NOTHROW( test = converter.convert(counter++) );
+    CIE_TEST_REQUIRE( test.size() == Dimension );
+    CIE_TEST_CHECK( test[0] == 1 );
+    CIE_TEST_CHECK( test[1] == 1 );
 
     #ifdef CIE_ENABLE_OUT_OF_RANGE_TESTS
     // 4 - error
-    CHECK_THROWS( test = converter.convert(counter++) );
+    CIE_TEST_CHECK_THROWS( test = converter.convert(counter++) );
     #endif
 }
 

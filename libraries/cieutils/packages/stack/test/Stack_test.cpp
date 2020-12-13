@@ -15,18 +15,18 @@ CIE_TEST_CASE( "Stack", "[stack]" )
     for ( Size i=0; i<3; ++i )
         stack.push_back( i );
 
-    CHECK( stack.back() == 2 );
+    CIE_TEST_CHECK( stack.back() == 2 );
 
     for ( Size i=0; i<3; ++i )
-        CHECK( stack[i] == i );
+        CIE_TEST_CHECK( stack[i] == i );
 
     for ( Size i=3; i<12; ++i )
         stack.push_back(i);
 
     for ( Size i=7; i<12; ++i )
-        CHECK( i == stack[i] );
+        CIE_TEST_CHECK( i == stack[i] );
 
-    CHECK( stack.back() == 11 );
+    CIE_TEST_CHECK( stack.back() == 11 );
 }
 
 

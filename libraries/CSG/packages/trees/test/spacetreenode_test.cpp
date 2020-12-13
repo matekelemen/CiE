@@ -73,7 +73,7 @@ CIE_TEST_CASE( "SpaceTreeNode", "[trees]" )
         );
 
         // Construct a node
-        REQUIRE_NOTHROW(NodeType(   p_sampler,
+        CIE_TEST_REQUIRE_NOTHROW(NodeType(   p_sampler,
                                     p_splitPolicy,
                                     0,
                                     base,
@@ -84,28 +84,28 @@ CIE_TEST_CASE( "SpaceTreeNode", "[trees]" )
                         base,
                         length );
 
-        CHECK_THROWS( root.isBoundary() );
+        CIE_TEST_CHECK_THROWS( root.isBoundary() );
 
         // Evaluate unit circle
-        CHECK_NOTHROW( root.evaluate(unitCircle<PointType,BoolValue>) );
-        REQUIRE( root.values().size() == 9 );
-        CHECK( root.isBoundary() );
+        CIE_TEST_CHECK_NOTHROW( root.evaluate(unitCircle<PointType,BoolValue>) );
+        CIE_TEST_REQUIRE( root.values().size() == 9 );
+        CIE_TEST_CHECK( root.isBoundary() );
 
-        CHECK( root.values()[0] == true );  // <-- { 0.0, 0.0 }
-        CHECK( root.values()[1] == true );  // <-- { 0.5, 0.0 }
-        CHECK( root.values()[2] == true );  // <-- { 1.0, 0.0 }
-        CHECK( root.values()[3] == true );  // <-- { 0.0, 0.5 }
-        CHECK( root.values()[4] == true );  // <-- { 0.5, 0.5 }
-        CHECK( root.values()[5] == false ); // <-- { 1.0, 0.5 }
-        CHECK( root.values()[6] == true );  // <-- { 0.0, 1.0 }
-        CHECK( root.values()[7] == false ); // <-- { 0.5, 1.0 }
-        CHECK( root.values()[8] == false ); // <-- { 1.0, 1.0 }
+        CIE_TEST_CHECK( root.values()[0] == true );  // <-- { 0.0, 0.0 }
+        CIE_TEST_CHECK( root.values()[1] == true );  // <-- { 0.5, 0.0 }
+        CIE_TEST_CHECK( root.values()[2] == true );  // <-- { 1.0, 0.0 }
+        CIE_TEST_CHECK( root.values()[3] == true );  // <-- { 0.0, 0.5 }
+        CIE_TEST_CHECK( root.values()[4] == true );  // <-- { 0.5, 0.5 }
+        CIE_TEST_CHECK( root.values()[5] == false ); // <-- { 1.0, 0.5 }
+        CIE_TEST_CHECK( root.values()[6] == true );  // <-- { 0.0, 1.0 }
+        CIE_TEST_CHECK( root.values()[7] == false ); // <-- { 0.5, 1.0 }
+        CIE_TEST_CHECK( root.values()[8] == false ); // <-- { 1.0, 1.0 }
 
         // Divide
-        CHECK_NOTHROW( root.divide(unitCircle<PointType,BoolValue>, depth) );
+        CIE_TEST_CHECK_NOTHROW( root.divide(unitCircle<PointType,BoolValue>, depth) );
         
         // Write output
-        CHECK_NOTHROW( writeToVTK( root, TEST_OUTPUT_PATH / "SpaceTreeNode_cube_midpoint.vtu" ) );
+        CIE_TEST_CHECK_NOTHROW( writeToVTK( root, TEST_OUTPUT_PATH / "SpaceTreeNode_cube_midpoint.vtu" ) );
     }
 
     // Node with box cell
@@ -136,7 +136,7 @@ CIE_TEST_CASE( "SpaceTreeNode", "[trees]" )
             );
 
             // Construct a node
-            REQUIRE_NOTHROW(NodeType(   p_sampler,
+            CIE_TEST_REQUIRE_NOTHROW(NodeType(   p_sampler,
                                         p_splitPolicy,
                                         0,
                                         base,
@@ -147,13 +147,13 @@ CIE_TEST_CASE( "SpaceTreeNode", "[trees]" )
                             base,
                             lengths );
 
-            CHECK_THROWS( root.isBoundary() );
+            CIE_TEST_CHECK_THROWS( root.isBoundary() );
 
             // Divide
-            CHECK_NOTHROW( root.divide(unitCircle<PointType,BoolValue>, depth) );
+            CIE_TEST_CHECK_NOTHROW( root.divide(unitCircle<PointType,BoolValue>, depth) );
             
             // Write output
-            CHECK_NOTHROW( writeToVTK( root, TEST_OUTPUT_PATH / "SpaceTreeNode_box_midpoint.vtu" ) );
+            CIE_TEST_CHECK_NOTHROW( writeToVTK( root, TEST_OUTPUT_PATH / "SpaceTreeNode_box_midpoint.vtu" ) );
         } // Midpoint splitting
 
         { // Linear splitting
@@ -176,7 +176,7 @@ CIE_TEST_CASE( "SpaceTreeNode", "[trees]" )
             );
 
             // Construct a node
-            REQUIRE_NOTHROW(NodeType(   p_sampler,
+            CIE_TEST_REQUIRE_NOTHROW(NodeType(   p_sampler,
                                         p_splitPolicy,
                                         0,
                                         base,
@@ -187,13 +187,13 @@ CIE_TEST_CASE( "SpaceTreeNode", "[trees]" )
                             base,
                             lengths );
 
-            CHECK_THROWS( root.isBoundary() );
+            CIE_TEST_CHECK_THROWS( root.isBoundary() );
 
             // Divide
-            CHECK_NOTHROW( root.divide(unitCircle<PointType,NumericValue>, depth) );
+            CIE_TEST_CHECK_NOTHROW( root.divide(unitCircle<PointType,NumericValue>, depth) );
             
             // Write output
-            CHECK_NOTHROW( writeToVTK( root, TEST_OUTPUT_PATH / "SpaceTreeNode_box_linear.vtu" ) );
+            CIE_TEST_CHECK_NOTHROW( writeToVTK( root, TEST_OUTPUT_PATH / "SpaceTreeNode_box_linear.vtu" ) );
         } // Linear splitting
 
         { // Weighted splitting
@@ -216,7 +216,7 @@ CIE_TEST_CASE( "SpaceTreeNode", "[trees]" )
             );
 
             // Construct a node
-            REQUIRE_NOTHROW(NodeType(   p_sampler,
+            CIE_TEST_REQUIRE_NOTHROW(NodeType(   p_sampler,
                                         p_splitPolicy,
                                         0,
                                         base,
@@ -227,13 +227,13 @@ CIE_TEST_CASE( "SpaceTreeNode", "[trees]" )
                             base,
                             lengths );
 
-            CHECK_THROWS( root.isBoundary() );
+            CIE_TEST_CHECK_THROWS( root.isBoundary() );
 
             // Divide
-            CHECK_NOTHROW( root.divide(unitCircle<PointType,NumericValue>, depth) );
+            CIE_TEST_CHECK_NOTHROW( root.divide(unitCircle<PointType,NumericValue>, depth) );
             
             // Write output
-            CHECK_NOTHROW( writeToVTK( root, TEST_OUTPUT_PATH / "SpaceTreeNode_box_weighted.vtu" ) );
+            CIE_TEST_CHECK_NOTHROW( writeToVTK( root, TEST_OUTPUT_PATH / "SpaceTreeNode_box_weighted.vtu" ) );
         } // Weighted splitting
         
     } // Node with box cell

@@ -22,12 +22,12 @@ CIE_TEST_CASE( "Principal component - power iteration", "[decomposition]" )
     double tolerance		= 1e-16;
 	double checkTolerance	= 1e-15;
 
-    REQUIRE_NOTHROW( result = principalComponent(matrix, tolerance) );
+    CIE_TEST_REQUIRE_NOTHROW( result = principalComponent(matrix, tolerance) );
     normalize<DoubleVector>(principal);
 
-    REQUIRE( result.size() == principal.size() );
+    CIE_TEST_REQUIRE( result.size() == principal.size() );
     for (size_t i=0; i<result.size(); ++i){
-        CHECK( abs(result[i]-principal[i]) < checkTolerance);
+        CIE_TEST_CHECK( abs(result[i]-principal[i]) < checkTolerance);
     }
 
 }

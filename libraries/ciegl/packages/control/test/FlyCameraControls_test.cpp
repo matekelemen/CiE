@@ -19,7 +19,7 @@ CIE_TEST_CASE( "FlyCameraControls", "[control]" )
 //
 //    CameraControlsPtr p_controls;
 //    
-//    REQUIRE_NOTHROW( p_controls.reset(
+//    CIE_TEST_REQUIRE_NOTHROW( p_controls.reset(
 //        new FlyCameraControls( p_window, p_camera )
 //    ));
 }

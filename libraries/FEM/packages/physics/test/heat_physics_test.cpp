@@ -35,12 +35,12 @@ CIE_TEST_CASE( "StaticLinearHeatPhysics1D", "[physics]" )
     const Size integrationOrder             = 5;
 
     // Element constructor
-    REQUIRE_NOTHROW( Element(materialParameter, load, domain, dofs) );
+    CIE_TEST_REQUIRE_NOTHROW( Element(materialParameter, load, domain, dofs) );
     Element element(    materialParameter,
                         load,
                         domain,
                         dofs );
-    REQUIRE_NOTHROW( element.setIntegrator<GaussLegendreQuadrature<1,NT>>(integrationOrder) );
+    CIE_TEST_REQUIRE_NOTHROW( element.setIntegrator<GaussLegendreQuadrature<1,NT>>(integrationOrder) );
 
     // Define global matrix
     Matrix stiffness;
@@ -55,11 +55,11 @@ CIE_TEST_CASE( "StaticLinearHeatPhysics1D", "[physics]" )
     };
 
     // Integration
-    REQUIRE_NOTHROW( element.integrateStiffness(updateStiffness) );
-    CHECK( stiffness[0][0] == Approx(materialParameter(0.0)) );
-    CHECK( stiffness[0][1] == Approx(-materialParameter(0.0)) );
-    CHECK( stiffness[1][0] == Approx(-materialParameter(0.0)) );
-    CHECK( stiffness[1][1] == Approx(materialParameter(0.0)) );
+    CIE_TEST_REQUIRE_NOTHROW( element.integrateStiffness(updateStiffness) );
+    CIE_TEST_CHECK( stiffness[0][0] == Approx(materialParameter(0.0)) );
+    CIE_TEST_CHECK( stiffness[0][1] == Approx(-materialParameter(0.0)) );
+    CIE_TEST_CHECK( stiffness[1][0] == Approx(-materialParameter(0.0)) );
+    CIE_TEST_CHECK( stiffness[1][1] == Approx(materialParameter(0.0)) );
 
 } // CIE_TEST_CASE StaticLinearHeatPhysics1D
 

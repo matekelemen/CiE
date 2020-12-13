@@ -26,7 +26,7 @@ CIE_TEST_CASE( "CommandLineArguments", "[commandline]" )
             "--integer=2"
         };
 
-        CHECK_NOTHROW( CommandLineArguments(argc, argv) );
+        CIE_TEST_CHECK_NOTHROW( CommandLineArguments(argc, argv) );
     }
 
     {
@@ -40,7 +40,7 @@ CIE_TEST_CASE( "CommandLineArguments", "[commandline]" )
             "--integer=2"
         };
 
-        CHECK_THROWS( CommandLineArguments(argc, argv) );
+        CIE_TEST_CHECK_THROWS( CommandLineArguments(argc, argv) );
     }
 
     {
@@ -54,7 +54,7 @@ CIE_TEST_CASE( "CommandLineArguments", "[commandline]" )
             "--integer=2"
         };
 
-        CHECK_THROWS( CommandLineArguments(argc, argv) );
+        CIE_TEST_CHECK_THROWS( CommandLineArguments(argc, argv) );
     }
 
     {
@@ -68,7 +68,7 @@ CIE_TEST_CASE( "CommandLineArguments", "[commandline]" )
             "--integer=2"
         };
 
-        CHECK_THROWS( CommandLineArguments(argc, argv) );
+        CIE_TEST_CHECK_THROWS( CommandLineArguments(argc, argv) );
     }
 
     {
@@ -82,7 +82,7 @@ CIE_TEST_CASE( "CommandLineArguments", "[commandline]" )
             "--integer=2"
         };
 
-        CHECK_THROWS( CommandLineArguments(argc, argv) );
+        CIE_TEST_CHECK_THROWS( CommandLineArguments(argc, argv) );
     }
 
     {
@@ -96,40 +96,40 @@ CIE_TEST_CASE( "CommandLineArguments", "[commandline]" )
             "--integer=2"
         };
 
-        REQUIRE_NOTHROW( CommandLineArguments(argc, argv) );
+        CIE_TEST_REQUIRE_NOTHROW( CommandLineArguments(argc, argv) );
         CommandLineArguments args( argc, argv );
 
-        CHECK_NOTHROW( args.get<std::string>(0) );
-        CHECK( args.get<std::string>(0) == "https://github.com" );
+        CIE_TEST_CHECK_NOTHROW( args.get<std::string>(0) );
+        CIE_TEST_CHECK( args.get<std::string>(0) == "https://github.com" );
 
-        CHECK_NOTHROW( args.get<std::string>("name") );
-        CHECK( args.get<std::string>("name") == "best_name" );
+        CIE_TEST_CHECK_NOTHROW( args.get<std::string>("name") );
+        CIE_TEST_CHECK( args.get<std::string>("name") == "best_name" );
 
-        CHECK_NOTHROW( args.get<std::string>("float") );
-        CHECK( args.get<std::string>("float") == "-3.14159265" );
+        CIE_TEST_CHECK_NOTHROW( args.get<std::string>("float") );
+        CIE_TEST_CHECK( args.get<std::string>("float") == "-3.14159265" );
 
-        CHECK_NOTHROW( args.get<int>("float") );
-        CHECK( args.get<int>("float") == -3 );
+        CIE_TEST_CHECK_NOTHROW( args.get<int>("float") );
+        CIE_TEST_CHECK( args.get<int>("float") == -3 );
 
-        CHECK_THROWS( args.get<Size>("float") );
+        CIE_TEST_CHECK_THROWS( args.get<Size>("float") );
 
-        CHECK_NOTHROW( args.get<float>("float") );
-        CHECK( args.get<float>("float") == float(-3.14159265) );
+        CIE_TEST_CHECK_NOTHROW( args.get<float>("float") );
+        CIE_TEST_CHECK( args.get<float>("float") == float(-3.14159265) );
 
-        CHECK_NOTHROW( args.get<double>("float") );
-        CHECK( args.get<double>("float") == double(-3.14159265) );
+        CIE_TEST_CHECK_NOTHROW( args.get<double>("float") );
+        CIE_TEST_CHECK( args.get<double>("float") == double(-3.14159265) );
 
-        CHECK_NOTHROW( args.get<std::string>("integer") );
-        CHECK( args.get<std::string>("integer") == "2" );
+        CIE_TEST_CHECK_NOTHROW( args.get<std::string>("integer") );
+        CIE_TEST_CHECK( args.get<std::string>("integer") == "2" );
 
-        CHECK_NOTHROW( args.get<int>("integer") );
-        CHECK( args.get<int>("integer") == 2 );
+        CIE_TEST_CHECK_NOTHROW( args.get<int>("integer") );
+        CIE_TEST_CHECK( args.get<int>("integer") == 2 );
 
-        CHECK_NOTHROW( args.get<Size>("integer") );
-        CHECK( args.get<Size>("integer") == 2 );
+        CIE_TEST_CHECK_NOTHROW( args.get<Size>("integer") );
+        CIE_TEST_CHECK( args.get<Size>("integer") == 2 );
 
-        CHECK_THROWS( args.get<TestType>(0) );
-        CHECK_THROWS( args.get<TestType>("") );
+        CIE_TEST_CHECK_THROWS( args.get<TestType>(0) );
+        CIE_TEST_CHECK_THROWS( args.get<TestType>("") );
     }
 }
 

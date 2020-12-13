@@ -19,7 +19,7 @@ namespace cie::gl {
 
 void OrthographicProjection::zoom_impl( double scale )
 {
-    CIE_RUNTIME_GEOMETRY_CHECK(
+    CIE_RUNTIME_GEOMETRY_CIE_TEST_CHECK(
         scale > 0,
         "Invalid zoom scale: " + std::to_string(scale)
     )

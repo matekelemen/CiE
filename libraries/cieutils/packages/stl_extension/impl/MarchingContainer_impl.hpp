@@ -84,7 +84,7 @@ template <class ValueType>
 inline ValueType&
 MarchingContainer<ValueType>::operator[]( Size index )
 {
-    CIE_OUT_OF_RANGE_CHECK( this->outOfRangeCheck(index) )
+    CIE_OUT_OF_RANGE_CIE_TEST_CHECK( this->outOfRangeCheck(index) )
     return this->_container[ (index+1) % this->_capacity ];
 }
 
@@ -93,7 +93,7 @@ template <class ValueType>
 inline const ValueType&
 MarchingContainer<ValueType>::operator[]( Size index ) const
 {
-    CIE_OUT_OF_RANGE_CHECK( this->outOfRangeCheck(index) )
+    CIE_OUT_OF_RANGE_CIE_TEST_CHECK( this->outOfRangeCheck(index) )
     return this->_container[ (index+1) % this->_capacity ];
 }
 

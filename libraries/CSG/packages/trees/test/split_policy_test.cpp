@@ -37,9 +37,9 @@ CIE_TEST_CASE( "MidPointSplitPolicy", "[trees]" )
                                      values.end(),
                                      points.begin() );
 
-    CHECK( splitPoint.size() == Dimension );
+    CIE_TEST_CHECK( splitPoint.size() == Dimension );
     for ( const auto& r_component : splitPoint )
-        CHECK( r_component == Approx(0.5) );
+        CIE_TEST_CHECK( r_component == Approx(0.5) );
 }
 
 
@@ -68,9 +68,9 @@ CIE_TEST_CASE( "LinearSplitPolicy", "[trees]" )
                                      values.end(),
                                      points.begin() );
 
-    REQUIRE( splitPoint.size() == Dimension );
-    CHECK( splitPoint[0] == Approx( 2.0/3.0 ) );
-    CHECK( splitPoint[1] == Approx( 1.0 ) );
+    CIE_TEST_REQUIRE( splitPoint.size() == Dimension );
+    CIE_TEST_CHECK( splitPoint[0] == Approx( 2.0/3.0 ) );
+    CIE_TEST_CHECK( splitPoint[1] == Approx( 1.0 ) );
 }
 
 

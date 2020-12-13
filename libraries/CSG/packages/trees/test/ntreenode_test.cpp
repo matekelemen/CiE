@@ -34,9 +34,9 @@ CIE_TEST_CASE("SpaceTreeNode constructors")
 CIE_TEST_CASE("SpaceTreeNode set/get")
 {
     SpaceTreeNode<2,3> root({1.0,2.0},3.0);
-    REQUIRE( root.center().size() == 2 );
-    CHECK( root.center()[0] == Approx(1.0) );
-    CHECK( root.center()[1] == Approx(2.0) );
+    CIE_TEST_REQUIRE( root.center().size() == 2 );
+    CIE_TEST_CHECK( root.center()[0] == Approx(1.0) );
+    CIE_TEST_CHECK( root.center()[1] == Approx(2.0) );
 }
 
 
@@ -57,29 +57,29 @@ CIE_TEST_CASE("SpaceTreeNode divide 2D")
     root.divide(circle, 10);
 
     // Check root data
-    REQUIRE( root.data().size() == 9 );
+    CIE_TEST_REQUIRE( root.data().size() == 9 );
 
-    CHECK( root.data()[0] == Approx(-1.0) );
-    CHECK( root.data()[1] == Approx(0.0) );
-    CHECK( root.data()[2] == Approx(3.0) );
+    CIE_TEST_CHECK( root.data()[0] == Approx(-1.0) );
+    CIE_TEST_CHECK( root.data()[1] == Approx(0.0) );
+    CIE_TEST_CHECK( root.data()[2] == Approx(3.0) );
 
-    CHECK( root.data()[3] == Approx(0.0) );
-    CHECK( root.data()[4] == Approx(1.0) );
-    CHECK( root.data()[5] == Approx(4.0) );
+    CIE_TEST_CHECK( root.data()[3] == Approx(0.0) );
+    CIE_TEST_CHECK( root.data()[4] == Approx(1.0) );
+    CIE_TEST_CHECK( root.data()[5] == Approx(4.0) );
 
-    CHECK( root.data()[6] == Approx(3.0) );
-    CHECK( root.data()[7] == Approx(4.0) );
-    CHECK( root.data()[8] == Approx(7.0) );
+    CIE_TEST_CHECK( root.data()[6] == Approx(3.0) );
+    CIE_TEST_CHECK( root.data()[7] == Approx(4.0) );
+    CIE_TEST_CHECK( root.data()[8] == Approx(7.0) );
 
     // Check division on first level
-    REQUIRE( root.children()[0] != nullptr );
-    REQUIRE( root.children().size() == 4 );
+    CIE_TEST_REQUIRE( root.children()[0] != nullptr );
+    CIE_TEST_REQUIRE( root.children().size() == 4 );
 
     // Check division on second level
-    CHECK(root.child(0).children().size() == 4);
+    CIE_TEST_CHECK(root.child(0).children().size() == 4);
 
     // Check writing to file
-    CHECK_NOTHROW(writeSpaceTree<2,3>(root, TEST_OUTPUT_PATH / "spacetree2D.csv"));
+    CIE_TEST_CHECK_NOTHROW(writeSpaceTree<2,3>(root, TEST_OUTPUT_PATH / "spacetree2D.csv"));
 }
 
 
@@ -105,7 +105,7 @@ CIE_TEST_CASE("SpaceTreeNode divide 3D")
         root.divideOffload(sphere, 7);
 
         // Check writing to file
-        CHECK_NOTHROW(writeSpaceTree<3,3>(root, TEST_OUTPUT_PATH / "spacetree3D.csv"));
+        CIE_TEST_CHECK_NOTHROW(writeSpaceTree<3,3>(root, TEST_OUTPUT_PATH / "spacetree3D.csv"));
     }
 }
 

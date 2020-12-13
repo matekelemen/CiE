@@ -36,12 +36,12 @@ CIE_TEST_CASE( "Jacob search - paraboloid_1", "[jacobsearch]" )
 
     for (size_t i=0; i<2; ++i)
     {
-        REQUIRE_NOTHROW( solver.step() );
+        CIE_TEST_REQUIRE_NOTHROW( solver.step() );
     }
 
-    CHECK( std::abs(solver.getSolution().getData()[0] - offset.getData()[0])    < tolerance );
-    CHECK( std::abs(solver.getSolution().getData()[1] - offset.getData()[1])    < tolerance );
-    CHECK( std::abs(solver.getSolution().getObjective())						< tolerance );
+    CIE_TEST_CHECK( std::abs(solver.getSolution().getData()[0] - offset.getData()[0])    < tolerance );
+    CIE_TEST_CHECK( std::abs(solver.getSolution().getData()[1] - offset.getData()[1])    < tolerance );
+    CIE_TEST_CHECK( std::abs(solver.getSolution().getObjective())						< tolerance );
 }
 
 
@@ -59,12 +59,12 @@ CIE_TEST_CASE( "Jacob search - parabloid_2", "[jacobsearch]" )
 
 	for (size_t i = 0; i < 2; ++i)
 	{
-		REQUIRE_NOTHROW(solver.step());
+		CIE_TEST_REQUIRE_NOTHROW(solver.step());
 	}
 
-	CHECK(std::abs(solver.getSolution().getData()[0] - offset.getData()[0]) < tolerance);
-	CHECK(std::abs(solver.getSolution().getData()[1] - offset.getData()[1]) < tolerance);
-	CHECK(std::abs(solver.getSolution().getObjective()) < tolerance);
+	CIE_TEST_CHECK(std::abs(solver.getSolution().getData()[0] - offset.getData()[0]) < tolerance);
+	CIE_TEST_CHECK(std::abs(solver.getSolution().getData()[1] - offset.getData()[1]) < tolerance);
+	CIE_TEST_CHECK(std::abs(solver.getSolution().getObjective()) < tolerance);
 }
 
 
@@ -80,7 +80,7 @@ CIE_TEST_CASE( "Jacob search - rosenbrock", "[jacobsearch]" )
 	// Iteration
 	for (size_t i = 0; i < 15; ++i)
 	{
-		REQUIRE_NOTHROW(solver.step());
+		CIE_TEST_REQUIRE_NOTHROW(solver.step());
 		//std::cout << solver.getSolution().getData()[0] << ",\t" << solver.getSolution().getData()[1] << ":\t" << solver.getSolution().getObjective() << std::endl;
 	}
 	//std::cout << "\n";

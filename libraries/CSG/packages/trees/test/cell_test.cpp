@@ -32,31 +32,31 @@ CIE_TEST_CASE( "CubeCell", "[trees]" )
     using PrimitiveType = Cube<2,Double>;
     using TestCell      = CubeCell<PrimitiveType>;
 
-    REQUIRE_NOTHROW( TestCell( DoubleArray<2>({1.0,1.0}), 2.0) );
+    CIE_TEST_REQUIRE_NOTHROW( TestCell( DoubleArray<2>({1.0,1.0}), 2.0) );
     TestCell cell( DoubleArray<2>({2.0,2.0}), 2.0 );
 
-    REQUIRE_NOTHROW( cell.split() );
+    CIE_TEST_REQUIRE_NOTHROW( cell.split() );
     auto p_ConstructorArgumentContainer = cell.split();
-    REQUIRE( p_ConstructorArgumentContainer->size() == 4 );
+    CIE_TEST_REQUIRE( p_ConstructorArgumentContainer->size() == 4 );
 
-    CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(0))[0] - 2.0 ) < 1e-16 ); // <-- base.x
-    CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(0))[1] - 2.0 ) < 1e-16 ); // <-- base.y
-    CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(0)) - 1.0    ) < 1e-16 ); // <-- length
+    CIE_TEST_CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(0))[0] - 2.0 ) < 1e-16 ); // <-- base.x
+    CIE_TEST_CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(0))[1] - 2.0 ) < 1e-16 ); // <-- base.y
+    CIE_TEST_CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(0)) - 1.0    ) < 1e-16 ); // <-- length
 
-    CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(1))[0] - 3.0 ) < 1e-16 ); // <-- base.x
-    CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(1))[1] - 2.0 ) < 1e-16 ); // <-- base.y
-    CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(1)) - 1.0    ) < 1e-16 ); // <-- length
+    CIE_TEST_CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(1))[0] - 3.0 ) < 1e-16 ); // <-- base.x
+    CIE_TEST_CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(1))[1] - 2.0 ) < 1e-16 ); // <-- base.y
+    CIE_TEST_CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(1)) - 1.0    ) < 1e-16 ); // <-- length
 
-    CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(2))[0] - 2.0 ) < 1e-16 ); // <-- base.x
-    CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(2))[1] - 3.0 ) < 1e-16 ); // <-- base.y
-    CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(2)) - 1.0    ) < 1e-16 ); // <-- length
+    CIE_TEST_CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(2))[0] - 2.0 ) < 1e-16 ); // <-- base.x
+    CIE_TEST_CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(2))[1] - 3.0 ) < 1e-16 ); // <-- base.y
+    CIE_TEST_CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(2)) - 1.0    ) < 1e-16 ); // <-- length
 
-    CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(3))[0] - 3.0 ) < 1e-16 ); // <-- base.x
-    CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(3))[1] - 3.0 ) < 1e-16 ); // <-- base.y
-    CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(3)) - 1.0    ) < 1e-16 ); // <-- length
+    CIE_TEST_CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(3))[0] - 3.0 ) < 1e-16 ); // <-- base.x
+    CIE_TEST_CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(3))[1] - 3.0 ) < 1e-16 ); // <-- base.y
+    CIE_TEST_CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(3)) - 1.0    ) < 1e-16 ); // <-- length
 
     for (const auto& constructorArguments : *p_ConstructorArgumentContainer)
-        CHECK_NOTHROW( std::make_from_tuple<TestCell>(constructorArguments) );
+        CIE_TEST_CHECK_NOTHROW( std::make_from_tuple<TestCell>(constructorArguments) );
 }
 
 
@@ -83,35 +83,35 @@ CIE_TEST_CASE( "boolean::BoxCell", "[trees]" )
     using PrimitiveType = Box<2,Double>;
     using TestCell      = BoxCell<PrimitiveType>;
 
-    REQUIRE_NOTHROW( TestCell( DoubleArray<2>({1.0,1.0}), DoubleArray<2>({0.0,1.0}) ) );
+    CIE_TEST_REQUIRE_NOTHROW( TestCell( DoubleArray<2>({1.0,1.0}), DoubleArray<2>({0.0,1.0}) ) );
     TestCell cell( DoubleArray<2>({0.0,1.0}), DoubleArray<2>({4.0,2.0}) );
 
-    REQUIRE_NOTHROW( cell.split(DoubleArray<2>({1.0,2.0})) );
+    CIE_TEST_REQUIRE_NOTHROW( cell.split(DoubleArray<2>({1.0,2.0})) );
     auto p_ConstructorArgumentContainer = cell.split( DoubleArray<2>({1.0,2.0}) );
-    REQUIRE( p_ConstructorArgumentContainer->size() == 4 );
+    CIE_TEST_REQUIRE( p_ConstructorArgumentContainer->size() == 4 );
 
-    CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(0))[0] - 0.0) < 1e-16 ); // <-- base.x
-    CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(0))[1] - 1.0) < 1e-16 ); // <-- base.y
-    CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(0))[0] - 1.0) < 1e-16 ); // <-- length.x
-    CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(0))[1] - 1.0) < 1e-16 ); // <-- length.y
+    CIE_TEST_CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(0))[0] - 0.0) < 1e-16 ); // <-- base.x
+    CIE_TEST_CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(0))[1] - 1.0) < 1e-16 ); // <-- base.y
+    CIE_TEST_CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(0))[0] - 1.0) < 1e-16 ); // <-- length.x
+    CIE_TEST_CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(0))[1] - 1.0) < 1e-16 ); // <-- length.y
 
-    CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(1))[0] - 1.0) < 1e-16 ); // <-- base.x
-    CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(1))[1] - 1.0) < 1e-16 ); // <-- base.y
-    CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(1))[0] - 3.0) < 1e-16 ); // <-- length.x
-    CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(1))[1] - 1.0) < 1e-16 ); // <-- length.y
+    CIE_TEST_CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(1))[0] - 1.0) < 1e-16 ); // <-- base.x
+    CIE_TEST_CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(1))[1] - 1.0) < 1e-16 ); // <-- base.y
+    CIE_TEST_CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(1))[0] - 3.0) < 1e-16 ); // <-- length.x
+    CIE_TEST_CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(1))[1] - 1.0) < 1e-16 ); // <-- length.y
 
-    CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(2))[0] - 0.0) < 1e-16 ); // <-- base.x
-    CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(2))[1] - 2.0) < 1e-16 ); // <-- base.y
-    CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(2))[0] - 1.0) < 1e-16 ); // <-- length.x
-    CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(2))[1] - 1.0) < 1e-16 ); // <-- length.y
+    CIE_TEST_CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(2))[0] - 0.0) < 1e-16 ); // <-- base.x
+    CIE_TEST_CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(2))[1] - 2.0) < 1e-16 ); // <-- base.y
+    CIE_TEST_CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(2))[0] - 1.0) < 1e-16 ); // <-- length.x
+    CIE_TEST_CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(2))[1] - 1.0) < 1e-16 ); // <-- length.y
 
-    CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(3))[0] - 1.0) < 1e-16 ); // <-- base.x
-    CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(3))[1] - 2.0) < 1e-16 ); // <-- base.y
-    CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(3))[0] - 3.0) < 1e-16 ); // <-- length.x
-    CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(3))[1] - 1.0) < 1e-16 ); // <-- length.y
+    CIE_TEST_CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(3))[0] - 1.0) < 1e-16 ); // <-- base.x
+    CIE_TEST_CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(3))[1] - 2.0) < 1e-16 ); // <-- base.y
+    CIE_TEST_CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(3))[0] - 3.0) < 1e-16 ); // <-- length.x
+    CIE_TEST_CHECK( std::abs( std::get<1>(p_ConstructorArgumentContainer->at(3))[1] - 1.0) < 1e-16 ); // <-- length.y
 
     for (const auto& constructorArguments : *p_ConstructorArgumentContainer)
-        CHECK_NOTHROW( std::make_from_tuple<TestCell>(constructorArguments) );
+        CIE_TEST_CHECK_NOTHROW( std::make_from_tuple<TestCell>(constructorArguments) );
 }
 
 

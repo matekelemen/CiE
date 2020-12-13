@@ -15,11 +15,11 @@ CIE_TEST_CASE( "Concept utilities", "[concepts]" )
     std::vector<int>    vector(1);
     std::array<int,3>   array;
 
-    CHECK_NOTHROW( utils::resize(vector,3) );
-    CHECK( vector.size() == 3 );
+    CIE_TEST_CHECK_NOTHROW( utils::resize(vector,3) );
+    CIE_TEST_CHECK( vector.size() == 3 );
 
-    CHECK_NOTHROW( utils::resize(array, 3) );
-    CHECK( array.size() == 3 );
+    CIE_TEST_CHECK_NOTHROW( utils::resize(array, 3) );
+    CIE_TEST_CHECK( array.size() == 3 );
 }
 
 

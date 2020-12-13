@@ -31,10 +31,10 @@ requires concepts::ClassContainer<ContainerType1,CoordinateType>
 Box<Dimension,CoordinateType>::Box( const ContainerType1& r_base,
                                     const ContainerType2& r_lengths  )
 {
-    CIE_OUT_OF_RANGE_CHECK( r_base.size() == Dimension )
-    CIE_OUT_OF_RANGE_CHECK( r_lengths.size() == Dimension )
+    CIE_OUT_OF_RANGE_CIE_TEST_CHECK( r_base.size() == Dimension )
+    CIE_OUT_OF_RANGE_CIE_TEST_CHECK( r_lengths.size() == Dimension )
 
-    #ifdef CIE_ENABLE_RUNTIME_GEOMETRY_CHECKS
+    #ifdef CIE_ENABLE_RUNTIME_GEOMETRY_CIE_TEST_CHECKS
     bool positiveEdgeLengths = true;
     for ( const auto& length : r_lengths )
         if ( length < 0 )
@@ -43,7 +43,7 @@ Box<Dimension,CoordinateType>::Box( const ContainerType1& r_base,
             break;
         }
 
-    CIE_RUNTIME_GEOMETRY_CHECK(
+    CIE_RUNTIME_GEOMETRY_CIE_TEST_CHECK(
         positiveEdgeLengths == true,
         "Edge lengths of a box must be non-negative" 
         )
@@ -143,7 +143,7 @@ template < Size Dimension,
 Bool
 Box<Dimension,CoordinateType>::at( const typename Box<Dimension,CoordinateType>::point_type& r_point ) const
 {
-    CIE_OUT_OF_RANGE_CHECK( r_point.size() == Dimension )
+    CIE_OUT_OF_RANGE_CIE_TEST_CHECK( r_point.size() == Dimension )
 
     auto it_base        = this->_base.begin();
     auto it_length      = this->_lengths.begin();

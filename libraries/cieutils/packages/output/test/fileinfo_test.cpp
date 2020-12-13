@@ -19,10 +19,10 @@ CIE_TEST_CASE( "File Info", "[output]" )
     std::filesystem::path invalid             = "abcd/efgh/jklmn/3.145/whatever.cpp/test";
 
     // Check validity
-    CHECK( isDirectory(validDirectory) );
-    CHECK( !isFile(validDirectory) );
-    CHECK( !isDirectory(invalid) );
-    CHECK( !isFile(invalid) );
+    CIE_TEST_CHECK( isDirectory(validDirectory) );
+    CIE_TEST_CHECK( !isFile(validDirectory) );
+    CIE_TEST_CHECK( !isDirectory(invalid) );
+    CIE_TEST_CHECK( !isFile(invalid) );
 
     std::filesystem::path testDirName         = TEST_OUTPUT_PATH / "test";
 
@@ -32,82 +32,82 @@ CIE_TEST_CASE( "File Info", "[output]" )
     std::filesystem::path textExtension       = ".txt";
     std::filesystem::path binaryExtension     = ".bin";
     
-    CHECK( isTextExtension(textExtension) );
-    CHECK( isBinaryExtension(binaryExtension) );
-    CHECK( fileName( testFileBase ) == testFileBase );
+    CIE_TEST_CHECK( isTextExtension(textExtension) );
+    CIE_TEST_CHECK( isBinaryExtension(binaryExtension) );
+    CIE_TEST_CHECK( fileName( testFileBase ) == testFileBase );
 
     std::filesystem::path textTestName        = testFileName.string() + textExtension.string();
     std::filesystem::path binaryTestName      = testFileName.string() + binaryExtension.string();
 
     // Check extensions
-    CHECK( fileExtension(textTestName) == textExtension );
-    CHECK( fileExtension(textTestName) != binaryExtension );
-    CHECK( fileExtension(binaryTestName) != textExtension );
-    CHECK( fileExtension(binaryTestName) == binaryExtension );
+    CIE_TEST_CHECK( fileExtension(textTestName) == textExtension );
+    CIE_TEST_CHECK( fileExtension(textTestName) != binaryExtension );
+    CIE_TEST_CHECK( fileExtension(binaryTestName) != textExtension );
+    CIE_TEST_CHECK( fileExtension(binaryTestName) == binaryExtension );
 
-    CHECK( fileExtension(textTestName) == textExtension );
-    CHECK( fileExtension(binaryTestName) == binaryExtension );
+    CIE_TEST_CHECK( fileExtension(textTestName) == textExtension );
+    CIE_TEST_CHECK( fileExtension(binaryTestName) == binaryExtension );
 
     // Check file name
-    CHECK( fileName(textTestName) == testFileBase.string() + textExtension.string() );
-    CHECK( fileName(binaryTestName) == testFileBase.string() + binaryExtension.string() );
+    CIE_TEST_CHECK( fileName(textTestName) == testFileBase.string() + textExtension.string() );
+    CIE_TEST_CHECK( fileName(binaryTestName) == testFileBase.string() + binaryExtension.string() );
 
     // Check directory name
-    CHECK( fileDirectory(textTestName) == testDirName );
-    CHECK( fileDirectory(binaryTestName) == testDirName );
+    CIE_TEST_CHECK( fileDirectory(textTestName) == testDirName );
+    CIE_TEST_CHECK( fileDirectory(binaryTestName) == testDirName );
 
     // Create files
     std::ofstream textFile( textTestName );
     std::ofstream binaryFile( binaryTestName );
 
-    CHECK( textFile.is_open() );
-    CHECK( binaryFile.is_open() );
+    CIE_TEST_CHECK( textFile.is_open() );
+    CIE_TEST_CHECK( binaryFile.is_open() );
 
     textFile.close();
     binaryFile.close();
 
     // Test file identification
-    CHECK( isFile(textTestName) );
-    CHECK( isFile(binaryTestName) );
-    CHECK( !isFile(testFileName) );
+    CIE_TEST_CHECK( isFile(textTestName) );
+    CIE_TEST_CHECK( isFile(binaryTestName) );
+    CIE_TEST_CHECK( !isFile(testFileName) );
 
-    CHECK( isTextFile(textTestName) );
-    CHECK( !isTextFile(binaryTestName) );
-    CHECK( !isTextFile(testFileName) );
+    CIE_TEST_CHECK( isTextFile(textTestName) );
+    CIE_TEST_CHECK( !isTextFile(binaryTestName) );
+    CIE_TEST_CHECK( !isTextFile(testFileName) );
 
-    CHECK( !isBinaryFile(textTestName) );
-    CHECK( isBinaryFile(binaryTestName) );
-    CHECK( !isBinaryFile(testFileName) );
+    CIE_TEST_CHECK( !isBinaryFile(textTestName) );
+    CIE_TEST_CHECK( isBinaryFile(binaryTestName) );
+    CIE_TEST_CHECK( !isBinaryFile(testFileName) );
 
     // Remove text file
     std::filesystem::remove( textTestName );
 
-    CHECK( !isFile(textTestName) );
-    CHECK( isFile(binaryTestName) );
-    CHECK( !isFile(testFileName) );
+    CIE_TEST_CHECK( !isFile(textTestName) );
+    CIE_TEST_CHECK( isFile(binaryTestName) );
+    CIE_TEST_CHECK( !isFile(testFileName) );
 
-    CHECK( !isTextFile(textTestName) );
-    CHECK( !isTextFile(binaryTestName) );
-    CHECK( !isTextFile(testFileName) );
+    CIE_TEST_CHECK( !isTextFile(textTestName) );
+    CIE_TEST_CHECK( !isTextFile(binaryTestName) );
+    CIE_TEST_CHECK( !isTextFile(testFileName) );
 
-    CHECK( !isBinaryFile(textTestName) );
-    CHECK( isBinaryFile(binaryTestName) );
-    CHECK( !isBinaryFile(testFileName) );
+    CIE_TEST_CHECK( !isBinaryFile(textTestName) );
+    CIE_TEST_CHECK( isBinaryFile(binaryTestName) );
+    CIE_TEST_CHECK( !isBinaryFile(testFileName) );
 
     // Remove binary file
     std::filesystem::remove( binaryTestName );
 
-    CHECK( !isFile(textTestName) );
-    CHECK( !isFile(binaryTestName) );
-    CHECK( !isFile(testFileName) );
+    CIE_TEST_CHECK( !isFile(textTestName) );
+    CIE_TEST_CHECK( !isFile(binaryTestName) );
+    CIE_TEST_CHECK( !isFile(testFileName) );
 
-    CHECK( !isTextFile(textTestName) );
-    CHECK( !isTextFile(binaryTestName) );
-    CHECK( !isTextFile(testFileName) );
+    CIE_TEST_CHECK( !isTextFile(textTestName) );
+    CIE_TEST_CHECK( !isTextFile(binaryTestName) );
+    CIE_TEST_CHECK( !isTextFile(testFileName) );
 
-    CHECK( !isBinaryFile(textTestName) );
-    CHECK( !isBinaryFile(binaryTestName) );
-    CHECK( !isBinaryFile(testFileName) );
+    CIE_TEST_CHECK( !isBinaryFile(textTestName) );
+    CIE_TEST_CHECK( !isBinaryFile(binaryTestName) );
+    CIE_TEST_CHECK( !isBinaryFile(testFileName) );
 }
 
 

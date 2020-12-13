@@ -41,7 +41,7 @@ CIE_TEST_CASE( "Gradient descent - rosenbrock", "[gradiendescent]" )
 	// Iteration
 	for (size_t i = 0; i < 15; ++i)
 	{
-		REQUIRE_NOTHROW(solver.step());
+		CIE_TEST_REQUIRE_NOTHROW(solver.step());
 		//std::cout << solver.getSolution().getData()[0] << ",\t" << solver.getSolution().getData()[1] << ":\t" << solver.getSolution().getObjective() << std::endl;
 	}
 	//std::cout << "\n";

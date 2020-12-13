@@ -34,7 +34,7 @@ CIE_TEST_CASE( "CSGObject", "[primitives]" )
 
     const Size dimension    = 2;
 
-    REQUIRE_NOTHROW( CSGTestObject<dimension>() );
+    CIE_TEST_REQUIRE_NOTHROW( CSGTestObject<dimension>() );
 
     CSGTestObject<dimension>                boolObject;
     CSGTestObject<dimension,Size>           sizeObject;
@@ -45,37 +45,37 @@ CIE_TEST_CASE( "CSGObject", "[primitives]" )
     std::vector<Double>                     doubleVector;
     std::deque<Double>                      doubleDeque;
 
-    CHECK_NOTHROW( boolObject.evaluate(doubleArray) );
-    CHECK_NOTHROW( sizeObject.evaluate(doubleArray) );
-    CHECK_NOTHROW( doubleObject.evaluate(doubleArray) );
-    CHECK_NOTHROW( vectorObject.evaluate(doubleArray) );
+    CIE_TEST_CHECK_NOTHROW( boolObject.evaluate(doubleArray) );
+    CIE_TEST_CHECK_NOTHROW( sizeObject.evaluate(doubleArray) );
+    CIE_TEST_CHECK_NOTHROW( doubleObject.evaluate(doubleArray) );
+    CIE_TEST_CHECK_NOTHROW( vectorObject.evaluate(doubleArray) );
 
     doubleVector.resize(dimension);
     doubleDeque.resize(dimension);
-    CHECK_NOTHROW( boolObject.evaluate(doubleVector) );
-    CHECK_NOTHROW( boolObject.evaluate(doubleDeque) );
-    CHECK_NOTHROW( sizeObject.evaluate(doubleVector) );
-    CHECK_NOTHROW( sizeObject.evaluate(doubleDeque) );
-    CHECK_NOTHROW( doubleObject.evaluate(doubleVector) );
-    CHECK_NOTHROW( doubleObject.evaluate(doubleDeque) );
-    CHECK_NOTHROW( vectorObject.evaluate(doubleVector) );
-    CHECK_NOTHROW( vectorObject.evaluate(doubleDeque) );
+    CIE_TEST_CHECK_NOTHROW( boolObject.evaluate(doubleVector) );
+    CIE_TEST_CHECK_NOTHROW( boolObject.evaluate(doubleDeque) );
+    CIE_TEST_CHECK_NOTHROW( sizeObject.evaluate(doubleVector) );
+    CIE_TEST_CHECK_NOTHROW( sizeObject.evaluate(doubleDeque) );
+    CIE_TEST_CHECK_NOTHROW( doubleObject.evaluate(doubleVector) );
+    CIE_TEST_CHECK_NOTHROW( doubleObject.evaluate(doubleDeque) );
+    CIE_TEST_CHECK_NOTHROW( vectorObject.evaluate(doubleVector) );
+    CIE_TEST_CHECK_NOTHROW( vectorObject.evaluate(doubleDeque) );
 
     #ifdef CIE_ENABLE_OUT_OF_RANGE_TESTS
     doubleVector.resize(dimension+1);
     doubleDeque.resize(dimension+1);
-    CHECK_THROWS( boolObject.evaluate(doubleVector) );
-    CHECK_THROWS( boolObject.evaluate(doubleDeque) );
-    CHECK_THROWS( sizeObject.evaluate(doubleVector) );
-    CHECK_THROWS( sizeObject.evaluate(doubleDeque) );
-    CHECK_THROWS( doubleObject.evaluate(doubleVector) );
-    CHECK_THROWS( doubleObject.evaluate(doubleDeque) );
-    CHECK_THROWS( vectorObject.evaluate(doubleVector) );
-    CHECK_THROWS( vectorObject.evaluate(doubleDeque) );
+    CIE_TEST_CHECK_THROWS( boolObject.evaluate(doubleVector) );
+    CIE_TEST_CHECK_THROWS( boolObject.evaluate(doubleDeque) );
+    CIE_TEST_CHECK_THROWS( sizeObject.evaluate(doubleVector) );
+    CIE_TEST_CHECK_THROWS( sizeObject.evaluate(doubleDeque) );
+    CIE_TEST_CHECK_THROWS( doubleObject.evaluate(doubleVector) );
+    CIE_TEST_CHECK_THROWS( doubleObject.evaluate(doubleDeque) );
+    CIE_TEST_CHECK_THROWS( vectorObject.evaluate(doubleVector) );
+    CIE_TEST_CHECK_THROWS( vectorObject.evaluate(doubleDeque) );
     #endif
 
 
-    REQUIRE_NOTHROW( CSGTestObject<dimension,Bool,Size>() );
+    CIE_TEST_REQUIRE_NOTHROW( CSGTestObject<dimension,Bool,Size>() );
     CSGTestObject<dimension,Bool,Size>  intCoordinateBoolObject;
     std::array<Size,dimension>          sizeArray;
     std::vector<Size>                   sizeVector;
@@ -83,15 +83,15 @@ CIE_TEST_CASE( "CSGObject", "[primitives]" )
 
     sizeVector.resize(dimension);
     sizeDeque.resize(dimension);
-    CHECK_NOTHROW( intCoordinateBoolObject.evaluate(sizeArray) );
-    CHECK_NOTHROW( intCoordinateBoolObject.evaluate(sizeVector) );
-    CHECK_NOTHROW( intCoordinateBoolObject.evaluate(sizeDeque) );
+    CIE_TEST_CHECK_NOTHROW( intCoordinateBoolObject.evaluate(sizeArray) );
+    CIE_TEST_CHECK_NOTHROW( intCoordinateBoolObject.evaluate(sizeVector) );
+    CIE_TEST_CHECK_NOTHROW( intCoordinateBoolObject.evaluate(sizeDeque) );
 
     #ifdef CIE_ENABLE_OUT_OF_RANGE_TESTS
     sizeVector.resize(dimension+1);
     sizeDeque.resize(dimension+1);
-    CHECK_THROWS( intCoordinateBoolObject.evaluate(sizeVector) );
-    CHECK_THROWS( intCoordinateBoolObject.evaluate(sizeDeque) );
+    CIE_TEST_CHECK_THROWS( intCoordinateBoolObject.evaluate(sizeVector) );
+    CIE_TEST_CHECK_THROWS( intCoordinateBoolObject.evaluate(sizeDeque) );
     #endif
 }
 

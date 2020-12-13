@@ -27,7 +27,7 @@ CIE_TEST_CASE( "Camera", "[camera]" )
         using CameraType = Camera<OrthographicProjection>;
         CameraPtr p_camera;
 
-        REQUIRE_NOTHROW( p_camera = CameraPtr(
+        CIE_TEST_REQUIRE_NOTHROW( p_camera = CameraPtr(
             new CameraType( logger )
         ));
     }
@@ -38,7 +38,7 @@ CIE_TEST_CASE( "Camera", "[camera]" )
         using CameraType = Camera<PerspectiveProjection>;
         CameraPtr p_camera;
 
-        REQUIRE_NOTHROW( p_camera = CameraPtr(
+        CIE_TEST_REQUIRE_NOTHROW( p_camera = CameraPtr(
             new CameraType( logger )
         ));
     }

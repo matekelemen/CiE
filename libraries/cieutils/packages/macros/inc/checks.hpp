@@ -1,5 +1,5 @@
-#ifndef CIE_CIEUTILS_CHECK_MACROS_HPP
-#define CIE_CIEUTILS_CHECK_MACROS_HPP
+#ifndef CIE_CIEUTILS_CIE_TEST_CHECK_MACROS_HPP
+#define CIE_CIEUTILS_CIE_TEST_CHECK_MACROS_HPP
 
 // --- Internal Includes ---
 #include "cieutils/packages/exceptions/inc/exception.hpp"
@@ -27,7 +27,7 @@
 
 
 #ifdef CIE_ENABLE_OUT_OF_RANGE_TESTS
-    #define CIE_OUT_OF_RANGE_CHECK(boolExpression)                  \
+    #define CIE_OUT_OF_RANGE_CIE_TEST_CHECK(boolExpression)                  \
         if (!(boolExpression)) [[unlikely]]                         \
         {                                                           \
             std::stringstream stream;                               \
@@ -35,12 +35,12 @@
             CIE_THROW( cie::OutOfRangeException, stream.str() );    \
         }
 #else
-    #define CIE_OUT_OF_RANGE_CHECK(boolExpression)
+    #define CIE_OUT_OF_RANGE_CIE_TEST_CHECK(boolExpression)
 #endif
 
 
-#ifdef CIE_ENABLE_DIVISION_BY_ZERO_CHECKS
-    #define CIE_DIVISION_BY_ZERO_CHECK(boolExpression)                  \
+#ifdef CIE_ENABLE_DIVISION_BY_ZERO_CIE_TEST_CHECKS
+    #define CIE_DIVISION_BY_ZERO_CIE_TEST_CHECK(boolExpression)                  \
         if (!(boolExpression)) [[unlikely]]                             \
         {                                                               \
             std::stringstream stream;                                   \
@@ -48,12 +48,12 @@
             CIE_THROW( cie::DivisionByZeroException, stream.str() );    \
         }
 #else
-    #define CIE_DIVISION_BY_ZERO_CHECK(boolExpression)
+    #define CIE_DIVISION_BY_ZERO_CIE_TEST_CHECK(boolExpression)
 #endif
 
 
-#ifdef CIE_ENABLE_RUNTIME_GEOMETRY_CHECKS
-    #define CIE_RUNTIME_GEOMETRY_CHECK(boolExpression, message)         \
+#ifdef CIE_ENABLE_RUNTIME_GEOMETRY_CIE_TEST_CHECKS
+    #define CIE_RUNTIME_GEOMETRY_CIE_TEST_CHECK(boolExpression, message)         \
         if (!(boolExpression)) [[unlikely]]                             \
         {                                                               \
             std::stringstream stream;                                   \
@@ -64,7 +64,7 @@
             CIE_THROW( cie::GeometryException, stream.str() );          \
         }
 #else
-    #define CIE_RUNTIME_GEOMETRY_CHECK(boolExpression, message)
+    #define CIE_RUNTIME_GEOMETRY_CIE_TEST_CHECK(boolExpression, message)
 #endif
 
 

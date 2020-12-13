@@ -30,46 +30,46 @@ CIE_TEST_CASE( "CubeSampler", "[trees]" )
     PrimitiveType primitive( base, length );
 
     // Check construction
-    REQUIRE_NOTHROW( std::make_shared<Sampler>(1) );
+    CIE_TEST_REQUIRE_NOTHROW( std::make_shared<Sampler>(1) );
     Sampler sampler1(1);
 
-    REQUIRE_NOTHROW( std::make_shared<Sampler>(2) );
+    CIE_TEST_REQUIRE_NOTHROW( std::make_shared<Sampler>(2) );
     Sampler sampler2(2);
 
     typename PrimitiveType::point_type point;
 
     // Check sizes
-    CHECK_NOTHROW( sampler1.size() );
-    REQUIRE( sampler1.size() == 1 );
-    CHECK_NOTHROW( sampler2.size() );
-    REQUIRE( sampler2.size() == 4 );
+    CIE_TEST_CHECK_NOTHROW( sampler1.size() );
+    CIE_TEST_REQUIRE( sampler1.size() == 1 );
+    CIE_TEST_CHECK_NOTHROW( sampler2.size() );
+    CIE_TEST_REQUIRE( sampler2.size() == 4 );
 
     // Check center sampling
-    REQUIRE_NOTHROW( sampler1.getSamplePoint(primitive,0) );
+    CIE_TEST_REQUIRE_NOTHROW( sampler1.getSamplePoint(primitive,0) );
     point = sampler1.getSamplePoint(primitive,0); 
-    CHECK( point[0] == 2.0 );
-    CHECK( point[1] == 3.0 );
+    CIE_TEST_CHECK( point[0] == 2.0 );
+    CIE_TEST_CHECK( point[1] == 3.0 );
 
     // Check sampling
-    REQUIRE_NOTHROW( sampler2.getSamplePoint(primitive,0) );
+    CIE_TEST_REQUIRE_NOTHROW( sampler2.getSamplePoint(primitive,0) );
     point = sampler2.getSamplePoint(primitive,0); 
-    CHECK( point[0] == 1.0 );
-    CHECK( point[1] == 2.0 );
+    CIE_TEST_CHECK( point[0] == 1.0 );
+    CIE_TEST_CHECK( point[1] == 2.0 );
 
-    REQUIRE_NOTHROW( sampler2.getSamplePoint(primitive,1) );
+    CIE_TEST_REQUIRE_NOTHROW( sampler2.getSamplePoint(primitive,1) );
     point = sampler2.getSamplePoint(primitive,1); 
-    CHECK( point[0] == 3.0 );
-    CHECK( point[1] == 2.0 );
+    CIE_TEST_CHECK( point[0] == 3.0 );
+    CIE_TEST_CHECK( point[1] == 2.0 );
 
-    REQUIRE_NOTHROW( sampler2.getSamplePoint(primitive,2) );
+    CIE_TEST_REQUIRE_NOTHROW( sampler2.getSamplePoint(primitive,2) );
     point = sampler2.getSamplePoint(primitive,2); 
-    CHECK( point[0] == 1.0 );
-    CHECK( point[1] == 4.0 );
+    CIE_TEST_CHECK( point[0] == 1.0 );
+    CIE_TEST_CHECK( point[1] == 4.0 );
 
-    REQUIRE_NOTHROW( sampler2.getSamplePoint(primitive,3) );
+    CIE_TEST_REQUIRE_NOTHROW( sampler2.getSamplePoint(primitive,3) );
     point = sampler2.getSamplePoint(primitive,3); 
-    CHECK( point[0] == 3.0 );
-    CHECK( point[1] == 4.0 );
+    CIE_TEST_CHECK( point[0] == 3.0 );
+    CIE_TEST_CHECK( point[1] == 4.0 );
 }
 
 
@@ -93,40 +93,40 @@ CIE_TEST_CASE( "BoxSampler", "[trees]" )
     PrimitiveType primitive( base, lengths );
 
     // Check construction
-    REQUIRE_NOTHROW( std::make_shared<Sampler>(1) );
+    CIE_TEST_REQUIRE_NOTHROW( std::make_shared<Sampler>(1) );
     Sampler sampler1(1);
 
-    REQUIRE_NOTHROW( std::make_shared<Sampler>(1) );
+    CIE_TEST_REQUIRE_NOTHROW( std::make_shared<Sampler>(1) );
     Sampler sampler2(2);
 
     typename PrimitiveType::point_type point;
 
     // Check center sampling
-    REQUIRE_NOTHROW( sampler1.getSamplePoint(primitive,0) );
+    CIE_TEST_REQUIRE_NOTHROW( sampler1.getSamplePoint(primitive,0) );
     point = sampler1.getSamplePoint(primitive,0); 
-    CHECK( point[0] == 2.0 );
-    CHECK( point[1] == 4.0 );
+    CIE_TEST_CHECK( point[0] == 2.0 );
+    CIE_TEST_CHECK( point[1] == 4.0 );
 
     // Check sampling
-    REQUIRE_NOTHROW( sampler2.getSamplePoint(primitive,0) );
+    CIE_TEST_REQUIRE_NOTHROW( sampler2.getSamplePoint(primitive,0) );
     point = sampler2.getSamplePoint(primitive,0); 
-    CHECK( point[0] == 1.0 );
-    CHECK( point[1] == 2.0 );
+    CIE_TEST_CHECK( point[0] == 1.0 );
+    CIE_TEST_CHECK( point[1] == 2.0 );
 
-    REQUIRE_NOTHROW( sampler2.getSamplePoint(primitive,1) );
+    CIE_TEST_REQUIRE_NOTHROW( sampler2.getSamplePoint(primitive,1) );
     point = sampler2.getSamplePoint(primitive,1); 
-    CHECK( point[0] == 3.0 );
-    CHECK( point[1] == 2.0 );
+    CIE_TEST_CHECK( point[0] == 3.0 );
+    CIE_TEST_CHECK( point[1] == 2.0 );
 
-    REQUIRE_NOTHROW( sampler2.getSamplePoint(primitive,2) );
+    CIE_TEST_REQUIRE_NOTHROW( sampler2.getSamplePoint(primitive,2) );
     point = sampler2.getSamplePoint(primitive,2); 
-    CHECK( point[0] == 1.0 );
-    CHECK( point[1] == 6.0 );
+    CIE_TEST_CHECK( point[0] == 1.0 );
+    CIE_TEST_CHECK( point[1] == 6.0 );
 
-    REQUIRE_NOTHROW( sampler2.getSamplePoint(primitive,3) );
+    CIE_TEST_REQUIRE_NOTHROW( sampler2.getSamplePoint(primitive,3) );
     point = sampler2.getSamplePoint(primitive,3); 
-    CHECK( point[0] == 3.0 );
-    CHECK( point[1] == 6.0 );
+    CIE_TEST_CHECK( point[0] == 3.0 );
+    CIE_TEST_CHECK( point[1] == 6.0 );
 }
 
 

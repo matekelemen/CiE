@@ -15,8 +15,8 @@ CIE_TEST_CASE( "intPow", "[maths]" )
     NT check    = 1;
     for (Size i=0; i<17; ++i)
     {
-        REQUIRE_NOTHROW( intPow(base,i) );
-        CHECK( intPow(base,i) == check );
+        CIE_TEST_REQUIRE_NOTHROW( intPow(base,i) );
+        CIE_TEST_CHECK( intPow(base,i) == check );
         check *= base;
     }
 
@@ -24,8 +24,8 @@ CIE_TEST_CASE( "intPow", "[maths]" )
     check       = 1;
     for (Size i=0; i<5; ++i)
     {
-        REQUIRE_NOTHROW( intPow(base,i) );
-        CHECK( intPow(base,i) == check );
+        CIE_TEST_REQUIRE_NOTHROW( intPow(base,i) );
+        CIE_TEST_CHECK( intPow(base,i) == check );
         check *= base;
     }
 }

@@ -40,12 +40,12 @@ CIE_TEST_CASE( "QuadraticSubstitute", "[jacobsearch]" )
 
     // Approximate minimum
     std::pair<DoubleArray<2>, double> minimum;
-    REQUIRE_NOTHROW( minimum = func.minimum() );
+    CIE_TEST_REQUIRE_NOTHROW( minimum = func.minimum() );
 
     // Check minimum position and function value there
-    CHECK( minimum.first[0] == Approx(offset[0]) );
-    CHECK( minimum.first[1] == Approx(offset[1]) );
-    CHECK( paraboloidTestFunction(minimum.first, offset) == Approx(0.0) );
+    CIE_TEST_CHECK( minimum.first[0] == Approx(offset[0]) );
+    CIE_TEST_CHECK( minimum.first[1] == Approx(offset[1]) );
+    CIE_TEST_CHECK( paraboloidTestFunction(minimum.first, offset) == Approx(0.0) );
 }
 
 } // namespace cie::opt

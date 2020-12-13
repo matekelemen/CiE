@@ -43,22 +43,22 @@ CIE_TEST_CASE( "BinaryOperator", "[primitives]" )
 {
     CIE_TEST_CASE_INIT( "BinaryOperator" )
 
-    REQUIRE_NOTHROW( TestBinaryOperator() );
+    CIE_TEST_REQUIRE_NOTHROW( TestBinaryOperator() );
     TestBinaryOperator op;
     DoubleArray<2> doubleArray;
 
-    CHECK_NOTHROW(op.emplaceLhs<CSGTestObject_true>());
-    CHECK_NOTHROW(op.emplaceRhs<CSGTestObject_false>());
-    CHECK( op.evaluate(doubleArray) == true );
+    CIE_TEST_CHECK_NOTHROW(op.emplaceLhs<CSGTestObject_true>());
+    CIE_TEST_CHECK_NOTHROW(op.emplaceRhs<CSGTestObject_false>());
+    CIE_TEST_CHECK( op.evaluate(doubleArray) == true );
 
-    CHECK_NOTHROW(op.emplaceRhs<CSGTestObject_true>());
-    CHECK( op.evaluate(doubleArray) == false );
+    CIE_TEST_CHECK_NOTHROW(op.emplaceRhs<CSGTestObject_true>());
+    CIE_TEST_CHECK( op.evaluate(doubleArray) == false );
 
-    CHECK_NOTHROW(op.emplaceLhs<CSGTestObject_false>());
-    CHECK( op.evaluate(doubleArray) == true );
+    CIE_TEST_CHECK_NOTHROW(op.emplaceLhs<CSGTestObject_false>());
+    CIE_TEST_CHECK( op.evaluate(doubleArray) == true );
 
-    CHECK_NOTHROW(op.emplaceRhs<CSGTestObject_false>());
-    CHECK( op.evaluate(doubleArray) == false );
+    CIE_TEST_CHECK_NOTHROW(op.emplaceRhs<CSGTestObject_false>());
+    CIE_TEST_CHECK( op.evaluate(doubleArray) == false );
 }
 
 

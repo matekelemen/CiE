@@ -49,10 +49,10 @@ CIE_TEST_CASE( "allocateSparseMatrix_test", "[types]" )
 
     CompressedSparseRowMatrix<size_t> sparseMatrix;
 
-    REQUIRE_NOTHROW( sparseMatrix.allocate( locationMaps ) );
+    CIE_TEST_REQUIRE_NOTHROW( sparseMatrix.allocate( locationMaps ) );
 
-    REQUIRE( sparseMatrix.size1( ) == 40 );
-    REQUIRE( sparseMatrix.size2( ) == 40 );
+    CIE_TEST_REQUIRE( sparseMatrix.size1( ) == 40 );
+    CIE_TEST_REQUIRE( sparseMatrix.size2( ) == 40 );
 
     auto sparseDataStructure = sparseMatrix.release( );
 
@@ -100,24 +100,24 @@ CIE_TEST_CASE( "allocateSparseMatrix_test", "[types]" )
 
     size_t nnz = expectedIndices.size( );
 
-    REQUIRE( indptr[40] == nnz );
+    CIE_TEST_REQUIRE( indptr[40] == nnz );
 
     for( size_t iEntry = 0; iEntry < nnz; ++iEntry )
     {
-        CHECK( indices[iEntry] == expectedIndices[iEntry] );
-        CHECK( data[iEntry] == 0.0 );
+        CIE_TEST_CHECK( indices[iEntry] == expectedIndices[iEntry] );
+        CIE_TEST_CHECK( data[iEntry] == 0.0 );
     }
 
     size_t rowPtr = 0;
 
     for( size_t iDof = 0; iDof < 40; ++iDof )
     {
-        CHECK( indptr[iDof] == rowPtr );
+        CIE_TEST_CHECK( indptr[iDof] == rowPtr );
 
         rowPtr += connectingDofSizes[iDof];
     }
 
-    CHECK( indptr[40] == rowPtr );
+    CIE_TEST_CHECK( indptr[40] == rowPtr );
 
     delete[] indptr;
     delete[] indices;

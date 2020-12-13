@@ -49,16 +49,16 @@ CIE_TEST_CASE( "Linear interpolation surface", "[surface]" )
 
     // Evaluate
     VectorOfMatrices C;
-    REQUIRE_NOTHROW( C = evaluateSurface(knotVectors, controlGrid, { numberOfSamplesR, numberOfSamplesS }) );
+    CIE_TEST_REQUIRE_NOTHROW( C = evaluateSurface(knotVectors, controlGrid, { numberOfSamplesR, numberOfSamplesS }) );
 
     // Check sizes
-    REQUIRE(C.size() == 3);
-    REQUIRE(C[0].size1() == numberOfSamplesR);
-    REQUIRE(C[1].size1() == numberOfSamplesR);
-    REQUIRE(C[2].size1() == numberOfSamplesR);
-    REQUIRE(C[0].size2() == numberOfSamplesS);
-    REQUIRE(C[1].size2() == numberOfSamplesS);
-    REQUIRE(C[2].size2() == numberOfSamplesS);
+    CIE_TEST_REQUIRE(C.size() == 3);
+    CIE_TEST_REQUIRE(C[0].size1() == numberOfSamplesR);
+    CIE_TEST_REQUIRE(C[1].size1() == numberOfSamplesR);
+    CIE_TEST_REQUIRE(C[2].size1() == numberOfSamplesR);
+    CIE_TEST_REQUIRE(C[0].size2() == numberOfSamplesS);
+    CIE_TEST_REQUIRE(C[1].size2() == numberOfSamplesS);
+    CIE_TEST_REQUIRE(C[2].size2() == numberOfSamplesS);
 
     // Check X-Y grid and surface values
     double X, Y, Z;
@@ -70,9 +70,9 @@ CIE_TEST_CASE( "Linear interpolation surface", "[surface]" )
             Y = 2 * ((double)s) / (numberOfSamplesS - 1) - 1.0;
             Z = 1 + (std::abs(X) - 1)*(std::abs(Y) - 1);
 
-            CHECK(C[0](r, s) == Approx(X));
-            CHECK(C[1](r, s) == Approx(Y));
-            CHECK(C[2](r, s) == Approx(Z));
+            CIE_TEST_CHECK(C[0](r, s) == Approx(X));
+            CIE_TEST_CHECK(C[1](r, s) == Approx(Y));
+            CIE_TEST_CHECK(C[2](r, s) == Approx(Z));
 
             //std::cout << Z << ",\t";		// Uncomment to print correct values
 
@@ -131,16 +131,16 @@ CIE_TEST_CASE( "Cubic-linear interpolation surface", "[surface]" )
 
     // Evaluate
     VectorOfMatrices C;
-    REQUIRE_NOTHROW(C = evaluateSurface(knotVectors, controlGrid, { numberOfSamplesR, numberOfSamplesS }));
+    CIE_TEST_REQUIRE_NOTHROW(C = evaluateSurface(knotVectors, controlGrid, { numberOfSamplesR, numberOfSamplesS }));
 
     // Check sizes
-    REQUIRE(C.size() == 3);
-    REQUIRE(C[0].size1() == numberOfSamplesR);
-    REQUIRE(C[1].size1() == numberOfSamplesR);
-    REQUIRE(C[2].size1() == numberOfSamplesR);
-    REQUIRE(C[0].size2() == numberOfSamplesS);
-    REQUIRE(C[1].size2() == numberOfSamplesS);
-    REQUIRE(C[2].size2() == numberOfSamplesS);
+    CIE_TEST_REQUIRE(C.size() == 3);
+    CIE_TEST_REQUIRE(C[0].size1() == numberOfSamplesR);
+    CIE_TEST_REQUIRE(C[1].size1() == numberOfSamplesR);
+    CIE_TEST_REQUIRE(C[2].size1() == numberOfSamplesR);
+    CIE_TEST_REQUIRE(C[0].size2() == numberOfSamplesS);
+    CIE_TEST_REQUIRE(C[1].size2() == numberOfSamplesS);
+    CIE_TEST_REQUIRE(C[2].size2() == numberOfSamplesS);
 
     // Check X-Y grid and surface values
     double X, Y, Z, increment(0.0);
@@ -154,9 +154,9 @@ CIE_TEST_CASE( "Cubic-linear interpolation surface", "[surface]" )
             Y = 2 * ((double)s) / (numberOfSamplesS - 1) - 1.0;
             Z = 1 + (2 - std::abs((double)s - 2)) * increment;
 
-            CHECK(C[0](r, s) == Approx(X));
-            CHECK(C[1](r, s) == Approx(Y));
-            CHECK(C[2](r, s) == Approx(Z));
+            CIE_TEST_CHECK(C[0](r, s) == Approx(X));
+            CIE_TEST_CHECK(C[1](r, s) == Approx(Y));
+            CIE_TEST_CHECK(C[2](r, s) == Approx(Z));
 
             //std::cout << Z << ",\t";				// Uncomment to print correct values
 

@@ -38,8 +38,8 @@ CIE_TEST_CASE( "AbsTree", "[trees]" )
         return false;
     };
 
-    REQUIRE_NOTHROW( root.visit(split) );
-    CHECK( counter == targetDepth );
+    CIE_TEST_REQUIRE_NOTHROW( root.visit(split) );
+    CIE_TEST_CHECK( counter == targetDepth );
 }
 
 

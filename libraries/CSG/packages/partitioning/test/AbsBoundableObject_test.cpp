@@ -57,45 +57,45 @@ CIE_TEST_CASE( "AbsBoundableObject", "[partitioning]" )
     CIE_TEST_CASE_INIT( "AbsBoundableObject" )
 
 
-    REQUIRE_NOTHROW( TestBoundableObject() );
+    CIE_TEST_REQUIRE_NOTHROW( TestBoundableObject() );
     TestBoundableObject test;
     const TestBoundableObject& r_test = test;
 
-    CHECK( isBoxBoundable(test) );
-    CHECK( !isBoxBoundable(0) );
+    CIE_TEST_CHECK( isBoxBoundable(test) );
+    CIE_TEST_CHECK( !isBoxBoundable(0) );
 
-    CHECK( test.counter() == 1 );
+    CIE_TEST_CHECK( test.counter() == 1 );
 
-    REQUIRE_NOTHROW( test.boundingBox() );
-    CHECK_NOTHROW( r_test.boundingBox() );
+    CIE_TEST_REQUIRE_NOTHROW( test.boundingBox() );
+    CIE_TEST_CHECK_NOTHROW( r_test.boundingBox() );
 
-    REQUIRE( test.boundingBox().base().size() > 0 );
-    CHECK( test.boundingBox().base().size() == 1 );
-    CHECK( test.boundingBox().base()[0] == Approx(1.0) );
+    CIE_TEST_REQUIRE( test.boundingBox().base().size() > 0 );
+    CIE_TEST_CHECK( test.boundingBox().base().size() == 1 );
+    CIE_TEST_CHECK( test.boundingBox().base()[0] == Approx(1.0) );
 
-    REQUIRE( test.boundingBox().lengths().size() > 0 );
-    CHECK( test.boundingBox().lengths().size() == 1 );
-    CHECK( test.boundingBox().lengths()[0] == Approx(1.0) );
+    CIE_TEST_REQUIRE( test.boundingBox().lengths().size() > 0 );
+    CIE_TEST_CHECK( test.boundingBox().lengths().size() == 1 );
+    CIE_TEST_CHECK( test.boundingBox().lengths()[0] == Approx(1.0) );
 
-    CHECK_NOTHROW( test.setBoundingBoxShouldRecompute() );
-    CHECK( test.counter() == 1 );
+    CIE_TEST_CHECK_NOTHROW( test.setBoundingBoxShouldRecompute() );
+    CIE_TEST_CHECK( test.counter() == 1 );
 
-    REQUIRE_NOTHROW( test.boundingBox() );
-    CHECK_NOTHROW( r_test.boundingBox() );
+    CIE_TEST_REQUIRE_NOTHROW( test.boundingBox() );
+    CIE_TEST_CHECK_NOTHROW( r_test.boundingBox() );
 
-    CHECK( test.counter() == 2 );
+    CIE_TEST_CHECK( test.counter() == 2 );
 
-    REQUIRE( test.boundingBox().base().size() > 0 );
-    CHECK( test.boundingBox().base().size() == 1 );
-    CHECK( test.boundingBox().base()[0] == Approx(2.0) );
+    CIE_TEST_REQUIRE( test.boundingBox().base().size() > 0 );
+    CIE_TEST_CHECK( test.boundingBox().base().size() == 1 );
+    CIE_TEST_CHECK( test.boundingBox().base()[0] == Approx(2.0) );
 
-    REQUIRE( test.boundingBox().lengths().size() > 0 );
-    CHECK( test.boundingBox().lengths().size() == 1 );
-    CHECK( test.boundingBox().lengths()[0] == Approx(2.0) );
+    CIE_TEST_REQUIRE( test.boundingBox().lengths().size() > 0 );
+    CIE_TEST_CHECK( test.boundingBox().lengths().size() == 1 );
+    CIE_TEST_CHECK( test.boundingBox().lengths()[0] == Approx(2.0) );
 
-    CHECK_NOTHROW( test.setBoundingBoxShouldRecompute() );
-    CHECK_THROWS( r_test.boundingBox() );
-    CHECK( test.counter() == 2 );
+    CIE_TEST_CHECK_NOTHROW( test.setBoundingBoxShouldRecompute() );
+    CIE_TEST_CHECK_THROWS( r_test.boundingBox() );
+    CIE_TEST_CHECK( test.counter() == 2 );
 }
 
 

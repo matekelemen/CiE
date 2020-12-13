@@ -7,7 +7,7 @@
 namespace cie::opt {
 
 // ---------------------------------------------------------------
-// GENERATOR REQUIREMENTS
+// GENERATOR CIE_TEST_REQUIREMENTS
 // ---------------------------------------------------------------
 
 static uint64_t generatorState[2] = {
