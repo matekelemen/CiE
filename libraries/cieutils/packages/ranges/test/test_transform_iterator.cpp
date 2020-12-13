@@ -30,7 +30,7 @@ protected:
 
 
 
-TEST_CASE( "TransformIterator", "[ranges]" )
+CIE_TEST_CASE( "TransformIterator", "[ranges]" )
 {
     std::vector<int> base = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     typedef TransformIteratorHelper<decltype(base)::iterator> TrIterator;

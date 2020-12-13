@@ -13,7 +13,7 @@ namespace cie::splinekernel
 {
 
 
-TEST_CASE("Linear interpolation surface")
+CIE_TEST_CASE( "Linear interpolation surface", "[surface]" )
 {
     std::vector<double> knotVectorR{ 0.0, 0.0, 0.5, 1.0, 1.0 };
     std::vector<double> knotVectorS{ 0.0, 0.0, 0.5, 1.0, 1.0 };
@@ -80,7 +80,7 @@ TEST_CASE("Linear interpolation surface")
         //std::cout << "\n";				// Uncomment to print correct values
     }
 
-} // TEST_CASE("Linear interpolation surface")
+} // CIE_TEST_CASE("Linear interpolation surface")
 
 
 
@@ -91,7 +91,8 @@ TEST_CASE("Linear interpolation surface")
 
 
 
-TEST_CASE("Cubic-linear interpolation surface") {
+CIE_TEST_CASE( "Cubic-linear interpolation surface", "[surface]" )
+{
 
     std::vector<double> knotVectorR{ 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0 };
     std::vector<double> knotVectorS{ 0.0, 0.0, 0.5, 1.0, 1.0 };
@@ -167,6 +168,6 @@ TEST_CASE("Cubic-linear interpolation surface") {
 
 
 
-} // TEST_CASE("Cubic-linear interpolation surface")
+} // CIE_TEST_CASE("Cubic-linear interpolation surface")
 
 } // namespace cie::splinekernel

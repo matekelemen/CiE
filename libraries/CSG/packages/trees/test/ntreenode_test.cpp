@@ -25,13 +25,13 @@ double unitSphere(const DoubleArray<3>& point)
 }
 
 
-TEST_CASE("SpaceTreeNode constructors")
+CIE_TEST_CASE("SpaceTreeNode constructors")
 {
     SpaceTreeNode<2,3> root({0.0,0.0}, 2.0);
 }
 
 
-TEST_CASE("SpaceTreeNode set/get")
+CIE_TEST_CASE("SpaceTreeNode set/get")
 {
     SpaceTreeNode<2,3> root({1.0,2.0},3.0);
     REQUIRE( root.center().size() == 2 );
@@ -40,7 +40,7 @@ TEST_CASE("SpaceTreeNode set/get")
 }
 
 
-TEST_CASE("SpaceTreeNode divide 2D")
+CIE_TEST_CASE("SpaceTreeNode divide 2D")
 {
     // 2---+---+
     // |   |   |
@@ -83,7 +83,7 @@ TEST_CASE("SpaceTreeNode divide 2D")
 }
 
 
-TEST_CASE("SpaceTreeNode divide 3D")
+CIE_TEST_CASE("SpaceTreeNode divide 3D")
 {
     {
         // Create geometry
@@ -110,7 +110,7 @@ TEST_CASE("SpaceTreeNode divide 3D")
 }
 
 
-TEST_CASE("Boundary nodes")
+CIE_TEST_CASE("Boundary nodes")
 {
     // Create geometry
     SpaceTreeNode<2, 3> root({ 1.0,1.0 }, 2.0);

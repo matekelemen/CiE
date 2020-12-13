@@ -9,9 +9,9 @@
 namespace cie::gl {
 
 
-TEST_CASE( "AttributeContainer", "[buffer]" )
+CIE_TEST_CASE( "AttributeContainer", "[buffer]" )
 {
-    CIE_TEST_CASE_INIT( "AttributeContainer" )
+    CIE_CIE_TEST_CASE_INIT( "AttributeContainer" )
 
     REQUIRE_NOTHROW( AttributeContainerPtr( new AttributeContainer ) );
 

@@ -13,7 +13,7 @@ namespace cie::utils {
 namespace detail {
 
 
-TEST_CASE( "File Info" )
+CIE_TEST_CASE( "File Info", "[output]" )
 {
     std::filesystem::path validDirectory      = TEST_OUTPUT_PATH;
     std::filesystem::path invalid             = "abcd/efgh/jklmn/3.145/whatever.cpp/test";

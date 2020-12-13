@@ -8,7 +8,7 @@
 
 namespace cie::linalg {
 
-TEST_CASE("Norms and normalization")
+CIE_TEST_CASE( "Norms and normalization", "[utilities]" )
 {
     DoubleVector vector = {0.0, 0.0, 0.0, 0.0, 0.0};
     Matrix<Double> matrix( {0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, 2 );

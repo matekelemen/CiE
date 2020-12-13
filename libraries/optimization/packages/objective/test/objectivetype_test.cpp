@@ -35,7 +35,7 @@ DoubleArray<2> parabolicMultiObjective(const RNRMElement<N,2>& point)
 }
 
 
-TEST_CASE( "Objective", "[objective]" )
+CIE_TEST_CASE( "Objective", "[objective]" )
 {
     RNRObjectivePtr<2> objective = parabolicObjective<2>;
     CHECK( objective( RNRElement<2>({1.0,1.0}) ) == Approx(0.0) );

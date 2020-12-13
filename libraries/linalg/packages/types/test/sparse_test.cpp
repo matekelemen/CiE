@@ -36,7 +36,7 @@ namespace cie::linalg
  *    [ 27, 29, 28, 30, 37, 36, 35, 26, 32, 31, 25, 22, 19, 21, 20 ]]
  */
 
-TEST_CASE( "allocateSparseMatrix_test", "[types]" )
+CIE_TEST_CASE( "allocateSparseMatrix_test", "[types]" )
 {
     std::vector<std::vector<size_t>> locationMaps
     {

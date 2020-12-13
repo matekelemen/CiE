@@ -10,9 +10,9 @@
 namespace cie::gl {
 
 
-TEST_CASE( "FlyCameraControls", "[control]" )
+CIE_TEST_CASE( "FlyCameraControls", "[control]" )
 {
-    CIE_TEST_CASE_INIT( "FlyCameraControls" )
+    CIE_CIE_TEST_CASE_INIT( "FlyCameraControls" )
 
 //    WindowPtr p_window;
 //    CameraPtr p_camera;

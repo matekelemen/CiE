@@ -14,9 +14,9 @@ namespace cie::fem {
 
 
 
-TEST_CASE( "AbsElementPhysics", "[physics]" )
+CIE_TEST_CASE( "AbsElementPhysics", "[physics]" )
 {
-    CIE_TEST_CASE_INIT( "AbsElementPhysics" )
+    CIE_CIE_TEST_CASE_INIT( "AbsElementPhysics" )
 
     const Size Dimension            = 1;
     const Size integrationOrder     = 5;
@@ -83,7 +83,7 @@ TEST_CASE( "AbsElementPhysics", "[physics]" )
     REQUIRE_NOTHROW( element.clearCache() );
     CHECK_THROWS( element.basisValues() );
     CHECK_THROWS( element.basisDerivativeValues() );
-} // TEST_CASE AbsElementPhysics
+} // CIE_TEST_CASE AbsElementPhysics
 
 
 } // namespace cie::fem

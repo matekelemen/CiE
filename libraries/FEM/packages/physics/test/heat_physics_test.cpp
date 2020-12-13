@@ -15,9 +15,9 @@
 namespace cie::fem {
 
 
-TEST_CASE( "StaticLinearHeatPhysics1D", "[physics]" )
+CIE_TEST_CASE( "StaticLinearHeatPhysics1D", "[physics]" )
 {
-    CIE_TEST_CASE_INIT( "StaticLinearHeatPhysics1D" )
+    CIE_CIE_TEST_CASE_INIT( "StaticLinearHeatPhysics1D" )
 
     using NT                    = Double;
     using BasisSet             = LinearBasisFunctionSet<1,NT>;
@@ -61,7 +61,7 @@ TEST_CASE( "StaticLinearHeatPhysics1D", "[physics]" )
     CHECK( stiffness[1][0] == Approx(-materialParameter(0.0)) );
     CHECK( stiffness[1][1] == Approx(materialParameter(0.0)) );
 
-} // TEST_CASE StaticLinearHeatPhysics1D
+} // CIE_TEST_CASE StaticLinearHeatPhysics1D
 
 
 } // namespace cie::fem

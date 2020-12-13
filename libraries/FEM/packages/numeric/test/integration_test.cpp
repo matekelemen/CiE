@@ -8,9 +8,9 @@
 namespace cie::fem {
 
 
-TEST_CASE( "AbsQuadrature", "[numeric]" )
+CIE_TEST_CASE( "AbsQuadrature", "[numeric]" )
 {
-    CIE_TEST_CASE_INIT( "AbsQuadrature" )
+    CIE_CIE_TEST_CASE_INIT( "AbsQuadrature" )
 
     const Size                              dimension = 2;
     typedef Double                          NT;
@@ -46,14 +46,14 @@ TEST_CASE( "AbsQuadrature", "[numeric]" )
 
     REQUIRE_NOTHROW( integrator(functionValues.begin()) );
     CHECK( integrator(functionValues.begin()) == Approx(6.0) );
-} // TEST_CASE AbsQuadrature
+} // CIE_TEST_CASE AbsQuadrature
 
 
 
 
-TEST_CASE( "Quadratures", "[numeric]" )
+CIE_TEST_CASE( "Quadratures", "[numeric]" )
 {
-    CIE_TEST_CASE_INIT( "Quadratures" )
+    CIE_CIE_TEST_CASE_INIT( "Quadratures" )
 
     // General init
     const Size                          Dimension = 2;
@@ -100,7 +100,7 @@ TEST_CASE( "Quadratures", "[numeric]" )
     };
 
     {
-        CIE_TEST_CASE_INIT( "GaussLegendreQuadrature" )
+        CIE_CIE_TEST_CASE_INIT( "GaussLegendreQuadrature" )
         typedef GaussLegendreQuadrature<Dimension, NT> Integrator;
 
         for (Size integrationOrder=3; integrationOrder<6; ++integrationOrder)
@@ -113,7 +113,7 @@ TEST_CASE( "Quadratures", "[numeric]" )
     }
 
     {
-        CIE_TEST_CASE_INIT( "GaussLobattoQuadrature" )
+        CIE_CIE_TEST_CASE_INIT( "GaussLobattoQuadrature" )
         typedef GaussLobattoQuadrature<Dimension, NT> Integrator;
 
         for (Size integrationOrder=3; integrationOrder<6; ++integrationOrder)
@@ -124,7 +124,7 @@ TEST_CASE( "Quadratures", "[numeric]" )
             CHECK( integrator(testFunction) == Approx(check) );
         }
     }
-} // TEST_CASE Quadratures
+} // CIE_TEST_CASE Quadratures
 
 
 } // namespace cie::fem

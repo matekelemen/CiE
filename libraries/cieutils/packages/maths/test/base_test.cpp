@@ -6,9 +6,9 @@
 namespace cie::utils {
 
 
-TEST_CASE( "base", "[maths]" )
+CIE_TEST_CASE( "base", "[maths]" )
 {
-    CIE_TEST_CASE_INIT( "base" )
+    CIE_CIE_TEST_CASE_INIT( "base" )
 
     const Size                      NDigits = 4;
     typedef Size                    NT;
@@ -17,7 +17,7 @@ TEST_CASE( "base", "[maths]" )
     NT base;
 
     {
-        CIE_TEST_CASE_INIT( "baseN in-place" )
+        CIE_CIE_TEST_CASE_INIT( "baseN in-place" )
 
         NT value    = 13;
         base        = 2;
@@ -37,7 +37,7 @@ TEST_CASE( "base", "[maths]" )
     }
 
     {
-        CIE_TEST_CASE_INIT( "baseN" )
+        CIE_CIE_TEST_CASE_INIT( "baseN" )
 
         NT value    = 13;
         base        = 2;
@@ -56,7 +56,7 @@ TEST_CASE( "base", "[maths]" )
     }
 
     {
-        CIE_TEST_CASE_INIT( "base10" )
+        CIE_CIE_TEST_CASE_INIT( "base10" )
 
         Array value     = { 1, 0, 1, 1 };
         base            = 2;
@@ -73,7 +73,7 @@ TEST_CASE( "base", "[maths]" )
     }
 
     {
-        CIE_TEST_CASE_INIT( "reinterpretBase" )
+        CIE_CIE_TEST_CASE_INIT( "reinterpretBase" )
 
         Array value     = { 1, 0, 1, 1 };
         NT base         = 2;
@@ -89,7 +89,7 @@ TEST_CASE( "base", "[maths]" )
         CHECK( test == check );
     }
 
-} // TEST_CASE baseN
+} // CIE_TEST_CASE baseN
 
 
 } // namespace cie::utils

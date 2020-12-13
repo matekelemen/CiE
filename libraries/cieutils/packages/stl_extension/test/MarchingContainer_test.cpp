@@ -6,16 +6,16 @@
 namespace cie::utils {
 
 
-TEST_CASE( "MarchingContainer", "[stl_extension]" )
+CIE_TEST_CASE( "MarchingContainer", "[stl_extension]" )
 {
-    CIE_TEST_CASE_INIT( "MarchingContainer" )
+    CIE_CIE_TEST_CASE_INIT( "MarchingContainer" )
 
     using ValueType     = int;
     using ContainerType = MarchingContainer<ValueType>;
 
     for ( Size capacity=3; capacity<7; ++capacity )
     {
-        CIE_TEST_CASE_INIT( "capacity " + std::to_string(capacity) )
+        CIE_CIE_TEST_CASE_INIT( "capacity " + std::to_string(capacity) )
 
         {
             REQUIRE_NOTHROW( ContainerType(capacity) );

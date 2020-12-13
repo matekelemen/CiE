@@ -13,9 +13,9 @@
 namespace cie::gl {
 
 
-TEST_CASE( "RigidBody", "[rigidbody]" )
+CIE_TEST_CASE( "RigidBody", "[rigidbody]" )
 {
-    CIE_TEST_CASE_INIT( "RigidBody" )
+    CIE_CIE_TEST_CASE_INIT( "RigidBody" )
     
     RigidBodyPtr p_body;
 
@@ -29,7 +29,7 @@ TEST_CASE( "RigidBody", "[rigidbody]" )
     };
 
     {
-        CIE_TEST_CASE_INIT( "construction" )
+        CIE_CIE_TEST_CASE_INIT( "construction" )
 
         REQUIRE_NOTHROW( p_body.reset(
             new RigidBody( { 0.0, 0.0, 0.0 },
@@ -51,7 +51,7 @@ TEST_CASE( "RigidBody", "[rigidbody]" )
     }
 
     {
-        CIE_TEST_CASE_INIT( "hard setting" )
+        CIE_CIE_TEST_CASE_INIT( "hard setting" )
 
         CHECK_NOTHROW( p_body->setPosition( {1.0, 1.0, 1.0} ) );
 
@@ -87,7 +87,7 @@ TEST_CASE( "RigidBody", "[rigidbody]" )
     }
 
     {
-        CIE_TEST_CASE_INIT( "translation" )
+        CIE_CIE_TEST_CASE_INIT( "translation" )
 
         resetBody();
         CHECK_NOTHROW( p_body->translate( {1.0, 1.0, 1.0} ) );
@@ -106,7 +106,7 @@ TEST_CASE( "RigidBody", "[rigidbody]" )
     }
 
     {
-        CIE_TEST_CASE_INIT( "origin-bound rotation" )
+        CIE_CIE_TEST_CASE_INIT( "origin-bound rotation" )
 
         resetBody();
         p_body->translate( {1.0, 1.0, 1.0} );
@@ -142,7 +142,7 @@ TEST_CASE( "RigidBody", "[rigidbody]" )
     }
 
     {
-        CIE_TEST_CASE_INIT( "general rotation" )
+        CIE_CIE_TEST_CASE_INIT( "general rotation" )
 
         resetBody();
         p_body->translate( {1.0, 1.0, 1.0} );
@@ -180,7 +180,7 @@ TEST_CASE( "RigidBody", "[rigidbody]" )
     }
 
     {
-        CIE_TEST_CASE_INIT( "euler rotations" )
+        CIE_CIE_TEST_CASE_INIT( "euler rotations" )
 
         resetBody();
         p_body->translate( {1.0, 1.0, 1.0} );

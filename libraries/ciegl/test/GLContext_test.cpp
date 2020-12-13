@@ -73,7 +73,7 @@ struct TestDrawManager : public DrawManager
 };
 
 
-TEST_CASE( "GLFWContext" )
+CIE_TEST_CASE( "GLFWContext" )
 {
 
     auto loopFactory = [] (cie::gl::GLFWContext& context) -> cie::gl::DrawFunction
@@ -99,7 +99,7 @@ TEST_CASE( "GLFWContext" )
 }
 
 
-//TEST_CASE( "Scene" )
+//CIE_TEST_CASE( "Scene" )
 //{
 //    Scene scene( context_global );
 //    glm::vec3 test = { 5.0f, 4.0f, 3.0f };
@@ -107,9 +107,9 @@ TEST_CASE( "GLFWContext" )
 //}
 
 
-TEST_CASE( "DrawManager", "[ciegl]" )
+CIE_TEST_CASE( "DrawManager", "[ciegl]" )
 {
-    CIE_TEST_CASE_INIT( "DrawManager" )
+    CIE_CIE_TEST_CASE_INIT( "DrawManager" )
 
     // Create context
     WindowPtr p_window;
@@ -148,7 +148,7 @@ TEST_CASE( "DrawManager", "[ciegl]" )
 }
 
 
-//TEST_CASE( "Window resolution" )
+//CIE_TEST_CASE( "Window resolution" )
 //{
 //    glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
 //    glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 5 );

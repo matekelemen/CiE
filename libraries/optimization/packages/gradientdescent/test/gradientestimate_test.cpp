@@ -21,7 +21,7 @@ double parabola(const RNRElement<2>& point)
 }
 
 
-TEST_CASE( "Gradient estimation", "[gradientdescent]" )
+CIE_TEST_CASE( "Gradient estimation", "[gradientdescent]" )
 {
     RNRObjectivePtr<2> objective = parabola;
     DoubleArray<2> gradient;

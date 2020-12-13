@@ -11,7 +11,7 @@ namespace cie::utils
 {
 
 
-TEST_CASE( "ContainerCache", "[cache]" )
+CIE_TEST_CASE( "ContainerCache", "[cache]" )
 {
     typedef std::array<int,3>                               InputContainer;
     typedef std::vector<std::pair<int,int>>                 OutputContainer;

@@ -34,9 +34,9 @@ using TestSubjectPtr = std::shared_ptr<TestSubject>;
 
 
 
-TEST_CASE( "Observer", "[observer]" )
+CIE_TEST_CASE( "Observer", "[observer]" )
 {
-    CIE_TEST_CASE_INIT( "Observer" )
+    CIE_CIE_TEST_CASE_INIT( "Observer" )
 
     // Create counters
     int numberOfSubjects    = 0;

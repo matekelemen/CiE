@@ -39,7 +39,7 @@ struct RegionWithKinkFixture
 };
 
 // Test case that uses the struct defined above. By some inheritance magic of catch we can use vertices and region here.
-TEST_CASE_METHOD( RegionWithKinkFixture, "computeAngle" )
+CIE_TEST_CASE_METHOD( RegionWithKinkFixture, "computeAngle", "[meshgenerator]" )
 {
   std::array<double, 8> anglesCounterClockwise;
   std::array<double, 8> anglesClockwise;
@@ -72,7 +72,7 @@ TEST_CASE_METHOD( RegionWithKinkFixture, "computeAngle" )
 } // computeAngle
 
 // Attempts to check if zero angle is stable (not giving nans).
-TEST_CASE( "computeAngleZero" )
+CIE_TEST_CASE( "computeAngleZero", "[meshGenerator]" )
 {
   Vertex2DVector vertices{ {  1.0 / 3.0,  5.0 / 7.0 },
                            {  2.0 / 3.0, 11.0 / 7.0 },
@@ -89,7 +89,7 @@ TEST_CASE( "computeAngleZero" )
 } // computeAngle
 
 // Checks if zero length is caught.
-TEST_CASE( "computeAngleZeroLength" )
+CIE_TEST_CASE( "computeAngleZeroLength", "[meshgenerator]" )
 {
   Vertex2DVector vertices{ { 2.0, 0.0 },
                            { 2.0, 0.0 },
@@ -104,7 +104,7 @@ TEST_CASE( "computeAngleZeroLength" )
 
 } // computeAngle
 
-TEST_CASE_METHOD( RegionWithKinkFixture, "computeSmallestAngle" )
+CIE_TEST_CASE_METHOD( RegionWithKinkFixture, "computeSmallestAngle", "[meshgenerator]" )
 {
   double pi = PI;
   double pi_2 = pi / 2.0;
@@ -177,7 +177,7 @@ double polygonArea( const Vertex2DVector& vertices, const IndexVector& indices )
   return std::abs( 0.5 * area ); // minus if clockwise
 }
 
-TEST_CASE_METHOD( CircularRegionFixture, "divideRegion" )
+CIE_TEST_CASE_METHOD( CircularRegionFixture, "divideRegion", "[meshgenerator]" )
 {
   REQUIRE( polygonArea( vertices, regions[0] ) == Approx( 7.0 ) );
 
@@ -218,7 +218,7 @@ TEST_CASE_METHOD( CircularRegionFixture, "divideRegion" )
 
 } // divideRegion
 
-TEST_CASE_METHOD( CircularRegionFixture, "divideRegionDiagonal" )
+CIE_TEST_CASE_METHOD( CircularRegionFixture, "divideRegionDiagonal", "[meshgenerator]" )
 {
   double tolerance = 1e-7;
 
@@ -251,7 +251,7 @@ TEST_CASE_METHOD( CircularRegionFixture, "divideRegionDiagonal" )
 
 } // divideRegionDiagonal
 
-TEST_CASE( "divideRegionSingleSegment1")
+CIE_TEST_CASE( "divideRegionSingleSegment1", "[meshgenerator]" )
 {
   Vertex2DVector vertices{ { 0.0, 0.0 }, { 1.0, 0.0 }, { 1.0, 0.5 }, { 2.0, 0.5 } };
   std::vector<IndexVector> regions{ { 0, 1, 3, 2 } };
@@ -267,21 +267,21 @@ TEST_CASE( "divideRegionSingleSegment1")
   CHECK( polygonArea( vertices, regions[0] ) + polygonArea( vertices, regions[1] ) == Approx( 0.5 ) );
 }
 
-TEST_CASE_METHOD( CircularRegionFixture, "attemptDivision" )
+CIE_TEST_CASE_METHOD( CircularRegionFixture, "attemptDivision", "[meshgenerator]" )
 {
   double alpha = std::atan( 1.0 / 3.0 ) + PI / 4.0;
   double delta = 1e-5;
 
   bool result;
 
-  SECTION( "small angle" )
+  CIE_TEST_SECTION( "small angle" )
   {
     REQUIRE_NOTHROW( result = meshgeneratorhelper::attemptDivision( vertices, regions, 0, alpha / 2.0, 1.0 ) );
 
     CHECK( result == true );
   }
 
-  SECTION( "only just possible" )
+  CIE_TEST_SECTION( "only just possible" )
   {
     REQUIRE_NOTHROW( result = meshgeneratorhelper::attemptDivision( vertices, regions, 0, alpha - delta, 1.0 ) );
 
@@ -293,7 +293,7 @@ TEST_CASE_METHOD( CircularRegionFixture, "attemptDivision" )
     CHECK( vertices.size( ) == 10 );
   }
 
-  SECTION( "only just not possible anymore" )
+  CIE_TEST_SECTION( "only just not possible anymore" )
   {
     REQUIRE_NOTHROW( result = meshgeneratorhelper::attemptDivision( vertices, regions, 0, alpha + delta, 1.0 ) );
 
@@ -302,7 +302,7 @@ TEST_CASE_METHOD( CircularRegionFixture, "attemptDivision" )
     CHECK( regions.size( ) == 1 );
   }
 
-  SECTION( "large angle" )
+  CIE_TEST_SECTION( "large angle" )
   {
     REQUIRE_NOTHROW( result = meshgeneratorhelper::attemptDivision( vertices, regions, 0, 2.0 * alpha, 1.0 ) );
 
@@ -312,7 +312,7 @@ TEST_CASE_METHOD( CircularRegionFixture, "attemptDivision" )
   }
 } // attemptDivision
 
-TEST_CASE( "attemptDivisionLessThanFourVertices" )
+CIE_TEST_CASE( "attemptDivisionLessThanFourVertices", "[meshgenerator]" )
 {
   Vertex2DVector vertices{ { 0.0, 0.0 }, { 1.0, 0.0 }, { 1.0, 1.0 } };
   std::vector<IndexVector> regions{ { 0, 1, 2 } };
@@ -350,7 +350,7 @@ struct ChopTestFixture
   { }
 };
 
-TEST_CASE_METHOD( ChopTestFixture, "chopQuality" )
+CIE_TEST_CASE_METHOD( ChopTestFixture, "chopQuality", "[meshgenerator]" )
 {
   std::array<double, 5> computedChopQualities;
 
@@ -374,7 +374,7 @@ bool containsIndices( TriangleConnectivity connectivity, size_t id1, size_t id2,
          ( connectivity[2] == id1 || connectivity[2] == id2 || connectivity[2] == id3 );
 }
 
-TEST_CASE_METHOD( ChopTestFixture, "chopTriangle" )
+CIE_TEST_CASE_METHOD( ChopTestFixture, "chopTriangle", "[meshgenerator]" )
 {
   double epsilon = 1e-5;
   int result = true;
@@ -438,7 +438,7 @@ double triangulationArea( const Triangulation& triangulation )
   return area;
 } // triangulationArea
 
-TEST_CASE_METHOD( CircularRegionFixture, "triangulate" )
+CIE_TEST_CASE_METHOD( CircularRegionFixture, "triangulate", "[meshgenerator]" )
 {
   Triangulation triangulation;
   TriangulationParameters parameters;

@@ -18,7 +18,7 @@ struct TestTree : public AbsTree<std::vector,TestTree>
 };
 
 
-TEST_CASE( "AbsTree", "[trees]" )
+CIE_TEST_CASE( "AbsTree", "[trees]" )
 {
     TestTree root(0);
 

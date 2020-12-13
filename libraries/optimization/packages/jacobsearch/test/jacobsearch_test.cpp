@@ -22,7 +22,7 @@ double jacobSearchTestFunction(const RNRElement<2>& point)
 }
 
 
-TEST_CASE("Jacob search - paraboloid_1")
+CIE_TEST_CASE( "Jacob search - paraboloid_1", "[jacobsearch]" )
 {
 	// Objective definition
 	RNRElement<2>		offset({ 1.0,2.0 });
@@ -45,7 +45,7 @@ TEST_CASE("Jacob search - paraboloid_1")
 }
 
 
-TEST_CASE("Jacob search - parabloid_2")
+CIE_TEST_CASE( "Jacob search - parabloid_2", "[jacobsearch]" )
 {
 	// Objective definition
 	RNRElement<2>		offset({ 1.0,2.0 });
@@ -68,7 +68,7 @@ TEST_CASE("Jacob search - parabloid_2")
 }
 
 
-TEST_CASE("Jacob search - rosenbrock")
+CIE_TEST_CASE( "Jacob search - rosenbrock", "[jacobsearch]" )
 {
 	// Objective definition
 	RNRObjectivePtr<2>	objective = rosenbrockTestFunction();

@@ -10,7 +10,7 @@
 namespace cie::linalg {
 
 
-TEST_CASE( "Quaternion", "[quaternions]" )
+CIE_TEST_CASE( "Quaternion", "[quaternions]" )
 {
     std::unique_ptr<Quaternion> q;
 
@@ -47,7 +47,7 @@ TEST_CASE( "Quaternion", "[quaternions]" )
 }
 
 
-TEST_CASE("Quaternion operator overloads")
+CIE_TEST_CASE( "Quaternion operator overloads", "[quaternions]" )
 {
     Quaternion q( {0.0,1.0,2.0,3.0} );
     Quaternion p( {10.0,9.0,8.0,7.0} );

@@ -6,7 +6,7 @@
 
 namespace cie::opt {
 
-TEST_CASE( "Element - constructors", "[representation]" )
+CIE_TEST_CASE( "Element - constructors", "[representation]" )
 {
     RRElement siso(1.0);
     CHECK( siso.getData() == Approx(1.0) );

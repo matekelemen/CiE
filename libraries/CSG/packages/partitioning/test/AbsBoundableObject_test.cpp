@@ -52,9 +52,9 @@ bool isBoxBoundable( const T& r_object )
 
 
 
-TEST_CASE( "AbsBoundableObject", "[partitioning]" )
+CIE_TEST_CASE( "AbsBoundableObject", "[partitioning]" )
 {
-    CIE_TEST_CASE_INIT( "AbsBoundableObject" )
+    CIE_CIE_TEST_CASE_INIT( "AbsBoundableObject" )
 
 
     REQUIRE_NOTHROW( TestBoundableObject() );

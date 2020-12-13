@@ -6,7 +6,8 @@
 
 namespace cie::linalg {
 
-TEST_CASE("Matrix - scalar operator overloads"){
+CIE_TEST_CASE( "Matrix - scalar operator overloads", "[overloads]" )
+{
     Matrix matrix( 
         {
             0.0, 1.1, 2.2,
@@ -77,10 +78,11 @@ TEST_CASE("Matrix - scalar operator overloads"){
 
     REQUIRE_THROWS( result = matrix / 0.0 );
 
-} // TEST_CASE
+} // CIE_TEST_CASE
 
 
-TEST_CASE("Matrix - vector operator overloads"){
+CIE_TEST_CASE( "Matrix - vector operator overloads", "[overloads]" )
+{
     Matrix matrix( 
         {
             0.0, 1.1, 2.2,
@@ -108,10 +110,11 @@ TEST_CASE("Matrix - vector operator overloads"){
     REQUIRE_THROWS( result = matrix * v3 );
     REQUIRE_THROWS( result = v3 * matrix );
 
-} // TEST_CASE
+} // CIE_TEST_CASE
 
 
-TEST_CASE("Matrix - matrix operator overloads"){
+CIE_TEST_CASE( "Matrix - matrix operator overloads", "[overloads]")
+{
     Matrix m2x3( 
         {
             0.0, 1.1, 2.2,

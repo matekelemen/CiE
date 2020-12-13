@@ -11,7 +11,7 @@
 namespace cie::utils {
 
 
-TEST_CASE( "StateIterator", "[stl_extension]" )
+CIE_TEST_CASE( "StateIterator", "[stl_extension]" )
 {
     typedef std::vector<int>                            SubContainer;
     typedef std::array<std::vector<int>,2>              Container;
@@ -61,10 +61,10 @@ TEST_CASE( "StateIterator", "[stl_extension]" )
     CHECK( *(*state)[0] == 2 );     CHECK( *(*state)[1] == 4 );
     CHECK_NOTHROW( ++state );
 
-} // TEST_CASE( "StateIterator")
+} // CIE_TEST_CASE( "StateIterator")
 
 
-TEST_CASE( "InternalStateIterator", "[stl_extension]" )
+CIE_TEST_CASE( "InternalStateIterator", "[stl_extension]" )
 {
     const Size dimension        = 2;
     std::array<int,3> container = { 0, 1, 2 };
@@ -77,7 +77,7 @@ TEST_CASE( "InternalStateIterator", "[stl_extension]" )
             CHECK( *(*state)[0] == container[j] );     CHECK( *(*state)[1] == container[i] );
             CHECK_NOTHROW( ++state );
         }
-} // TEST_CASE( "InternalStateIterator")
+} // CIE_TEST_CASE( "InternalStateIterator")
 
 
 } // namespace cie::utils

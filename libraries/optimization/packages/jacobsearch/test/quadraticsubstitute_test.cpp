@@ -19,7 +19,8 @@ double paraboloidTestFunction(const DoubleArray<2>& position, const DoubleArray<
 }
 
 
-TEST_CASE("QuadraticSubstitute"){
+CIE_TEST_CASE( "QuadraticSubstitute", "[jacobsearch]" )
+{
     // TEST ON A SIMPLE PARABOLOID
 
     // Define paraboloid offset

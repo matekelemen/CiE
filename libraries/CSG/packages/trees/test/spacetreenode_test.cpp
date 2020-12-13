@@ -36,9 +36,9 @@ ValueType unitCircle( const PointType& r_point )
 }
 
 
-TEST_CASE( "SpaceTreeNode", "[trees]" )
+CIE_TEST_CASE( "SpaceTreeNode", "[trees]" )
 {
-    CIE_TEST_CASE_INIT( "SpaceTreeNode" )
+    CIE_CIE_TEST_CASE_INIT( "SpaceTreeNode" )
 
     // Basic parameters
     const Size Dimension                = 2;
@@ -51,7 +51,7 @@ TEST_CASE( "SpaceTreeNode", "[trees]" )
 
     // Node with cube cell
     {
-        CIE_TEST_CASE_INIT( "Cube base with midpoint splitting" )
+        CIE_CIE_TEST_CASE_INIT( "Cube base with midpoint splitting" )
 
         // Define specialised types
         using PrimitiveType = Cube<Dimension,CoordinateType>;
@@ -110,14 +110,14 @@ TEST_CASE( "SpaceTreeNode", "[trees]" )
 
     // Node with box cell
     {
-        CIE_TEST_CASE_INIT( "Box base" )
+        CIE_CIE_TEST_CASE_INIT( "Box base" )
 
         // Define specialised types
         using PrimitiveType = Box<Dimension,CoordinateType>;
         using CellType      = BoxCell<PrimitiveType>;
 
         { // Midpoint splitting
-            CIE_TEST_CASE_INIT( "Midpoint splitter" )
+            CIE_CIE_TEST_CASE_INIT( "Midpoint splitter" )
 
             using NodeType      = SpaceTreeNode<CellType,BoolValue>;
 
@@ -157,7 +157,7 @@ TEST_CASE( "SpaceTreeNode", "[trees]" )
         } // Midpoint splitting
 
         { // Linear splitting
-            CIE_TEST_CASE_INIT( "Linear splitter" )
+            CIE_CIE_TEST_CASE_INIT( "Linear splitter" )
 
             using NodeType      = SpaceTreeNode<CellType,NumericValue>;
 
@@ -197,7 +197,7 @@ TEST_CASE( "SpaceTreeNode", "[trees]" )
         } // Linear splitting
 
         { // Weighted splitting
-            CIE_TEST_CASE_INIT( "Weighted splitter" )
+            CIE_CIE_TEST_CASE_INIT( "Weighted splitter" )
 
             using NodeType      = SpaceTreeNode<CellType,NumericValue>;
 

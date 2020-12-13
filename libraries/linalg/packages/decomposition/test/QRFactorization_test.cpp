@@ -13,7 +13,7 @@
 
 namespace cie::linalg {
 
-TEST_CASE("QR Factorization")
+CIE_TEST_CASE( "QR Factorization", "[decomposition]" )
 {
     Matrix matrix(  {   1.0,4.0,9.0,
                         1.0,1.0,2.0,

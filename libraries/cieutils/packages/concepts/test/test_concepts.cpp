@@ -66,7 +66,7 @@ void iteratorContainerTest( ContainerType container )
 
 
 
-TEST_CASE( "Numeric Concepts", "[concepts]" )
+CIE_TEST_CASE( "Numeric Concepts", "[concepts]" )
 {
     int     a = 0;
     Size    b = 0;
@@ -80,7 +80,7 @@ TEST_CASE( "Numeric Concepts", "[concepts]" )
 }
 
 
-TEST_CASE( "Pointer Concepts", "[concepts]" )
+CIE_TEST_CASE( "Pointer Concepts", "[concepts]" )
 {
     int     a = 0;
     void*   b = nullptr;
@@ -92,7 +92,7 @@ TEST_CASE( "Pointer Concepts", "[concepts]" )
 }
 
 
-TEST_CASE( "Iterator Concepts", "[concepts]" )
+CIE_TEST_CASE( "Iterator Concepts", "[concepts]" )
 {
     std::array<int,2>           a;
     std::vector<int>            b;
@@ -114,7 +114,7 @@ TEST_CASE( "Iterator Concepts", "[concepts]" )
 }
 
 
-TEST_CASE( "Container Concepts", "[concepts]" )
+CIE_TEST_CASE( "Container Concepts", "[concepts]" )
 {
     std::array<int,2>                       a{};
     std::vector<int>                        b{};

@@ -9,14 +9,14 @@ namespace cie::utils {
 struct TestType {};
 
 
-TEST_CASE( "CommandLineArguments", "[commandline]" )
+CIE_TEST_CASE( "CommandLineArguments", "[commandline]" )
 {
-    CIE_TEST_CASE_INIT( "CommandLineArguments" )
+    CIE_CIE_TEST_CASE_INIT( "CommandLineArguments" )
 
     const Size argc = 5;
 
     {
-        CIE_TEST_CASE_INIT( "correct arguments" )
+        CIE_CIE_TEST_CASE_INIT( "correct arguments" )
 
         char const* argv[argc] = {
             "./",
@@ -30,7 +30,7 @@ TEST_CASE( "CommandLineArguments", "[commandline]" )
     }
 
     {
-        CIE_TEST_CASE_INIT( "no key specified" )
+        CIE_CIE_TEST_CASE_INIT( "no key specified" )
 
         char const* argv[argc] = {
             "./",
@@ -44,7 +44,7 @@ TEST_CASE( "CommandLineArguments", "[commandline]" )
     }
 
     {
-        CIE_TEST_CASE_INIT( "duplicate keys" )
+        CIE_CIE_TEST_CASE_INIT( "duplicate keys" )
 
         char const* argv[argc] = {
             "./",
@@ -58,7 +58,7 @@ TEST_CASE( "CommandLineArguments", "[commandline]" )
     }
 
     {
-        CIE_TEST_CASE_INIT( "no value specified" )
+        CIE_CIE_TEST_CASE_INIT( "no value specified" )
 
         char const* argv[argc] = {
             "./",
@@ -72,7 +72,7 @@ TEST_CASE( "CommandLineArguments", "[commandline]" )
     }
 
     {
-        CIE_TEST_CASE_INIT( "no separator" )
+        CIE_CIE_TEST_CASE_INIT( "no separator" )
 
         char const* argv[argc] = {
             "./",
@@ -86,7 +86,7 @@ TEST_CASE( "CommandLineArguments", "[commandline]" )
     }
 
     {
-        CIE_TEST_CASE_INIT( "argument parsing" )
+        CIE_CIE_TEST_CASE_INIT( "argument parsing" )
 
         char const* argv[argc] = {
             "./",

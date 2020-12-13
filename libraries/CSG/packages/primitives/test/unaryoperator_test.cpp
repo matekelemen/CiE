@@ -51,9 +51,9 @@ protected:
 };
 
 
-TEST_CASE( "UnaryOperator", "[primitives]" )
+CIE_TEST_CASE( "UnaryOperator", "[primitives]" )
 {
-    CIE_TEST_CASE_INIT( "UnaryOperator" )
+    CIE_CIE_TEST_CASE_INIT( "UnaryOperator" )
 
     // Check sequential rhs emplacement
     TestUnaryOperator op;

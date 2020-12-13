@@ -10,9 +10,9 @@
 
 namespace cie::csg {
 
-TEST_CASE( "Disc", "[clustering]" )
+CIE_TEST_CASE( "Disc", "[clustering]" )
 {
-    CIE_TEST_CASE_INIT( "Disc" )
+    CIE_CIE_TEST_CASE_INIT( "Disc" )
 
     // Disc defined by center and radius
     Disc disc( {0.1,0.2}, 0.5 );
@@ -76,7 +76,7 @@ TEST_CASE( "Disc", "[clustering]" )
 
 
 /*
-TEST_CASE("Minimum enclosing disc")
+CIE_TEST_CASE("Minimum enclosing disc")
 {
 	// Create vector of points
 	PointSet2D points = {	{0.0,0.0},{1.0,1.0},{3.0,3.0},

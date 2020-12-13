@@ -16,9 +16,9 @@
 namespace cie::splinekernel
 {
 
-TEST_CASE( "centripetal parameter positions", "[splinekernel]" )
+CIE_TEST_CASE( "centripetal parameter positions", "[splinekernel]" )
 {
-    CIE_TEST_CASE_INIT( "centripetal parameter positions" )
+    CIE_CIE_TEST_CASE_INIT( "centripetal parameter positions" )
 
     // Define points to be interpolated
     ControlPoints2D interpolationPoints;
@@ -42,9 +42,9 @@ TEST_CASE( "centripetal parameter positions", "[splinekernel]" )
     CHECK(parameterPositions[4] == Approx(1.0));
 }
 
-TEST_CASE( "averaged knot vector", "[splinekernel]" )
+CIE_TEST_CASE( "averaged knot vector", "[splinekernel]" )
 {
-    CIE_TEST_CASE_INIT( "averaged knot vector" )
+    CIE_CIE_TEST_CASE_INIT( "averaged knot vector" )
 
     // Define parameter positions
     std::vector<double> parameterPositions{ 0.0, 1.0 / 2.0, 2.0 / 3.0, 3.0 / 4.0, 1.0 };
@@ -104,9 +104,9 @@ TEST_CASE( "averaged knot vector", "[splinekernel]" )
     CHECK_THROWS(knotVectorUsingAveraging(parameterPositions, 5));
 }
 
-TEST_CASE( "interpolate with BSpline", "[splinekernel]" )
+CIE_TEST_CASE( "interpolate with BSpline", "[splinekernel]" )
 {
-    CIE_TEST_CASE_INIT( "interpolate with BSpline" )
+    CIE_CIE_TEST_CASE_INIT( "interpolate with BSpline" )
 
     ControlPoints2D interpolationPoints;
     ControlPointsAndKnotVector result;
@@ -244,9 +244,9 @@ TEST_CASE( "interpolate with BSpline", "[splinekernel]" )
     CHECK(is_sorted(knotVector.begin(), knotVector.end()));
 }
 
-TEST_CASE( "interpolate with BSpline surface", "[splinekernel]" )
+CIE_TEST_CASE( "interpolate with BSpline surface", "[splinekernel]" )
 {
-    CIE_TEST_CASE_INIT( "interpolate with BSpline surface" )
+    CIE_CIE_TEST_CASE_INIT( "interpolate with BSpline surface" )
 
     // Interpolation points
     linalg::Matrix xGrid(

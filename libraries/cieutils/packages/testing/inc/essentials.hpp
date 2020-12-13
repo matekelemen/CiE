@@ -8,3 +8,10 @@
 
 // --- Internal Includes ---
 #include "cieutils/packages/macros/inc/testing.hpp"
+
+
+#define CIE_TEST_CASE( testCaseName, testCaseTag ) TEST_CASE( testCaseName, testCaseTag )
+
+#define CIE_TEST_CASE_METHOD( testCaseClass, testCaseName, testCaseTag ) TEST_CASE_METHOD( testCaseClass, testCaseName, testCaseTag )
+
+#define CIE_TEST_SECTION( sectionName ) SECTION( sectionName )

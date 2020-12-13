@@ -6,7 +6,8 @@
 
 namespace cie {
 
-TEST_CASE("DoubleVector operator overloads"){
+CIE_TEST_CASE( "DoubleVector operator overloads", "[overloads]" )
+{
     DoubleVector v1({ 0.0, 1.0, 2.0 });
     DoubleVector v2({-5.0, 0.0, 5.0 });
     DoubleVector v3({ 10.0, 15.0, 14.0, 12.0});
@@ -78,7 +79,8 @@ TEST_CASE("DoubleVector operator overloads"){
 }
 
 
-TEST_CASE("DoubleArray operator overloads"){
+CIE_TEST_CASE( "DoubleArray operator overloads", "[overloads]" )
+{
     DoubleArray<3> v1   = { 0.0, 1.0, 2.0 };
     DoubleArray<3> v2   = {-5.0, 0.0, 5.0 };
     DoubleArray<3> resultDoubleVector;

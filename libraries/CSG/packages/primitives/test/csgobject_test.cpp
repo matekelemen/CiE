@@ -28,9 +28,9 @@ protected:
 };
 
 
-TEST_CASE( "CSGObject", "[primitives]" )
+CIE_TEST_CASE( "CSGObject", "[primitives]" )
 {
-    CIE_TEST_CASE_INIT( "CSGObject" )
+    CIE_CIE_TEST_CASE_INIT( "CSGObject" )
 
     const Size dimension    = 2;
 

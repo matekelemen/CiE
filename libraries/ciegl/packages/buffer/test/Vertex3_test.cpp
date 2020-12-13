@@ -8,9 +8,9 @@
 namespace cie::gl {
 
 
-TEST_CASE( "Vertex3", "[buffer]" )
+CIE_TEST_CASE( "Vertex3", "[buffer]" )
 {
-    CIE_TEST_CASE_INIT( "Vertex3" )
+    CIE_CIE_TEST_CASE_INIT( "Vertex3" )
 
     auto p_attributes = AttributeContainerPtr( new AttributeContainer );
 

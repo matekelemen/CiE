@@ -18,7 +18,7 @@ namespace map {
 template <class MapType>
 void fillTest( MapType& r_map, Size maxCount )
 {
-    CIE_TEST_CASE_INIT( "fill test" )
+    CIE_CIE_TEST_CASE_INIT( "fill test" )
 
     #pragma omp parallel shared(r_map,maxCount)
     {
@@ -50,9 +50,9 @@ void checkContainer( MapType& r_map, Size maxCount )
 } // namespace map
 
 
-TEST_CASE( "ThreadSafeMap", "[concurrency]" )
+CIE_TEST_CASE( "ThreadSafeMap", "[concurrency]" )
 {
-    CIE_TEST_CASE_INIT( "ThreadSafeMap" )
+    CIE_CIE_TEST_CASE_INIT( "ThreadSafeMap" )
 
     using KeyType         = int;
     using ValueType       = double;
@@ -60,7 +60,7 @@ TEST_CASE( "ThreadSafeMap", "[concurrency]" )
     Size numberOfElements = 1e4;
 
     {
-        CIE_TEST_CASE_INIT( "std::map base" )
+        CIE_CIE_TEST_CASE_INIT( "std::map base" )
         using MapBaseType   = std::map<KeyType,ValueType>;
         using MapType       = ThreadSafeMap<MapBaseType>;
 
@@ -75,7 +75,7 @@ TEST_CASE( "ThreadSafeMap", "[concurrency]" )
     }
 
     {
-        CIE_TEST_CASE_INIT( "std::unordered_map base" )
+        CIE_CIE_TEST_CASE_INIT( "std::unordered_map base" )
         using MapBaseType   = std::unordered_map<KeyType,ValueType>;
         using MapType       = ThreadSafeMap<MapBaseType>;
 

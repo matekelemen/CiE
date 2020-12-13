@@ -4,10 +4,10 @@
 // --- Internal Includes ---
 #include "linalg/linalg.hpp"
 
-namespace cie {
-namespace linalg {
+namespace cie::linalg {
 
-TEST_CASE("Principal component - power iteration"){
+CIE_TEST_CASE( "Principal component - power iteration", "[decomposition]" )
+{
 
     // Diagonalizable
     Matrix matrix(
@@ -32,5 +32,4 @@ TEST_CASE("Principal component - power iteration"){
 
 }
 
-}
-}
+} // namespace cie::linalg

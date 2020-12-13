@@ -22,14 +22,14 @@ double parabolaGradientTest(const RNRElement<2>& point)
 }
 
 
-TEST_CASE("Gradient descent")
+CIE_TEST_CASE( "Gradient descent", "[gradiendescent]" )
 {
     RNRObjectivePtr<2> parabola = parabolaGradientTest;
     GradientDescent<2> solver(parabola,RNRElement<2>({3.0,2.0}));
 }
 
 
-TEST_CASE("Gradient descent - rosenbrock")
+CIE_TEST_CASE( "Gradient descent - rosenbrock", "[gradiendescent]" )
 {
 	// Objective definition
 	RNRObjectivePtr<2>	objective = rosenbrockTestFunction();

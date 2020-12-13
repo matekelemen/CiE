@@ -7,9 +7,9 @@
 namespace cie::utils {
 
 
-TEST_CASE( "LogBlock", "[logging]" )
+CIE_TEST_CASE( "LogBlock", "[logging]" )
 {
-    CIE_TEST_CASE_INIT( "LogBlock" )
+    CIE_CIE_TEST_CASE_INIT( "LogBlock" )
 
     std::filesystem::path loggerTestDir = TEST_OUTPUT_PATH;
 

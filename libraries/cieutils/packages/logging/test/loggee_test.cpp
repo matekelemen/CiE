@@ -22,9 +22,9 @@ struct TestLoggee : public Loggee
 };
 
 
-TEST_CASE( "Loggee", "[logging]" )
+CIE_TEST_CASE( "Loggee", "[logging]" )
 {
-    CIE_TEST_CASE_INIT( "Loggee" )
+    CIE_CIE_TEST_CASE_INIT( "Loggee" )
 
     // Create Logger
     Logger logger( loggeeTestDir / "loggee_test.txt",

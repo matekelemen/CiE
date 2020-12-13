@@ -7,7 +7,7 @@
 namespace cie {
 
 
-TEST_CASE( "intPow", "[maths]" )
+CIE_TEST_CASE( "intPow", "[maths]" )
 {
     typedef Size    NT;
 

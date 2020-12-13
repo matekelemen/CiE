@@ -12,9 +12,9 @@
 namespace cie::splinekernel
 {
 
-TEST_CASE( "find knot span", "[splinekernel]" )
+CIE_TEST_CASE( "find knot span", "[splinekernel]" )
 {
-    CIE_TEST_CASE_INIT( "find knot span" )
+    CIE_CIE_TEST_CASE_INIT( "find knot span" )
 
     std::vector<double> knotVector{ 0.0, 0.0, 0.0, 0.0, 1.0, 4.0, 9.0, 9.0, 9.0, 9.0 };
 
@@ -32,9 +32,9 @@ TEST_CASE( "find knot span", "[splinekernel]" )
     CHECK_THROWS(findKnotSpan(9.1, n, knotVector));
 }
 
-TEST_CASE( "DeBoor test", "[splinekernel]" )
+CIE_TEST_CASE( "DeBoor test", "[splinekernel]" )
 {
-    CIE_TEST_CASE_INIT( "deboor test" )
+    CIE_CIE_TEST_CASE_INIT( "deboor test" )
 
     std::vector<double> knotVector{ 0.0, 0.0, 0.0, 0.0, 1.0, 4.0, 9.0, 9.0, 9.0, 9.0 };
 
@@ -73,9 +73,9 @@ TEST_CASE( "DeBoor test", "[splinekernel]" )
     CHECK( P[1] == Approx( y.back( ) ) );
 }
 
-TEST_CASE( "deboor curve test", "[splinekernel]" )
+CIE_TEST_CASE( "deboor curve test", "[splinekernel]" )
 {
-    CIE_TEST_CASE_INIT( "deboor curve test" )
+    CIE_CIE_TEST_CASE_INIT( "deboor curve test" )
 
     // This is the same test as in the curve test because given the same setup,
     // DeBoor should deliver the same points on a curve as using the classic way: N * P
@@ -119,9 +119,9 @@ TEST_CASE( "deboor curve test", "[splinekernel]" )
     CHECK(C[1][10] == Approx( 3.0 ) );
 }
 
-TEST_CASE( "deboor curve script", "[splinekernel]" )
+CIE_TEST_CASE( "deboor curve script", "[splinekernel]" )
 {
-    CIE_TEST_CASE_INIT( "deboor curve script" )
+    CIE_CIE_TEST_CASE_INIT( "deboor curve script" )
 
     std::vector<double> knotVector { 0.0, 0.0, 0.0, 0.0, 1.0, 4.0, 9.0, 9.0, 9.0, 9.0 };
     std::vector<double> x { 0.0, 10.0, 9.0, 4.5, 1.5, 1.0};

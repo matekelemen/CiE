@@ -15,9 +15,9 @@ namespace cie::csg {
 namespace boolean {
 
 
-TEST_CASE( "Cube", "[primitives]" )
+CIE_TEST_CASE( "Cube", "[primitives]" )
 {
-    CIE_TEST_CASE_INIT( "Cube" )
+    CIE_CIE_TEST_CASE_INIT( "Cube" )
 
     const Size Dimension = 2;
     using CoordinateType = Double;
@@ -60,9 +60,9 @@ TEST_CASE( "Cube", "[primitives]" )
 
 
 
-TEST_CASE( "Box", "[primitives]" )
+CIE_TEST_CASE( "Box", "[primitives]" )
 {
-    CIE_TEST_CASE_INIT( "Box" )
+    CIE_CIE_TEST_CASE_INIT( "Box" )
 
     const Size Dimension = 2;
     using CoordinateType = Double;
@@ -111,9 +111,9 @@ TEST_CASE( "Box", "[primitives]" )
 
 
 
-TEST_CASE( "boolean::Cube", "[primitives]" )
+CIE_TEST_CASE( "boolean::Cube", "[primitives]" )
 {
-    CIE_TEST_CASE_INIT( "boolean::Cube" )
+    CIE_CIE_TEST_CASE_INIT( "boolean::Cube" )
 
     const Size dimension = 2;
 
@@ -135,9 +135,9 @@ TEST_CASE( "boolean::Cube", "[primitives]" )
 }
 
 
-TEST_CASE( "boolean::Box", "[primitives]" )
+CIE_TEST_CASE( "boolean::Box", "[primitives]" )
 {
-    CIE_TEST_CASE_INIT( "boolean::Box" )
+    CIE_CIE_TEST_CASE_INIT( "boolean::Box" )
 
     const Size dimension = 2;
     Box<dimension,Double> box( DoubleArray<dimension>({10.0,20.0}), 

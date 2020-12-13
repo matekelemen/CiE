@@ -25,9 +25,9 @@ void testFunction()
 } // namespace exception
 
 
-TEST_CASE( "Exception tracing", "[macros]" )
+CIE_TEST_CASE( "Exception tracing", "[macros]" )
 {
-    CIE_TEST_CASE_INIT( "Exception tracing" )
+    CIE_CIE_TEST_CASE_INIT( "Exception tracing" )
 
     CHECK_THROWS( exception::testFunction() );
 

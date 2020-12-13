@@ -11,9 +11,9 @@
 namespace cie::splinekernel
 {
 
-TEST_CASE( "Linear interpolation curve", "[splinekernel]" )
+CIE_TEST_CASE( "Linear interpolation curve", "[splinekernel]" )
 {
-    CIE_TEST_CASE_INIT( "Linear interpolation curve" )
+    CIE_CIE_TEST_CASE_INIT( "Linear interpolation curve" )
 
     std::vector<double> knotVector{ 0.0, 0.0, 0.5, 1.0, 1.0 };
     std::vector<double> x{ 2.0, 3.0, 0.5 };

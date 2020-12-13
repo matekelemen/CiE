@@ -10,7 +10,7 @@
 namespace cie {
 
 
-TEST_CASE( "Concept utilities", "[concepts]" )
+CIE_TEST_CASE( "Concept utilities", "[concepts]" )
 {
     std::vector<int>    vector(1);
     std::array<int,3>   array;

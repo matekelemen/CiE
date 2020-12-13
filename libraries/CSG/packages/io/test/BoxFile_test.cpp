@@ -16,9 +16,9 @@
 namespace cie::csg {
 
 
-TEST_CASE( "BoxFile", "[io]" )
+CIE_TEST_CASE( "BoxFile", "[io]" )
 {
-    CIE_TEST_CASE_INIT( "BoxFile" )
+    CIE_CIE_TEST_CASE_INIT( "BoxFile" )
 
     std::filesystem::path outputPath = TEST_OUTPUT_PATH / "BoxFile";
 
@@ -29,7 +29,7 @@ TEST_CASE( "BoxFile", "[io]" )
     const Size numberOfBoxesPerDimension = 5;
 
     {
-        CIE_TEST_CASE_INIT( "write cubes" )
+        CIE_CIE_TEST_CASE_INIT( "write cubes" )
 
         // Construct cubes
         using PrimitiveType = Cube<Dimension,CoordinateType>;
@@ -107,7 +107,7 @@ TEST_CASE( "BoxFile", "[io]" )
 
 
     {
-        CIE_TEST_CASE_INIT( "write boxes" )
+        CIE_CIE_TEST_CASE_INIT( "write boxes" )
     }
 }
 

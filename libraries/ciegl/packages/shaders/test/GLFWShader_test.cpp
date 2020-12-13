@@ -11,9 +11,9 @@
 namespace cie::gl {
 
 
-TEST_CASE( "GLFWShader", "[shader]" )
+CIE_TEST_CASE( "GLFWShader", "[shader]" )
 {
-    CIE_TEST_CASE_INIT( "GLFWShader" )
+    CIE_CIE_TEST_CASE_INIT( "GLFWShader" )
 
     // Context
     std::pair<Size,Size> glVersion { 4, 5 };
@@ -41,7 +41,7 @@ TEST_CASE( "GLFWShader", "[shader]" )
     };
 
     {
-        CIE_TEST_CASE_INIT( "default vertex shader" )
+        CIE_CIE_TEST_CASE_INIT( "default vertex shader" )
 
         ShaderPtr p_shader;
         CHECK_NOTHROW( p_shader = makeVertexShader<GLFWVertexShader>( shaderPaths("vertexShader").first,
@@ -62,7 +62,7 @@ TEST_CASE( "GLFWShader", "[shader]" )
     }
 
     {
-        CIE_TEST_CASE_INIT( "default geometry shader" )
+        CIE_CIE_TEST_CASE_INIT( "default geometry shader" )
 
         ShaderPtr p_shader;
         CHECK_NOTHROW( p_shader = makeGeometryShader<GLFWGeometryShader>( shaderPaths("geometryShader").first,
@@ -75,7 +75,7 @@ TEST_CASE( "GLFWShader", "[shader]" )
     }
 
     {
-        CIE_TEST_CASE_INIT( "default fragment shader" )
+        CIE_CIE_TEST_CASE_INIT( "default fragment shader" )
 
         ShaderPtr p_shader;
         CHECK_NOTHROW( p_shader = makeFragmentShader<GLFWFragmentShader>( shaderPaths("fragmentShader").first,

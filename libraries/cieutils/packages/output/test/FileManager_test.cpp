@@ -14,7 +14,7 @@ namespace cie::utils {
 std::filesystem::path testDir = TEST_OUTPUT_PATH / "test";
 
 
-TEST_CASE( "FileManager - constructor" )
+CIE_TEST_CASE( "FileManager - constructor", "[output]" )
 {
     auto createFileManager = []() ->void 
         {FileManager fileManager(testDir);};
@@ -24,7 +24,7 @@ TEST_CASE( "FileManager - constructor" )
 }
 
 
-TEST_CASE( "FileManager - file handling" )
+CIE_TEST_CASE( "FileManager - file handling", "[output]" )
 {
     // Create FileManager
     FileManager manager( testDir );
