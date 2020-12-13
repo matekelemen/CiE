@@ -17,8 +17,7 @@ public:
 
     ~ConstructorTracker();
 
-    const Size numberOfActiveInstances() const;
-
+    static const Size numberOfActiveInstances();
     static const Size numberOfDefaultConstructorCalls();
     static const Size numberOfCopyConstructorCalls();
     static const Size numberOfCopyAssignmentCalls();

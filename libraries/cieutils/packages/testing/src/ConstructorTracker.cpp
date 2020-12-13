@@ -15,36 +15,37 @@ Size ConstructorTracker::_numberOfDestructorCalls           = 0;
 ConstructorTracker::ConstructorTracker() :
     _localNumberOfConstructions( 1 )
 {
-    this->_numberOfActiveInstances++;
-    this->_numberOfDefaultConstructorCalls++;
+    ConstructorTracker::_numberOfActiveInstances++;
+    ConstructorTracker::_numberOfDefaultConstructorCalls++;
 }
 
 
 ConstructorTracker::ConstructorTracker( const ConstructorTracker& r_rhs ) :
     _localNumberOfConstructions( r_rhs._localNumberOfConstructions+1 )
 {
-    this->_numberOfActiveInstances++;
-    this->_numberOfCopyConstructorCalls++;
+    ConstructorTracker::_numberOfActiveInstances++;
+    ConstructorTracker::_numberOfCopyConstructorCalls++;
 }
 
 
 ConstructorTracker& ConstructorTracker::operator=( const ConstructorTracker& r_rhs )
 {
     this->_localNumberOfConstructions = r_rhs._localNumberOfConstructions+1;
-    this->_numberOfCopyAssignmentCalls++;
+    ConstructorTracker::_numberOfCopyAssignmentCalls++;
+    return *this;
 }
 
 
 ConstructorTracker::~ConstructorTracker()
 {
-    this->_numberOfActiveInstances--;
-    this->_numberOfDestructorCalls++;
+    ConstructorTracker::_numberOfActiveInstances--;
+    ConstructorTracker::_numberOfDestructorCalls++;
 }
 
 
-const Size ConstructorTracker::numberOfActiveInstances() const
+const Size ConstructorTracker::numberOfActiveInstances()
 {
-    return this->_numberOfActiveInstances;
+    return ConstructorTracker::_numberOfActiveInstances;
 }
 
 
