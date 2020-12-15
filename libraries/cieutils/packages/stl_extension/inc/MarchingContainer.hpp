@@ -32,7 +32,7 @@ public:
      * of the argument container, and initialize it with its values.
      */
     template <class ContainerType>
-    requires concepts::ClassContainer<ContainerType,value_type>
+    requires concepts::ClassContainer<ContainerType,ValueType>
     MarchingContainer( const ContainerType& r_initializer );
 
     /**
