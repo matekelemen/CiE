@@ -22,7 +22,7 @@ ValueType
 CSGObject<N,ValueType,CoordinateType>::evaluate( const ContainerType& point ) const
     requires concepts::ClassContainer<ContainerType,CoordinateType>
 {
-    CIE_OUT_OF_RANGE_CHECK( point.size() == N )
+    CIE_OUT_OF_RANGE_CIE_TEST_CHECK( point.size() == N )
 
     typename CSGObject<N,ValueType,CoordinateType>::point_type internalPoint;
     std::copy(  point.begin(),
@@ -40,7 +40,7 @@ ValueType
 CSGObject<N,ValueType,CoordinateType>::evaluate( ContainerType&& point ) const
     requires concepts::ClassContainer<ContainerType,CoordinateType>
 {
-    CIE_OUT_OF_RANGE_CHECK( point.size() == N )
+    CIE_OUT_OF_RANGE_CIE_TEST_CHECK( point.size() == N )
     
     typename CSGObject<N,ValueType,CoordinateType>::point_type internalPoint;
     std::move(  point.begin(),

@@ -1,5 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
+// --- Utility Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
 #include "linalg/packages/types/inc/sparse.hpp"
@@ -36,7 +36,7 @@ namespace cie::linalg
  *    [ 27, 29, 28, 30, 37, 36, 35, 26, 32, 31, 25, 22, 19, 21, 20 ]]
  */
 
-TEST_CASE( "allocateSparseMatrix_test", "[types]" )
+CIE_TEST_CASE( "allocateSparseMatrix_test", "[types]" )
 {
     std::vector<std::vector<size_t>> locationMaps
     {
@@ -49,10 +49,10 @@ TEST_CASE( "allocateSparseMatrix_test", "[types]" )
 
     CompressedSparseRowMatrix<size_t> sparseMatrix;
 
-    REQUIRE_NOTHROW( sparseMatrix.allocate( locationMaps ) );
+    CIE_TEST_REQUIRE_NOTHROW( sparseMatrix.allocate( locationMaps ) );
 
-    REQUIRE( sparseMatrix.size1( ) == 40 );
-    REQUIRE( sparseMatrix.size2( ) == 40 );
+    CIE_TEST_REQUIRE( sparseMatrix.size1( ) == 40 );
+    CIE_TEST_REQUIRE( sparseMatrix.size2( ) == 40 );
 
     auto sparseDataStructure = sparseMatrix.release( );
 
@@ -100,24 +100,24 @@ TEST_CASE( "allocateSparseMatrix_test", "[types]" )
 
     size_t nnz = expectedIndices.size( );
 
-    REQUIRE( indptr[40] == nnz );
+    CIE_TEST_REQUIRE( indptr[40] == nnz );
 
     for( size_t iEntry = 0; iEntry < nnz; ++iEntry )
     {
-        CHECK( indices[iEntry] == expectedIndices[iEntry] );
-        CHECK( data[iEntry] == 0.0 );
+        CIE_TEST_CHECK( indices[iEntry] == expectedIndices[iEntry] );
+        CIE_TEST_CHECK( data[iEntry] == 0.0 );
     }
 
     size_t rowPtr = 0;
 
     for( size_t iDof = 0; iDof < 40; ++iDof )
     {
-        CHECK( indptr[iDof] == rowPtr );
+        CIE_TEST_CHECK( indptr[iDof] == rowPtr );
 
         rowPtr += connectingDofSizes[iDof];
     }
 
-    CHECK( indptr[40] == rowPtr );
+    CIE_TEST_CHECK( indptr[40] == rowPtr );
 
     delete[] indptr;
     delete[] indices;

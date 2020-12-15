@@ -1,8 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Utility Includes ---
-#include "cieutils/packages/macros/inc/testing.hpp"
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Linalg Includes ---
 #include "linalg/packages/types/inc/arraytypes.hpp"
@@ -54,7 +51,7 @@ protected:
 };
 
 
-TEST_CASE( "UnaryOperator", "[primitives]" )
+CIE_TEST_CASE( "UnaryOperator", "[primitives]" )
 {
     CIE_TEST_CASE_INIT( "UnaryOperator" )
 
@@ -62,23 +59,23 @@ TEST_CASE( "UnaryOperator", "[primitives]" )
     TestUnaryOperator op;
     DoubleArray<dimension> doubleArray;
 
-    CHECK_NOTHROW( op.emplaceRhs<CSGTestObject_default>() );
-    CHECK( op.evaluate(doubleArray) == true );
+    CIE_TEST_CHECK_NOTHROW( op.emplaceRhs<CSGTestObject_default>() );
+    CIE_TEST_CHECK( op.evaluate(doubleArray) == true );
 
-    CHECK_NOTHROW( op.emplaceRhs<CSGTestObject_nondefault>( 0.0 ) );
-    CHECK( op.evaluate(doubleArray) == false );
+    CIE_TEST_CHECK_NOTHROW( op.emplaceRhs<CSGTestObject_nondefault>( 0.0 ) );
+    CIE_TEST_CHECK( op.evaluate(doubleArray) == false );
 
-    CHECK_NOTHROW( op.emplaceRhs<CSGTestObject_nondefault>( 0.0, 0 ) );
-    CHECK( op.evaluate(doubleArray) == false );
+    CIE_TEST_CHECK_NOTHROW( op.emplaceRhs<CSGTestObject_nondefault>( 0.0, 0 ) );
+    CIE_TEST_CHECK( op.evaluate(doubleArray) == false );
 
     // Check rvalue rhs binding
-    CHECK_NOTHROW( op.bindRhs(CSGTestObject_default()) );
-    CHECK( op.evaluate(doubleArray) == true );
+    CIE_TEST_CHECK_NOTHROW( op.bindRhs(CSGTestObject_default()) );
+    CIE_TEST_CHECK( op.evaluate(doubleArray) == true );
 
     // Check pointer rhs binding
     CSGFactory<dimension> factory;
-    CHECK_NOTHROW( op.bindRhsPtr<CSGTestObject_nondefault>( factory.make<CSGTestObject_nondefault>(0.0) ) );
-    CHECK( op.evaluate(doubleArray) == false );
+    CIE_TEST_CHECK_NOTHROW( op.bindRhsPtr<CSGTestObject_nondefault>( factory.make<CSGTestObject_nondefault>(0.0) ) );
+    CIE_TEST_CHECK( op.evaluate(doubleArray) == false );
 }
 
 

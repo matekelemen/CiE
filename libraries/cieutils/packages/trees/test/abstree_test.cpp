@@ -1,7 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Internal Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 #include "cieutils/packages/trees/inc/abstree.hpp"
 
 // --- STL Includes ---
@@ -20,7 +18,7 @@ struct TestTree : public AbsTree<std::vector,TestTree>
 };
 
 
-TEST_CASE( "AbsTree", "[trees]" )
+CIE_TEST_CASE( "AbsTree", "[trees]" )
 {
     TestTree root(0);
 
@@ -40,8 +38,8 @@ TEST_CASE( "AbsTree", "[trees]" )
         return false;
     };
 
-    REQUIRE_NOTHROW( root.visit(split) );
-    CHECK( counter == targetDepth );
+    CIE_TEST_REQUIRE_NOTHROW( root.visit(split) );
+    CIE_TEST_CHECK( counter == targetDepth );
 }
 
 

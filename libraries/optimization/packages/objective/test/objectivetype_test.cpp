@@ -1,5 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
+// --- Utility Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
 #include "optimization/packages/objective/inc/objectivefunction.hpp"
@@ -35,17 +35,17 @@ DoubleArray<2> parabolicMultiObjective(const RNRMElement<N,2>& point)
 }
 
 
-TEST_CASE( "Objective", "[objective]" )
+CIE_TEST_CASE( "Objective", "[objective]" )
 {
     RNRObjectivePtr<2> objective = parabolicObjective<2>;
-    CHECK( objective( RNRElement<2>({1.0,1.0}) ) == Approx(0.0) );
-    CHECK( objective( RNRElement<2>({0.0,0.0}) ) == Approx(2.0) );
+    CIE_TEST_CHECK( objective( RNRElement<2>({1.0,1.0}) ) == Approx(0.0) );
+    CIE_TEST_CHECK( objective( RNRElement<2>({0.0,0.0}) ) == Approx(2.0) );
 
     RNRMObjectivePtr<3,2> multiObjective = &parabolicMultiObjective<3>;
-    CHECK( multiObjective( RNRMElement<3,2>({1.0,1.0,1.0}) )[0] == Approx(0.0) );
-    CHECK( multiObjective( RNRMElement<3,2>({1.0,1.0,1.0}) )[1] == Approx(0.0) );
-    CHECK( multiObjective( RNRMElement<3,2>({0.0,0.0,0.0}) )[0] == Approx(3.0) );
-    CHECK( multiObjective( RNRMElement<3,2>({0.0,0.0,0.0}) )[1] == Approx(-3.0) );
+    CIE_TEST_CHECK( multiObjective( RNRMElement<3,2>({1.0,1.0,1.0}) )[0] == Approx(0.0) );
+    CIE_TEST_CHECK( multiObjective( RNRMElement<3,2>({1.0,1.0,1.0}) )[1] == Approx(0.0) );
+    CIE_TEST_CHECK( multiObjective( RNRMElement<3,2>({0.0,0.0,0.0}) )[0] == Approx(3.0) );
+    CIE_TEST_CHECK( multiObjective( RNRMElement<3,2>({0.0,0.0,0.0}) )[1] == Approx(-3.0) );
 }
 
 

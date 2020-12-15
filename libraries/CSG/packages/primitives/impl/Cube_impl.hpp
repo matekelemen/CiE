@@ -22,9 +22,9 @@ Cube<Dimension,CoordinateType>::Cube( const ContainerType& r_base,
                                       CoordinateType length  ) :
     _length(length)
 {
-    CIE_OUT_OF_RANGE_CHECK( r_base.size() == Dimension )
+    CIE_OUT_OF_RANGE_CIE_TEST_CHECK( r_base.size() == Dimension )
 
-    CIE_RUNTIME_GEOMETRY_CHECK(
+    CIE_RUNTIME_GEOMETRY_CIE_TEST_CHECK(
         length >= 0,
         "Edge length of a cube must be non-negative"
     )
@@ -104,7 +104,7 @@ Cube<Dimension,CoordinateType>::at( const typename Cube<Dimension,CoordinateType
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    CIE_OUT_OF_RANGE_CHECK( r_point.size() == Dimension )
+    CIE_OUT_OF_RANGE_CIE_TEST_CHECK( r_point.size() == Dimension )
 
     auto baseIt         = this->_base.begin();
     auto it_pointEnd    = r_point.end();

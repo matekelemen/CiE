@@ -1,5 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
+// --- Utility Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
 #include "optimization/packages/jacobsearch/inc/jacobsearch.hpp"
@@ -22,7 +22,7 @@ double jacobSearchTestFunction(const RNRElement<2>& point)
 }
 
 
-TEST_CASE("Jacob search - paraboloid_1")
+CIE_TEST_CASE( "Jacob search - paraboloid_1", "[jacobsearch]" )
 {
 	// Objective definition
 	RNRElement<2>		offset({ 1.0,2.0 });
@@ -36,16 +36,16 @@ TEST_CASE("Jacob search - paraboloid_1")
 
     for (size_t i=0; i<2; ++i)
     {
-        REQUIRE_NOTHROW( solver.step() );
+        CIE_TEST_REQUIRE_NOTHROW( solver.step() );
     }
 
-    CHECK( std::abs(solver.getSolution().getData()[0] - offset.getData()[0])    < tolerance );
-    CHECK( std::abs(solver.getSolution().getData()[1] - offset.getData()[1])    < tolerance );
-    CHECK( std::abs(solver.getSolution().getObjective())						< tolerance );
+    CIE_TEST_CHECK( std::abs(solver.getSolution().getData()[0] - offset.getData()[0])    < tolerance );
+    CIE_TEST_CHECK( std::abs(solver.getSolution().getData()[1] - offset.getData()[1])    < tolerance );
+    CIE_TEST_CHECK( std::abs(solver.getSolution().getObjective())						< tolerance );
 }
 
 
-TEST_CASE("Jacob search - parabloid_2")
+CIE_TEST_CASE( "Jacob search - parabloid_2", "[jacobsearch]" )
 {
 	// Objective definition
 	RNRElement<2>		offset({ 1.0,2.0 });
@@ -59,16 +59,16 @@ TEST_CASE("Jacob search - parabloid_2")
 
 	for (size_t i = 0; i < 2; ++i)
 	{
-		REQUIRE_NOTHROW(solver.step());
+		CIE_TEST_REQUIRE_NOTHROW(solver.step());
 	}
 
-	CHECK(std::abs(solver.getSolution().getData()[0] - offset.getData()[0]) < tolerance);
-	CHECK(std::abs(solver.getSolution().getData()[1] - offset.getData()[1]) < tolerance);
-	CHECK(std::abs(solver.getSolution().getObjective()) < tolerance);
+	CIE_TEST_CHECK(std::abs(solver.getSolution().getData()[0] - offset.getData()[0]) < tolerance);
+	CIE_TEST_CHECK(std::abs(solver.getSolution().getData()[1] - offset.getData()[1]) < tolerance);
+	CIE_TEST_CHECK(std::abs(solver.getSolution().getObjective()) < tolerance);
 }
 
 
-TEST_CASE("Jacob search - rosenbrock")
+CIE_TEST_CASE( "Jacob search - rosenbrock", "[jacobsearch]" )
 {
 	// Objective definition
 	RNRObjectivePtr<2>	objective = rosenbrockTestFunction();
@@ -80,7 +80,7 @@ TEST_CASE("Jacob search - rosenbrock")
 	// Iteration
 	for (size_t i = 0; i < 15; ++i)
 	{
-		REQUIRE_NOTHROW(solver.step());
+		CIE_TEST_REQUIRE_NOTHROW(solver.step());
 		//std::cout << solver.getSolution().getData()[0] << ",\t" << solver.getSolution().getData()[1] << ":\t" << solver.getSolution().getObjective() << std::endl;
 	}
 	//std::cout << "\n";

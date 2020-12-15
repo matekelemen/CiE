@@ -1,8 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Utility Includes ---
-#include "cieutils/packages/macros/inc/testing.hpp"
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
 #include "CSG/packages/trees/inc/split_policy.hpp"
@@ -16,7 +13,7 @@
 namespace cie::csg {
 
 
-TEST_CASE( "MidPointSplitPolicy", "[trees]" )
+CIE_TEST_CASE( "MidPointSplitPolicy", "[trees]" )
 {
     CIE_TEST_CASE_INIT( "MidPointSplitPolicy" )
 
@@ -40,14 +37,14 @@ TEST_CASE( "MidPointSplitPolicy", "[trees]" )
                                      values.end(),
                                      points.begin() );
 
-    CHECK( splitPoint.size() == Dimension );
+    CIE_TEST_CHECK( splitPoint.size() == Dimension );
     for ( const auto& r_component : splitPoint )
-        CHECK( r_component == Approx(0.5) );
+        CIE_TEST_CHECK( r_component == Approx(0.5) );
 }
 
 
 
-TEST_CASE( "LinearSplitPolicy", "[trees]" )
+CIE_TEST_CASE( "LinearSplitPolicy", "[trees]" )
 {
     CIE_TEST_CASE_INIT( "LinearSplitPolicy" )
 
@@ -71,9 +68,9 @@ TEST_CASE( "LinearSplitPolicy", "[trees]" )
                                      values.end(),
                                      points.begin() );
 
-    REQUIRE( splitPoint.size() == Dimension );
-    CHECK( splitPoint[0] == Approx( 2.0/3.0 ) );
-    CHECK( splitPoint[1] == Approx( 1.0 ) );
+    CIE_TEST_REQUIRE( splitPoint.size() == Dimension );
+    CIE_TEST_CHECK( splitPoint[0] == Approx( 2.0/3.0 ) );
+    CIE_TEST_CHECK( splitPoint[1] == Approx( 1.0 ) );
 }
 
 

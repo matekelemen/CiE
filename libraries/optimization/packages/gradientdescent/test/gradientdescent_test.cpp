@@ -1,5 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
+// --- Utility Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
 #include "optimization/packages/gradientdescent/inc/gradientdescent.hpp"
@@ -22,14 +22,14 @@ double parabolaGradientTest(const RNRElement<2>& point)
 }
 
 
-TEST_CASE("Gradient descent")
+CIE_TEST_CASE( "Gradient descent", "[gradiendescent]" )
 {
     RNRObjectivePtr<2> parabola = parabolaGradientTest;
     GradientDescent<2> solver(parabola,RNRElement<2>({3.0,2.0}));
 }
 
 
-TEST_CASE("Gradient descent - rosenbrock")
+CIE_TEST_CASE( "Gradient descent - rosenbrock", "[gradiendescent]" )
 {
 	// Objective definition
 	RNRObjectivePtr<2>	objective = rosenbrockTestFunction();
@@ -41,7 +41,7 @@ TEST_CASE("Gradient descent - rosenbrock")
 	// Iteration
 	for (size_t i = 0; i < 15; ++i)
 	{
-		REQUIRE_NOTHROW(solver.step());
+		CIE_TEST_REQUIRE_NOTHROW(solver.step());
 		//std::cout << solver.getSolution().getData()[0] << ",\t" << solver.getSolution().getData()[1] << ":\t" << solver.getSolution().getObjective() << std::endl;
 	}
 	//std::cout << "\n";

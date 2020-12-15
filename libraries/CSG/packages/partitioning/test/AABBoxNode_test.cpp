@@ -1,8 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Utility Includes ---
-#include "cieutils/packages/macros/inc/testing.hpp"
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
 #include "CSG/packages/partitioning/inc/AABBoxNode.hpp"
@@ -31,7 +28,7 @@ private:
 };
 
 
-TEST_CASE( "AABBoxNode", "[partitioning]" )
+CIE_TEST_CASE( "AABBoxNode", "[partitioning]" )
 {
     CIE_TEST_CASE_INIT( "AABBoxNode" )
 
@@ -65,33 +62,33 @@ TEST_CASE( "AABBoxNode", "[partitioning]" )
     );
 
     for ( auto& rp_object : objects )
-        CHECK_NOTHROW( p_root->addObject(rp_object) );
+        CIE_TEST_CHECK_NOTHROW( p_root->addObject(rp_object) );
 
-    CHECK( p_root->objects().size() == numberOfCellsPerDimension*numberOfCellsPerDimension );
+    CIE_TEST_CHECK( p_root->objects().size() == numberOfCellsPerDimension*numberOfCellsPerDimension );
 
     // Partition
     const Size maxObjects = 3;
     const Size maxLevel   = 5;
     bool partitionSuccess;
 
-    CHECK_NOTHROW( partitionSuccess = p_root->partition( maxObjects, maxLevel ) );
-    CHECK( partitionSuccess );
+    CIE_TEST_CHECK_NOTHROW( partitionSuccess = p_root->partition( maxObjects, maxLevel ) );
+    CIE_TEST_CHECK( partitionSuccess );
 
-    CHECK_NOTHROW( p_root->shrink() );
+    CIE_TEST_CHECK_NOTHROW( p_root->shrink() );
 
     // Check number of objects and maximum levels
     {
         auto nodeVisitFunction = [maxObjects,maxLevel]( Node* p_node ) -> bool
         {
-            CHECK( p_node->level() <= maxLevel );
+            CIE_TEST_CHECK( p_node->level() <= maxLevel );
 
             if ( p_node->isLeaf() )
-                CHECK( p_node->objects().size() <= maxObjects );
+                CIE_TEST_CHECK( p_node->objects().size() <= maxObjects );
 
             return true;
         };
 
-        CHECK_NOTHROW( p_root->visit(nodeVisitFunction) );
+        CIE_TEST_CHECK_NOTHROW( p_root->visit(nodeVisitFunction) );
     }
 }
 

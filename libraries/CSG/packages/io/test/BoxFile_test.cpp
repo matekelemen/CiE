@@ -1,8 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Utility Includes ---
-#include "cieutils/packages/macros/inc/testing.hpp"
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
 #include "CSG/packages/io/inc/BoxFile.hpp"
@@ -19,7 +16,7 @@
 namespace cie::csg {
 
 
-TEST_CASE( "BoxFile", "[io]" )
+CIE_TEST_CASE( "BoxFile", "[io]" )
 {
     CIE_TEST_CASE_INIT( "BoxFile" )
 
@@ -66,8 +63,8 @@ TEST_CASE( "BoxFile", "[io]" )
 
             for ( Size dim=0; dim<Dimension; ++dim )
             {
-                CHECK( test.base()[dim] == Approx( primitives[0].base()[dim] ) );
-                CHECK( test.lengths()[dim] == Approx( primitives[0].length() ) );
+                CIE_TEST_CHECK( test.base()[dim] == Approx( primitives[0].base()[dim] ) );
+                CIE_TEST_CHECK( test.lengths()[dim] == Approx( primitives[0].length() ) );
             }
         }
 
@@ -87,8 +84,8 @@ TEST_CASE( "BoxFile", "[io]" )
             for ( Size i=0; i<test.size(); ++i )
                 for ( Size dim=0; dim<Dimension; ++dim )
                 {
-                    CHECK( test[i].base()[dim] == Approx( primitives[i].base()[dim] ) );
-                    CHECK( test[i].lengths()[dim] == Approx( primitives[i].length() ) );
+                    CIE_TEST_CHECK( test[i].base()[dim] == Approx( primitives[i].base()[dim] ) );
+                    CIE_TEST_CHECK( test[i].lengths()[dim] == Approx( primitives[i].length() ) );
                 }
         }
 
@@ -108,8 +105,8 @@ TEST_CASE( "BoxFile", "[io]" )
             for ( Size i=0; i<test.size(); ++i )
                 for ( Size dim=0; dim<Dimension; ++dim )
                 {
-                    CHECK( test[i]->base()[dim] == Approx( primitivePtrs[i]->base()[dim] ) );
-                    CHECK( test[i]->lengths()[dim] == Approx( primitivePtrs[i]->length() ) );
+                    CIE_TEST_CHECK( test[i]->base()[dim] == Approx( primitivePtrs[i]->base()[dim] ) );
+                    CIE_TEST_CHECK( test[i]->lengths()[dim] == Approx( primitivePtrs[i]->length() ) );
                 }
         }
     }

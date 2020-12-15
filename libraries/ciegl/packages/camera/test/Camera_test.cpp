@@ -1,8 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Utility Includes ---
-#include "cieutils/packages/macros/inc/testing.hpp"
+#include "cieutils/packages/testing/inc/essentials.hpp"
 #include "cieutils/packages/logging/inc/Logger.hpp"
 #include "cmake_variables.hpp"
 
@@ -18,7 +15,7 @@
 namespace cie::gl {
 
 
-TEST_CASE( "Camera", "[camera]" )
+CIE_TEST_CASE( "Camera", "[camera]" )
 {
     CIE_TEST_CASE_INIT( "Camera" )
 
@@ -30,7 +27,7 @@ TEST_CASE( "Camera", "[camera]" )
         using CameraType = Camera<OrthographicProjection>;
         CameraPtr p_camera;
 
-        REQUIRE_NOTHROW( p_camera = CameraPtr(
+        CIE_TEST_REQUIRE_NOTHROW( p_camera = CameraPtr(
             new CameraType( logger )
         ));
     }
@@ -41,7 +38,7 @@ TEST_CASE( "Camera", "[camera]" )
         using CameraType = Camera<PerspectiveProjection>;
         CameraPtr p_camera;
 
-        REQUIRE_NOTHROW( p_camera = CameraPtr(
+        CIE_TEST_REQUIRE_NOTHROW( p_camera = CameraPtr(
             new CameraType( logger )
         ));
     }

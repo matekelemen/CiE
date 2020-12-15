@@ -44,7 +44,7 @@ public:
      * If the object fits in this box, add it to the list of objects
      * and send it down the tree
      * 
-     * \param p_object pointer to object to add
+     * @param p_object pointer to object to add
      */
     void addObject( object_ptr p_object );
 
@@ -60,11 +60,11 @@ public:
     void shrink();
 
     /**
-     * \brief Find highest level node that contains the query object
+     * @brief Find highest level node that contains the query object
      * 
-     * \param p_object pointer to query object
+     * @param p_object pointer to query object
      *
-     * \return pointer to node containing the query object, or a default
+     * @return pointer to node containing the query object, or a default
      *         constructed pointer if the search fails
      */
     self_ptr find( const object_ptr p_object );
@@ -73,10 +73,10 @@ public:
      * Subdivide nodes until the number of contained objects reaches or
      * drops below the specified limit, or the recursion depth is reached
      * 
-     * \param maxObjects maximum number of objects in leaf nodes (termination criterion)
-     * \param maxLevel recursion depth limit (termination constraint)
+     * @param maxObjects maximum number of objects in leaf nodes (termination criterion)
+     * @param maxLevel recursion depth limit (termination constraint)
      * 
-     * \return false if recursion depth is reached before the object limit
+     * @return false if recursion depth is reached before the object limit
      */
     bool partition( Size maxObjects,
                     Size maxLevel );
@@ -89,14 +89,14 @@ public:
     /**
      * Parent node access
      * 
-     * \return default constructed pointer if this node is the root
+     * @return default constructed pointer if this node is the root
      */
     self_ptr parent();
 
     /**
      * Parent node access
      * 
-     * \return reference to default constructed pointer if this node is the root
+     * @return reference to default constructed pointer if this node is the root
      */
     const self_ptr& parent() const;
 

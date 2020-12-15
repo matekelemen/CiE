@@ -1,12 +1,9 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Linalg Includes ---
 #include "linalg/packages/overloads/inc/vectoroperators.hpp"
 
 // --- Utility Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 #include "cieutils/packages/stl_extension/inc/resize.hpp"
-#include "cieutils/packages/macros/inc/testing.hpp"
 
 // --- Internal Includes ---
 #include "FEM/packages/discretization/inc/abs_element.hpp"
@@ -71,7 +68,7 @@ protected:
 
 
 
-TEST_CASE( "AbsElement", "[discretization]" )
+CIE_TEST_CASE( "AbsElement", "[discretization]" )
 {
     CIE_TEST_CASE_INIT( "AbsElement" )
 
@@ -82,7 +79,7 @@ TEST_CASE( "AbsElement", "[discretization]" )
     typedef detail::TestElement<Basis>              Element;
 
     // Test constructor
-    REQUIRE_NOTHROW( Element() );
+    CIE_TEST_REQUIRE_NOTHROW( Element() );
     Element element;
 
     // Compute reference points
@@ -98,7 +95,7 @@ TEST_CASE( "AbsElement", "[discretization]" )
     // Transform reference points to local coordinates
     std::vector<Element::LocalCoordinates> localPoints;
     utils::resize(localPoints,points.size());
-    CHECK_NOTHROW( element.localCoordinates(    points.begin(),
+    CIE_TEST_CHECK_NOTHROW( element.localCoordinates(    points.begin(),
                                                 points.end(),
                                                 localPoints.begin()) );
 
@@ -116,8 +113,8 @@ TEST_CASE( "AbsElement", "[discretization]" )
                                 + coefficients[1] * (1.0-xi)*(1.0+eta)/4.0
                                 + coefficients[2] * (1.0+xi)*(1.0-eta)/4.0
                                 + coefficients[3] * (1.0-xi)*(1.0-eta)/4.0;
-            REQUIRE_NOTHROW( element(coefficients, point) );
-            CHECK( element(coefficients,point) == Approx(reference) );
+            CIE_TEST_REQUIRE_NOTHROW( element(coefficients, point) );
+            CIE_TEST_CHECK( element(coefficients,point) == Approx(reference) );
         }
     }
     
@@ -139,17 +136,17 @@ TEST_CASE( "AbsElement", "[discretization]" )
                 + coefficients[2] * -(1.0+xi)/4.0
                 + coefficients[3] * -(1.0-xi)/4.0,
             };
-            REQUIRE_NOTHROW( element.derivative(coefficients,point) );
+            CIE_TEST_REQUIRE_NOTHROW( element.derivative(coefficients,point) );
             auto test = element.derivative(coefficients,point);
             for (Size i=0; i<Dimension; ++i)
-                CHECK( test[i] == Approx(reference[i]) );
+                CIE_TEST_CHECK( test[i] == Approx(reference[i]) );
         }
     }
-} // TEST_CASE AbsElement
+} // CIE_TEST_CASE AbsElement
 
 
 
-TEST_CASE( "AbsElement1D", "[discretization]" )
+CIE_TEST_CASE( "AbsElement1D", "[discretization]" )
 {
     CIE_TEST_CASE_INIT( "AbsElement1D" )
 
@@ -162,7 +159,7 @@ TEST_CASE( "AbsElement1D", "[discretization]" )
     const Size                                      resolution = 5;
 
     // Test constructor
-    REQUIRE_NOTHROW(
+    CIE_TEST_REQUIRE_NOTHROW(
     Element(    std::pair<NT,NT>(0.0,1.0),
                 typename Element::dof_container({0,1}) )
     );
@@ -181,7 +178,7 @@ TEST_CASE( "AbsElement1D", "[discretization]" )
     // Convert points to local coordinates
     std::vector<typename Element::LocalCoordinates> localPoints;
     utils::resize( localPoints, points.size() );
-    REQUIRE_NOTHROW(
+    CIE_TEST_REQUIRE_NOTHROW(
         element.localCoordinates(   points.begin(),
                                     points.end(),
                                     localPoints.begin() )
@@ -192,7 +189,7 @@ TEST_CASE( "AbsElement1D", "[discretization]" )
         CIE_TEST_CASE_INIT( "field values" )
         for (const auto& point : localPoints)
         {
-            CHECK(
+            CIE_TEST_CHECK(
                 element( coefficients, point ) 
                 == Approx(
                 coefficients[0] * (point[0] + 1.0)/2.0
@@ -206,13 +203,13 @@ TEST_CASE( "AbsElement1D", "[discretization]" )
         CIE_TEST_CASE_INIT( "field derivatives" )
         for (const auto& point : localPoints)
         {
-            CHECK(
+            CIE_TEST_CHECK(
                 element.derivative( coefficients, point )[0]
                 == Approx( coefficients[0] - coefficients[1] )
             );
         }
     }
-} // TEST_CASE AbsElement1D
+} // CIE_TEST_CASE AbsElement1D
 
 
 } // namespace cie::fem

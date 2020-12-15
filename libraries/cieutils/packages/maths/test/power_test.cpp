@@ -1,7 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Internal Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 #include "cieutils/packages/maths/inc/power.hpp"
 #include "cieutils/packages/types/inc/types.hpp"
 
@@ -9,7 +7,7 @@
 namespace cie {
 
 
-TEST_CASE( "intPow", "[maths]" )
+CIE_TEST_CASE( "intPow", "[maths]" )
 {
     typedef Size    NT;
 
@@ -17,8 +15,8 @@ TEST_CASE( "intPow", "[maths]" )
     NT check    = 1;
     for (Size i=0; i<17; ++i)
     {
-        REQUIRE_NOTHROW( intPow(base,i) );
-        CHECK( intPow(base,i) == check );
+        CIE_TEST_REQUIRE_NOTHROW( intPow(base,i) );
+        CIE_TEST_CHECK( intPow(base,i) == check );
         check *= base;
     }
 
@@ -26,8 +24,8 @@ TEST_CASE( "intPow", "[maths]" )
     check       = 1;
     for (Size i=0; i<5; ++i)
     {
-        REQUIRE_NOTHROW( intPow(base,i) );
-        CHECK( intPow(base,i) == check );
+        CIE_TEST_REQUIRE_NOTHROW( intPow(base,i) );
+        CIE_TEST_CHECK( intPow(base,i) == check );
         check *= base;
     }
 }

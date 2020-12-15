@@ -1,8 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Utility Includes ---
-#include "cieutils/packages/macros/inc/testing.hpp"
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
 #include "ciegl/packages/buffer/inc/AttributeContainer.hpp"
@@ -12,11 +9,11 @@
 namespace cie::gl {
 
 
-TEST_CASE( "AttributeContainer", "[buffer]" )
+CIE_TEST_CASE( "AttributeContainer", "[buffer]" )
 {
     CIE_TEST_CASE_INIT( "AttributeContainer" )
 
-    REQUIRE_NOTHROW( AttributeContainerPtr( new AttributeContainer ) );
+    CIE_TEST_REQUIRE_NOTHROW( AttributeContainerPtr( new AttributeContainer ) );
 
     AttributeContainerPtr attributeContainer(
         new AttributeContainer

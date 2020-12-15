@@ -1,10 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
-
-// --- Utility Includes ---
-#include "cieutils/packages/macros/inc/testing.hpp"
-
 // --- Internal Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 #include "cieutils/packages/stl_extension/inc/StrongTypedef.hpp"
 
 // --- STL Includes ---
@@ -84,7 +79,7 @@ requires NotConvertibleTo<T,TT>
 
 
 
-TEST_CASE( "STRONG_TYPEDEF", "[stl_extension]" )
+CIE_TEST_CASE( "STRONG_TYPEDEF", "[stl_extension]" )
 {
     CIE_TEST_CASE_INIT( "STRONG_TYPEDEF" )
 
@@ -97,14 +92,14 @@ TEST_CASE( "STRONG_TYPEDEF", "[stl_extension]" )
 
         SubVector1 tmp(base);
 
-        CHECK( testFunction(base) == 0 );
-        CHECK( testFunction(sub1) == 1 );
-        CHECK( testFunction(sub2) == 2 );
-        CHECK( testFunction(member) == 3 );
+        CIE_TEST_CHECK( testFunction(base) == 0 );
+        CIE_TEST_CHECK( testFunction(sub1) == 1 );
+        CIE_TEST_CHECK( testFunction(sub2) == 2 );
+        CIE_TEST_CHECK( testFunction(member) == 3 );
 
-        CHECK( convertibleTo(base, sub1) );
-        CHECK( convertibleTo(sub1, base) );
-        CHECK( !convertibleTo(sub1, sub2) );
+        CIE_TEST_CHECK( convertibleTo(base, sub1) );
+        CIE_TEST_CHECK( convertibleTo(sub1, base) );
+        CIE_TEST_CHECK( !convertibleTo(sub1, sub2) );
     }
 
     {
@@ -114,14 +109,14 @@ TEST_CASE( "STRONG_TYPEDEF", "[stl_extension]" )
         SubInt2              sub2;
         TestClass::MemberInt member;
 
-        CHECK( testFunction(base) == 4 );
-        CHECK( testFunction(sub1) == 5 );
-        CHECK( testFunction(sub2) == 6 );
-        CHECK( testFunction(member) == 7 );
+        CIE_TEST_CHECK( testFunction(base) == 4 );
+        CIE_TEST_CHECK( testFunction(sub1) == 5 );
+        CIE_TEST_CHECK( testFunction(sub2) == 6 );
+        CIE_TEST_CHECK( testFunction(member) == 7 );
 
-        CHECK( convertibleTo(base, sub1) );
-        CHECK( convertibleTo(sub1, base) );
-        CHECK( !convertibleTo(sub1, sub2) );
+        CIE_TEST_CHECK( convertibleTo(base, sub1) );
+        CIE_TEST_CHECK( convertibleTo(sub1, base) );
+        CIE_TEST_CHECK( !convertibleTo(sub1, sub2) );
     }
 
     {
@@ -131,17 +126,17 @@ TEST_CASE( "STRONG_TYPEDEF", "[stl_extension]" )
         SubPointer2              sub2;
         TestClass::MemberPointer member;
 
-        CHECK( testFunction(base) == 8 );
-        CHECK( testFunction(sub1) == 9 );
-        CHECK( testFunction(sub2) == 10 );
-        CHECK( testFunction(member) == 11 );
+        CIE_TEST_CHECK( testFunction(base) == 8 );
+        CIE_TEST_CHECK( testFunction(sub1) == 9 );
+        CIE_TEST_CHECK( testFunction(sub2) == 10 );
+        CIE_TEST_CHECK( testFunction(member) == 11 );
 
-        CHECK( convertibleTo(base, sub1) );
-        CHECK( convertibleTo(sub1, base) );
-        CHECK( !convertibleTo(sub1, sub2) );
+        CIE_TEST_CHECK( convertibleTo(base, sub1) );
+        CIE_TEST_CHECK( convertibleTo(sub1, base) );
+        CIE_TEST_CHECK( !convertibleTo(sub1, sub2) );
     }
     
-} // TEST_CASE STRONG_TYPEDEF
+} // CIE_TEST_CASE STRONG_TYPEDEF
 
 
 } // namespace cie::utils

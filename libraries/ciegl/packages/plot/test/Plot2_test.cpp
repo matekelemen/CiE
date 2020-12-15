@@ -1,8 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Utility Includes ---
-#include "cieutils/packages/macros/inc/testing.hpp"
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
 #include "ciegl/packages/plot/inc/Plot2.hpp"
@@ -17,7 +14,7 @@
 namespace cie::gl {
 
 
-TEST_CASE( "Plot2", "[plot]" )
+CIE_TEST_CASE( "Plot2", "[plot]" )
 {
     CIE_TEST_CASE_INIT( "Plot2" )
 

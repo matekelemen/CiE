@@ -1,8 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Utility Includes ---
-#include "cieutils/packages/macros/inc/testing.hpp"
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
 #include "ciegl/packages/control/inc/FlyCameraControls.hpp"
@@ -13,7 +10,7 @@
 namespace cie::gl {
 
 
-TEST_CASE( "FlyCameraControls", "[control]" )
+CIE_TEST_CASE( "FlyCameraControls", "[control]" )
 {
     CIE_TEST_CASE_INIT( "FlyCameraControls" )
 
@@ -22,7 +19,7 @@ TEST_CASE( "FlyCameraControls", "[control]" )
 //
 //    CameraControlsPtr p_controls;
 //    
-//    REQUIRE_NOTHROW( p_controls.reset(
+//    CIE_TEST_REQUIRE_NOTHROW( p_controls.reset(
 //        new FlyCameraControls( p_window, p_camera )
 //    ));
 }

@@ -61,7 +61,7 @@ public:
         _basisState( basisValues.begin(), basisValues.end() ),
         _derivativeState( derivativeValues.begin(), derivativeValues.end() )
     {
-        #ifdef CIE_ENABLE_OUT_OF_RANGE_CHECKS
+        #ifdef CIE_ENABLE_OUT_OF_RANGE_CIE_TEST_CHECKS
             CIE_ASSERT(
                 basisValues.size() == derivativeValues.size(),
                 "dimension of basis functions and their derivatives must be identical"

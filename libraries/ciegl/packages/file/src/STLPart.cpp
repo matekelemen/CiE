@@ -10,25 +10,26 @@
 
 // --- STL Includes ---
 #include <cstdint>
-#include <array>
+#include <vector>
 #include <algorithm>
 #include <fstream>
+#include <numeric>
 
 
 namespace cie::gl {
 
 
-STLPart::STLPart( std::istream& r_stream ) :
-    Part( STLPart::dimension,
-          STLPart::primitive_byte_size,
-          r_stream )
+STLPart::STLPart( std::istream& r_stream )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    this->load( r_stream );
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
-STLPart::STLPart( const std::filesystem::path& r_filePath ) :
-    Part( STLPart::dimension,
-          STLPart::primitive_byte_size )
+STLPart::STLPart( const std::filesystem::path& r_filePath )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -50,6 +51,7 @@ void STLPart::load( std::istream& r_stream )
     CIE_BEGIN_EXCEPTION_TRACING
 
     this->_data.clear();
+    this->_indices.clear();
 
     // Header - 80 chars
     {
@@ -72,98 +74,41 @@ void STLPart::load( std::istream& r_stream )
     }
 
     // Allocate memory for the data
-    this->_data.reserve( numberOfTriangles * this->_primitiveByteSize / sizeof(typename STLPart::data_type) );
+    this->_data.reserve( numberOfTriangles * this->primitiveAttributeSize() );
 
     // Triangles and their normals
     using data_type = typename STLPart::data_type;
     data_type tmp;
     uint16_t attributeByteCount;
-    std::array<data_type,STLPart::dimension> normal;
 
     for ( Size triangleIndex=0; triangleIndex<numberOfTriangles; ++triangleIndex )
     {
         // Read normal
-        for ( Size componentIndex=0; componentIndex<this->_dimension; ++componentIndex )
-        {
+        for ( Size componentIndex=0; componentIndex<this->dimension(); ++componentIndex )
             r_stream.read( reinterpret_cast<char*>(&tmp), sizeof(tmp) );
-            normal[componentIndex] = tmp;
-        }
 
         // Read points
         for ( Size pointIndex=0; pointIndex<3; pointIndex++ )
         {
-            for ( Size componentIndex=0; componentIndex<this->_dimension; ++componentIndex )
+            for ( Size componentIndex=0; componentIndex<this->dimension(); ++componentIndex )
             {
                 r_stream.read( reinterpret_cast<char*>(&tmp), sizeof(tmp) );
                 this->_data.push_back( tmp );
             }
-            //for ( Size componentIndex=0; componentIndex<this->_dimension; ++componentIndex )
-            //    this->_data.push_back( normal[componentIndex] );
         }
 
         // Read "attribute byte count"
         r_stream.read( reinterpret_cast<char*>(&attributeByteCount), sizeof(attributeByteCount) );
     }
 
+    // Contiguous triangles
+    this->_indices.resize( numberOfTriangles * this->primitiveVertexSize() );
+    std::iota( this->_indices.begin(),
+               this->_indices.end(),
+               0 );
+
     if ( r_stream.peek() != EOF )
         CIE_THROW( Exception, "Reading STL file failed" )
-
-    CIE_END_EXCEPTION_TRACING
-}
-
-
-void STLPart::repairOrientation()
-{
-    CIE_BEGIN_EXCEPTION_TRACING
-
-    // Total number of attributes for a single vertex/triangle
-    const Size vertexAttributeCount   = 2 * this->_dimension;
-    const Size triangleAttributeCount = 3 * vertexAttributeCount;
-    Size baseIndex;
-
-    for ( Size attributeIndex=0; attributeIndex<this->_data.size(); attributeIndex+=triangleAttributeCount )
-    {
-        glm::vec3 base(
-            _data[attributeIndex],
-            _data[attributeIndex+1],
-            _data[attributeIndex+2]
-        );
-
-        glm::vec3 normal(
-            _data[attributeIndex+3],
-            _data[attributeIndex+4],
-            _data[attributeIndex+5]
-        );
-
-        baseIndex = attributeIndex + 2 * vertexAttributeCount;
-
-        glm::vec3 side1 = glm::vec3(
-            _data[baseIndex],
-            _data[baseIndex+1],
-            _data[baseIndex+2]
-            ) 
-            - base;
-
-        baseIndex = attributeIndex + vertexAttributeCount;
-
-        glm::vec3 side2 = glm::vec3(
-            _data[baseIndex],
-            _data[baseIndex+1],
-            _data[baseIndex+2]
-            )
-            - base;
-
-        if ( glm::dot( normal, glm::cross(side1,side2) ) < 0 ) // flipped normals
-        {
-            baseIndex = attributeIndex + vertexAttributeCount;
-
-            for ( Size componentIndex=0; componentIndex<this->_dimension; ++componentIndex )
-                std::swap(
-                    _data[attributeIndex+componentIndex],
-                    _data[baseIndex + componentIndex]
-                );
-        }
-    }
 
     CIE_END_EXCEPTION_TRACING
 }

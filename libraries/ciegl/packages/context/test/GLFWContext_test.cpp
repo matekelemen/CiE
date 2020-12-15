@@ -1,8 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Utility Includes ---
-#include "cieutils/packages/macros/inc/testing.hpp"
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
 #include "ciegl/packages/context/inc/GLFWContext.hpp"
@@ -13,7 +10,7 @@
 namespace cie::gl {
 
 
-TEST_CASE( "GLFWContext", "[context]" )
+CIE_TEST_CASE( "GLFWContext", "[context]" )
 {
     CIE_TEST_CASE_INIT( "GLFWContext" )
 
@@ -26,7 +23,7 @@ TEST_CASE( "GLFWContext", "[context]" )
 
         ContextPtr p_context;
 
-        REQUIRE_NOTHROW(
+        CIE_TEST_REQUIRE_NOTHROW(
             p_context = gl::GLFWContextSingleton::get(
                 TEST_OUTPUT_PATH / "GLFWContext_test0.log",
                 false
@@ -43,7 +40,7 @@ TEST_CASE( "GLFWContext", "[context]" )
         );
 
         WindowPtr p_window;
-        REQUIRE_NOTHROW(
+        CIE_TEST_REQUIRE_NOTHROW(
             p_window = p_context->newWindow(
                 windowSize.first,
                 windowSize.second,
@@ -51,8 +48,8 @@ TEST_CASE( "GLFWContext", "[context]" )
             )
         );
 
-        CHECK_NOTHROW( p_context->focusWindow(p_window) );
-        REQUIRE_NOTHROW( p_context->closeWindow(p_window) );
+        CIE_TEST_CHECK_NOTHROW( p_context->focusWindow(p_window) );
+        CIE_TEST_REQUIRE_NOTHROW( p_context->closeWindow(p_window) );
     }
 
 }

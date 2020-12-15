@@ -1,8 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Utility Includes ---
-#include "cieutils/packages/macros/inc/testing.hpp"
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
 #include "ciegl/packages/context/inc/GLFWContext.hpp"
@@ -13,7 +10,7 @@
 namespace cie::gl {
 
 
-TEST_CASE( "GLFWBufferManager", "[buffer]" )
+CIE_TEST_CASE( "GLFWBufferManager", "[buffer]" )
 {
     CIE_TEST_CASE_INIT( "GLFWBufferManager" )
 
@@ -29,7 +26,7 @@ TEST_CASE( "GLFWBufferManager", "[buffer]" )
 
     // Window
     WindowPtr p_window;
-    REQUIRE_NOTHROW( p_window = p_context->newWindow() );
+    CIE_TEST_REQUIRE_NOTHROW( p_window = p_context->newWindow() );
 
     // Buffers
     BufferManagerPtr p_bufferManager;
@@ -38,21 +35,21 @@ TEST_CASE( "GLFWBufferManager", "[buffer]" )
 
     {
         CIE_TEST_CASE_INIT( "create buffer manager" )
-        REQUIRE_NOTHROW( p_bufferManager.reset( new GLFWBufferManager(*p_context) ));
+        CIE_TEST_REQUIRE_NOTHROW( p_bufferManager.reset( new GLFWBufferManager(*p_context) ));
     }
 
     {
         CIE_TEST_CASE_INIT( "generate buffers" )
 
-        CHECK_NOTHROW( p_vertexBuffer = p_bufferManager->makeVertexBuffer() );
-        CHECK_NOTHROW( p_elementBuffer = p_bufferManager->makeElementBuffer() );
+        CIE_TEST_CHECK_NOTHROW( p_vertexBuffer = p_bufferManager->makeVertexBuffer() );
+        CIE_TEST_CHECK_NOTHROW( p_elementBuffer = p_bufferManager->makeElementBuffer() );
     }
 
     {
         CIE_TEST_CASE_INIT( "bind buffers" )
 
-        CHECK_NOTHROW( p_bufferManager->bindVertexBuffer(p_vertexBuffer) );
-        CHECK_NOTHROW( p_bufferManager->bindElementBuffer(p_elementBuffer) );
+        CIE_TEST_CHECK_NOTHROW( p_bufferManager->bindVertexBuffer(p_vertexBuffer) );
+        CIE_TEST_CHECK_NOTHROW( p_bufferManager->bindElementBuffer(p_elementBuffer) );
     }
 
     p_context->closeWindow( p_window );

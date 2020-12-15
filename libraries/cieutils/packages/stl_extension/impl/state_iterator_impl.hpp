@@ -55,7 +55,7 @@ StateIterator<IteratorType>::operator++()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    CIE_OUT_OF_RANGE_CHECK( _state.size() == Size(std::distance(_begin,_end)) )
+    CIE_OUT_OF_RANGE_CIE_TEST_CHECK( _state.size() == Size(std::distance(_begin,_end)) )
 
     auto stateIt        = _state.begin();
     auto subContainerIt = _begin;

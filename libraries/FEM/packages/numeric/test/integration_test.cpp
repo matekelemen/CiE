@@ -1,8 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Utility Includes ---
-#include "cieutils/packages/macros/inc/testing.hpp"
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
 #include "FEM/packages/numeric/inc/integration.hpp"
@@ -11,7 +8,7 @@
 namespace cie::fem {
 
 
-TEST_CASE( "AbsQuadrature", "[numeric]" )
+CIE_TEST_CASE( "AbsQuadrature", "[numeric]" )
 {
     CIE_TEST_CASE_INIT( "AbsQuadrature" )
 
@@ -32,29 +29,29 @@ TEST_CASE( "AbsQuadrature", "[numeric]" )
     weights.push_back(3.0);
 
     // Test constructor
-    REQUIRE_NOTHROW( Integrator(integrationPoints,weights) );
+    CIE_TEST_REQUIRE_NOTHROW( Integrator(integrationPoints,weights) );
     Integrator integrator(integrationPoints,weights);
 
     // Test "integration"
     auto function = [](typename Integrator::point_type point) -> NT
     { return point[0] + point[1]; };
 
-    REQUIRE_NOTHROW( integrator(function) );
-    CHECK( integrator(function) == Approx(6.0) );
+    CIE_TEST_REQUIRE_NOTHROW( integrator(function) );
+    CIE_TEST_CHECK( integrator(function) == Approx(6.0) );
 
     // Test "integration" with precomputed values
     std::vector<NT> functionValues;
     for (const auto& point : integrationPoints)
         functionValues.push_back(function(point));
 
-    REQUIRE_NOTHROW( integrator(functionValues.begin()) );
-    CHECK( integrator(functionValues.begin()) == Approx(6.0) );
-} // TEST_CASE AbsQuadrature
+    CIE_TEST_REQUIRE_NOTHROW( integrator(functionValues.begin()) );
+    CIE_TEST_CHECK( integrator(functionValues.begin()) == Approx(6.0) );
+} // CIE_TEST_CASE AbsQuadrature
 
 
 
 
-TEST_CASE( "Quadratures", "[numeric]" )
+CIE_TEST_CASE( "Quadratures", "[numeric]" )
 {
     CIE_TEST_CASE_INIT( "Quadratures" )
 
@@ -108,10 +105,10 @@ TEST_CASE( "Quadratures", "[numeric]" )
 
         for (Size integrationOrder=3; integrationOrder<6; ++integrationOrder)
         {
-            REQUIRE_NOTHROW(Integrator(integrationOrder));
+            CIE_TEST_REQUIRE_NOTHROW(Integrator(integrationOrder));
             Integrator integrator(integrationOrder);
-            REQUIRE_NOTHROW( integrator(testFunction) );
-            CHECK( integrator(testFunction) == Approx(check) );
+            CIE_TEST_REQUIRE_NOTHROW( integrator(testFunction) );
+            CIE_TEST_CHECK( integrator(testFunction) == Approx(check) );
         }
     }
 
@@ -121,13 +118,13 @@ TEST_CASE( "Quadratures", "[numeric]" )
 
         for (Size integrationOrder=3; integrationOrder<6; ++integrationOrder)
         {
-            REQUIRE_NOTHROW(Integrator(integrationOrder));
+            CIE_TEST_REQUIRE_NOTHROW(Integrator(integrationOrder));
             Integrator integrator(integrationOrder);
-            REQUIRE_NOTHROW( integrator(testFunction) );
-            CHECK( integrator(testFunction) == Approx(check) );
+            CIE_TEST_REQUIRE_NOTHROW( integrator(testFunction) );
+            CIE_TEST_CHECK( integrator(testFunction) == Approx(check) );
         }
     }
-} // TEST_CASE Quadratures
+} // CIE_TEST_CASE Quadratures
 
 
 } // namespace cie::fem

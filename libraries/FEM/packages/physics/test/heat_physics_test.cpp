@@ -1,9 +1,6 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Utility Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 #include <cieutils/file.hpp>
-#include "cieutils/packages/macros/inc/testing.hpp"
 
 // --- Internal Includes ---
 #include "FEM/packages/physics/inc/heat_physics.hpp"
@@ -18,7 +15,7 @@
 namespace cie::fem {
 
 
-TEST_CASE( "StaticLinearHeatPhysics1D", "[physics]" )
+CIE_TEST_CASE( "StaticLinearHeatPhysics1D", "[physics]" )
 {
     CIE_TEST_CASE_INIT( "StaticLinearHeatPhysics1D" )
 
@@ -38,12 +35,12 @@ TEST_CASE( "StaticLinearHeatPhysics1D", "[physics]" )
     const Size integrationOrder             = 5;
 
     // Element constructor
-    REQUIRE_NOTHROW( Element(materialParameter, load, domain, dofs) );
+    CIE_TEST_REQUIRE_NOTHROW( Element(materialParameter, load, domain, dofs) );
     Element element(    materialParameter,
                         load,
                         domain,
                         dofs );
-    REQUIRE_NOTHROW( element.setIntegrator<GaussLegendreQuadrature<1,NT>>(integrationOrder) );
+    CIE_TEST_REQUIRE_NOTHROW( element.setIntegrator<GaussLegendreQuadrature<1,NT>>(integrationOrder) );
 
     // Define global matrix
     Matrix stiffness;
@@ -58,13 +55,13 @@ TEST_CASE( "StaticLinearHeatPhysics1D", "[physics]" )
     };
 
     // Integration
-    REQUIRE_NOTHROW( element.integrateStiffness(updateStiffness) );
-    CHECK( stiffness[0][0] == Approx(materialParameter(0.0)) );
-    CHECK( stiffness[0][1] == Approx(-materialParameter(0.0)) );
-    CHECK( stiffness[1][0] == Approx(-materialParameter(0.0)) );
-    CHECK( stiffness[1][1] == Approx(materialParameter(0.0)) );
+    CIE_TEST_REQUIRE_NOTHROW( element.integrateStiffness(updateStiffness) );
+    CIE_TEST_CHECK( stiffness[0][0] == Approx(materialParameter(0.0)) );
+    CIE_TEST_CHECK( stiffness[0][1] == Approx(-materialParameter(0.0)) );
+    CIE_TEST_CHECK( stiffness[1][0] == Approx(-materialParameter(0.0)) );
+    CIE_TEST_CHECK( stiffness[1][1] == Approx(materialParameter(0.0)) );
 
-} // TEST_CASE StaticLinearHeatPhysics1D
+} // CIE_TEST_CASE StaticLinearHeatPhysics1D
 
 
 } // namespace cie::fem

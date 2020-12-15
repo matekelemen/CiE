@@ -1,10 +1,7 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Utility Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 #include "cieutils/packages/concepts/inc/container_concepts.hpp"
 #include "cieutils/packages/stl_extension/inc/resize.hpp"
-#include "cieutils/packages/macros/inc/testing.hpp"
 
 // --- Internal Includes ---
 #include "FEM/packages/numeric/inc/basisfunctions.hpp"
@@ -19,7 +16,7 @@ namespace cie::fem
 {
 
 
-TEST_CASE( "PolynomialBasisFunctionSet", "numeric" )
+CIE_TEST_CASE( "PolynomialBasisFunctionSet", "numeric" )
 {
     CIE_TEST_CASE_INIT( "PolynomialBasisFunctionSet" )
 
@@ -42,23 +39,23 @@ TEST_CASE( "PolynomialBasisFunctionSet", "numeric" )
             typename Basis::polynomial_coefficients( {1.0} )
         });
 
-    REQUIRE_NOTHROW( Basis(coefficients) );
+    CIE_TEST_REQUIRE_NOTHROW( Basis(coefficients) );
     Basis basis(coefficients);
 
     // Check domain
-    REQUIRE( basis.domain().size() == dim );
+    CIE_TEST_REQUIRE( basis.domain().size() == dim );
     for (auto& pair : basis.domain())
     {
-        CHECK( pair.first   == Approx(-1.0) );
-        CHECK( pair.second  == Approx(1.0) );
+        CIE_TEST_CHECK( pair.first   == Approx(-1.0) );
+        CIE_TEST_CHECK( pair.second  == Approx(1.0) );
     }
 
     // Check polynomial degrees
-    CHECK( basis.polynomialDegree(0,0) == 2 );
-    CHECK( basis.polynomialDegree(0,1) == 2 );
-    CHECK( basis.polynomialDegree(1,0) == 1 );
-    CHECK( basis.polynomialDegree(1,1) == 2 );
-    CHECK( basis.polynomialDegree(1,2) == 0 );
+    CIE_TEST_CHECK( basis.polynomialDegree(0,0) == 2 );
+    CIE_TEST_CHECK( basis.polynomialDegree(0,1) == 2 );
+    CIE_TEST_CHECK( basis.polynomialDegree(1,0) == 1 );
+    CIE_TEST_CHECK( basis.polynomialDegree(1,1) == 2 );
+    CIE_TEST_CHECK( basis.polynomialDegree(1,2) == 0 );
 
     // Define samples
     std::vector<Double> sampleVector = { -2.0, -1.0, -0.5, 0.0, 0.5, 1.0, 2.0 };
@@ -71,19 +68,19 @@ TEST_CASE( "PolynomialBasisFunctionSet", "numeric" )
     referenceValues.emplace_back(std::vector<Approx>({ Approx(0.0),   Approx(1.0),    Approx(1.0),    Approx(1.0),    Approx(1.0),    Approx(1.0),    Approx(0.0) }));
 
     // Check values - single calls
-    REQUIRE( basis.functions().size() == 2 );
+    CIE_TEST_REQUIRE( basis.functions().size() == 2 );
     auto functionIt     = basis.functions().begin();
     Size functionIndex  = 0;
     for ( auto& functions : basis.functions() )
     {
         Size dimensionIndex = std::distance(basis.functions().begin(), functionIt);
-        REQUIRE( functions.size() == functionIt++->size() );
+        CIE_TEST_REQUIRE( functions.size() == functionIt++->size() );
         for (Size i=0; i<functions.size(); ++i,++functionIndex)
             for (Size sampleIndex = 0; sampleIndex<sampleVector.size(); ++sampleIndex)
             {
                 auto& reference = referenceValues[functionIndex][sampleIndex];
-                CHECK( functions[i](sampleVector[sampleIndex]) == reference.margin(1e-16) );
-                CHECK( basis( dimensionIndex, i, sampleVector[sampleIndex] ) == reference.margin(1e-16) );
+                CIE_TEST_CHECK( functions[i](sampleVector[sampleIndex]) == reference.margin(1e-16) );
+                CIE_TEST_CHECK( basis( dimensionIndex, i, sampleVector[sampleIndex] ) == reference.margin(1e-16) );
             }
     }
 
@@ -91,20 +88,20 @@ TEST_CASE( "PolynomialBasisFunctionSet", "numeric" )
     // the results of batch calls
     auto checkValueVector = [&referenceValues]( Size functionIndex, const std::vector<Double>& vector )
     {
-        REQUIRE( vector.size() == referenceValues[functionIndex].size() );
+        CIE_TEST_REQUIRE( vector.size() == referenceValues[functionIndex].size() );
         auto refIt  = referenceValues[functionIndex].begin();
         auto valIt  = vector.begin();
         for ( ; valIt!=vector.end(); ++refIt,++valIt )
-            CHECK( *valIt == *refIt );
+            CIE_TEST_CHECK( *valIt == *refIt );
     };
 
     auto checkValueArray = [&referenceValues]( Size functionIndex, const decltype(sampleArray)& vector )
     {
-        REQUIRE( vector.size() == referenceValues[functionIndex].size() );
+        CIE_TEST_REQUIRE( vector.size() == referenceValues[functionIndex].size() );
         auto refIt  = referenceValues[functionIndex].begin();
         auto valIt  = vector.begin();
         for ( ; valIt!=vector.end(); ++refIt,++valIt )
-            CHECK( *valIt == *refIt );
+            CIE_TEST_CHECK( *valIt == *refIt );
     };
 
     // Check values - batch call
@@ -138,23 +135,23 @@ TEST_CASE( "PolynomialBasisFunctionSet", "numeric" )
 
 
     // ---------------------------------------------------------
-    // CHECK DERIVATIVES
+    // CIE_TEST_CHECK DERIVATIVES
     // ---------------------------------------------------------
-    REQUIRE_NOTHROW( basis.derivatives() );
+    CIE_TEST_REQUIRE_NOTHROW( basis.derivatives() );
     auto& derivatives = *basis.derivatives();
 
     // Check sizes and polynomial degrees
-    REQUIRE( derivatives.functions().size() == dim );
+    CIE_TEST_REQUIRE( derivatives.functions().size() == dim );
     for (Size i=0; i<dim; ++i)
     {
-        REQUIRE( derivatives.functions(i).size() == basis.functions(i).size() );
+        CIE_TEST_REQUIRE( derivatives.functions(i).size() == basis.functions(i).size() );
         for (Size j=0; j<derivatives.functions(i).size(); ++j)
         {
             Size degree = basis.polynomialDegree(i,j);
             if (degree < 2)
-                CHECK( derivatives.polynomialDegree(i,j) == 0 );
+                CIE_TEST_CHECK( derivatives.polynomialDegree(i,j) == 0 );
             else
-                CHECK( derivatives.polynomialDegree(i,j) == degree-1 );
+                CIE_TEST_CHECK( derivatives.polynomialDegree(i,j) == degree-1 );
         } // for function in functions
     } // for functions in derivatives
 
@@ -176,7 +173,7 @@ TEST_CASE( "PolynomialBasisFunctionSet", "numeric" )
             {
                 auto values = derivatives(d,i,samples);
                 for (Size j=0; j<samples.size(); ++j)
-                    CHECK( values[j] == ref[functionIndex][j] );
+                    CIE_TEST_CHECK( values[j] == ref[functionIndex][j] );
                 ++functionIndex;
             }
     }
@@ -185,23 +182,23 @@ TEST_CASE( "PolynomialBasisFunctionSet", "numeric" )
 
 
 
-TEST_CASE( "LinearBasisFunctionSet", "[numeric]" )
+CIE_TEST_CASE( "LinearBasisFunctionSet", "[numeric]" )
 {
     CIE_TEST_CASE_INIT( "LinearBasisFunctionSet" )
 
     const Size dim = 2;
     typedef LinearBasisFunctionSet<dim,Double> Basis;
 
-    REQUIRE_NOTHROW(Basis());
+    CIE_TEST_REQUIRE_NOTHROW(Basis());
     Basis basis;
 
     // Check sizes and polynomial degrees
-    REQUIRE( basis.functions().size() == dim );
+    CIE_TEST_REQUIRE( basis.functions().size() == dim );
     for (Size dimension=0; dimension<dim; ++dimension)
     {
-        REQUIRE( basis.functions(dimension).size() == 2 );
+        CIE_TEST_REQUIRE( basis.functions(dimension).size() == 2 );
         for (Size functionIndex=0; functionIndex<2; ++functionIndex)
-            CHECK( basis.polynomialDegree( dimension, functionIndex ) == 1 );
+            CIE_TEST_CHECK( basis.polynomialDegree( dimension, functionIndex ) == 1 );
     }
 
     // Check values
@@ -218,21 +215,21 @@ TEST_CASE( "LinearBasisFunctionSet", "[numeric]" )
             {
                 auto values = basis(i,j,samples);
                 for (Size k=0; k<samples.size(); ++k)
-                    CHECK( values[k] == referenceValues[j][k] );
+                    CIE_TEST_CHECK( values[k] == referenceValues[j][k] );
             }
     }
 
 
     // Check derivatives
-    REQUIRE_NOTHROW( basis.derivatives() );
+    CIE_TEST_REQUIRE_NOTHROW( basis.derivatives() );
     auto derivatives = *basis.derivatives();
 
-    REQUIRE( derivatives.functions().size() == dim );
+    CIE_TEST_REQUIRE( derivatives.functions().size() == dim );
     for (Size dimension=0; dimension<dim; ++dimension)
     {
-        REQUIRE( derivatives.functions(dimension).size() == 2 );
+        CIE_TEST_REQUIRE( derivatives.functions(dimension).size() == 2 );
         for (Size functionIndex=0; functionIndex<2; ++functionIndex)
-            CHECK( derivatives.polynomialDegree( dimension, functionIndex ) == 0 );
+            CIE_TEST_CHECK( derivatives.polynomialDegree( dimension, functionIndex ) == 0 );
     }
 
     {
@@ -248,7 +245,7 @@ TEST_CASE( "LinearBasisFunctionSet", "[numeric]" )
             {
                 auto values = derivatives(i,j,samples);
                 for (Size k=0; k<samples.size(); ++k)
-                    CHECK( values[k] == referenceValues[j][k] );
+                    CIE_TEST_CHECK( values[k] == referenceValues[j][k] );
             }
     }
 }

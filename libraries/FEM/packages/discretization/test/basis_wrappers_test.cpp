@@ -1,8 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Utility Includes ---
-#include "cieutils/packages/macros/inc/testing.hpp"
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
 #include "FEM/packages/discretization/inc/basis_wrappers.hpp"
@@ -14,7 +11,7 @@
 namespace cie::fem {
 
 
-TEST_CASE( "basis_wrappers", "[discretization]" )
+CIE_TEST_CASE( "basis_wrappers", "[discretization]" )
 {
     CIE_TEST_CASE_INIT( "Basis wrappers" )
 
@@ -34,10 +31,10 @@ TEST_CASE( "basis_wrappers", "[discretization]" )
     derivativeValues[0] = Container({ 5.0, 6.0 });
     derivativeValues[1] = Container({ 7.0, 8.0 });
 
-    REQUIRE_NOTHROW( Basis(basisValues) );
+    CIE_TEST_REQUIRE_NOTHROW( Basis(basisValues) );
     Basis basis(basisValues);
 
-    REQUIRE_NOTHROW( BasisDerivatives(basisValues,derivativeValues) );
+    CIE_TEST_REQUIRE_NOTHROW( BasisDerivatives(basisValues,derivativeValues) );
     BasisDerivatives basisDerivative(basisValues,derivativeValues);
 
     {
@@ -45,43 +42,43 @@ TEST_CASE( "basis_wrappers", "[discretization]" )
         for (Size j=0; j<Dimension; ++j)
             for (Size i=0; i<Dimension; ++i)
             {
-                REQUIRE_NOTHROW( basis.product() );
-                CHECK( basis.product() == Approx(NT( (i+1)*(j+3) )) );
-                REQUIRE_NOTHROW( ++basis );
+                CIE_TEST_REQUIRE_NOTHROW( basis.product() );
+                CIE_TEST_CHECK( basis.product() == Approx(NT( (i+1)*(j+3) )) );
+                CIE_TEST_REQUIRE_NOTHROW( ++basis );
             }
-        REQUIRE_NOTHROW( basis.reset() );
+        CIE_TEST_REQUIRE_NOTHROW( basis.reset() );
     }
 
     {
         CIE_TEST_CASE_INIT( "TensorProductDerivatives" )
         typename BasisDerivatives::point_type derivative;
 
-        REQUIRE_NOTHROW( derivative = basisDerivative.product() );
-        REQUIRE( derivative.size() == Dimension );
-        CHECK( derivative[0] == Approx(15.0) );
-        CHECK( derivative[1] == Approx(7.0) );
-        REQUIRE_NOTHROW( ++basisDerivative );
+        CIE_TEST_REQUIRE_NOTHROW( derivative = basisDerivative.product() );
+        CIE_TEST_REQUIRE( derivative.size() == Dimension );
+        CIE_TEST_CHECK( derivative[0] == Approx(15.0) );
+        CIE_TEST_CHECK( derivative[1] == Approx(7.0) );
+        CIE_TEST_REQUIRE_NOTHROW( ++basisDerivative );
 
-        REQUIRE_NOTHROW( derivative = basisDerivative.product() );
-        REQUIRE( derivative.size() == Dimension );
-        CHECK( derivative[0] == Approx(18.0) );
-        CHECK( derivative[1] == Approx(14.0) );
-        REQUIRE_NOTHROW( ++basisDerivative );
+        CIE_TEST_REQUIRE_NOTHROW( derivative = basisDerivative.product() );
+        CIE_TEST_REQUIRE( derivative.size() == Dimension );
+        CIE_TEST_CHECK( derivative[0] == Approx(18.0) );
+        CIE_TEST_CHECK( derivative[1] == Approx(14.0) );
+        CIE_TEST_REQUIRE_NOTHROW( ++basisDerivative );
 
-        REQUIRE_NOTHROW( derivative = basisDerivative.product() );
-        REQUIRE( derivative.size() == Dimension );
-        CHECK( derivative[0] == Approx(20.0) );
-        CHECK( derivative[1] == Approx(8.0) );
-        REQUIRE_NOTHROW( ++basisDerivative );
+        CIE_TEST_REQUIRE_NOTHROW( derivative = basisDerivative.product() );
+        CIE_TEST_REQUIRE( derivative.size() == Dimension );
+        CIE_TEST_CHECK( derivative[0] == Approx(20.0) );
+        CIE_TEST_CHECK( derivative[1] == Approx(8.0) );
+        CIE_TEST_REQUIRE_NOTHROW( ++basisDerivative );
 
-        REQUIRE_NOTHROW( derivative = basisDerivative.product() );
-        REQUIRE( derivative.size() == Dimension );
-        CHECK( derivative[0] == Approx(24.0) );
-        CHECK( derivative[1] == Approx(16.0) );
-        REQUIRE_NOTHROW( ++basisDerivative );
+        CIE_TEST_REQUIRE_NOTHROW( derivative = basisDerivative.product() );
+        CIE_TEST_REQUIRE( derivative.size() == Dimension );
+        CIE_TEST_CHECK( derivative[0] == Approx(24.0) );
+        CIE_TEST_CHECK( derivative[1] == Approx(16.0) );
+        CIE_TEST_REQUIRE_NOTHROW( ++basisDerivative );
     }
     
-} // TEST_CASE TensorProductBasis
+} // CIE_TEST_CASE TensorProductBasis
 
 
 } // namespace cie::fem

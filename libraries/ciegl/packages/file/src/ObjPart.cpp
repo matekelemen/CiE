@@ -16,22 +16,23 @@
 namespace cie::gl {
 
 
-ObjPart::ObjPart( std::istream& r_stream ) :
-    Part( ObjPart::dimension,
-          ObjPart::primitive_byte_size,
-          r_stream )
+ObjPart::ObjPart( std::istream& r_stream )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    this->load( r_stream );
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
-ObjPart::ObjPart( const std::filesystem::path& r_filePath ) :
-    Part( ObjPart::dimension,
-          ObjPart::primitive_byte_size )
+ObjPart::ObjPart( const std::filesystem::path& r_filePath )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
     std::ifstream file;
-    file.open( r_filePath );
+    file.open( r_filePath,
+               std::ios::binary );
 
     if ( !file )
         CIE_THROW( Exception, "Failed to open file: " + r_filePath.string() )
@@ -47,9 +48,8 @@ void ObjPart::load( std::istream& r_stream )
     CIE_BEGIN_EXCEPTION_TRACING
 
     this->_data.clear();
+    this->_indices.clear();
 
-    std::deque<std::array<ObjPart::data_type,ObjPart::dimension>> vertices;
-    std::deque<std::array<Size,ObjPart::dimension>> faces;
     std::string line, token;
     bool isVertex, isFace;
 
@@ -106,10 +106,12 @@ void ObjPart::load( std::istream& r_stream )
         if ( isVertex )
         {
             std::stringstream lineStream( line );
-            auto& r_vertex = vertices.emplace_back();
 
-            for ( Size dim=0; dim<ObjPart::dimension; ++dim )
-                lineStream >> r_vertex[dim];
+            Size vertexBegin = this->_data.size();
+            this->_data.resize( vertexBegin + this->dimension() );
+
+            for ( Size dim=0; dim<this->dimension(); ++dim )
+                lineStream >> this->_data[vertexBegin + dim];
         }
         else if ( isFace )
         {
@@ -117,12 +119,14 @@ void ObjPart::load( std::istream& r_stream )
 
             std::deque<Size> indices;
             int tmp;
+
             while( (lineStream >> tmp) )
             {
                 if ( tmp >= 0 )
                     indices.push_back( Size(tmp) );
                 else
-                    indices.push_back( vertices.size() + tmp + 1 );
+                    CIE_THROW( Exception, "Unsupported indexing in .obj file" )
+                    //indices.push_back( vertices.size() + tmp + 1 );
             }
 
             // Pad indices
@@ -135,21 +139,11 @@ void ObjPart::load( std::istream& r_stream )
 
             for ( Size offset=0; offset<indices.size() - 2; offset+=2 )
             {
-                auto& r_face = faces.emplace_back();
-                for ( Size dim=0; dim<ObjPart::dimension; ++dim )
-                    r_face[dim] = indices[offset+dim];
+                for ( Size dim=0; dim<this->dimension(); ++dim )
+                    this->_indices.push_back( indices[offset+dim] - 1 );
             }
         }
     }
-
-    this->_data.reserve(
-        faces.size() * this->_primitiveByteSize / sizeof( ObjPart::data_type )
-    );
-
-    for ( const auto& r_face : faces )
-        for ( auto index : r_face )
-            for ( auto component : vertices[index-1] )
-                this->_data.push_back( component );
 
     CIE_END_EXCEPTION_TRACING
 }

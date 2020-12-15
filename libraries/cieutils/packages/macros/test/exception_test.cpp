@@ -1,9 +1,6 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Internal Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
 #include "cieutils/packages/macros/inc/exceptions.hpp"
-#include "cieutils/packages/macros/inc/testing.hpp"
 
 
 namespace cie {
@@ -28,11 +25,11 @@ void testFunction()
 } // namespace exception
 
 
-TEST_CASE( "Exception tracing", "[macros]" )
+CIE_TEST_CASE( "Exception tracing", "[macros]" )
 {
     CIE_TEST_CASE_INIT( "Exception tracing" )
 
-    CHECK_THROWS( exception::testFunction() );
+    CIE_TEST_CHECK_THROWS( exception::testFunction() );
 
     try
     {

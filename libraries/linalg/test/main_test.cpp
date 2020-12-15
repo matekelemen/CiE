@@ -1,7 +1,6 @@
+#define CIE_DEFINE_TESTRUNNER_MAIN
+
 // --- Utility Includes ---
-#include "cieutils/packages/macros/inc/testing.hpp"
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 CIE_TESTRUNNER_INIT( "linalg" )
-
-#define CATCH_CONFIG_MAIN
-#include "catch.hpp"

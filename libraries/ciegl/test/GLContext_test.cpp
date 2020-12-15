@@ -1,9 +1,6 @@
 /*
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Utility Includes ---
-#include "cieutils/packages/macros/inc/testing.hpp"
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
 #include "ciegl/packages/context/inc/GLFWContext.hpp"
@@ -76,7 +73,7 @@ struct TestDrawManager : public DrawManager
 };
 
 
-TEST_CASE( "GLFWContext" )
+CIE_TEST_CASE( "GLFWContext" )
 {
 
     auto loopFactory = [] (cie::gl::GLFWContext& context) -> cie::gl::DrawFunction
@@ -96,13 +93,13 @@ TEST_CASE( "GLFWContext" )
         return function;
     };
 
-    REQUIRE_NOTHROW( context_global.openWindow() );
-    REQUIRE_NOTHROW( context_global.makeContextCurrent() );
-    REQUIRE_NOTHROW( context_global.startEventLoop( loopFactory ) );
+    CIE_TEST_REQUIRE_NOTHROW( context_global.openWindow() );
+    CIE_TEST_REQUIRE_NOTHROW( context_global.makeContextCurrent() );
+    CIE_TEST_REQUIRE_NOTHROW( context_global.startEventLoop( loopFactory ) );
 }
 
 
-//TEST_CASE( "Scene" )
+//CIE_TEST_CASE( "Scene" )
 //{
 //    Scene scene( context_global );
 //    glm::vec3 test = { 5.0f, 4.0f, 3.0f };
@@ -110,31 +107,31 @@ TEST_CASE( "GLFWContext" )
 //}
 
 
-TEST_CASE( "DrawManager", "[ciegl]" )
+CIE_TEST_CASE( "DrawManager", "[ciegl]" )
 {
     CIE_TEST_CASE_INIT( "DrawManager" )
 
     // Create context
     WindowPtr p_window;
-    REQUIRE_NOTHROW( p_window = context_global.newWindow() );
-    REQUIRE_NOTHROW( context_global.focusWindow( p_window ) );
+    CIE_TEST_REQUIRE_NOTHROW( p_window = context_global.newWindow() );
+    CIE_TEST_REQUIRE_NOTHROW( context_global.focusWindow( p_window ) );
 
     ScenePtr p_scene;
-    REQUIRE_NOTHROW( p_scene = p_window->makeScene() );
+    CIE_TEST_REQUIRE_NOTHROW( p_scene = p_window->makeScene() );
     
     // Create draw manager
     TestDrawManager drawManager;
-    REQUIRE_NOTHROW( drawManager.makeProgram() );
-    REQUIRE_NOTHROW( drawManager.initialize() );
+    CIE_TEST_REQUIRE_NOTHROW( drawManager.makeProgram() );
+    CIE_TEST_REQUIRE_NOTHROW( drawManager.initialize() );
 
     // Set DrawManager members
     auto p_camera = CameraPtr(
         new ArcballCamera( context_global )
     );
-    //REQUIRE_NOTHROW( drawManager.camera() = p_camera );
-    REQUIRE_NOTHROW( p_scene->addCamera( p_camera ) );
-    CHECK_NOTHROW( p_camera->setProperties( 0 ) );
-    //CHECK_NOTHROW( p_camera->setCenter( glm::vec3( 0.5f, 0.5f, 0.5f ) ) );
+    //CIE_TEST_REQUIRE_NOTHROW( drawManager.camera() = p_camera );
+    CIE_TEST_REQUIRE_NOTHROW( p_scene->addCamera( p_camera ) );
+    CIE_TEST_CHECK_NOTHROW( p_camera->setProperties( 0 ) );
+    //CIE_TEST_CHECK_NOTHROW( p_camera->setCenter( glm::vec3( 0.5f, 0.5f, 0.5f ) ) );
 
     // Bind callbacks
     //KeyCallbackFunction keyCallback         = makeCallback( ArcballCallbacks::keyCallback,
@@ -145,13 +142,13 @@ TEST_CASE( "DrawManager", "[ciegl]" )
     //                                                        &drawManager );
 
     // Start the event loop
-    REQUIRE_NOTHROW(context_global.startEventLoop(
+    CIE_TEST_REQUIRE_NOTHROW(context_global.startEventLoop(
         std::bind(&DrawManager::makeDrawFunction, &drawManager, std::placeholders::_1)
     ));
 }
 
 
-//TEST_CASE( "Window resolution" )
+//CIE_TEST_CASE( "Window resolution" )
 //{
 //    glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
 //    glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 5 );

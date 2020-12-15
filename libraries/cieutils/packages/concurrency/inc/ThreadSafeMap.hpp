@@ -2,22 +2,19 @@
 #define CIE_UTILS_STL_EXTENSION_THREADSAFE_MAP_HPP
 
 // --- Internal Includes ---
-#include "cieutils/packages/concurrency/inc/Mutex.hpp"
+#include "cieutils/packages/concurrency/inc/OpenMPMutex.hpp"
 
 
 namespace cie::mp {
 
 
-/**
- * It's a lie, not actually threadsafe.
- * TODO: make it threadsafe
-*/
 template <class MapType>
 class ThreadSafeMap : public MapType
 {
 public:
     using map_type      = MapType;
     using stored_type   = typename MapType::value_type::second_type;
+    using mutex_type    = OpenMPMutex;
 
 public:
 
@@ -88,7 +85,7 @@ public:
     typename MapType::iterator end();
 
 protected:
-    Mutex _mutex;
+    mutex_type _mutex;
 };
 
 

@@ -4,6 +4,9 @@
 // --- Utility Includes ---
 #include "cieutils/packages/types/inc/types.hpp"
 
+// --- Internal Includes ---
+#include "ciegl/packages/buffer/inc/AbsBuffer.hpp"
+
 // --- STL Includes ---
 #include <vector>
 #include <memory>
@@ -16,46 +19,56 @@ namespace cie::gl {
 
 class Part {
 public:
-    using data_type      = float;
-    using data_container = std::vector<data_type>;
+    using data_type       = typename VertexBuffer::data_type;
+    using data_container  = std::vector<data_type>;
+    using index_type      = typename ElementBuffer::data_type;
+    using index_container = std::vector<index_type>;
 
 public:
-    Part( Size dimension,
-          Size primitiveByteSize );
+    Part();
 
-    Part( Size dimension,
-          Size primitiveByteSize,
-          std::istream& r_stream );
+    /// Total size of all attributes in bytes
+    Size attributeByteCount() const;
 
-    /**
-     * Total size of all attributes in bytes
-     */
-    Size byteCount() const;
+    /// Total size of all indices in bytes
+    Size indexByteCount() const;
 
-    /**
-     * Number of stored primitives
-     * (triangles most likely, but depends on the subclass)
-     */
+    /// Get number of stored vertices
+    Size numberOfVertices() const;
+
+    /// Get number of stored primitives
     Size numberOfPrimitives() const;
 
-    /**
-     * Load data from input stream
-     */
+    /// Load data from input stream
     virtual void load( std::istream& r_stream );
 
-    /**
-     * Write in STL format
-     * 
-     * Note: 3D triangles only
-     */
-    virtual void writeSTL( const std::filesystem::path& r_path ) const;
-
+    /// Get attribute container
     const data_container& data() const;
 
+    /// Get primitive vertex maps
+    const index_container& indices() const;
+
+    /// Get number of dimensions
+    virtual Size dimension() const = 0;
+
+    /// Get number of attributes that make up a vertex
+    virtual Size vertexAttributeSize() const = 0;
+
+    /// Get number of vertices that make up a primitive
+    virtual Size primitiveVertexSize() const = 0;
+
+    /// Get number of attributes that make up a primitive
+    Size primitiveAttributeSize() const;
+
+    /// Get number of bytes needed for defining a single primitive
+    Size primitiveByteSize() const;
+
+    /// Write part in STL format
+    virtual void writeSTL( const std::filesystem::path& r_path ) const = 0;
+
 protected:
-    data_container _data;
-    Size           _dimension;
-    Size           _primitiveByteSize;  // Number of bytes required to store all attributes of a primitive
+    data_container  _data;
+    index_container _indices;
 };
 
 

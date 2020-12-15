@@ -1,9 +1,7 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Internal Includes ---
+#include "cieutils/packages/testing/inc/essentials.hpp"
+#include "cieutils/packages/testing/inc/ConstructorTracker.hpp"
 #include "cieutils/packages/concurrency/inc/ThreadSafeMap.hpp"
-#include "cieutils/packages/macros/inc/testing.hpp"
 
 // --- STL Includes ---
 #include <map>
@@ -14,6 +12,17 @@
 
 
 namespace cie::mp {
+
+
+struct TrackedInteger : public utils::ConstructorTracker<TrackedInteger>
+{
+    TrackedInteger() : _value(0) {}
+    explicit TrackedInteger( int value ) : _value(value) {}
+    const int get() const { return _value; }
+
+private:
+    int _value;
+};
 
 
 namespace map {
@@ -35,12 +44,12 @@ void fillTest( MapType& r_map, Size maxCount )
 template <class MapType>
 void checkContainer( MapType& r_map, Size maxCount )
 {
-    CHECK( r_map.size() == maxCount );
+    CIE_TEST_CHECK( r_map.size() == maxCount );
 
     for ( const auto& r_pair : r_map )
-        CHECK( r_pair.first == r_pair.second );
+        CIE_TEST_CHECK( r_pair.first == r_pair.second.get() );
 
-    CHECK(
+    CIE_TEST_CHECK(
         std::accumulate( r_map.begin(),
                          r_map.end(),
                          Size(0),
@@ -53,12 +62,12 @@ void checkContainer( MapType& r_map, Size maxCount )
 } // namespace map
 
 
-TEST_CASE( "ThreadSafeMap", "[concurrency]" )
+CIE_TEST_CASE( "ThreadSafeMap", "[concurrency]" )
 {
     CIE_TEST_CASE_INIT( "ThreadSafeMap" )
 
     using KeyType         = int;
-    using ValueType       = double;
+    using ValueType       = TrackedInteger;
 
     Size numberOfElements = 1e4;
 
@@ -67,11 +76,11 @@ TEST_CASE( "ThreadSafeMap", "[concurrency]" )
         using MapBaseType   = std::map<KeyType,ValueType>;
         using MapType       = ThreadSafeMap<MapBaseType>;
 
-        REQUIRE_NOTHROW( MapType() );
+        CIE_TEST_REQUIRE_NOTHROW( MapType() );
         MapType map;
 
-        CHECK_NOTHROW( map.clear() );
-        CHECK( map.empty() );
+        CIE_TEST_CHECK_NOTHROW( map.clear() );
+        CIE_TEST_CHECK( map.empty() );
 
         map::fillTest( map, numberOfElements );
         map::checkContainer( map, numberOfElements );
@@ -82,11 +91,11 @@ TEST_CASE( "ThreadSafeMap", "[concurrency]" )
         using MapBaseType   = std::unordered_map<KeyType,ValueType>;
         using MapType       = ThreadSafeMap<MapBaseType>;
 
-        REQUIRE_NOTHROW( MapType() );
+        CIE_TEST_REQUIRE_NOTHROW( MapType() );
         MapType map;
 
-        CHECK_NOTHROW( map.clear() );
-        CHECK( map.empty() );
+        CIE_TEST_CHECK_NOTHROW( map.clear() );
+        CIE_TEST_CHECK( map.empty() );
 
         map::fillTest( map, numberOfElements );
         map::checkContainer( map, numberOfElements );

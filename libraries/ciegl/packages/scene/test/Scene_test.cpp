@@ -1,8 +1,5 @@
-// --- External Includes ---
-#include "catch.hpp"
-
 // --- Utility Includes ---
-#include "cieutils/packages/macros/inc/testing.hpp"
+#include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
 #include "ciegl/packages/scene/inc/Scene.hpp"
@@ -43,7 +40,7 @@ private:
 };
 
 
-TEST_CASE( "Scene", "[scene]" )
+CIE_TEST_CASE( "Scene", "[scene]" )
 {
     CIE_TEST_CASE_INIT( "Scene" )
 
@@ -59,7 +56,7 @@ TEST_CASE( "Scene", "[scene]" )
 
     // Window
     WindowPtr p_window;
-    REQUIRE_NOTHROW( p_window = p_context->newWindow() );
+    CIE_TEST_REQUIRE_NOTHROW( p_window = p_context->newWindow() );
 
     // Shaders
     const std::filesystem::path shaderDir   = SOURCE_PATH / "libraries/ciegl/data/shaders";
@@ -95,7 +92,7 @@ TEST_CASE( "Scene", "[scene]" )
         CIE_TEST_CASE_INIT( "create scene" )
         auto localBlock = p_context->newBlock( "basic scene" );
 
-        REQUIRE_NOTHROW( 
+        CIE_TEST_REQUIRE_NOTHROW( 
             p_scene = p_window->makeScene<TestScene>(
                 "TestScene",
                 p_vertexShader,
@@ -115,13 +112,13 @@ TEST_CASE( "Scene", "[scene]" )
             0, 1, 2
         };
 
-        REQUIRE_NOTHROW( p_bufferManager = p_scene->bufferManager() );
+        CIE_TEST_REQUIRE_NOTHROW( p_bufferManager = p_scene->bufferManager() );
         p_bufferManager->writeToBoundVertexBuffer( components );
         p_bufferManager->writeToBoundElementBuffer( triangles );
 
-        CHECK_NOTHROW( p_window->update() );
+        CIE_TEST_CHECK_NOTHROW( p_window->update() );
 
-        CHECK_NOTHROW( p_window->removeScene(p_scene) );
+        CIE_TEST_CHECK_NOTHROW( p_window->removeScene(p_scene) );
     }
 
     {
@@ -130,7 +127,7 @@ TEST_CASE( "Scene", "[scene]" )
 
         ScenePtr p_secondScene;
 
-        CHECK_NOTHROW(
+        CIE_TEST_CHECK_NOTHROW(
             p_scene = p_window->makeScene<TestScene>(
                 "TestScene0",
                 p_vertexShader,
@@ -139,7 +136,7 @@ TEST_CASE( "Scene", "[scene]" )
             )
         );
 
-        CHECK_NOTHROW(
+        CIE_TEST_CHECK_NOTHROW(
             p_secondScene = p_window->makeScene<TestScene>(
                 "TestScene1",
                 p_vertexShader,
@@ -178,11 +175,10 @@ TEST_CASE( "Scene", "[scene]" )
         p_secondScene->bufferManager()->writeToBoundVertexBuffer( components1 );
         p_secondScene->bufferManager()->writeToBoundElementBuffer( triangles1 );
 
-        CHECK_NOTHROW( p_window->update() );
-        std::this_thread::sleep_for( std::chrono::milliseconds(500) );
+        CIE_TEST_CHECK_NOTHROW( p_window->update() );
 
-        CHECK_NOTHROW( p_window->removeScene( p_scene ) );
-        CHECK_NOTHROW( p_window->removeScene( p_secondScene ) );
+        CIE_TEST_CHECK_NOTHROW( p_window->removeScene( p_scene ) );
+        CIE_TEST_CHECK_NOTHROW( p_window->removeScene( p_secondScene ) );
     }
 
 
@@ -224,7 +220,7 @@ TEST_CASE( "Scene", "[scene]" )
         auto localBlock = p_context->newBlock( "scene with uniforms" );
 
         // Primary scene for triangles
-        REQUIRE_NOTHROW( 
+        CIE_TEST_REQUIRE_NOTHROW( 
             p_scene = p_window->makeScene<TestScene>(
                 "Scene_triangles",
                 p_vertexShader,
@@ -234,7 +230,7 @@ TEST_CASE( "Scene", "[scene]" )
 
         // Secondary scene for the wireframe
         ScenePtr p_secondScene;
-        REQUIRE_NOTHROW(
+        CIE_TEST_REQUIRE_NOTHROW(
             p_secondScene = p_window->makeScene<TestScene>(
                 "Scene_wireframe"
                 ,p_wireframeVertexShader
@@ -245,8 +241,8 @@ TEST_CASE( "Scene", "[scene]" )
                 )
         );
 
-        CHECK( p_scene->bufferManager()->boundVertexBuffer() == p_secondScene->bufferManager()->boundVertexBuffer() );
-        CHECK( p_scene->bufferManager()->boundElementBuffer() == p_secondScene->bufferManager()->boundElementBuffer() );
+        CIE_TEST_CHECK( p_scene->bufferManager()->boundVertexBuffer() == p_secondScene->bufferManager()->boundVertexBuffer() );
+        CIE_TEST_CHECK( p_scene->bufferManager()->boundElementBuffer() == p_secondScene->bufferManager()->boundElementBuffer() );
 
         const float a = 0.5;
 
@@ -307,7 +303,7 @@ TEST_CASE( "Scene", "[scene]" )
             30, 31, 32,     33, 34, 35
         };
 
-        REQUIRE_NOTHROW( p_bufferManager = p_scene->bufferManager() );
+        CIE_TEST_REQUIRE_NOTHROW( p_bufferManager = p_scene->bufferManager() );
         p_bufferManager->writeToBoundVertexBuffer( vertexData );
         p_bufferManager->writeToBoundElementBuffer( triangles );
 
@@ -321,12 +317,12 @@ TEST_CASE( "Scene", "[scene]" )
 
         CameraType::vector_type center { a/2.0, a/2.0, a/2.0 };
 
-        REQUIRE_NOTHROW( p_scene->bindUniform( "transformation", p_camera->transformationMatrix() ) );
-        REQUIRE_NOTHROW( p_scene->bindUniform( "cameraPosition", p_camera->position() ) );
+        CIE_TEST_REQUIRE_NOTHROW( p_scene->bindUniform( "transformation", p_camera->transformationMatrix() ) );
+        CIE_TEST_REQUIRE_NOTHROW( p_scene->bindUniform( "cameraPosition", p_camera->position() ) );
 
         GLfloat wireframeScale = 1e-4;
-        REQUIRE_NOTHROW( p_secondScene->bindUniform( "transformation", p_camera->transformationMatrix() ) );
-        REQUIRE_NOTHROW( p_secondScene->bindUniform( "wireframeScale", wireframeScale ) );
+        CIE_TEST_REQUIRE_NOTHROW( p_secondScene->bindUniform( "transformation", p_camera->transformationMatrix() ) );
+        CIE_TEST_REQUIRE_NOTHROW( p_secondScene->bindUniform( "wireframeScale", wireframeScale ) );
 
         const int steps = 360;
         std::chrono::microseconds delay( 100 );
@@ -335,7 +331,7 @@ TEST_CASE( "Scene", "[scene]" )
         for ( int i=0; i<steps; ++i )
         {
             p_camera->translate( { i<steps/2 ? 0.01 : -0.01 ,0.0,0.0} );
-            CHECK_NOTHROW( p_window->update() );
+            CIE_TEST_CHECK_NOTHROW( p_window->update() );
             std::this_thread::sleep_for( delay );
         }
 
@@ -345,7 +341,7 @@ TEST_CASE( "Scene", "[scene]" )
             p_camera->rotate( M_PI / 180.0,
                               { 0.0, 0.0, 1.0 },
                               center );
-            CHECK_NOTHROW( p_window->update() );
+            CIE_TEST_CHECK_NOTHROW( p_window->update() );
             std::this_thread::sleep_for( delay );
         }
 
@@ -355,7 +351,7 @@ TEST_CASE( "Scene", "[scene]" )
             p_camera->rotate( (i<steps/2 ? 1.0 : -1.0) * M_PI / 180.0,
                               { 1.0, 0.0, 0.0 },
                               center );
-            CHECK_NOTHROW( p_window->update() );
+            CIE_TEST_CHECK_NOTHROW( p_window->update() );
             std::this_thread::sleep_for( delay );
         }
 
@@ -363,12 +359,12 @@ TEST_CASE( "Scene", "[scene]" )
         for ( int i=0; i<steps; ++i )
         {
             p_camera->zoom( i<steps/2 ? 1.01 : 0.99 );
-            CHECK_NOTHROW( p_window->update() );
+            CIE_TEST_CHECK_NOTHROW( p_window->update() );
             std::this_thread::sleep_for( delay );
         }
 
-        CHECK_NOTHROW( p_window->removeScene(p_scene) );
-        CHECK_NOTHROW( p_window->removeScene(p_secondScene) );
+        CIE_TEST_CHECK_NOTHROW( p_window->removeScene(p_scene) );
+        CIE_TEST_CHECK_NOTHROW( p_window->removeScene(p_secondScene) );
     }
 }
 
