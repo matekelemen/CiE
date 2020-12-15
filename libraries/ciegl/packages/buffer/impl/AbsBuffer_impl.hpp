@@ -14,6 +14,7 @@ namespace cie::gl {
 
 
 template <class DataType, class DataContainer>
+requires concepts::ClassContainer<DataContainer, DataType>
 AbsBuffer<DataType,DataContainer>::AbsBuffer() :
     utils::IDObject<Size>()
 {
@@ -21,6 +22,7 @@ AbsBuffer<DataType,DataContainer>::AbsBuffer() :
 
 
 template <class DataType, class DataContainer>
+requires concepts::ClassContainer<DataContainer, DataType>
 AbsBuffer<DataType,DataContainer>::AbsBuffer( Size id ) :
     utils::IDObject<Size>(id)
 {
@@ -28,6 +30,7 @@ AbsBuffer<DataType,DataContainer>::AbsBuffer( Size id ) :
 
 
 template <class DataType, class DataContainer>
+requires concepts::ClassContainer<DataContainer, DataType>
 template <class ContainerType>
 requires concepts::detail::ClassContainerWithException<ContainerType,DataType,typename AbsBuffer<DataType>::data_container_type>
 inline void
@@ -47,6 +50,7 @@ AbsBuffer<DataType,DataContainer>::write( const ContainerType& r_dataContainer )
 
 
 template <class DataType, class DataContainer>
+requires concepts::ClassContainer<DataContainer, DataType>
 template <class ContainerType>
 requires concepts::detail::ClassContainerWithException<ContainerType,DataType,typename AbsBuffer<DataType>::data_container_type>
 inline void

@@ -53,10 +53,12 @@ TEST_CASE( "BoxFile", "[io]" )
 
         {
             std::filesystem::path fileName = outputPath / "cube0.boxes";
-            BoxFile outputFile( fileName,
-                                Dimension,
-                                sizeof(CoordinateType) );
-            outputFile << primitives[0];
+            {
+                BoxFile outputFile( fileName,
+                                    Dimension,
+                                    sizeof(CoordinateType) );
+                outputFile << primitives[0];
+            }
 
             BoxFile inputFile( fileName );
             BoxType test;
@@ -71,10 +73,12 @@ TEST_CASE( "BoxFile", "[io]" )
 
         {
             std::filesystem::path fileName = outputPath / "cube1.boxes";
-            BoxFile outputFile( fileName,
-                                Dimension,
-                                sizeof(CoordinateType) );
-            outputFile << primitives;
+            {
+                BoxFile outputFile( fileName,
+                                    Dimension,
+                                    sizeof(CoordinateType) );
+                outputFile << primitives;
+            }
 
             BoxFile inputFile( fileName );
             std::vector<BoxType> test;
@@ -90,10 +94,12 @@ TEST_CASE( "BoxFile", "[io]" )
 
         {
             std::filesystem::path fileName = outputPath / "cube2.boxes";
-            BoxFile outputFile( fileName,
-                                Dimension,
-                                sizeof(CoordinateType) );
-            outputFile << primitivePtrs;
+            {
+                BoxFile outputFile( fileName,
+                                    Dimension,
+                                    sizeof(CoordinateType) );
+                outputFile << primitivePtrs;
+            }
 
             BoxFile inputFile( fileName );
             std::vector<std::shared_ptr<BoxType>> test;

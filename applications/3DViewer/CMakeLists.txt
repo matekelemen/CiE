@@ -16,24 +16,6 @@ foreach( driver ${DRIVERS} )
     TARGET_LINK_LIBRARIES_INSTALL( ${executable_name} ciegl )
 
     INSTALL_APPLICATION_EXECUTABLE( ${executable_name} )
-
-    if( MSVC )
-        add_custom_command(TARGET ${executable_name} POST_BUILD        	
-        COMMAND ${CMAKE_COMMAND} -E copy 					
-            "$<TARGET_FILE_DIR:linalg>/cieutils.dll"  
-            "${INSTALL_APPLICATION_PREFIX}/${PROJECT_NAME}" )
-
-        add_custom_command(TARGET ${executable_name} POST_BUILD        	
-            COMMAND ${CMAKE_COMMAND} -E copy 					
-                "$<TARGET_FILE_DIR:linalg>/linalg.dll"  
-                "${INSTALL_APPLICATION_PREFIX}/${PROJECT_NAME}" )
-
-        add_custom_command(TARGET ${executable_name} POST_BUILD        	
-            COMMAND ${CMAKE_COMMAND} -E copy 					
-                "$<TARGET_FILE_DIR:ciegl>/ciegl.dll"  
-                "${INSTALL_APPLICATION_PREFIX}/${PROJECT_NAME}" )
-    endif( )
-
 endforeach()
 
 # Copy python scripts

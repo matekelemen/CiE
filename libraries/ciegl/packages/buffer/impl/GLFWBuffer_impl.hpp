@@ -12,6 +12,7 @@ namespace cie::gl {
 
 
 template <class DataType, class DataContainer>
+requires concepts::ClassContainer<DataContainer, DataType>
 GLFWBuffer<DataType,DataContainer>::GLFWBuffer() :
     AbsBuffer<DataType,DataContainer>( std::numeric_limits<Size>().max() ),
     _drawMode( GL_STATIC_DRAW )
@@ -27,6 +28,7 @@ GLFWBuffer<DataType,DataContainer>::GLFWBuffer() :
 
 
 template <class DataType, class DataContainer>
+requires concepts::ClassContainer<DataContainer, DataType>
 GLFWBuffer<DataType,DataContainer>::~GLFWBuffer()
 {
     GLuint id = this->getID();
@@ -35,6 +37,7 @@ GLFWBuffer<DataType,DataContainer>::~GLFWBuffer()
 
 
 template <class DataType, class DataContainer>
+requires concepts::ClassContainer<DataContainer, DataType>
 inline void
 GLFWBuffer<DataType,DataContainer>::reserve( Size byteCount )
 {
@@ -50,6 +53,7 @@ GLFWBuffer<DataType,DataContainer>::reserve( Size byteCount )
 
 
 template <class DataType, class DataContainer>
+requires concepts::ClassContainer<DataContainer, DataType>
 inline void
 GLFWBuffer<DataType,DataContainer>::write( const typename GLFWBuffer<DataType,DataContainer>::data_container_type& r_dataContainer )
 {
@@ -67,6 +71,7 @@ GLFWBuffer<DataType,DataContainer>::write( const typename GLFWBuffer<DataType,Da
 
 
 template <class DataType, class DataContainer>
+requires concepts::ClassContainer<DataContainer, DataType>
 inline void
 GLFWBuffer<DataType,DataContainer>::write( Size begin, const typename GLFWBuffer<DataType,DataContainer>::data_container_type& r_dataContainer )
 {
@@ -84,6 +89,7 @@ GLFWBuffer<DataType,DataContainer>::write( Size begin, const typename GLFWBuffer
 
 
 template <class DataType, class DataContainer>
+requires concepts::ClassContainer<DataContainer, DataType>
 void
 GLFWBuffer<DataType,DataContainer>::setDrawMode( Size drawMode )
 {
@@ -92,6 +98,7 @@ GLFWBuffer<DataType,DataContainer>::setDrawMode( Size drawMode )
 
 
 template <class DataType, class DataContainer>
+requires concepts::ClassContainer<DataContainer, DataType>
 const GLuint
 GLFWBuffer<DataType,DataContainer>::getDrawMode() const
 {
