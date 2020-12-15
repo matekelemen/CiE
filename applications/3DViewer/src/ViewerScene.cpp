@@ -3,6 +3,7 @@
 
 // --- Utility Includes ---
 #include <cieutils/macros.hpp>
+#include <cieutils/ranges.hpp>
 
 // --- Internal Includes ---
 #include "ViewerScene.hpp"
@@ -12,6 +13,7 @@
 #include <numeric>
 #include <algorithm>
 #include <filesystem>
+#include <ranges>
 
 
 namespace cie {
@@ -74,36 +76,45 @@ gl::CameraPtr ViewerScene::getCamera()
 void ViewerScene::updateModels()
 {
     // Allocate memory on the GPU
-    Size byteCount     = 0;
-    Size triangleCount = 0;
+    Size attributeByteCount = 0;
+    Size indexByteCount     = 0;
+    Size triangleCount      = 0;
     for ( const auto& rp_model : this->_models )
     {
-        byteCount     += rp_model->byteCount();
-        triangleCount += rp_model->numberOfPrimitives();
+        attributeByteCount += rp_model->attributeByteCount();
+        indexByteCount     += rp_model->indexByteCount();
+        triangleCount      += rp_model->numberOfPrimitives();
     }
 
-    this->_p_bufferManager->boundVertexBuffer()->reserve( byteCount );
+    this->_p_bufferManager->boundVertexBuffer()->reserve( attributeByteCount );
+    this->_p_bufferManager->boundElementBuffer()->reserve( indexByteCount );
 
-    // Write indices to the element buffer
-    {
-        typename gl::GLFWElementBuffer::data_container_type triangles( 3 * triangleCount );
-        std::iota( triangles.begin(),
-                   triangles.end(),
-                   0 );
-        this->_p_bufferManager->writeToBoundElementBuffer( triangles );
-    }
-
-    // Write attributes to the array buffer
-    Size attributeOffset = 0;
+    // Write to buffers
+    Size attributeByteOffset = 0;
+    Size indexByteOffset     = 0;
+    Size indexOffset         = 0;
 
     for ( const auto& rp_model : this->_models )
     {
         this->_p_bufferManager->writeToBoundVertexBuffer(
-            attributeOffset,
+            attributeByteOffset,
             rp_model->data()
         );
 
-        attributeOffset += rp_model->byteCount();
+        // Offset vertex indices
+        auto offsetIndexRange = utils::makeTransformView<gl::Part::index_type>(
+            rp_model->indices(),
+            [indexOffset](auto index) { return index + indexOffset; }
+        );
+
+        this->_p_bufferManager->writeToBoundElementBuffer(
+            indexByteOffset,
+            offsetIndexRange
+        );
+
+        attributeByteOffset += rp_model->attributeByteCount();
+        indexByteOffset     += rp_model->indexByteCount();
+        indexOffset         = rp_model->numberOfVertices();
     }
 
     this->_updateModels = false;

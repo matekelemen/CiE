@@ -2,7 +2,7 @@
 #define CIE_GL_OBJ_PART_HPP
 
 // --- Internal Includes ---
-#include "ciegl/packages/file/inc/Part.hpp"
+#include "ciegl/packages/file/inc/Triangulated3DPart.hpp"
 
 
 namespace cie::gl {
@@ -13,12 +13,8 @@ namespace cie::gl {
  * 
  * Note: vertex positions are the only attributes loaded
  */
-class ObjPart final : public Part
+class ObjPart final : public Triangulated3DPart
 {
-public:
-    static const Size dimension = 3;
-    static const Size primitive_byte_size = 3 * ObjPart::dimension * sizeof( ObjPart::data_type );
-
 public:
     ObjPart( std::istream& r_stream );
     ObjPart( const std::filesystem::path& r_filePath );

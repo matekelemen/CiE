@@ -88,6 +88,8 @@ AbsBufferManager::writeToBoundElementBuffer( Size begin,
     CIE_CHECK_POINTER( this->_p_boundElementBuffer )
     this->_p_boundElementBuffer->write( begin, r_data );
 
+    return *this;
+
     CIE_END_EXCEPTION_TRACING
 }
 

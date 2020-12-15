@@ -24,12 +24,9 @@ struct is_container<
                 typename T::value_type,
                 typename T::size_type,
                 typename T::iterator,
-                typename T::const_iterator,
                 decltype(std::declval<T>().size()),
                 decltype(std::declval<T>().begin()),
-                decltype(std::declval<T>().end()),
-                decltype(std::declval<T>().cbegin()),
-                decltype(std::declval<T>().cend())
+                decltype(std::declval<T>().end())
                 >,
             void
             >

@@ -176,7 +176,6 @@ CIE_TEST_CASE( "Scene", "[scene]" )
         p_secondScene->bufferManager()->writeToBoundElementBuffer( triangles1 );
 
         CIE_TEST_CHECK_NOTHROW( p_window->update() );
-        std::this_thread::sleep_for( std::chrono::milliseconds(500) );
 
         CIE_TEST_CHECK_NOTHROW( p_window->removeScene( p_scene ) );
         CIE_TEST_CHECK_NOTHROW( p_window->removeScene( p_secondScene ) );
