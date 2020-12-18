@@ -63,7 +63,7 @@ void RigidBody::setPose( const RigidBody::vector_type& r_position,
     CIE_BEGIN_EXCEPTION_TRACING
 
     // Check whether direction and up are perpendicular
-    CIE_RUNTIME_GEOMETRY_CIE_TEST_CHECK(
+    CIE_RUNTIME_GEOMETRY_CHECK(
         std::abs(glm::dot( r_direction, r_up )) < 1e-15,
         "Camera direction and up do not define a cartesian system!"
     )
@@ -87,7 +87,7 @@ void RigidBody::rotate( double radians,
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    CIE_RUNTIME_GEOMETRY_CIE_TEST_CHECK(
+    CIE_RUNTIME_GEOMETRY_CHECK(
         std::abs(r_axis[0]) + std::abs(r_axis[1]) + std::abs(r_axis[2]) > 1e-15,
         "Rotation axis is a nullvector"
     )
@@ -107,7 +107,7 @@ void RigidBody::rotate( double radians,
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    CIE_RUNTIME_GEOMETRY_CIE_TEST_CHECK(
+    CIE_RUNTIME_GEOMETRY_CHECK(
         std::abs(r_axis[0]) + std::abs(r_axis[1]) + std::abs(r_axis[2]) > 1e-15,
         "Rotation axis is a nullvector"
     )
@@ -196,7 +196,7 @@ void RigidBody::rotateInPlace( double radians,
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    CIE_RUNTIME_GEOMETRY_CIE_TEST_CHECK(
+    CIE_RUNTIME_GEOMETRY_CHECK(
         std::abs(r_axis[0]) + std::abs(r_axis[1]) + std::abs(r_axis[2]) > 1e-15,
         "Rotation axis is a nullvector"
     )

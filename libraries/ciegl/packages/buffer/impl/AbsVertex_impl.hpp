@@ -12,7 +12,7 @@ inline AbsVertex::attribute_range AbsVertex::attribute( Size index )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    CIE_OUT_OF_RANGE_CIE_TEST_CHECK( index < this->_r_attributeOffsets.size() )
+    CIE_OUT_OF_RANGE_CHECK( index < this->_r_attributeOffsets.size() )
 
     auto it_begin = this->_p_attributes->begin() + this->_offset + this->_r_attributeOffsets[index];
 
@@ -33,7 +33,7 @@ inline AbsVertex::attribute_const_range AbsVertex::attribute( Size index ) const
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    CIE_OUT_OF_RANGE_CIE_TEST_CHECK( index < this->_r_attributeOffsets.size() )
+    CIE_OUT_OF_RANGE_CHECK( index < this->_r_attributeOffsets.size() )
 
     auto it_begin = this->_p_attributes->begin() + this->_offset + this->_r_attributeOffsets[index];
 
@@ -55,7 +55,7 @@ inline AbsVertex::value_type& AbsVertex::at( Size attributeIndex,
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    CIE_OUT_OF_RANGE_CIE_TEST_CHECK( attributeIndex < this->_r_attributeOffsets.size() )
+    CIE_OUT_OF_RANGE_CHECK( attributeIndex < this->_r_attributeOffsets.size() )
 
     return this->at(
         this->_r_attributeOffsets[attributeIndex] + componentIndex
@@ -70,7 +70,7 @@ inline const AbsVertex::value_type AbsVertex::at( Size attributeIndex,
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    CIE_OUT_OF_RANGE_CIE_TEST_CHECK( attributeIndex < this->_r_attributeOffsets.size() )
+    CIE_OUT_OF_RANGE_CHECK( attributeIndex < this->_r_attributeOffsets.size() )
 
     return this->at(
         this->_r_attributeOffsets[attributeIndex] + componentIndex
@@ -82,9 +82,9 @@ inline const AbsVertex::value_type AbsVertex::at( Size attributeIndex,
 
 inline AbsVertex::value_type& AbsVertex::at( Size index )
 {
-    CIE_OUT_OF_RANGE_CIE_TEST_CHECK( index < this->numberOfAttributes() )
+    CIE_OUT_OF_RANGE_CHECK( index < this->numberOfAttributes() )
     Size indexInContainer = this->_offset + index;
-    CIE_OUT_OF_RANGE_CIE_TEST_CHECK( indexInContainer < this->_p_attributes->size() )
+    CIE_OUT_OF_RANGE_CHECK( indexInContainer < this->_p_attributes->size() )
 
     return this->_p_attributes->at( indexInContainer );
 }
@@ -92,9 +92,9 @@ inline AbsVertex::value_type& AbsVertex::at( Size index )
 
 inline const AbsVertex::value_type AbsVertex::at( Size index ) const
 {
-    CIE_OUT_OF_RANGE_CIE_TEST_CHECK( index < this->numberOfAttributes() )
+    CIE_OUT_OF_RANGE_CHECK( index < this->numberOfAttributes() )
     Size indexInContainer = this->_offset + index;
-    CIE_OUT_OF_RANGE_CIE_TEST_CHECK( indexInContainer < this->_p_attributes->size() )
+    CIE_OUT_OF_RANGE_CHECK( indexInContainer < this->_p_attributes->size() )
 
     return this->_p_attributes->at( indexInContainer );
 }

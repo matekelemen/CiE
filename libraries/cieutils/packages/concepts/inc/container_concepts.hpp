@@ -89,6 +89,11 @@ concept FixedSizeContainer
     && !ResizableContainer<ContainerType>;
 
 
+template <class ContainerType>
+concept STLArray
+= FixedSizeContainer<ContainerType>;
+
+
 } // namespace cie::concepts
 
 #endif

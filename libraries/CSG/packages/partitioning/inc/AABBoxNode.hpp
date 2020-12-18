@@ -6,7 +6,7 @@
 
 // --- Internal Includes ---
 #include "CSG/packages/partitioning/inc/AABBox.hpp"
-#include "CSG/packages/partitioning/inc/AbsBoundableObject.hpp"
+#include "CSG/packages/partitioning/inc/boundingBox.hpp"
 #include "CSG/packages/trees/inc/cell.hpp"
 
 // --- STL Includes ---
@@ -23,7 +23,7 @@ namespace cie::csg {
  */
 template <concepts::BoxBoundable ObjectType>
 class AABBoxNode :
-    public BoxCell<typename ObjectType::bounding_box>,
+    public BoxCell<AABBox<Traits<ObjectType>::dimension,typename Traits<ObjectType>::coordinate_type>>,
     public utils::AbsTree<std::deque,AABBoxNode<ObjectType>>,
     public std::enable_shared_from_this<AABBoxNode<ObjectType>>
 {
@@ -43,14 +43,11 @@ public:
     /**
      * If the object fits in this box, add it to the list of objects
      * and send it down the tree
-     * 
      * @param p_object pointer to object to add
      */
     void addObject( object_ptr p_object );
 
-    /**
-     * Recursively erase expired objects from storage
-     */
+    /// Recursively erase expired objects from storage
     void eraseExpired();
 
     /**
@@ -61,47 +58,43 @@ public:
 
     /**
      * @brief Find highest level node that contains the query object
-     * 
      * @param p_object pointer to query object
-     *
      * @return pointer to node containing the query object, or a default
-     *         constructed pointer if the search fails
+     * constructed pointer if the search fails
      */
     self_ptr find( const object_ptr p_object );
 
     /**
      * Subdivide nodes until the number of contained objects reaches or
      * drops below the specified limit, or the recursion depth is reached
-     * 
      * @param maxObjects maximum number of objects in leaf nodes (termination criterion)
      * @param maxLevel recursion depth limit (termination constraint)
-     * 
      * @return false if recursion depth is reached before the object limit
      */
     bool partition( Size maxObjects,
                     Size maxLevel );
 
-    /**
-     * Object container access
-     */
-    const object_ptr_container& objects() const;
+    /// Access to contained objects
+    const object_ptr_container& containedObjects() const;
+
+    /// Access to intersected objects
+    const object_ptr_container& intersectedObjects() const;
     
     /**
      * Parent node access
-     * 
      * @return default constructed pointer if this node is the root
      */
     self_ptr parent();
 
     /**
      * Parent node access
-     * 
      * @return reference to default constructed pointer if this node is the root
      */
     const self_ptr& parent() const;
 
 protected:
-    object_ptr_container _objects;
+    object_ptr_container _containedObjects;
+    object_ptr_container _intersectedObjects;
     self_ptr             _p_parent;
 };
 

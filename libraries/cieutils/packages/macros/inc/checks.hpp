@@ -27,7 +27,7 @@
 
 
 #ifdef CIE_ENABLE_OUT_OF_RANGE_TESTS
-    #define CIE_OUT_OF_RANGE_CIE_TEST_CHECK(boolExpression)                  \
+    #define CIE_OUT_OF_RANGE_CHECK(boolExpression)                  \
         if (!(boolExpression)) [[unlikely]]                         \
         {                                                           \
             std::stringstream stream;                               \
@@ -35,11 +35,11 @@
             CIE_THROW( cie::OutOfRangeException, stream.str() );    \
         }
 #else
-    #define CIE_OUT_OF_RANGE_CIE_TEST_CHECK(boolExpression)
+    #define CIE_OUT_OF_RANGE_CHECK(boolExpression)
 #endif
 
 
-#ifdef CIE_ENABLE_DIVISION_BY_ZERO_CIE_TEST_CHECKS
+#ifdef CIE_ENABLE
     #define CIE_DIVISION_BY_ZERO_CIE_TEST_CHECK(boolExpression)                  \
         if (!(boolExpression)) [[unlikely]]                             \
         {                                                               \
@@ -52,8 +52,8 @@
 #endif
 
 
-#ifdef CIE_ENABLE_RUNTIME_GEOMETRY_CIE_TEST_CHECKS
-    #define CIE_RUNTIME_GEOMETRY_CIE_TEST_CHECK(boolExpression, message)         \
+#ifdef CIE_ENABLE_RUNTIME_GEOMETRY_CHECKS
+    #define CIE_RUNTIME_GEOMETRY_CHECK(boolExpression, message)         \
         if (!(boolExpression)) [[unlikely]]                             \
         {                                                               \
             std::stringstream stream;                                   \
@@ -64,7 +64,7 @@
             CIE_THROW( cie::GeometryException, stream.str() );          \
         }
 #else
-    #define CIE_RUNTIME_GEOMETRY_CIE_TEST_CHECK(boolExpression, message)
+    #define CIE_RUNTIME_GEOMETRY_CHECK(boolExpression, message)
 #endif
 
 

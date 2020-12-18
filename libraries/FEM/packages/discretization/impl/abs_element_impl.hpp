@@ -83,7 +83,7 @@ requires concepts::ClassContainer<CoefficientContainer,NT>
     typename AbsElement::value_container basis;
     this->basis( basisValues, basis );
 
-    CIE_OUT_OF_RANGE_CIE_TEST_CHECK( coefficients.size() == basis.size() )
+    CIE_OUT_OF_RANGE_CHECK( coefficients.size() == basis.size() )
 
     // Compute inner product
     return std::inner_product(  basis.begin(),

@@ -44,22 +44,6 @@ AbsBoundableObject<Dimension,CoordinateType>::boundingBox()
 
 template < Size Dimension,
            concepts::NumericType CoordinateType >
-inline const typename AbsBoundableObject<Dimension,CoordinateType>::bounding_box&
-AbsBoundableObject<Dimension,CoordinateType>::boundingBox() const
-{
-    CIE_BEGIN_EXCEPTION_TRACING
-
-    if ( this->_recomputeBoundingBox )
-        CIE_THROW( Exception, "Const function cannot recompute bounding box!" )
-
-    return this->_boundingBox;
-
-    CIE_END_EXCEPTION_TRACING
-}
-
-
-template < Size Dimension,
-           concepts::NumericType CoordinateType >
 inline void
 AbsBoundableObject<Dimension,CoordinateType>::computeBoundingBox()
 {
