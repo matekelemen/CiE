@@ -1,1 +1,12 @@
+# IDE directories
 .vscode
+.vs
+
+# IDE files
+
+# Python directories
+__pycache__
+
+# Python files
+*.pyc
+*.pyd
