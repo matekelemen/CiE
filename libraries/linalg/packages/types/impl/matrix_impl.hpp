@@ -45,10 +45,10 @@ Matrix<ValueType>::Matrix( const std::vector<ValueType>& rowMajorData, Size size
         size2_ = rowMajorData.size( ) / size1;
     else
     {
-        CIE_OUT_OF_RANGE_CIE_TEST_CHECK(  rowMajorData.size()==0 )
+        CIE_OUT_OF_RANGE_CHECK(  rowMajorData.size()==0 )
     }
 
-    CIE_OUT_OF_RANGE_CIE_TEST_CHECK( size1_ * size2_ == rowMajorData.size( ) )
+    CIE_OUT_OF_RANGE_CHECK( size1_ * size2_ == rowMajorData.size( ) )
 }
 
 
@@ -65,7 +65,7 @@ Matrix<ValueType>::Matrix( const std::vector<DoubleVector>& vectorOfRows ) :
 
         for( Size i = 0; i < size1_; ++i )
         {
-            CIE_OUT_OF_RANGE_CIE_TEST_CHECK(  vectorOfRows[i].size( ) == size2_ )
+            CIE_OUT_OF_RANGE_CHECK(  vectorOfRows[i].size( ) == size2_ )
             std::copy( vectorOfRows[i].begin( ), vectorOfRows[i].end( ), data_.begin( ) + ( i * size2_ ) );
         }
     }
@@ -151,8 +151,8 @@ inline void Matrix<ValueType>::transpose()
 template <concepts::NumericType ValueType>
 inline void Matrix<ValueType>::checkIndices(Size i, Size j) const
 {
-    CIE_OUT_OF_RANGE_CIE_TEST_CHECK(  i < size1_ )
-    CIE_OUT_OF_RANGE_CIE_TEST_CHECK(  j < size2_ )
+    CIE_OUT_OF_RANGE_CHECK(  i < size1_ )
+    CIE_OUT_OF_RANGE_CHECK(  j < size2_ )
 }
 
 } // namespace cie::linalg

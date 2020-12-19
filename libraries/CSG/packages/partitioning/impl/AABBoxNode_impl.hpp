@@ -17,9 +17,10 @@ template <concepts::BoxBoundable ObjectType>
 AABBoxNode<ObjectType>::AABBoxNode( const typename AABBoxNode<ObjectType>::point_type& r_base,
                                     const typename AABBoxNode<ObjectType>::point_type& r_lengths,
                                     typename AABBoxNode<ObjectType>::self_ptr p_parent ) :
-    BoxCell<typename ObjectType::bounding_box>( r_base, r_lengths ),
+    BoxCell<AABBox<Traits<ObjectType>::dimension,typename Traits<ObjectType>::coordinate_type>>( r_base, r_lengths ),
     utils::AbsTree<std::deque,AABBoxNode<ObjectType>>(),
-    _objects(),
+    _containedObjects(),
+    _intersectedObjects(),
     _p_parent( p_parent )
 {
     CIE_BEGIN_EXCEPTION_TRACING
@@ -51,8 +52,12 @@ AABBoxNode<ObjectType>::addObject( typename AABBoxNode<ObjectType>::object_ptr p
         CIE_BEGIN_EXCEPTION_TRACING
 
         if ( auto p_tmp = p_object.lock() )
-            if ( p_node->contains( p_tmp->boundingBox() ) )
-                p_node->_objects.push_back( p_tmp );
+        {
+            if ( p_node->contains( boundingBox(*p_tmp) ) )
+                p_node->_containedObjects.push_back( p_object );
+            else if ( p_node->intersects( boundingBox(*p_tmp) ) )
+                p_node->_intersectedObjects.push_back( p_object );
+        }
 
         return true;
 
@@ -69,7 +74,9 @@ AABBoxNode<ObjectType>::eraseExpired()
 {
     auto nodeVisitFunction = []( AABBoxNode<ObjectType>* p_node ) -> bool
     {
-        std::erase_if( p_node->_objects,
+        std::erase_if( p_node->_containedObjects,
+                       []( const auto& rp_object ) -> bool { return rp_object.expired(); } );
+        std::erase_if( p_node->_intersectedObjects,
                        []( const auto& rp_object ) -> bool { return rp_object.expired(); } );
         return true;
     };
@@ -84,9 +91,8 @@ AABBoxNode<ObjectType>::shrink()
     {
         CIE_BEGIN_EXCEPTION_TRACING
         
-        if ( p_node->_objects.empty() )
+        if ( p_node->_containedObjects.empty() && p_node->_intersectedObjects.empty() )
         {
-
             std::fill( p_node->_lengths.begin(),
                        p_node->_lengths.end(),
                        0 );
@@ -105,11 +111,11 @@ AABBoxNode<ObjectType>::shrink()
                    maxPoint.end(),
                    std::numeric_limits<typename AABBoxNode<ObjectType>::coordinate_type>().min() );
 
-        for ( auto& rp_object : p_node->_objects )
+        for ( auto& rp_object : p_node->_containedObjects )
         {
             if ( auto p_tmp = rp_object.lock() )
             {
-                const auto& r_box = p_tmp->boundingBox();
+                const auto& r_box = boundingBox(*p_tmp);
 
                 for ( Size dim=0; dim<AABBoxNode<ObjectType>::dimension; ++dim )
                 {
@@ -149,25 +155,40 @@ AABBoxNode<ObjectType>::find( const typename AABBoxNode<ObjectType>::object_ptr 
     auto p_objectInternal = p_object.lock();
 
     typename AABBoxNode<ObjectType>::self_ptr p_containingNode;
-    Size maxLevel = 0;
 
-    auto nodeVisitFunction = [&p_objectInternal,&p_containingNode,&maxLevel]( AABBoxNode<ObjectType>* p_node ) -> bool
+    auto nodeVisitFunction = [&p_objectInternal,&p_containingNode]( AABBoxNode<ObjectType>* p_node ) -> bool
     {
         CIE_BEGIN_EXCEPTION_TRACING
 
-        if ( p_node->level() < maxLevel )
-            return false;
+        bool hasObject = false;
 
-        if ( std::find( p_node->objects().begin(),
-                        p_node->objects().end(),
+        if ( std::find( p_node->_containedObjects.begin(),
+                        p_node->_containedObjects.end(),
                         p_objectInternal )
-             != p_node->objects().end() )
-        {
-            p_containingNode = p_node->weak_from_this();
-            maxLevel = p_node->level();
-        }
+             != p_node->_containedObjects.end() )
+        { hasObject = true; }
 
-        return true;
+        else if ( std::find( p_node->_intersectedObjects.begin(),
+                             p_node->_intersectedObjects.end(),
+                             p_objectInternal )
+             != p_node->_intersectedObjects.end() )
+        { hasObject = true; }
+
+        // Terminate search if the node does not have the object
+        // Continue the search if the node has the object but is not a leaf
+        // Terminate the search if the node has the object and is a leaf
+        if ( hasObject )
+        {
+            if ( p_node->isLeaf() )
+            {
+                p_containingNode = p_node->weak_from_this();
+                return false;
+            }
+            else
+                return true;
+        }
+        else
+            return false;
 
         CIE_END_EXCEPTION_TRACING
     };
@@ -192,17 +213,24 @@ AABBoxNode<ObjectType>::partition( Size maxObjects,
     {
         if ( auto p_parent = p_node->parent().lock() ) // Not root
         {
-            p_node->_objects.clear();
+            p_node->_containedObjects.clear();
+            p_node->_intersectedObjects.clear();
 
             // Pull contained objects from the parent
-            for ( auto& rp_object : p_parent->_objects )
+            for ( auto& rp_object : p_parent->_containedObjects )
                 if ( auto p_tmp = rp_object.lock() )
-                    if ( p_node->contains( p_tmp->boundingBox() ) )
-                        p_node->_objects.push_back( p_tmp );
+                    if ( p_node->contains( boundingBox(*p_tmp) ) )
+                        p_node->_containedObjects.push_back( rp_object );
+
+            // Pull intersected objects from the parent
+            for ( auto& rp_object : p_parent->_intersectedObjects )
+                if ( auto p_tmp = rp_object.lock() )
+                    if ( p_node->contains( boundingBox(*p_tmp) ) )
+                        p_node->_intersectedObjects.push_back( rp_object );
         }
 
         // Stop partitioning if the number of objects is within the limit
-        if ( p_node->_objects.size() <= maxObjects )
+        if ( p_node->_containedObjects.size() + p_node->_intersectedObjects.size() <= maxObjects )
             return true;
 
         // Stop partitioning if maximum recursion limit is reached
@@ -239,9 +267,17 @@ AABBoxNode<ObjectType>::partition( Size maxObjects,
 
 template <concepts::BoxBoundable ObjectType>
 inline const typename AABBoxNode<ObjectType>::object_ptr_container&
-AABBoxNode<ObjectType>::objects() const
+AABBoxNode<ObjectType>::containedObjects() const
 {
-    return this->_objects;
+    return this->_containedObjects;
+}
+
+
+template <concepts::BoxBoundable ObjectType>
+inline const typename AABBoxNode<ObjectType>::object_ptr_container&
+AABBoxNode<ObjectType>::intersectedObjects() const
+{
+    return this->_intersectedObjects;
 }
 
 

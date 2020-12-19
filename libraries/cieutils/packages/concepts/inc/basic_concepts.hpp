@@ -225,6 +225,20 @@ concept DerivedFrom
 = std::derived_from<DerivedType,BaseType>;
 
 
+// ---------------------------------------------------------
+// MISC
+// ---------------------------------------------------------
+
+namespace detail {
+template <class T>
+struct FalseType : std::false_type {};
+} // namespace detail
+
+
+template <class T>
+concept Unsatisfiable
+= detail::FalseType<T>::value;
+
 } // namespace cie::concepts
 
 #endif

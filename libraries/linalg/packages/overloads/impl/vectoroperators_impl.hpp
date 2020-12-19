@@ -165,7 +165,7 @@ ArrayType operator*( const ScalarType& scalar, const ArrayType& vector )
 template <cie::concepts::NumericContainer ArrayType>
 ArrayType operator+( const ArrayType& lhs, const ArrayType& rhs )
 {
-    CIE_OUT_OF_RANGE_CIE_TEST_CHECK( lhs.size() == rhs.size() )
+    CIE_OUT_OF_RANGE_CHECK( lhs.size() == rhs.size() )
 
     typedef typename ArrayType::value_type ValueType;
     ArrayType result(lhs.size());
@@ -202,7 +202,7 @@ std::array<ValueType,N> operator+( const std::array<ValueType,N>& lhs, const std
 template <cie::concepts::NumericContainer ArrayType>
 ArrayType operator-( const ArrayType& lhs, const ArrayType& rhs )
 {
-    CIE_OUT_OF_RANGE_CIE_TEST_CHECK( lhs.size() == rhs.size() )
+    CIE_OUT_OF_RANGE_CHECK( lhs.size() == rhs.size() )
 
     typedef typename ArrayType::value_type ValueType;
     ArrayType result(lhs.size());

@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+
 // --- Utility Includes ---
 #include "cieutils/packages/testing/inc/essentials.hpp"
 
@@ -15,6 +17,7 @@
 // --- STL Includes ---
 #include <chrono>
 #include <thread>
+#include <math.h>
 
 
 namespace cie::gl {

@@ -5,34 +5,16 @@
 #include "cieutils/packages/concepts/inc/container_concepts.hpp"
 #include "cieutils/packages/types/inc/types.hpp"
 
+// --- Internal Includes ---
+#include "CSG/packages/primitives/inc/CSGTraits.hpp"
+
 // --- STL Includes ---
 #include <memory>
 #include <array>
 
 namespace cie::csg {
 
-
-/**
- * Basic templated traits that every object has in CSG
-*/
-template <Size Dimension, concepts::NumericType CoordinateType = Double>
-class CSGTraits
-{
-public:
-    static const Size                               dimension = Dimension;
-    typedef CoordinateType                          coordinate_type;
-    typedef std::array<CoordinateType,Dimension>    point_type;
-};
-
-
-template <Size Dimension, concepts::NumericType CoordinateType>
-const Size
-CSGTraits<Dimension,CoordinateType>::dimension;
-
-
-/**
- * Interface for point-queriable objects
-*/
+/// Interface for point-queriable objects
 template <  Size N, 
             concepts::CopyConstructible ValueType = Bool,
             concepts::NumericType CoordinateType = Double   >

@@ -16,7 +16,7 @@ namespace cie::csg {
 
 template < Size Dimension,
            concepts::NumericType CoordinateType >
-class AbsBoundableObject
+class AbsBoundableObject : public CSGTraits<Dimension,CoordinateType>
 {
 public:
     using bounding_box = AABBox<Dimension,CoordinateType>;
@@ -27,7 +27,6 @@ public:
     AbsBoundableObject<Dimension,CoordinateType>& operator=( const AbsBoundableObject<Dimension,CoordinateType>& r_rhs ) = default;
 
     const bounding_box& boundingBox();
-    const bounding_box& boundingBox() const;
 
 protected:
     void boundingBoxShouldRecompute();
@@ -45,16 +44,40 @@ private:
 
 
 
-/* --- BoxBoundable Concept --- */
+/* --- Concepts --- */
 
 namespace cie::concepts {
+
+template <class T, class _ = void>
+struct HasBoundingBoxType : std::false_type {};
+
+template <class ...Args>
+struct HasBoundingBoxTypeHelper {};
+
 template <class T>
-concept BoxBoundable
-= requires ( T instance, const T constInstance )
+struct HasBoundingBoxType<
+    T,
+    std::conditional_t<
+        false,
+        HasBoundingBoxTypeHelper<
+        typename T::bounding_box
+        >,
+        void
+    >
+> : public std::true_type {};
+
+template <class T>
+concept HasBoundingBox
+= HasBoundingBoxType<T>::value
+  && requires ( T instance )
 {
     { instance.boundingBox() };
-    { constInstance.boundingBox() };
 };
+
+template <class T>
+concept HasNoBoundingBox
+= !HasBoundingBox<T>;
+
 } // namespace cie::concepts
 
 
