@@ -39,7 +39,7 @@ public:
      * Construct a marching container of the specified size, initialized
      * with the specified initializer
      */
-    MarchingContainer( Size capacity, const value_type& r_initializer );
+    MarchingContainer( Size capacity, const ValueType& r_initializer );
 
     /**
      * Construct a marching container of the specified size,
@@ -50,13 +50,13 @@ public:
     template <class ...Args>
     void emplace_back( Args&&... args );
 
-    void push_back( const value_type& r_value );
+    void push_back( const ValueType& r_value );
 
-    value_type& back();
-    const value_type& back() const;
+    ValueType& back();
+    const ValueType& back() const;
 
-    value_type& operator[]( Size index );
-    const value_type& operator[]( Size index ) const;
+    ValueType& operator[]( Size index );
+    const ValueType& operator[]( Size index ) const;
 
     /**
      * Return the number of times this container was pushed to
