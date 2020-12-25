@@ -4,6 +4,9 @@
 // --- Internal Includes ---
 #include "CSG/packages/operators/inc/UnaryOperator.hpp"
 
+// --- STL Includes ---
+#include <memory>
+
 
 namespace cie::csg {
 
@@ -19,6 +22,10 @@ public:
 
     virtual Bool at( const typename Complement<Dimension,CoordinateType>::point_type& r_point ) const override;
 };
+
+
+template <Size Dimension, concepts::NumericType CoordinateType>
+using ComplementPtr = std::shared_ptr<Complement<Dimension,CoordinateType>>;
 
 
 } // namespace cie::csg

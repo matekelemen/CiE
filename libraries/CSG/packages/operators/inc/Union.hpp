@@ -4,6 +4,9 @@
 // --- Internal Includes ---
 #include "CSG/packages/operators/inc/BinaryOperator.hpp"
 
+// --- STL Includes ---
+#include <memory>
+
 
 namespace cie::csg {
 
@@ -20,6 +23,10 @@ public:
 
     virtual Bool at( const typename Union<Dimension,CoordinateType>::point_type& r_point ) const override;
 };
+
+
+template <Size Dimension, concepts::NumericType CoordinateType>
+using UnionPtr = std::shared_ptr<Union<Dimension,CoordinateType>>;
 
 
 } // namespace cie::csg
