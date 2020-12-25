@@ -26,7 +26,7 @@ MarchingContainer<ValueType>::MarchingContainer( const ContainerType& r_initiali
 
 
 template <class ValueType>
-MarchingContainer<ValueType>::MarchingContainer( Size capacity, const value_type& r_initializer ) :
+MarchingContainer<ValueType>::MarchingContainer( Size capacity, const ValueType& r_initializer ) :
     _capacity( capacity ),
     _counter( capacity ),
     _container( capacity, r_initializer )
