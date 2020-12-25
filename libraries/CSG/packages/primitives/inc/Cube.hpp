@@ -6,6 +6,7 @@
 
 // --- Internal Includes ---
 #include "CSG/packages/primitives/inc/Primitive.hpp"
+#include "CSG/packages/primitives/inc/concepts.hpp"
 
 // --- STL Includes ---
 #include <tuple>
@@ -27,6 +28,9 @@ public:
         = std::tuple<typename Cube::point_type, typename Cube::coordinate_type>;
 
 public:
+    Cube( const typename Cube<Dimension,CoordinateType>::point_type& r_base,
+          CoordinateType length );
+
     template <class ContainerType>
     requires concepts::ClassContainer<ContainerType,CoordinateType>
     Cube( const ContainerType& base,
@@ -61,6 +65,9 @@ class Cube :
     public CSGObject<Dimension,Bool,CoordinateType>
 {
 public:
+    Cube( const typename Cube<Dimension,CoordinateType>::point_type& r_base,
+          CoordinateType length );
+
     template <class ContainerType>
     requires concepts::ClassContainer<ContainerType,CoordinateType>
     Cube( const ContainerType& base, 

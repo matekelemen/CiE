@@ -14,6 +14,20 @@ namespace cie::csg {
 
 /* --- Cube --- */
 
+template < Size Dimension,
+           concepts::NumericType CoordinateType >
+Cube<Dimension,CoordinateType>::Cube( const typename Cube<Dimension,CoordinateType>::point_type& r_base,
+                                      CoordinateType length ) :
+    _base( r_base ),
+    _length( length )
+{
+    CIE_RUNTIME_GEOMETRY_CHECK(
+        length >= 0,
+        "Edge length of a cube must be non-negative"
+    )
+}
+
+
 template < Size Dimension, 
            concepts::NumericType CoordinateType >
 template <class ContainerType>
@@ -84,6 +98,14 @@ Cube<Dimension,CoordinateType>::length()
 /* --- boolean::Cube --- */
 
 namespace boolean {
+
+
+template <Size Dimension, concepts::NumericType CoordinateType>
+Cube<Dimension,CoordinateType>::Cube( const typename Cube<Dimension,CoordinateType>::point_type& r_base,
+                                      CoordinateType length ) :
+    cie::csg::Cube<Dimension,CoordinateType>( r_base, length )
+{
+}
 
 
 template < Size Dimension,

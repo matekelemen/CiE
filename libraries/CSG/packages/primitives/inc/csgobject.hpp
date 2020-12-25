@@ -15,15 +15,16 @@
 namespace cie::csg {
 
 /// Interface for point-queriable objects
-template <  Size N, 
-            concepts::CopyConstructible ValueType = Bool,
-            concepts::NumericType CoordinateType = Double   >
+template < Size N, 
+           concepts::CopyConstructible ValueType = Bool,
+           concepts::NumericType CoordinateType = Double >
 class CSGObject : public CSGTraits<N,CoordinateType>
 {
 public:
-    typedef CSGObject                       abstract_base_type;
-    typedef ValueType                       value_type;
+    typedef CSGObject abstract_base_type;
+    typedef ValueType value_type;
 
+public:
     template <class ContainerType>
     ValueType evaluate( const ContainerType& point ) const
         requires concepts::ClassContainer<ContainerType,CoordinateType>;
@@ -32,7 +33,6 @@ public:
     ValueType evaluate( ContainerType&& point ) const
         requires concepts::ClassContainer<ContainerType,CoordinateType>;
 
-protected:
     virtual ValueType at(const typename CSGObject::point_type& point) const = 0;
 };
 

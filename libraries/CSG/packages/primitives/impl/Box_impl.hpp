@@ -140,6 +140,14 @@ Box<Dimension,CoordinateType>::lengths()
 namespace boolean {
 
 
+template <Size Dimension, concepts::NumericType CoordinateType>
+Box<Dimension,CoordinateType>::Box( const typename Box<Dimension,CoordinateType>::point_type& r_base,
+                                    const typename Box<Dimension,CoordinateType>::point_type& r_lengths ) :
+    cie::csg::Box<Dimension,CoordinateType>( r_base, r_lengths )
+{
+}
+
+
 template <  Size Dimension,
             concepts::NumericType CoordinateType   >
 template <class ContainerType1, class ContainerType2>

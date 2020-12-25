@@ -6,6 +6,7 @@
 
 // --- Internal Includes ---
 #include "CSG/packages/primitives/inc/Primitive.hpp"
+#include "CSG/packages/primitives/inc/concepts.hpp"
 
 // --- STL Includes ---
 #include <tuple>
@@ -65,6 +66,9 @@ class Box :
     public CSGObject<Dimension,Bool,CoordinateType>
 {
 public:
+    Box( const typename Box<Dimension,CoordinateType>::point_type& r_base,
+         const typename Box<Dimension,CoordinateType>::point_type& r_lengths );
+
     template <class ContainerType1, class ContainerType2>
     requires concepts::ClassContainer<ContainerType1,CoordinateType>
              && concepts::ClassContainer<ContainerType2,CoordinateType>
