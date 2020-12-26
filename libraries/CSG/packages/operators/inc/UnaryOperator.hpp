@@ -27,7 +27,7 @@ public:
 
     template <class CSGObjectType, class ...Args>
     void emplaceRhs( Args&&... args )
-        requires concepts::DerivedFrom<CSGObjectType,operand_type>;
+        requires concepts::DerivedFrom<CSGObjectType, typename UnaryOperator<Dimension, ValueType, CoordinateType>::operand_type>;
 
     operand_ptr& rhs();
     const operand_ptr& rhs() const;

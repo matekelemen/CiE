@@ -33,7 +33,7 @@ template < Size Dimension,
 template <class CSGObjectType, class ...Args>
 inline void
 UnaryOperator<Dimension,ValueType,CoordinateType>::emplaceRhs( Args&&... args )
-    requires concepts::DerivedFrom<CSGObjectType,CSGObject<Dimension,ValueType,CoordinateType>>
+    requires concepts::DerivedFrom<CSGObjectType,typename UnaryOperator<Dimension,ValueType,CoordinateType>::operand_type>
 {
     CIE_BEGIN_EXCEPTION_TRACING
 

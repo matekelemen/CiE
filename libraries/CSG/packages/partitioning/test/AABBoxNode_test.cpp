@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+
 // --- Utility Includes ---
 #include "cieutils/packages/testing/inc/essentials.hpp"
 
