@@ -1,5 +1,5 @@
-#ifndef MESHKERNEL_MESH_HPP
-#define MESHKERNEL_MESH_HPP
+#ifndef CIE_MESH_KERNEL_MESH_HPP
+#define CIE_MESH_KERNEL_MESH_HPP
 
 // --- Linalg Includes ---
 #include "linalg/packages/types/inc/vectortypes.hpp"

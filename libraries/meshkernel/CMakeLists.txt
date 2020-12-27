@@ -3,17 +3,17 @@ project( meshkernel CXX )
 # ---------------------------------------------------------
 # GATHER FILES AND INCLUDE DIRECTORIES
 # ---------------------------------------------------------
-file( GLOB MESHKERNEL_SOURCE_FILES src/*.cpp)
-file( GLOB MESHKERNEL_TEST_FILES test/*.cpp)
-file( GLOB MESHKERNEL_HEADER_FILES inc/*.h* )
+COLLECT_PACKAGES( HEADERS
+                  SOURCES
+                  TEST_SOURCES )
 
 # ---------------------------------------------------------
 # LIBRARIES AND EXECUTABLES
 # ---------------------------------------------------------
-ADD_SHARED_LIBRARY( meshkernel ${MESHKERNEL_SOURCE_FILES} ${MESHKERNEL_HEADER_FILES} )
+ADD_SHARED_LIBRARY( meshkernel ${SOURCES} )
 TARGET_LINK_LIBRARIES_INSTALL( meshkernel cieutils )
 
-add_executable( meshkernel_testrunner ${MESHKERNEL_TEST_FILES} ${MESHKERNEL_HEADER_FILES} )
+add_executable( meshkernel_testrunner ${TEST_SOURCES} )
 TARGET_LINK_LIBRARIES_INSTALL( meshkernel_testrunner meshkernel )
 
 # ---------------------------------------------------------

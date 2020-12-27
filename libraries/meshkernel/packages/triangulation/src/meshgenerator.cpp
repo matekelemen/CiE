@@ -1,6 +1,6 @@
 // --- Internal Includes ---
-#include "meshgenerator.hpp"
-#include "meshgenerator_helper.hpp"
+#include "meshkernel/packages/triangulation/inc/meshgenerator.hpp"
+#include "meshkernel/packages/triangulation/inc/meshgenerator_helper.hpp"
 
 // --- STL Includes ---
 #include <cmath>

@@ -3,7 +3,7 @@
 #include "pybind11/stl.h"
 
 // --- Internal Includes ---
-#include "meshkernel/inc/meshgenerator.hpp"
+#include "meshkernel/packages/triangulation/inc/meshgenerator.hpp"
 
 
 PYBIND11_MODULE( pymeshkernel, m )

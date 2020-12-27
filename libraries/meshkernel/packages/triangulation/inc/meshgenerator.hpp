@@ -1,5 +1,5 @@
-#ifndef MESHGENERATOR_HPP
-#define MESHGENERATOR_HPP
+#ifndef CIE_MESH_KERNEL_MESHGENERATOR_HPP
+#define CIE_MESH_KERNEL_MESHGENERATOR_HPP
 
 // --- STL Includes ---
 #include <vector>

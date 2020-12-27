@@ -1,19 +1,20 @@
+#define _USE_MATH_DEFINES
+
 // --- Utility Includes ---
 #include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
-#include "meshkernel/inc/meshgenerator.hpp"
-#include "meshkernel/inc/meshgenerator_helper.hpp"
+#include "meshkernel/packages/triangulation/inc/meshgenerator.hpp"
+#include "meshkernel/packages/triangulation/inc/meshgenerator_helper.hpp"
 
 // --- STL Includes ---
 #include <vector>
 #include <cmath>
 #include <numeric>
+#include <math.h>
 
 namespace cie::meshkernel
 {
-
-const double PI = 3.141592653589793;
 
 // Test class to avoid code reuse
 struct RegionWithKinkFixture
@@ -60,7 +61,7 @@ CIE_TEST_CASE_METHOD( RegionWithKinkFixture, "computeAngle", "[meshgenerator]" )
   }
 
   // Those are the values we expect
-  std::array<double, 8> expectedAngles{ PI / 2.0, PI, PI / 2.0, PI, PI / 4.0, PI / 2.0, PI / 4.0, PI };
+  std::array<double, 8> expectedAngles{ M_PI / 2.0, M_PI, M_PI / 2.0, M_PI, M_PI / 4.0, M_PI / 2.0, M_PI / 4.0, M_PI };
 
   // Compare expected and computed values
   for( size_t i = 0; i < 8; ++i )
@@ -106,7 +107,7 @@ CIE_TEST_CASE( "computeAngleZeroLength", "[meshgenerator]" )
 
 CIE_TEST_CASE_METHOD( RegionWithKinkFixture, "computeSmallestAngle", "[meshgenerator]" )
 {
-  double pi = PI;
+  double pi = M_PI;
   double pi_2 = pi / 2.0;
   double pi_4 = pi / 4.0;
   double atanP5 = std::atan( 0.5 );
@@ -269,7 +270,7 @@ CIE_TEST_CASE( "divideRegionSingleSegment1", "[meshgenerator]" )
 
 CIE_TEST_CASE_METHOD( CircularRegionFixture, "attemptDivision", "[meshgenerator]" )
 {
-  double alpha = std::atan( 1.0 / 3.0 ) + PI / 4.0;
+  double alpha = std::atan( 1.0 / 3.0 ) + M_PI / 4.0;
   double delta = 1e-5;
 
   bool result;
@@ -319,7 +320,7 @@ CIE_TEST_CASE( "attemptDivisionLessThanFourVertices", "[meshgenerator]" )
 
   bool result;
 
-  CIE_TEST_REQUIRE_NOTHROW( result = meshgeneratorhelper::attemptDivision( vertices, regions, 0, PI / 4.0, 1.0 ) );
+  CIE_TEST_REQUIRE_NOTHROW( result = meshgeneratorhelper::attemptDivision( vertices, regions, 0, M_PI / 4.0, 1.0 ) );
 
   CIE_TEST_CHECK( result == true );
   CIE_TEST_CHECK( vertices.size( ) ==  3 );

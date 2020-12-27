@@ -1,8 +1,8 @@
-#ifndef MESHGENERATOR_HELPER_HPP_
-#define MESHGENERATOR_HELPER_HPP_
+#ifndef CIE_MESH_KERNEL_MESHGENERATOR_HELPER_HPP_
+#define CIE_MESH_KERNEL_MESHGENERATOR_HELPER_HPP_
 
 // --- Internal Includes ---
-#include "meshkernel/inc/meshgenerator.hpp"
+#include "meshkernel/packages/triangulation/inc/meshgenerator.hpp"
 
 namespace cie::meshkernel
 {

@@ -2,7 +2,7 @@
 #include "cieutils/packages/macros/inc/exceptions.hpp"
 
 // --- Internal Includes ---
-#include "meshkernel/inc/meshgenerator_helper.hpp"
+#include "meshkernel/packages/triangulation/inc/meshgenerator_helper.hpp"
 
 // --- STL Includes ---
 #include <cmath>
