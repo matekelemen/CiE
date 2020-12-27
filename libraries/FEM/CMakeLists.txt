@@ -3,20 +3,20 @@ project( FEM CXX )
 # ---------------------------------------------------------
 # GATHER FILES AND INCLUDE DIRECTORIES
 # ---------------------------------------------------------
-COLLECT_PACKAGES(   FEM_HEADER_FILES
-                    FEM_SOURCE_FILES
-                    FEM_TEST_FILES )
+COLLECT_PACKAGES( HEADERS
+                  SOURCES
+                  TEST_SOURCES )
 
-FILE( GLOB FEM_TEST_DRIVER ${CMAKE_CURRENT_SOURCE_DIR}/test/*.cpp )
-LIST( INSERT FEM_TEST_FILES 0 ${FEM_TEST_DRIVER} )
+FILE( GLOB TEST_DRIVER ${CMAKE_CURRENT_SOURCE_DIR}/test/*.cpp )
+LIST( INSERT TEST_SOURCES 0 ${TEST_DRIVER} )
 
 # ---------------------------------------------------------
 # LIBRARIES AND EXECUTABLES
 # ---------------------------------------------------------
-ADD_SHARED_LIBRARY( fem SHARED ${FEM_SOURCE_FILES} ${FEM_HEADER_FILES} )
+ADD_SHARED_LIBRARY( fem SHARED ${SOURCES} )
 TARGET_LINK_LIBRARIES_INSTALL( fem cieutils linalg )
 
-add_executable( fem_testrunner ${FEM_TEST_FILES} )
+add_executable( fem_testrunner ${TEST_SOURCES} )
 TARGET_LINK_LIBRARIES_INSTALL( fem_testrunner fem )
 
 # ---------------------------------------------------------

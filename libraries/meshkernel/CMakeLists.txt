@@ -11,7 +11,7 @@ COLLECT_PACKAGES( HEADERS
 # LIBRARIES AND EXECUTABLES
 # ---------------------------------------------------------
 ADD_SHARED_LIBRARY( meshkernel ${SOURCES} )
-TARGET_LINK_LIBRARIES_INSTALL( meshkernel cieutils )
+TARGET_LINK_LIBRARIES_INSTALL( meshkernel cieutils csg )
 
 add_executable( meshkernel_testrunner ${TEST_SOURCES} )
 TARGET_LINK_LIBRARIES_INSTALL( meshkernel_testrunner meshkernel )
