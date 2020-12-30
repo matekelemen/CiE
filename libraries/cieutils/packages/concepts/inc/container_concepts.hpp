@@ -41,32 +41,32 @@ concept STLContainer
 
 template <class ContainerType, class ValueType>
 concept ClassContainer
-=   STLContainer<ContainerType>
-    && std::is_same_v<typename ContainerType::value_type, ValueType>;
+= STLContainer<ContainerType>
+  && std::is_same_v<typename ContainerType::value_type, ValueType>;
 
 
 template <class ContainerType>
 concept NumericContainer
-=   STLContainer<ContainerType>
-    && NumericType<typename ContainerType::value_type>;
+= STLContainer<ContainerType>
+  && NumericType<typename ContainerType::value_type>;
 
 
 template <class ContainerType>
 concept PointerContainer
-=   STLContainer<ContainerType>
-    && RawPointer<typename ContainerType::value_type>;
+= STLContainer<ContainerType>
+  && Pointer<typename ContainerType::value_type>;
 
 
 template <class ContainerType>
 concept NonPointerContainer
-=   STLContainer<ContainerType>
-    && NonRawPointer<typename ContainerType::value_type>;
+= STLContainer<ContainerType>
+  && !PointerContainer<ContainerType>;
 
 
 template <class ContainerType>
 concept IteratorContainer
-=   STLContainer<ContainerType>
-    && IteratorType<typename ContainerType::value_type>;
+= STLContainer<ContainerType>
+  && IteratorType<typename ContainerType::value_type>;
 
 
 // ---------------------------------------------------------
@@ -75,10 +75,19 @@ concept IteratorContainer
 
 template <class ContainerType>
 concept ResizableContainer
-=   STLContainer<ContainerType>
-    && requires ( ContainerType instance )
+= STLContainer<ContainerType>
+  && requires ( ContainerType instance )
 {
-    { instance.resize(0) };
+    { instance.resize(1) };
+};
+
+
+template <class ContainerType>
+concept ReservableContainer
+= STLContainer<ContainerType>
+  && requires ( ContainerType instance )
+{
+    { instance.reserve(1) };
 };
 
 
