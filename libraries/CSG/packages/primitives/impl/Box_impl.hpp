@@ -18,7 +18,8 @@ template < Size Dimension,
            concepts::NumericType CoordinateType >
 Box<Dimension,CoordinateType>::Box( typename Box<Dimension,CoordinateType>::point_type& r_base,
                                     typename Box<Dimension,CoordinateType>::point_type& r_lengths ) :
-    Box<Dimension,CoordinateType>( r_base, r_lengths )
+    _base( r_base ),
+    _lengths( r_lengths )
 {
     #ifdef CIE_ENABLE_RUNTIME_GEOMETRY_CHECKS
     bool positiveEdgeLengths = true;

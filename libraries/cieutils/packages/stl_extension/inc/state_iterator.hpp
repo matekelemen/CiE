@@ -28,8 +28,8 @@ public:
     StateIterator( const StateIterator& copy ) = delete;
     StateIterator& operator=( const StateIterator& copy ) = delete;
 
-    StateIterator(  IteratorType begin,
-                    IteratorType end );
+    StateIterator( IteratorType begin,
+                   IteratorType end );
 
     void reset();
 
@@ -40,9 +40,9 @@ protected:
     explicit StateIterator(); // <-- for initialization of derived classes only
 
 protected:
-    IteratorType        _begin;
-    IteratorType        _end;
-    state_container     _state;
+    IteratorType    _begin;
+    IteratorType    _end;
+    state_container _state;
 }; // class StateIterator
 
 
@@ -108,8 +108,8 @@ requires concepts::STLContainer<typename ContainerType::value_type>;
 
 /** Create a state iterator structure with 'size' components
  *  that has |container.size()|^size number of states.
- *  This basically iterator through all possible combinations
- *  of the container values.
+ *  This basically creates an iterator through all possible
+ *  combinations of the container values.
  */
 template <concepts::STLContainer ContainerType>
 InternalStateIterator<const ContainerType>

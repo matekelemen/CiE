@@ -110,12 +110,8 @@ concept HasCSGTraits
 
 /// Trait extractor
 template <detail::HasCSGTraits ObjectType>
-struct Traits : public detail::Traits<ObjectType>
-{
-    static const Size dimension = Traits<ObjectType>::csg_traits::dimension;
-    using coordinate_type       = typename Traits<ObjectType>::csg_traits::coordinate_type;
-    using point_type            = typename Traits<ObjectType>::csg_traits::point_type;
-};
+struct Traits : public detail::Traits<ObjectType>::csg_traits
+{};
 
 
 } // namespace cie::csg

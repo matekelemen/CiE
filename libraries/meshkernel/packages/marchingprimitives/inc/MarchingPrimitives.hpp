@@ -1,6 +1,9 @@
 #ifndef CIE_MESHKERNEL_MARCHING_PRIMITIVES_HPP
 #define CIE_MESHKERNEL_MARCHING_PRIMITIVES_HPP
 
+// --- Utility Includes ---
+#include "cieutils/packages/stl_extension/inc/MarchingContainer.hpp"
+
 // --- CSG Includes ---
 #include "CSG/packages/primitives/inc/csgobject.hpp"
 #include "CSG/packages/primitives/inc/CSGTraits.hpp"
@@ -8,62 +11,70 @@
 
 // --- Internal Includes ---
 #include "meshkernel/packages/marchingprimitives/inc/connectivitytables.hpp"
+#include "meshkernel/packages/traits/inc/MeshTraits.hpp"
 
 // --- STL Includes ---
 #include <vector>
 #include <array>
 #include <memory>
+#include <utility>
 
 
 namespace cie::mesh {
 
 
-template < concepts::CSGObject TargetType,
-           concepts::Primitive PrimitiveType >
-class MarchingPrimitives
+template <concepts::CSGObject TargetType>
+class MarchingPrimitives : public Traits<TargetType>
 {
 public:
-    static const Size dimension = csg::Traits<TargetType>::dimension;
-    using coordinate_type       = typename csg::Traits<TargetType>::coordinate_type;
-    using point_type            = typename csg::Traits<TargetType>::
-
     using target_type           = TargetType;
-    using primitive_type        = PrimitiveType;
-
     using target_ptr            = std::shared_ptr<target_type>;
-    using primitive_ptr         = std::shared_ptr<primitive_type>;
 
-    using point_container       = std::vector<point_type>;
-    using primitive_container   = std::vector<primitive_type>;
+    using point_container       = std::vector<typename MarchingPrimitives<TargetType>::point_type>;
 
-    using connectivity_table    = std::vector<std::vector<Size>>;
+    using edge_table            = std::vector<std::pair<Size,Size>>;
+    using connectivity_table    = std::vector<std::vector<std::vector<Size>>>;
 
-    using output_arguments      = std::array<point_type,dimension>;
+    using output_arguments      = std::array<typename MarchingPrimitives<TargetType>::point_type,MarchingPrimitives<TargetType>::dimension>;
     using output_functor        = std::function<void(const output_arguments&)>;
 
 public:
-    
-
-public:
     MarchingPrimitives( target_ptr p_target,
+                        const edge_table& r_edgeTable,
                         const connectivity_table& r_connectivityTable,
                         output_functor outputFunctor );
 
-protected:
-    virtual bool nextPrimitiveSet( primitive_container& r_primitives ) = 0;
+    void execute();
+
+private:
+    /// Make sure that everything is set up to perform the march
+    void checkIfInitialized() const;
 
 protected:
     MarchingPrimitives() = delete;
     MarchingPrimitives( const MarchingPrimitives<TargetType,PrimitiveType>& r_rhs ) = delete;
     MarchingPrimitives<TargetType,PrimitiveType>& operator=( const MarchingPrimitives<TargetType,PrimitiveType>& r_rhs ) = delete;
 
+    /// Primitive generator
+    virtual bool getNextPrimitive( point_container& r_vertices ) = 0;
+
 protected:
+    /// Pointer to the target geometry
     target_ptr                _p_target;
-    const connectivity_table& _r_connectivityTable;
+
+    /// Map edge index to vertex pairs
+    const edge_table          _edgeTable;
+
+    /// Map active point configurations to surface primitives (3D: active point config -> triangles)
+    const connectivity_table  _connectivityTable;
+
+    /// Function that gets called for every surface primitive
     output_functor            _outputFunctor;
 };
 
 
 } // namespace cie::mesh
+
+#include "meshkernel/packages/marchingprimitives/impl/MarchingPrimitives_impl.hpp"
 
 #endif

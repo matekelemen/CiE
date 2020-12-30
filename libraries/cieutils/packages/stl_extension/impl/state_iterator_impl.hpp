@@ -100,8 +100,8 @@ StateIterator<IteratorType>::StateIterator()
 
 
 template <concepts::STLContainer ContainerType>
-InternalStateIterator<ContainerType>::InternalStateIterator(    const ContainerType& container,
-                                                                Size size ) :
+InternalStateIterator<ContainerType>::InternalStateIterator( const ContainerType& container,
+                                                             Size size ) :
     StateIterator<typename std::vector<detail::container_reference_wrapper<const ContainerType>>::const_iterator>()
 {
     CIE_BEGIN_EXCEPTION_TRACING

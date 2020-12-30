@@ -148,7 +148,6 @@ CIE_TEST_CASE( "Container Concepts", "[concepts]" )
     nonPointerContainerTest( c );
     nonPointerContainerTest( d );
     nonPointerContainerTest( e );
-    nonPointerContainerTest( g );
 }
 
 
