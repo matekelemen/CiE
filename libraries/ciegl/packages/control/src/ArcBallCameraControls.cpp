@@ -22,11 +22,10 @@ namespace cie::gl {
 
 ArcBallCameraControls::ArcBallCameraControls( bool verbose ) :
     MappedCameraControls(),
+    _center( {0.0, 0.0, 0.0} ),
     _rotationScale( 0.1 * M_PI / 180.0 ),
     _zoomScale( 1.05 ),
     _zoomScaleIncrement( 0.05 ),
-    _x( 0.0 ),
-    _y( 0.0 ),
     _dx( 0.0 ),
     _dy( 0.0 ),
     _isLeftMouseButtonPressed( false ),

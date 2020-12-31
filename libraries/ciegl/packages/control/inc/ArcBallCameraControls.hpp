@@ -67,8 +67,6 @@ private:
     double _zoomScale;
     double _zoomScaleIncrement;
 
-    double _x;
-    double _y;
     double _dx;
     double _dy;
 

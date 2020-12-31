@@ -44,7 +44,7 @@ int main( int argc, char const* argv[] )
         else if ( extension == ".obj" )
             p_model.reset( new gl::ObjPart(filePath) );
         else
-            CIE_THROW( Exception, "Unsuppoerted file extension: " + extension.string() )
+            CIE_THROW( Exception, "Unsupported file extension: " + extension.string() )
         
 
         // Write file

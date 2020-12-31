@@ -3,9 +3,9 @@ project( CSG CXX )
 # ---------------------------------------------------------
 # GATHER FILES AND INCLUDE DIRECTORIES
 # ---------------------------------------------------------
-COLLECT_PACKAGES(   CSG_HEADER_FILES
-                    CSG_SOURCE_FILES
-                    CSG_TEST_FILES )
+COLLECT_PACKAGES( CSG_HEADER_FILES
+                  CSG_SOURCE_FILES
+                  CSG_TEST_FILES )
 
 FILE( GLOB CSG_TEST_DRIVER ${CMAKE_CURRENT_SOURCE_DIR}/test/*.cpp )
 LIST( INSERT CSG_TEST_FILES 0 ${CSG_TEST_DRIVER} )
@@ -13,7 +13,7 @@ LIST( INSERT CSG_TEST_FILES 0 ${CSG_TEST_DRIVER} )
 # ---------------------------------------------------------
 # LIBRARIES AND EXECUTABLES
 # ---------------------------------------------------------
-ADD_SHARED_LIBRARY( csg ${CSG_SOURCE_FILES} ${CSG_HEADER_FILES}  )
+ADD_SHARED_LIBRARY( csg ${CSG_SOURCE_FILES} )
 TARGET_LINK_LIBRARIES_INSTALL( csg linalg pugixml )
 
 add_executable( csg_testrunner ${CSG_TEST_FILES} )

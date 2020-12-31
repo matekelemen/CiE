@@ -30,15 +30,16 @@ public:
 
     MarchingCubes( typename MarchingCubes<TargetType>::target_ptr p_target,
                    const MarchingCubes<TargetType>::point_type& r_origin,
-                   const resolution_specifier& r_numberOfPrimitives,
+                   const typename MarchingCubes<TargetType>::resolution_specifier& r_numberOfPrimitives,
                    MarchingCubes<TargetType>::coordinate_type edgeLength,
                    typename MarchingCubes<TargetType>::output_functor outputFunctor );
 
 protected:
-    virtual bool getNextPrimitive( typename MarchingCubes<CoordinateType>::point_container& r_vertices ) override;
+    virtual bool getNextPrimitive( typename MarchingCubes<TargetType>::point_container& r_vertices ) override;
 
 protected:
     primitive_container_ptr _p_primitives;
+    Size                    _primitiveIndex;
 };
 
 

@@ -2,6 +2,7 @@
 #define CIE_MESH_KERNEL_MARCHING_CUBES_IMPL_HPP
 
 // --- Utility Includes ---
+#include "cieutils/packages/stl_extension/inc/state_iterator.hpp"
 #include "cieutils/packages/macros/inc/exceptions.hpp"
 #include "cieutils/packages/stl_extension/inc/resize.hpp"
 
@@ -24,7 +25,8 @@ MarchingCubes<TargetType>::MarchingCubes( typename MarchingCubes<TargetType>::ta
                                     detail::cubeEdgeMap,
                                     detail::marchingCubesConnectivityMap,
                                     outputFunctor ),
-    _p_primitives( p_primitives )
+    _p_primitives( p_primitives ),
+    _primitiveIndex( 0 )
 {
 }
 
@@ -39,14 +41,17 @@ MarchingCubes<TargetType>::MarchingCubes( typename MarchingCubes<TargetType>::ta
                                     detail::cubeEdgeMap,
                                     detail::marchingCubesConnectivityMap,
                                     outputFunctor ),
-    _p_primitives()
+    _p_primitives( new typename MarchingCubes<TargetType>::primitive_container ),
+    _primitiveIndex( 0 )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    makeCartesianMesh( r_numberOfPrimitives,
-                       edgeLength,
-                       r_origin,
-                       *this->_p_primitives );
+    makeCartesianMesh<typename MarchingCubes<TargetType>::primitive_type>(
+        r_numberOfPrimitives,
+        edgeLength,
+        r_origin,
+        *this->_p_primitives
+    );
 
     CIE_END_EXCEPTION_TRACING
 }
@@ -58,8 +63,43 @@ MarchingCubes<TargetType>::getNextPrimitive( typename MarchingCubes<TargetType>:
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    r_primitives.reserve( 8 );
-    
+    // Init
+    r_vertices.clear();
+
+    // Terminate if reached the end of the primitives
+    if ( this->_p_primitives->size() <= this->_primitiveIndex )
+    {
+        this->_primitiveIndex = 0;
+        return false;
+    }
+
+    r_vertices.reserve( 8 );
+
+    std::array<std::array<Size,2>,3> cartesianStates
+    {{
+        { 0, 1 },
+        { 0, 1 },
+        { 0, 1 }
+    }};
+    auto cartesianIterator = utils::makeStateIterator( cartesianStates );
+
+    const auto& r_primitive       = this->_p_primitives->at( this->_primitiveIndex );
+    const auto& r_primitiveOrigin = r_primitive.base();
+    auto edgeLength               = r_primitive.length();
+
+    for ( Size primitiveIndex=0; primitiveIndex<8; ++primitiveIndex, ++cartesianIterator )
+    {
+        typename MarchingCubes<TargetType>::point_type vertex = r_primitiveOrigin;
+        const auto& r_spatialIndex = *cartesianIterator;
+
+        for ( Size dim=0; dim<3; ++dim )
+            vertex[dim] += edgeLength * (*r_spatialIndex[dim]);
+
+        r_vertices.push_back( vertex );
+    }
+
+    ++(this->_primitiveIndex);
+    return true;
 
     CIE_END_EXCEPTION_TRACING
 }

@@ -16,10 +16,11 @@ namespace cie::mesh {
 
 template <concepts::CSGObject TargetType>
 MarchingPrimitives<TargetType>::MarchingPrimitives( typename MarchingPrimitives<TargetType>::target_ptr p_target,
-                                                    const typename MarchingPrimitives<TargetType>::edge_table r_edgeTable,
+                                                    const typename MarchingPrimitives<TargetType>::edge_table& r_edgeTable,
                                                     const typename MarchingPrimitives<TargetType>::connectivity_table& r_connectivityTable,
                                                     typename MarchingPrimitives<TargetType>::output_functor outputFunctor ) :
     _p_target( p_target ),
+    _edgeTable( r_edgeTable ),
     _connectivityTable( r_connectivityTable ),
     _outputFunctor( outputFunctor )
 {
@@ -33,10 +34,9 @@ MarchingPrimitives<TargetType>::execute()
     CIE_BEGIN_EXCEPTION_TRACING
 
     using coordinate_type = MarchingPrimitives<TargetType>::coordinate_type;
-    using point_type      = MarchingPrimitives<TargetType>::point_type;
 
-    using cie::operator+<point_type>;
-    using cie::operator/<point_type,coordinate_type>;
+    using ::operator+;
+    using ::operator/;
 
     typename MarchingPrimitives<TargetType>::point_container vertices;
     typename MarchingPrimitives<TargetType>::output_arguments outputArguments;
@@ -47,18 +47,20 @@ MarchingPrimitives<TargetType>::execute()
 
         // Evaluate target and build configuration
         for ( Size vertexIndex=0; vertexIndex<vertices.size(); ++vertexIndex )
-            if ( this->_p_target->at( vertices[vertexIndex] ) )
-                utils::flipBit( configurationIndex, vertexIndex );
+            if ( !this->_p_target->at( vertices[vertexIndex] ) )
+                configurationIndex = utils::flipBit( configurationIndex, vertexIndex );
 
         // Find surface primitive constructor map
-        const auto& r_primitives = this->_connectivityTable[configurationIndex];
+        const auto& r_edgeSets = this->_connectivityTable[configurationIndex];
 
         // Build surface primitives
-        for ( const auto& r_primitive : r_primitives )
+        for ( const auto& r_edgeSet : r_edgeSets )
         {
-            for ( auto& r_point : outputArguments )
+            for ( Size vertexIndex=0; vertexIndex<r_edgeSet.size(); ++vertexIndex )
             {
-                const auto& r_edge = r_primitive[dim];
+                auto& r_point      = outputArguments[vertexIndex];
+                const auto& r_edge = this->_edgeTable[ r_edgeSet[vertexIndex] ];
+
                 r_point = (vertices[r_edge.first] + vertices[r_edge.second]) / coordinate_type(2);
             }
 

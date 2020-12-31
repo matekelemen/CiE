@@ -52,8 +52,8 @@ private:
 
 protected:
     MarchingPrimitives() = delete;
-    MarchingPrimitives( const MarchingPrimitives<TargetType,PrimitiveType>& r_rhs ) = delete;
-    MarchingPrimitives<TargetType,PrimitiveType>& operator=( const MarchingPrimitives<TargetType,PrimitiveType>& r_rhs ) = delete;
+    MarchingPrimitives( const MarchingPrimitives<TargetType>& r_rhs ) = delete;
+    MarchingPrimitives<TargetType>& operator=( const MarchingPrimitives<TargetType>& r_rhs ) = delete;
 
     /// Primitive generator
     virtual bool getNextPrimitive( point_container& r_vertices ) = 0;

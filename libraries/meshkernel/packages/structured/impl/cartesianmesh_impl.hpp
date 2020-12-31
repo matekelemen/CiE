@@ -31,6 +31,9 @@ void makeCartesianMesh( const typename Traits<PrimitiveType>::resolution_specifi
         []( Size lhs, Size rhs ) -> Size { return lhs * rhs; }
     );
 
+    if ( numberOfPrimitives == 0 )
+        return;
+
     utils::reserve( r_primitives, r_primitives.size() + numberOfPrimitives );
 
     // Create iterator through the cartesian products
@@ -106,6 +109,9 @@ void makeCartesianMesh( const typename Traits<PrimitiveType>::domain_specifier& 
         1.0,
         []( Size lhs, Size rhs ) -> Size { return lhs * rhs; }
     );
+
+    if ( numberOfPrimitives == 0 )
+        return;
 
     utils::reserve( r_primitives, r_primitives.size() + numberOfPrimitives );
 
