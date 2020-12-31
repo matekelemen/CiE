@@ -6,6 +6,7 @@
 
 // --- CSG Includes ---
 #include <csg/primitives.hpp>
+#include <csg/operators.hpp>
 
 // --- Utility Includes ---
 #include <cieutils/macros.hpp>
@@ -66,12 +67,32 @@ public:
 };
 
 
+
+
+CSGObjectPtr makeTarget()
+{
+    auto p_unitSphere = CSGObjectPtr(
+        new csg::boolean::Sphere<Dimension,CoordinateType>( {0.0,0.0,0.0}, 1.0 )
+    );
+
+    auto p_horizontalRod = CSGObjectPtr(
+        new csg::boolean::Box<Dimension,CoordinateType>( {-2.0,-0.2,-0.2}, {4.0,0.4,0.4} )
+    );
+
+    auto p_cube = CSGObjectPtr(
+        new csg::boolean::Cube<Dimension,CoordinateType>( {-0.9, -0.9, -0.9}, 1.8 )
+    );
+
+    return p_unitSphere * p_cube - p_horizontalRod;
+}
+
+
+
+
 int main( int argc, char const* argv[] )
 {
     // Construct target
-    auto p_target = CSGObjectPtr(
-        new csg::boolean::Sphere<Dimension,CoordinateType>( {0.0,0.0}, 1.0 )
-    );
+    CSGObjectPtr p_target = makeTarget();
 
     // Graphics setup
     auto p_context = gl::GLFWContextSingleton::get(
@@ -86,11 +107,12 @@ int main( int argc, char const* argv[] )
     // March and add model
     auto timerID = p_scene->tic();
 
+    Size resolution = 100;
     auto p_model = gl::PartPtr( new MarchingPart(
         p_target,
         { -1.0, -1.0, -1.0 },
-        { 100, 100, 100 },
-        0.04
+        { resolution, resolution, resolution },
+        2.0 / resolution
     ) );
 
     p_scene->toc( "Finished scanning", timerID );
@@ -110,11 +132,12 @@ int main( int argc, char const* argv[] )
                                  50.0 );
 
     // Set controls
-    auto p_controls = std::make_shared<gl::ArcBallCameraControls>(true);
+    auto p_controls = std::make_shared<gl::FlyCameraControls>(true);
     p_controls->bind( p_window, p_camera );
 
-    p_controls->setZoomScale( 0.01 );
+    p_controls->setMovementScale( 0.01 );
     p_controls->setRotationScale( 0.005 );
+    p_controls->setZoomScale( 1.01 );
 
     // Event loop
     p_window->beginLoop();

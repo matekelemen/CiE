@@ -6,30 +6,30 @@ namespace cie::csg {
 
 
 template <Size Dimension, concepts::NumericType CoordinateType>
-IntersectionPtr<Dimension,CoordinateType> operator*( CSGObjectPtr<Dimension,Bool,CoordinateType> p_lhs,
-                                                      CSGObjectPtr<Dimension,Bool,CoordinateType> p_rhs )
+CSGObjectPtr<Dimension,Bool,CoordinateType> operator*( CSGObjectPtr<Dimension,Bool,CoordinateType> p_lhs,
+                                                       CSGObjectPtr<Dimension,Bool,CoordinateType> p_rhs )
 {
-    return IntersectionPtr<Dimension,CoordinateType>(
+    return CSGObjectPtr<Dimension,Bool,CoordinateType>(
         new Intersection<Dimension,CoordinateType>( p_lhs, p_rhs )
     );
 }
 
 
 template <Size Dimension, concepts::NumericType CoordinateType>
-UnionPtr<Dimension,CoordinateType> operator+( CSGObjectPtr<Dimension,Bool,CoordinateType> p_lhs,
-                                              CSGObjectPtr<Dimension,Bool,CoordinateType> p_rhs )
+CSGObjectPtr<Dimension,Bool,CoordinateType> operator+( CSGObjectPtr<Dimension,Bool,CoordinateType> p_lhs,
+                                                       CSGObjectPtr<Dimension,Bool,CoordinateType> p_rhs )
 {
-    return UnionPtr<Dimension,CoordinateType>(
+    return CSGObjectPtr<Dimension,Bool,CoordinateType>(
         new Union<Dimension,CoordinateType>( p_lhs, p_rhs )
     );
 }
 
 
 template <Size Dimension, concepts::NumericType CoordinateType>
-SubtractionPtr<Dimension,CoordinateType> operator-( CSGObjectPtr<Dimension,Bool,CoordinateType> p_lhs,
-                                                    CSGObjectPtr<Dimension,Bool,CoordinateType> p_rhs )
+CSGObjectPtr<Dimension,Bool,CoordinateType> operator-( CSGObjectPtr<Dimension,Bool,CoordinateType> p_lhs,
+                                                       CSGObjectPtr<Dimension,Bool,CoordinateType> p_rhs )
 {
-    return SubtractionPtr<Dimension,CoordinateType>(
+    return CSGObjectPtr<Dimension,Bool,CoordinateType>(
         new Subtraction<Dimension,CoordinateType>( p_lhs, p_rhs )
     );
 }

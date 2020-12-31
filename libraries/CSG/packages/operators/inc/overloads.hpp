@@ -12,18 +12,18 @@ namespace cie::csg {
 
 
 template <Size Dimension, concepts::NumericType CoordinateType>
-IntersectionPtr<Dimension,CoordinateType> operator*( CSGObjectPtr<Dimension,Bool,CoordinateType> p_lhs,
-                                                     CSGObjectPtr<Dimension,Bool,CoordinateType> p_rhs );
+CSGObjectPtr<Dimension,Bool,CoordinateType> operator*( CSGObjectPtr<Dimension,Bool,CoordinateType> p_lhs,
+                                                       CSGObjectPtr<Dimension,Bool,CoordinateType> p_rhs );
 
 
 template <Size Dimension, concepts::NumericType CoordinateType>
-UnionPtr<Dimension,CoordinateType> operator+( CSGObjectPtr<Dimension,Bool,CoordinateType> p_lhs,
-                                              CSGObjectPtr<Dimension,Bool,CoordinateType> p_rhs );
+CSGObjectPtr<Dimension,Bool,CoordinateType> operator+( CSGObjectPtr<Dimension,Bool,CoordinateType> p_lhs,
+                                                       CSGObjectPtr<Dimension,Bool,CoordinateType> p_rhs );
 
 
 template <Size Dimension, concepts::NumericType CoordinateType>
-SubtractionPtr<Dimension,CoordinateType> operator-( CSGObjectPtr<Dimension,Bool,CoordinateType> p_lhs,
-                                                    CSGObjectPtr<Dimension,Bool,CoordinateType> p_rhs );
+CSGObjectPtr<Dimension,Bool,CoordinateType> operator-( CSGObjectPtr<Dimension,Bool,CoordinateType> p_lhs,
+                                                       CSGObjectPtr<Dimension,Bool,CoordinateType> p_rhs );
 
 
 } // namespace cie::csg
