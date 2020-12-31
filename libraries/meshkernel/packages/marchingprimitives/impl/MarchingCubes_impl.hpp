@@ -17,9 +17,9 @@ namespace cie::mesh{
 
 
 template <concepts::CSGObject TargetType>
-MarchingCubes<CoordinateType>::MarchingCubes( typename MarchingCubes<CoordinateType>::target_ptr p_target,
-                                              typename MarchingCubes<CoordinateType>::primitive_container_ptr p_primitives,
-                                              typename MarchingCubes<CoordinateType>::output_functor outputFunctor ) :
+MarchingCubes<TargetType>::MarchingCubes( typename MarchingCubes<TargetType>::target_ptr p_target,
+                                              typename MarchingCubes<TargetType>::primitive_container_ptr p_primitives,
+                                              typename MarchingCubes<TargetType>::output_functor outputFunctor ) :
     MarchingPrimitives<TargetType>( p_target,
                                     detail::cubeEdgeMap,
                                     detail::marchingCubesConnectivityMap,
@@ -30,10 +30,11 @@ MarchingCubes<CoordinateType>::MarchingCubes( typename MarchingCubes<CoordinateT
 
 
 template <concepts::CSGObject TargetType>
-MarchingCubes<CoordinateType>::MarchingCubes( typename MarchingCubes<CoordinateType>::target_ptr p_target,
-                                              const typename MarchingCubes<CoordinateType>::domain_specifier& r_domain,
-                                              const MarchingCubes<CoordinateType>::resolution_specifier& r_resolution,
-                                              typename MarchingCubes<CoordinateType>::output_functor outputFunctor ) :
+MarchingCubes<TargetType>::MarchingCubes( typename MarchingCubes<TargetType>::target_ptr p_target,
+                                          const typename MarchingCubes<TargetType>::point_type& r_origin,
+                                          const MarchingCubes<TargetType>::resolution_specifier& r_numberOfPrimitives,
+                                          MarchingCubes<TargetType>::coordinate_type edgeLength,
+                                          typename MarchingCubes<TargetType>::output_functor outputFunctor ) :
     MarchingPrimitives<TargetType>( p_target,
                                     detail::cubeEdgeMap,
                                     detail::marchingCubesConnectivityMap,
@@ -42,8 +43,23 @@ MarchingCubes<CoordinateType>::MarchingCubes( typename MarchingCubes<CoordinateT
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    makeCartesianMesh( _p_primitives,
-                        )
+    makeCartesianMesh( r_numberOfPrimitives,
+                       edgeLength,
+                       r_origin,
+                       *this->_p_primitives );
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+template <concepts::CSGObject TargetType>
+bool
+MarchingCubes<TargetType>::getNextPrimitive( typename MarchingCubes<TargetType>::point_container& r_vertices )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    r_primitives.reserve( 8 );
+    
 
     CIE_END_EXCEPTION_TRACING
 }

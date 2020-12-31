@@ -23,17 +23,15 @@ public:
     using primitive_container     = std::vector<primitive_type>;
     using primitive_container_ptr = std::shared_ptr<primitive_container>;
 
-    using domain_specifier        = std::array<std::pair<CoordinateType,CoordinateType>,MarchingCubes<TargetType>::dimension>;
-    using resolution_specifier    = std::array<Size,MarchingCubes<TargetType>::dimension>;
-
 public:
     MarchingCubes( typename MarchingCubes<TargetType>::target_ptr p_target,
                    primitive_container_ptr p_primitives,
                    typename MarchingCubes<TargetType>::output_functor outputFunctor );
 
     MarchingCubes( typename MarchingCubes<TargetType>::target_ptr p_target,
-                   const domain_specifier& r_domain,
-                   const resolution_specifier& r_resolution,
+                   const MarchingCubes<TargetType>::point_type& r_origin,
+                   const resolution_specifier& r_numberOfPrimitives,
+                   MarchingCubes<TargetType>::coordinate_type edgeLength,
                    typename MarchingCubes<TargetType>::output_functor outputFunctor );
 
 protected:
