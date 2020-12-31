@@ -88,9 +88,9 @@ int main( int argc, char const* argv[] )
 
     auto p_model = gl::PartPtr( new MarchingPart(
         p_target,
-        { 0.0, 0.0, 0.0 },
-        { 1, 1, 1 },
-        0.999
+        { -1.0, -1.0, -1.0 },
+        { 100, 100, 100 },
+        0.04
     ) );
 
     p_scene->toc( "Finished scanning", timerID );
