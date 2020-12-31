@@ -33,7 +33,7 @@ MarchingPrimitives<TargetType>::execute()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    using coordinate_type = MarchingPrimitives<TargetType>::coordinate_type;
+    using coordinate_type = typename MarchingPrimitives<TargetType>::coordinate_type;
 
     using ::operator+;
     using ::operator/;

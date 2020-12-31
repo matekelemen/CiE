@@ -34,8 +34,8 @@ MarchingCubes<TargetType>::MarchingCubes( typename MarchingCubes<TargetType>::ta
 template <concepts::CSGObject TargetType>
 MarchingCubes<TargetType>::MarchingCubes( typename MarchingCubes<TargetType>::target_ptr p_target,
                                           const typename MarchingCubes<TargetType>::point_type& r_origin,
-                                          const MarchingCubes<TargetType>::resolution_specifier& r_numberOfPrimitives,
-                                          MarchingCubes<TargetType>::coordinate_type edgeLength,
+                                          const typename MarchingCubes<TargetType>::resolution_specifier& r_numberOfPrimitives,
+                                          typename MarchingCubes<TargetType>::coordinate_type edgeLength,
                                           typename MarchingCubes<TargetType>::output_functor outputFunctor ) :
     MarchingPrimitives<TargetType>( p_target,
                                     detail::cubeEdgeMap,

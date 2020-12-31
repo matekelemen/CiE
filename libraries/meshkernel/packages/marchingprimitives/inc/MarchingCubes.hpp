@@ -29,9 +29,9 @@ public:
                    typename MarchingCubes<TargetType>::output_functor outputFunctor );
 
     MarchingCubes( typename MarchingCubes<TargetType>::target_ptr p_target,
-                   const MarchingCubes<TargetType>::point_type& r_origin,
+                   const typename MarchingCubes<TargetType>::point_type& r_origin,
                    const typename MarchingCubes<TargetType>::resolution_specifier& r_numberOfPrimitives,
-                   MarchingCubes<TargetType>::coordinate_type edgeLength,
+                   typename MarchingCubes<TargetType>::coordinate_type edgeLength,
                    typename MarchingCubes<TargetType>::output_functor outputFunctor );
 
 protected:
