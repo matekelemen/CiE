@@ -14,6 +14,92 @@
 namespace cie::mesh {
 
 
+template < concepts::NumericContainer PointType,
+           concepts::STLContainer PointContainer >
+requires std::derived_from<PointType,typename Traits<PointType>::point_type>
+void makeCartesianMesh( const typename Traits<PointType>::domain_specifier& r_domain,
+                        const typename Traits<PointType>::resolution_specifier& r_resolution,
+                        PointContainer& r_points )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    const Size dimension = Traits<PointType>::dimension;
+
+    // Allocate memory for the points
+    Size numberOfPoints = std::accumulate(
+        r_resolution.begin(),
+        r_resolution.end(),
+        1.0,
+        []( Size lhs, Size rhs ) -> Size { return lhs * rhs; }
+    );
+
+    utils::reserve( r_points, r_points.size() + numberOfPoints );
+
+    // Get mesh origin
+    PointType origin;
+    utils::resize( origin, dimension );
+    for ( Size dim=0; dim<dimension; ++dim )
+        origin[dim] = r_domain[dim].first;
+
+    // Compute edge lengths
+    PointType edgeLengths;
+    utils::resize( edgeLengths, dimension );
+    for ( Size dim=0; dim<dimension; ++dim )
+        edgeLengths[dim] = (r_domain[dim].second - r_domain[dim].first) / (r_resolution[dim] - 1);
+
+    // Create iterator through the cartesian products
+    std::vector<std::vector<Size>> cartesianStates( dimension );
+
+    for ( Size dim=0; dim<dimension; ++dim )
+    {
+        auto& r_range = cartesianStates[dim];
+
+        r_range.resize( r_resolution[dim] );
+
+        std::iota( r_range.begin(),
+                   r_range.end(),
+                   0 );
+    }
+
+    auto cartesianProductIterator = utils::makeStateIterator( cartesianStates );
+
+    // Construct mesh
+    for ( Size pointIndex=0; pointIndex<numberOfPoints; ++pointIndex, ++cartesianProductIterator )
+    {
+        const auto& r_spatialIndex = *cartesianProductIterator;
+        PointType point = origin;
+
+        for ( Size dim=0; dim<dimension; ++dim )
+            point[dim] += (*r_spatialIndex[dim]) * edgeLengths[dim];
+
+        detail::constructPrimitiveIntoContainer( r_points,
+                                                 point );
+    }
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+template < concepts::NumericContainer PointType,
+           concepts::STLContainer PointContainer >
+requires std::derived_from<PointType,typename Traits<PointType>::point_type>
+PointContainer makeCartesianMesh( const typename Traits<PointType>::domain_specifier& r_domain,
+                                  const typename Traits<PointType>::resolution_specifier& r_resolution )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    PointContainer points;
+    
+    makeCartesianMesh<PointType>( r_domain,
+                                  r_resolution,
+                                  points );
+
+    return points;
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
 template < concepts::Cube PrimitiveType,
            concepts::STLContainer PrimitiveContainer >
 void makeCartesianMesh( const typename Traits<PrimitiveType>::resolution_specifier& r_numberOfPrimitives,

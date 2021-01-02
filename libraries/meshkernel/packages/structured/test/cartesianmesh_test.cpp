@@ -10,11 +10,49 @@ namespace cie::mesh {
 
 CIE_TEST_CASE( "makeCartesianMesh", "[structured]" )
 {
-    CIE_TEST_CASE_INIT( "makeCartesianMesh - Cube" )
+    CIE_TEST_CASE_INIT( "makeCartesianMesh" )
 
     const Size Dimension = 2;
     using CoordinateType = Double;
     using TestTraits     = MeshTraits<Dimension,CoordinateType>;
+
+    {
+        CIE_TEST_CASE_INIT( "Point" )
+
+        using PointType = TestTraits::point_type;
+
+        TestTraits::domain_specifier domain {{ {-1.0,1.0}, {-2.0, 2.0} }};
+        TestTraits::resolution_specifier resolution { 2, 3 };
+
+        CIE_TEST_REQUIRE_NOTHROW( makeCartesianMesh<PointType>( domain, resolution ) );
+        auto mesh = makeCartesianMesh<PointType>( domain, resolution );
+
+        CIE_TEST_REQUIRE( mesh.size() == resolution[0] * resolution[1] );
+
+        auto* p_point = &mesh[0];
+        CIE_TEST_CHECK( p_point->at(0) == Approx(-1.0) );
+        CIE_TEST_CHECK( p_point->at(1) == Approx(-2.0) );
+
+        p_point = &mesh[1];
+        CIE_TEST_CHECK( p_point->at(0) == Approx(1.0) );
+        CIE_TEST_CHECK( p_point->at(1) == Approx(-2.0) );
+
+        p_point = &mesh[2];
+        CIE_TEST_CHECK( p_point->at(0) == Approx(-1.0) );
+        CIE_TEST_CHECK( p_point->at(1) == Approx(0.0) );
+
+        p_point = &mesh[3];
+        CIE_TEST_CHECK( p_point->at(0) == Approx(1.0) );
+        CIE_TEST_CHECK( p_point->at(1) == Approx(0.0) );
+
+        p_point = &mesh[4];
+        CIE_TEST_CHECK( p_point->at(0) == Approx(-1.0) );
+        CIE_TEST_CHECK( p_point->at(1) == Approx(2.0) );
+
+        p_point = &mesh[5];
+        CIE_TEST_CHECK( p_point->at(0) == Approx(1.0) );
+        CIE_TEST_CHECK( p_point->at(1) == Approx(2.0) );
+    }
 
     {
         CIE_TEST_CASE_INIT( "Cube" )

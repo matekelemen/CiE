@@ -19,6 +19,23 @@
 namespace cie::mesh {
 
 
+/// Generate a cartesian mesh of points into an existing container
+template < concepts::NumericContainer PointType,
+           concepts::STLContainer PointContainer >
+requires std::derived_from<PointType,typename Traits<PointType>::point_type>
+void makeCartesianMesh( const typename Traits<PointType>::domain_specifier& r_domain,
+                        const typename Traits<PointType>::resolution_specifier& r_resolution,
+                        PointContainer& r_points );
+
+
+/// Generate a cartesian mesh of points
+template < concepts::NumericContainer PointType,
+           concepts::STLContainer PointContainer = std::vector<PointType> >
+requires std::derived_from<PointType,typename Traits<PointType>::point_type>
+PointContainer makeCartesianMesh( const typename Traits<PointType>::domain_specifier& r_domain,
+                                  const typename Traits<PointType>::resolution_specifier& r_resolution );
+
+
 /// Generate a cartesian mesh of cube elements into an existing container
 template < concepts::Cube PrimitiveType,
            concepts::STLContainer PrimitiveContainer >
