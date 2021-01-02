@@ -58,7 +58,7 @@ UnstructuredMarchingPrimitives<TargetType,PrimitiveType>::numberOfRemainingPrimi
 
 
 template <concepts::CSGObject TargetType, concepts::Primitive PrimitiveType>
-inline const UnstructuredMarchingPrimitives<TargetType,PrimitiveType>::primitive_container&
+inline const typename UnstructuredMarchingPrimitives<TargetType,PrimitiveType>::primitive_container&
 UnstructuredMarchingPrimitives<TargetType,PrimitiveType>::primitives() const
 {
     return *this->_p_primitives;
@@ -71,7 +71,7 @@ StructuredMarchingPrimitives<TargetType,PrimitiveType>::StructuredMarchingPrimit
                                                                                       const typename StructuredMarchingPrimitives<TargetType,PrimitiveType>::resolution_specifier& r_numberOfPoints,
                                                                                       const typename StructuredMarchingPrimitives<TargetType,PrimitiveType>::edge_table& r_edgeTable,
                                                                                       const typename StructuredMarchingPrimitives<TargetType,PrimitiveType>::connectivity_table& r_connectivityTable,
-                                                                                      StructuredMarchingPrimitives<TargetType,PrimitiveType>::output_functor outputFunctor ) :
+                                                                                      typename StructuredMarchingPrimitives<TargetType,PrimitiveType>::output_functor outputFunctor ) :
     MarchingPrimitives<TargetType,PrimitiveType>( p_target,
                                                   r_edgeTable,
                                                   r_connectivityTable,

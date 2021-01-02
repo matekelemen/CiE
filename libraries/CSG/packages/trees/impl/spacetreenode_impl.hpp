@@ -77,10 +77,10 @@ SpaceTreeNode<CellType,ValueType>::divide(  const TargetFunction<typename CellTy
             this->_children.push_back(p_node);
 
             // Call divide on child
+            #ifndef MSVC
             #pragma omp task
-            {
-            p_node->divide( r_target, level );
-            }
+            #endif
+            { p_node->divide( r_target, level ); }
         }
 
         return true;

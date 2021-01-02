@@ -19,6 +19,6 @@ const std::filesystem::path DEBUG_OUTPUT_PATH = "@INSTALL_DEBUG_OUTPUT_PREFIX@";
 const std::filesystem::path TEST_OUTPUT_PATH  = "@INSTALL_TEST_OUTPUT_PREFIX@";
 
 
-}
+} // namespace cie
 
 #endif

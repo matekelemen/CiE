@@ -67,7 +67,7 @@ public:
                                   const resolution_specifier& r_numberOfPoints,
                                   const typename StructuredMarchingPrimitives<TargetType,PrimitiveType>::edge_table& r_edgeTable,
                                   const typename StructuredMarchingPrimitives<TargetType,PrimitiveType>::connectivity_table& r_connectivityTable, 
-                                  StructuredMarchingPrimitives<TargetType,PrimitiveType>::output_functor outputFunctor );
+                                  typename StructuredMarchingPrimitives<TargetType,PrimitiveType>::output_functor outputFunctor );
 
     /// Return the index of the point in the cartesian mesh corresponding to the point of the specified primitive
     virtual Size getGlobalVertexIndex( Size primitiveIndex,
