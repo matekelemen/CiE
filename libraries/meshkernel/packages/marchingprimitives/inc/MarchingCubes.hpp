@@ -3,6 +3,7 @@
 
 // --- CSG Includes ---
 #include "CSG/packages/primitives/inc/Cube.hpp"
+#include "CSG/packages/trees/inc/indexconverter.hpp"
 
 // --- Internal Includes ---
 #include "meshkernel/packages/marchingprimitives/inc/MarchingPrimitives.hpp"
@@ -41,6 +42,36 @@ public:
 
 protected:
     virtual Size primitiveVertexCount() const override;
+};
+
+
+
+
+template <concepts::CSGObject TargetType>
+class StructuredMarchingCubes : public StructuredMarchingPrimitives<TargetType,csg::Cube<TargetType::dimension,typename TargetType::coordinate_type>>
+{
+public:
+    using typename StructuredMarchingPrimitives<TargetType,typename StructuredMarchingCubes<TargetType>::primitive_type>::primitive_type;
+    using typename StructuredMarchingPrimitives<TargetType,primitive_type>::target_ptr;
+    using typename StructuredMarchingPrimitives<TargetType,primitive_type>::domain_specifier;
+    using typename StructuredMarchingPrimitives<TargetType,primitive_type>::resolution_specifier;
+    using typename StructuredMarchingPrimitives<TargetType,primitive_type>::output_functor;
+
+public:
+    StructuredMarchingCubes( target_ptr p_target,
+                             const domain_specifier& r_domain,
+                             const resolution_specifier& r_numberOfPoints,
+                             output_functor outputFunctor );
+
+    virtual Size getGlobalVertexIndex( Size primitiveIndex,
+                                       Size vertexIndex ) const override;
+
+    virtual Size primitiveVertexCount() const override;
+
+    virtual Size numberOfRemainingPrimitives() const override;
+
+    typename StructuredMarchingCubes<TargetType>::point_type getVertexOnPrimitive( const typename StructuredMarchingCubes<TargetType>::primitive_type& r_primitive,
+                                                                                   Size vertexIndex ) const override;
 };
 
 

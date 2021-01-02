@@ -38,7 +38,7 @@ using Traits              = mesh::MeshTraits<Dimension,CoordinateType>;
 using PointType           = Traits::point_type;
 using DomainSpecifier     = Traits::domain_specifier;
 using ResolutionSpecifier = Traits::resolution_specifier;
-using MarchingCubes       = mesh::UnstructuredMarchingCubes<CSGObject>;
+using MarchingCubes       = mesh::StructuredMarchingCubes<CSGObject>;
 
 
 
@@ -56,19 +56,22 @@ public:
         using ::operator+;
         using ::operator/;
 
-        auto p_primitives = MarchingCubes::primitive_container_ptr(
-            new MarchingCubes::primitive_container
-        );
-        mesh::makeCartesianMesh<MarchingCubes::primitive_type>(
-            r_numberOfCubes,
-            edgeLength,
-            r_origin,
-            *p_primitives
-        );
+        MarchingCubes::domain_specifier domain {{
+            { r_origin[0], r_origin[0] + edgeLength * r_numberOfCubes[0] },
+            { r_origin[1], r_origin[1] + edgeLength * r_numberOfCubes[1] },
+            { r_origin[2], r_origin[2] + edgeLength * r_numberOfCubes[2] }
+        }};
+
+        MarchingCubes::resolution_specifier numberOfPoints {{
+            r_numberOfCubes[0] + 1,
+            r_numberOfCubes[1] + 1,
+            r_numberOfCubes[2] + 1
+        }};
 
         MarchingCubes marchingCubes(
             p_target,
-            p_primitives,
+            domain,
+            numberOfPoints,
             nullptr
         );
 
@@ -125,7 +128,7 @@ int main( int argc, char const* argv[] )
 
     // Graphics setup
     auto p_context = gl::GLFWContextSingleton::get(
-        OUTPUT_PATH / "csg2stl.log",                    // <-- log file
+        OUTPUT_PATH / "StructuredMarchingCubes.log",    // <-- log file
         true                                            // use console output
     );
 
