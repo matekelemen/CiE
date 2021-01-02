@@ -7,6 +7,7 @@
 
 // --- Internal Includes ---
 #include "meshkernel/packages/marchingprimitives/inc/MarchingCubes.hpp"
+#include "meshkernel/packages/structured/inc/cartesianmesh.hpp"
 
 // --- STL Includes ---
 #include <vector>
@@ -23,7 +24,7 @@ CIE_TEST_CASE( "MarchingCubes", "[marchingprimitives]" )
     using CoordinateType = double;
     using PointType      = MeshTraits<Dimension,CoordinateType>::point_type;
     using TargetType     = csg::boolean::Sphere<Dimension,CoordinateType>;
-    using TestType       = MarchingCubes<TargetType>;
+    using TestType       = UnstructuredMarchingCubes<TargetType>;
 
     PointType meshOrigin { -2.0, -2.0, -2.0 };
     TestType::resolution_specifier numberOfCubes { 2, 2, 2 };
@@ -34,29 +35,31 @@ CIE_TEST_CASE( "MarchingCubes", "[marchingprimitives]" )
         new TargetType( origin, 1.0 )
     );
 
-    std::vector<TestType::output_arguments> triangles;
-    auto outputFunctor = [&triangles]( const TestType::output_arguments& r_triangle ) -> void
+    std::vector<TestType::output_arguments> outputs;
+    auto outputFunctor = [&outputs]( Size primitiveIndex, const TestType::output_arguments& r_edges ) -> void
     {
-        triangles.push_back( r_triangle );
+        outputs.push_back( r_edges );
     };
 
+    auto p_primitives = TestType::primitive_container_ptr(
+        new TestType::primitive_container
+    );
+
+    makeCartesianMesh<TestType::primitive_type>( numberOfCubes,
+                                                 edgeLength,
+                                                 meshOrigin,
+                                                 *p_primitives );
+
     TestType marchingCubes( p_unitSphere,
-                            meshOrigin,
-                            numberOfCubes,
-                            edgeLength,
+                            p_primitives,
                             outputFunctor );
 
     marchingCubes.execute();
 
-    for ( const auto& r_triangle : triangles )
+    for ( const auto& r_triangle : outputs )
     {
-        for ( const auto& r_point : r_triangle )
-        {
-            for ( auto component : r_point )
-                std::cout << component << ",";
-
-            std::cout << std::endl;
-        }
+        for ( const auto& r_edge : r_triangle )
+            std::cout << r_edge.first << " " << r_edge.second << std::endl;
 
         std::cout << std::endl;
     }

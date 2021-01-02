@@ -1,75 +1,61 @@
-#ifndef CIE_MESHKERNEL_MARCHING_PRIMITIVES_HPP
-#define CIE_MESHKERNEL_MARCHING_PRIMITIVES_HPP
-
-// --- Utility Includes ---
-#include "cieutils/packages/stl_extension/inc/MarchingContainer.hpp"
-
-// --- CSG Includes ---
-#include "CSG/packages/primitives/inc/csgobject.hpp"
-#include "CSG/packages/primitives/inc/CSGTraits.hpp"
-#include "CSG/packages/primitives/inc/concepts.hpp"
+#ifndef CIE_MESH_KERNEL_MARCHING_PRIMITIVES_HPP
+#define CIE_MESH_KERNEL_MARCHING_PRIMITIVES_HPP
 
 // --- Internal Includes ---
-#include "meshkernel/packages/marchingprimitives/inc/connectivitytables.hpp"
-#include "meshkernel/packages/traits/inc/MeshTraits.hpp"
-
-// --- STL Includes ---
-#include <vector>
-#include <array>
-#include <memory>
-#include <utility>
-
+#include "meshkernel/packages/marchingprimitives/inc/AbsMarchingPrimitives.hpp"
 
 namespace cie::mesh {
 
 
-template <concepts::CSGObject TargetType>
-class MarchingPrimitives : public Traits<TargetType>
+template <concepts::CSGObject TargetType, concepts::Primitive PrimitiveType>
+class MarchingPrimitives : public AbsMarchingPrimitives<TargetType>
 {
 public:
-    using target_type           = TargetType;
-    using target_ptr            = std::shared_ptr<target_type>;
-
-    using point_container       = std::vector<typename MarchingPrimitives<TargetType>::point_type>;
-
-    using edge_table            = std::vector<std::pair<Size,Size>>;
-    using connectivity_table    = std::vector<std::vector<std::vector<Size>>>;
-
-    using output_arguments      = std::array<typename MarchingPrimitives<TargetType>::point_type,MarchingPrimitives<TargetType>::dimension>;
-    using output_functor        = std::function<void(const output_arguments&)>;
+    using primitive_type = PrimitiveType;
 
 public:
-    MarchingPrimitives( target_ptr p_target,
-                        const edge_table& r_edgeTable,
-                        const connectivity_table& r_connectivityTable,
-                        output_functor outputFunctor );
+    template <class ...Args>
+    MarchingPrimitives( Args&&... args );
 
-    void execute();
+    virtual typename MarchingPrimitives<TargetType,PrimitiveType>::point_type getVertexOnPrimitive( const primitive_type& r_primitive, Size vertexIndex ) const = 0;
+};
 
-private:
-    /// Make sure that everything is set up to perform the march
-    void checkIfInitialized() const;
 
-protected:
-    MarchingPrimitives() = delete;
-    MarchingPrimitives( const MarchingPrimitives<TargetType>& r_rhs ) = delete;
-    MarchingPrimitives<TargetType>& operator=( const MarchingPrimitives<TargetType>& r_rhs ) = delete;
 
-    /// Primitive generator
-    virtual bool getNextPrimitive( point_container& r_vertices ) = 0;
+/// MarchingPrimitives that scans a container of primitives
+template <concepts::CSGObject TargetType, concepts::Primitive PrimitiveType>
+class UnstructuredMarchingPrimitives : public MarchingPrimitives<TargetType,PrimitiveType>
+{
+public:
+    using primitive_container     = std::vector<typename UnstructuredMarchingPrimitives<TargetType,PrimitiveType>::primitive_type>;
+    using primitive_container_ptr = std::shared_ptr<primitive_container>;
 
-protected:
-    /// Pointer to the target geometry
-    target_ptr                _p_target;
+public:
+    UnstructuredMarchingPrimitives( typename UnstructuredMarchingPrimitives<TargetType,PrimitiveType>::target_ptr p_target,
+                                    const typename UnstructuredMarchingPrimitives<TargetType,PrimitiveType>::edge_table& r_edgeTable,
+                                    const typename UnstructuredMarchingPrimitives<TargetType,PrimitiveType>::connectivity_table& r_connectivityTable,
+                                    typename UnstructuredMarchingPrimitives<TargetType,PrimitiveType>::output_functor outputFunctor,
+                                    primitive_container_ptr p_primitives );
 
-    /// Map edge index to vertex pairs
-    const edge_table          _edgeTable;
+    virtual typename UnstructuredMarchingPrimitives<TargetType,PrimitiveType>::point_type getVertex( Size primitiveIndex,
+                                                                                                     Size vertexIndex ) override;
 
-    /// Map active point configurations to surface primitives (3D: active point config -> triangles)
-    const connectivity_table  _connectivityTable;
+    virtual Size numberOfRemainingPrimitives() const override;
 
-    /// Function that gets called for every surface primitive
-    output_functor            _outputFunctor;
+    const primitive_container& primitives() const;
+
+public:
+    primitive_container_ptr _p_primitives;
+};
+
+
+
+/// MarchingPrimitives that scans a cartesian mesh of primitives
+template <concepts::CSGObject TargetType, concepts::Primitive PrimitiveType>
+class StructuredMarchingPrimitives : public MarchingPrimitives<TargetType,PrimitiveType>
+{
+public:
+    
 };
 
 

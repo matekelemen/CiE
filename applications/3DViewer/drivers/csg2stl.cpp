@@ -3,10 +3,14 @@
 
 // --- Mesh Includes ---
 #include <meshkernel/marchingprimitives.hpp>
+#include <meshkernel/structured.hpp>
 
 // --- CSG Includes ---
 #include <csg/primitives.hpp>
 #include <csg/operators.hpp>
+
+// --- LinAlg Includes ---
+#include <linalg/overloads.hpp>
 
 // --- Utility Includes ---
 #include <cieutils/macros.hpp>
@@ -14,6 +18,9 @@
 // --- Internal Includes ---
 #include "ViewerScene.hpp"
 #include "cmake_variables.hpp"
+
+// --- STL Includes ---
+#include <mutex>
 
 
 namespace cie {
@@ -31,7 +38,7 @@ using Traits              = mesh::MeshTraits<Dimension,CoordinateType>;
 using PointType           = Traits::point_type;
 using DomainSpecifier     = Traits::domain_specifier;
 using ResolutionSpecifier = Traits::resolution_specifier;
-using MarchingCubes       = mesh::MarchingCubes<CSGObject>;
+using MarchingCubes       = mesh::UnstructuredMarchingCubes<CSGObject>;
 
 
 
@@ -45,24 +52,48 @@ public:
     {
         Size vertexCounter = 0;
 
-        MarchingCubes::output_functor pushTriangle = [&vertexCounter,this]( const MarchingCubes::output_arguments& r_triangle ) -> void
+        // Pull in linalg operator overloads from the global namespace
+        using ::operator+;
+        using ::operator/;
+
+        auto p_primitives = MarchingCubes::primitive_container_ptr(
+            new MarchingCubes::primitive_container
+        );
+        mesh::makeCartesianMesh<MarchingCubes::primitive_type>(
+            r_numberOfCubes,
+            edgeLength,
+            r_origin,
+            *p_primitives
+        );
+
+        MarchingCubes marchingCubes(
+            p_target,
+            p_primitives,
+            nullptr
+        );
+
+        std::mutex mutex;
+
+        MarchingCubes::output_functor pushTriangle = [&mutex, &marchingCubes, &vertexCounter,this]( Size primitiveIndex, const MarchingCubes::output_arguments& r_triangle ) -> void
         {
-            for ( const auto& r_vertex : r_triangle )
+            std::scoped_lock lock(mutex);
+
+            const auto& r_primitive = marchingCubes.primitives().at(primitiveIndex);
+
+            for ( const auto& r_edge : r_triangle )
             {
-                for ( MarchingPart::data_type component : r_vertex )
+                // Compute vertex from edge midpoint
+                auto vertex = ( marchingCubes.getVertexOnPrimitive( r_primitive, r_edge.first ) + marchingCubes.getVertexOnPrimitive( r_primitive, r_edge.second ) ) / 2.0;
+
+                for ( MarchingPart::data_type component : vertex )
                     this->_data.push_back( component );
 
                 this->_indices.push_back( vertexCounter++ );
             }
         };
 
-        MarchingCubes(
-            p_target,
-            r_origin,
-            r_numberOfCubes,
-            edgeLength,
-            pushTriangle
-        ).execute();
+        marchingCubes.setOutputFunctor( pushTriangle );
+        marchingCubes.execute();
     }
 };
 

@@ -13,6 +13,13 @@ flipBit( IntegerType integer, IndexType bitIndex )
 }
 
 
+template <concepts::Integer IntegerType, concepts::Integer IndexType = Size>
+bool getBit( IntegerType integer, IndexType bitIndex )
+{
+    return (integer & (1 << bitIndex)) >> bitIndex;
+}
+
+
 } // namespace cie::utils
 
 

@@ -10,36 +10,37 @@
 // --- STL Includes ---
 #include <array>
 #include <utility>
+#include <functional>
 
 
 namespace cie::mesh {
 
 
+namespace detail {
+template <concepts::Cube PrimitiveType>
+typename PrimitiveType::point_type getVertexOnCube( const PrimitiveType& r_primitive,
+                                                    Size vertexIndex );
+} // namespace detail
+
+
+
 template <concepts::CSGObject TargetType>
-class MarchingCubes : public MarchingPrimitives<TargetType>
+class UnstructuredMarchingCubes : public UnstructuredMarchingPrimitives<TargetType,csg::Cube<TargetType::dimension,typename TargetType::coordinate_type>>
 {
 public:
-    using primitive_type          = csg::Cube<3,typename MarchingCubes<TargetType>::coordinate_type>;
-    using primitive_container     = std::vector<primitive_type>;
+    using primitive_container     = std::vector<typename UnstructuredMarchingCubes<TargetType>::primitive_type>;
     using primitive_container_ptr = std::shared_ptr<primitive_container>;
 
 public:
-    MarchingCubes( typename MarchingCubes<TargetType>::target_ptr p_target,
-                   primitive_container_ptr p_primitives,
-                   typename MarchingCubes<TargetType>::output_functor outputFunctor );
+    UnstructuredMarchingCubes( typename UnstructuredMarchingCubes<TargetType>::target_ptr p_target,
+                               primitive_container_ptr p_primitives,
+                               typename UnstructuredMarchingCubes<TargetType>::output_functor outputFunctor );
 
-    MarchingCubes( typename MarchingCubes<TargetType>::target_ptr p_target,
-                   const MarchingCubes<TargetType>::point_type& r_origin,
-                   const typename MarchingCubes<TargetType>::resolution_specifier& r_numberOfPrimitives,
-                   MarchingCubes<TargetType>::coordinate_type edgeLength,
-                   typename MarchingCubes<TargetType>::output_functor outputFunctor );
+    typename UnstructuredMarchingCubes<TargetType>::point_type getVertexOnPrimitive( const typename UnstructuredMarchingCubes<TargetType>::primitive_type& r_primitive,
+                                                                                     Size vertexIndex ) const override;
 
 protected:
-    virtual bool getNextPrimitive( typename MarchingCubes<TargetType>::point_container& r_vertices ) override;
-
-protected:
-    primitive_container_ptr _p_primitives;
-    Size                    _primitiveIndex;
+    virtual Size primitiveVertexCount() const override;
 };
 
 
