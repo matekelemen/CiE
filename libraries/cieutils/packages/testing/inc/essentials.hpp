@@ -8,6 +8,7 @@
 
 // --- Internal Includes ---
 #include "cieutils/packages/macros/inc/testing.hpp"
+#include "cieutils/packages/macros/inc/detail.hpp"
 
 
 #define CIE_TEST_CASE( testCaseName, testCaseTag ) TEST_CASE( testCaseName, testCaseTag )
@@ -18,8 +19,6 @@
 
 
 // Test singles
-
-#define CIE_EXPAND_ARGUMENTS( arguments ) arguments     // <-- workaround for the buggy MSVC preprocessor...
 
 #define CIE_TEST_CHECK( ... ) CIE_EXPAND_ARGUMENTS( CHECK( __VA_ARGS__ ) )
 

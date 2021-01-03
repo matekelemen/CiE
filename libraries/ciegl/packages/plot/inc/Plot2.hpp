@@ -21,11 +21,7 @@
 namespace cie::gl {
 
 
-class Plot2;
-using Plot2Ptr = std::shared_ptr<Plot2>;
-
-
-class Plot2 : public AbsPlot
+class AbsPlot2 : public AbsPlot
 {
 public:
     using vertex_type      = Vertex2;
@@ -37,13 +33,8 @@ public:
     using controls_ptr     = std::shared_ptr<controls_type>;
 
 public:
-    Plot2( WindowPtr p_window );
-    Plot2();
-
-    template < concepts::NumericContainer XContainer,
-               concepts::NumericContainer YContainer >
-    friend void plot( const XContainer& r_xContainer,
-                      const YContainer& r_yContainer );
+    AbsPlot2( WindowPtr p_window );
+    AbsPlot2();
 
     void fit() override;
 
@@ -51,9 +42,7 @@ private:
     void initializeScene();
 
 protected:
-    /**
-     * @brief internal Scene class used by Plot2
-     */
+    /// Internal Scene class used by AbsPlot2
     class Plot2Scene : public Scene
     {
     public:
@@ -62,10 +51,7 @@ protected:
                     AttributeContainerPtr p_attributes );
         CameraPtr getCamera();
         
-        /**
-         * Sets a flag that forces all attributes to be rebuffered
-         * on the next update
-         */
+        /// Sets a flag that forces all attributes to be rebuffered on the next update
         void setUpdateFlag();
 
     private:
@@ -82,6 +68,33 @@ protected:
     std::shared_ptr<Plot2Scene> _p_scene;
     controls_ptr                _p_controls;
 };
+
+
+
+/// Default Plot2 that will throw a NotImplementedException upon construction
+template <class ...Args>
+class Plot2 : public AbsPlot2
+{
+public:
+    Plot2( Args&&... args );
+};
+
+
+/// Standard x-y plot
+template < concepts::NumericContainer XContainer,
+           concepts::NumericContainer YContainer >
+struct Plot2<XContainer,YContainer> : public AbsPlot2
+{
+    Plot2( const XContainer& r_XContainer,
+           const YContainer& r_YContainer );
+};
+
+
+/// Convenience function for deduced template arguments
+template < concepts::NumericContainer XContainer,
+           concepts::NumericContainer YContainer >
+void plot2( const XContainer& r_XContainer,
+            const YContainer& r_YContainer );
 
 
 } // namespace cie::gl

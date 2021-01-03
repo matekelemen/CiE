@@ -12,9 +12,9 @@
 namespace cie::gl {
 
 
-/* --- Plot2 --- */
+/* --- AbsPlot2 --- */
 
-Plot2::Plot2( WindowPtr p_window ) :
+AbsPlot2::AbsPlot2( WindowPtr p_window ) :
     AbsPlot( p_window ),
     _vertices(),
     _p_camera( nullptr ),
@@ -25,7 +25,7 @@ Plot2::Plot2( WindowPtr p_window ) :
 }
 
 
-Plot2::Plot2() :
+AbsPlot2::AbsPlot2() :
     AbsPlot(),
     _vertices(),
     _p_camera( nullptr ),
@@ -36,7 +36,7 @@ Plot2::Plot2() :
 }
 
 
-void Plot2::fit()
+void AbsPlot2::fit()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -66,7 +66,7 @@ void Plot2::fit()
         double offset = minValue;
         double scale  = maxValue - minValue;
 
-        return [offset,scale]( Plot2::vertex_type::value_type& r_component ) -> void
+        return [offset,scale]( AbsPlot2::vertex_type::value_type& r_component ) -> void
         {
             r_component -= offset;
             r_component /= scale;
@@ -101,11 +101,11 @@ void Plot2::fit()
 }
 
 
-void Plot2::initializeScene()
+void AbsPlot2::initializeScene()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    auto p_scene = std::make_shared<Plot2::Plot2Scene>( *this->_p_context,
+    auto p_scene = std::make_shared<AbsPlot2::Plot2Scene>( *this->_p_context,
                                                         "Plot2Scene",
                                                         this->_p_attributes );
 
@@ -118,8 +118,8 @@ void Plot2::initializeScene()
                               { 0.0, 1.0, 0.0 } );
     this->_p_camera->setClippingPlanes( 0.5, 1.5 );
 
-    this->_p_controls = Plot2::controls_ptr(
-        new Plot2::controls_type(true)
+    this->_p_controls = AbsPlot2::controls_ptr(
+        new AbsPlot2::controls_type(true)
     );
     this->_p_controls->bind( this->_p_window, this->_p_camera );
 
@@ -127,12 +127,12 @@ void Plot2::initializeScene()
 }
 
 
-/* --- Plot2::Plot2Scene --- */
+/* --- AbsPlot2::Plot2Scene --- */
 
 const std::filesystem::path CURRENT_SHADER_DIR = SOURCE_PATH / "libraries/ciegl/data/shaders/plot2";
 
 
-Plot2::Plot2Scene::Plot2Scene( utils::Logger& r_logger,
+AbsPlot2::Plot2Scene::Plot2Scene( utils::Logger& r_logger,
                                const std::string& r_name,
                                AttributeContainerPtr p_attributes ) :
     Scene(
@@ -149,26 +149,26 @@ Plot2::Plot2Scene::Plot2Scene( utils::Logger& r_logger,
 {
     CIE_BEGIN_EXCEPTION_TRACING
     
-    auto p_camera = this->makeCamera<Plot2::camera_type>();
+    auto p_camera = this->makeCamera<AbsPlot2::camera_type>();
     this->bindUniform( "transformation", p_camera->transformationMatrix() );
 
     CIE_END_EXCEPTION_TRACING
 }
 
 
-CameraPtr Plot2::Plot2Scene::getCamera()
+CameraPtr AbsPlot2::Plot2Scene::getCamera()
 {
     return *this->_cameras.begin();
 }
 
 
-void Plot2::Plot2Scene::setUpdateFlag()
+void AbsPlot2::Plot2Scene::setUpdateFlag()
 {
     this->_updateFlag = true;
 }
 
 
-void Plot2::Plot2Scene::update_impl()
+void AbsPlot2::Plot2Scene::update_impl()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 

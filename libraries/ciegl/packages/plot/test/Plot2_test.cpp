@@ -20,8 +20,10 @@ CIE_TEST_CASE( "Plot2", "[plot]" )
 {
     CIE_TEST_CASE_INIT( "Plot2" )
 
-    std::deque<double> X;
-    std::vector<double> Y;
+    using XContainer = std::deque<Double>;
+    using YContainer = std::vector<Double>;
+    XContainer X;
+    YContainer Y;
 
     Size n    = 100;
     double dx = 2.0 * M_PI / double(n);
@@ -32,7 +34,7 @@ CIE_TEST_CASE( "Plot2", "[plot]" )
         Y.push_back( std::cos(x) );
     }
 
-    plot( X, Y );
+    plot2( X, Y );
 }
 
 

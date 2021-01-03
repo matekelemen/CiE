@@ -2,6 +2,7 @@
 #define CIE_GL_PLOT_PLOT_2_IMPL_HPP
 
 // --- Utility Includes ---
+#include "cieutils/packages/macros/inc/exceptions.hpp"
 #include "cieutils/packages/macros/inc/checks.hpp"
 #include "cieutils/packages/stl_extension/inc/resize.hpp"
 
@@ -12,10 +13,20 @@
 namespace cie::gl {
 
 
+template <class ...Args>
+Plot2<Args...>::Plot2( Args&&... args ) :
+    AbsPlot2()
+{
+    CIE_THROW( NotImplementedException, "No specialization was found for Plot2 and the specified arguments" )
+}
+
+
+
 template < concepts::NumericContainer XContainer,
            concepts::NumericContainer YContainer >
-void plot( const XContainer& r_xContainer,
-               const YContainer& r_yContainer )
+Plot2<XContainer,YContainer>::Plot2( const XContainer& r_xContainer,
+                                     const YContainer& r_yContainer ) :
+    AbsPlot2()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -33,33 +44,41 @@ void plot( const XContainer& r_xContainer,
     )
 
     // Initialize plot
-    auto p_plot = Plot2Ptr( new Plot2 );
-    p_plot->_vertices.reserve( r_xContainer.size() );
+    this->_vertices.reserve( r_xContainer.size() );
 
     {
         auto p_vertex = makeVertex<Plot2::vertex_type>(
-            p_plot->_p_attributes,
+            this->_p_attributes,
             r_xContainer[0],
             r_yContainer[0]
         );
-        p_plot->_p_attributes->reserve( r_xContainer.size() * p_vertex->numberOfAttributes() );
-        p_plot->_vertices.push_back( p_vertex );
+        this->_p_attributes->reserve( r_xContainer.size() * p_vertex->numberOfAttributes() );
+        this->_vertices.push_back( p_vertex );
     }
 
     // Load data
     for ( Size vertexIndex=1; vertexIndex<r_xContainer.size(); ++vertexIndex )
-        p_plot->_vertices.push_back( makeVertex<Plot2::vertex_type>(
-            p_plot->_p_attributes,
+        this->_vertices.push_back( makeVertex<Plot2::vertex_type>(
+            this->_p_attributes,
             r_xContainer[vertexIndex],
             r_yContainer[vertexIndex]
         ) );
 
     // Adjust camera
-    p_plot->fit();
+    this->fit();
 
-    p_plot->_p_window->beginLoop();
+    this->_p_window->beginLoop();
 
     CIE_END_EXCEPTION_TRACING
+}
+
+
+template < concepts::NumericContainer XContainer,
+           concepts::NumericContainer YContainer >
+void plot2( const XContainer& r_XContainer,
+            const YContainer& r_YContainer )
+{
+    Plot2<XContainer,YContainer>( r_XContainer, r_YContainer );
 }
 
 
