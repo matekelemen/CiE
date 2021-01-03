@@ -50,6 +50,19 @@ UnstructuredMarchingCubes<TargetType>::UnstructuredMarchingCubes( typename Unstr
         outputFunctor,
         p_primitives )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    if ( TargetType::dimension == 3 )
+    { /* Do nothing: default tables are set for 3 dimensions */ }
+    else if ( TargetType::dimension == 2 )
+    {
+        this->_edgeTable = detail::squareEdgeMap;
+        this->_connectivityTable = detail::marchingSquaresConnectivityMap;
+    }
+    else
+        CIE_THROW( NotImplementedException, "MarchingCubes is implemented only in 2 and 3 dimensions" )
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -86,10 +99,24 @@ StructuredMarchingCubes<TargetType>::StructuredMarchingCubes( typename Structure
                                                                                                                     detail::marchingCubesConnectivityMap,
                                                                                                                     outputFunctor )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     for ( auto meshEdgeLength : this->_meshEdgeLengths )
         CIE_CHECK( 
             meshEdgeLength == this->_meshEdgeLengths[0],
             "Invalid domain for StructuredMarchingCubes, consider using StructuredMarchingBoxes" )
+
+    if ( TargetType::dimension == 3 )
+    { /* Do nothing: default tables are set for 3 dimensions */ }
+    else if ( TargetType::dimension == 2 )
+    {
+        this->_edgeTable = detail::squareEdgeMap;
+        this->_connectivityTable = detail::marchingSquaresConnectivityMap;
+    }
+    else
+        CIE_THROW( NotImplementedException, "MarchingCubes is implemented only in 2 and 3 dimensions" )
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 

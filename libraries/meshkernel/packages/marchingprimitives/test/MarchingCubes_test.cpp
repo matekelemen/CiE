@@ -16,6 +16,49 @@
 namespace cie::mesh {
 
 
+CIE_TEST_CASE( "MarchingSquares", "[marchingprimitives]" )
+{
+    CIE_TEST_CASE_INIT( "MarchingSquares" )
+
+    const Size Dimension = 2;
+    using CoordinateType = Double;
+    using PointType      = MeshTraits<Dimension,CoordinateType>::point_type;
+    using TargetType     = csg::boolean::Sphere<Dimension,CoordinateType>;
+
+    {
+        CIE_TEST_CASE_INIT( "UnstructuredMarchingSquares" )
+        using MarchingSquares = UnstructuredMarchingCubes<TargetType>;
+
+        PointType meshOrigin { -2.0, -2.0 };
+        MarchingSquares::resolution_specifier numberOfSquares { 2, 2 };
+        CoordinateType edgeLength = 2.0;
+
+        auto p_unitCircle = MarchingSquares::target_ptr(
+            new TargetType( {0.0,0.0}, 1.0 )
+        );
+
+        auto outputFunctor = []( Size primitiveIndex, const MarchingSquares::output_arguments& r_edges ) -> void
+        {};
+
+        auto p_primitives = MarchingSquares::primitive_container_ptr(
+            new MarchingSquares::primitive_container
+        );
+
+        makeCartesianMesh<MarchingSquares::primitive_type>(
+            numberOfSquares,
+            edgeLength,
+            meshOrigin,
+            *p_primitives
+        );
+
+        MarchingSquares marchingSquares( p_unitCircle,
+                                         p_primitives,
+                                         outputFunctor );
+        marchingSquares.execute();
+    }
+}
+
+
 CIE_TEST_CASE( "MarchingCubes", "[marchingprimitives]" )
 {
     CIE_TEST_CASE_INIT( "MarchingCubes" )

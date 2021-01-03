@@ -75,10 +75,10 @@ protected:
     target_ptr                _p_target;
 
     /// Map edge index to vertex pairs
-    const edge_table          _edgeTable;
+    edge_table                _edgeTable;
 
     /// Map active point configurations to surface primitives (3D: active point config -> triangles)
-    const connectivity_table  _connectivityTable;
+    connectivity_table        _connectivityTable;
 
     /// Function that gets called for every surface primitive
     output_functor            _outputFunctor;

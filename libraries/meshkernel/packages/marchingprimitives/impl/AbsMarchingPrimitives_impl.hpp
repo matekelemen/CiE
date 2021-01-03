@@ -33,8 +33,8 @@ AbsMarchingPrimitives<TargetType>::execute()
     Size numberOfPrimitivesToProcess  = this->numberOfRemainingPrimitives();
     Size numberOfVerticesPerPrimitive = this->primitiveVertexCount();
 
-    #pragma omp parallel for
-    for ( int primitiveIndex=0; primitiveIndex<numberOfPrimitivesToProcess; ++primitiveIndex )
+    //#pragma omp parallel for
+    for ( int primitiveIndex=0; primitiveIndex<int(numberOfPrimitivesToProcess); ++primitiveIndex )
     {
         Size configurationIndex = 0;
 
