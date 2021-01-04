@@ -20,7 +20,7 @@ namespace cie::csg {
 
 
 template <cie::detail::CubeType Node>
-std::shared_ptr<Node> makeRoot()
+std::shared_ptr<Node> makeRoot( Size numberOfPointsPerDimension = 5 )
 {
     PointType base;
     std::fill( base.begin(),
@@ -37,7 +37,7 @@ std::shared_ptr<Node> makeRoot()
 
 
 template <cie::detail::BoxType Node>
-std::shared_ptr<Node> makeRoot()
+std::shared_ptr<Node> makeRoot( Size numberOfPointsPerDimension = 5 )
 {
     PointType base, end;
     std::fill( base.begin(),

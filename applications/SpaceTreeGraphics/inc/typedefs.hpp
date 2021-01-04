@@ -14,26 +14,24 @@
 namespace cie::csg {
 
 
-// Set dimension (needed for python bindings)
-const Size Dimension                    = 3;
-const Size numberOfPointsPerDimension   = 5;
 
 // Instantiate templates
-using CoordinateType                    = Double;
-using ValueType                         = Double;
-using PointType                         = typename CSGTraits<Dimension,CoordinateType>::point_type;
+const Size Dimension   = 3;
+using CoordinateType   = Double;
+using ValueType        = Double;
+using PointType        = typename CSGTraits<Dimension,CoordinateType>::point_type;
 
-using PrimitiveType                     = Box<Dimension,CoordinateType>;
-using CellType                          = BoxCell<PrimitiveType>;
-using NodeType                          = SpaceTreeNode<CellType,ValueType>;
-using NodePtr                           = std::shared_ptr<NodeType>;
+using PrimitiveType    = Box<Dimension,CoordinateType>;
+using CellType         = BoxCell<PrimitiveType>;
+using NodeType         = SpaceTreeNode<CellType,ValueType>;
+using NodePtr          = std::shared_ptr<NodeType>;
 
-using SamplerType                       = BoxSampler<Dimension,CoordinateType>;
-using SplitterType                      = WeightedSplitPolicy< typename NodeType::sample_point_iterator,
-                                                               typename NodeType::value_iterator >;
+using SamplerType      = BoxSampler<Dimension,CoordinateType>;
+using SplitterType     = WeightedSplitPolicy< typename NodeType::sample_point_iterator,
+                                              typename NodeType::value_iterator >;
 
-using DropFunction                      = std::function<ValueType(const DoubleArray<Dimension>&, Double)>;
-using GeometryFunction                  = TargetFunction<PointType,ValueType>;
+using DropFunction     = std::function<ValueType(const PointType&, Double)>;
+using GeometryFunction = TargetFunction<PointType,ValueType>;
 
 
 } // namespace cie::csg

@@ -1,8 +1,7 @@
 // --- Internal Includes ---
-#include "../inc/hilbert_determinant.hpp"
+#include "hilbert_determinant.hpp"
 
 namespace cie {
-namespace mathieu {
 
 
 Complex hilbertDeterminant( double delta,
@@ -10,7 +9,7 @@ Complex hilbertDeterminant( double delta,
                             double gamma,
                             double omega,
                             double omegaCritical,
-                            size_t N)
+                            Size N)
 {
     double temp = omegaCritical - ((double)N)*omega;
     double subDiag  = epsilon * epsilon / 4.0;
@@ -40,5 +39,4 @@ Complex hilbertDeterminant( double delta,
 }
 
 
-}
-}
+} // namespace cie

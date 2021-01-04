@@ -1,11 +1,16 @@
-#ifndef MATHIEU_STABILITY_HILBERT_DETERMINANT_HPP
-#define MATHIEU_STABILITY_HILBERT_DETERMINANT_HPP
+#ifndef CIE_SPACE_TREE_GRAPHICS_HILBERT_DETERMINANT_HPP
+#define CIE_SPACE_TREE_GRAPHICS_HILBERT_DETERMINANT_HPP
 
-// --- Internal Includes ---
-#include "../inc/complex.hpp"
+// --- Utility Includes ---
+#include <cieutils/types.hpp>
+
+// --- STL Includes ---
+#include <complex>
 
 namespace cie {
-namespace mathieu {
+
+
+using Complex = std::complex<double>;
 
 
 Complex hilbertDeterminant( double delta,
@@ -13,10 +18,9 @@ Complex hilbertDeterminant( double delta,
                             double gamma,
                             double omega,
                             double omegaCritical,
-                            size_t N );
+                            Size N );
 
 
-}
-}
+} // namespace cie
 
 #endif

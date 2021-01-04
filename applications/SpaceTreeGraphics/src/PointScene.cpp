@@ -59,7 +59,8 @@ PointScene::PointScene( utils::Logger& r_logger,
         gl::makeGeometryShader<gl::GLFWGeometryShader>( detail::POINT_SHADER_PATH / "geometryShader.xml", detail::POINT_SHADER_PATH / "geometryShader.glsl" ),
         gl::makeFragmentShader<gl::GLFWFragmentShader>( detail::POINT_SHADER_PATH / "fragmentShader.xml", detail::POINT_SHADER_PATH / "fragmentShader.glsl" )
     ),
-    _roots()
+    _roots(),
+    _nodeCenterAttributes()
 {
     auto p_camera = this->makeCamera<gl::Camera<gl::PerspectiveProjection>>();
     this->bindUniform( "transformation", p_camera->transformationMatrix() );
@@ -71,32 +72,27 @@ void PointScene::updatePoints()
     CIE_BEGIN_EXCEPTION_TRACING
 
     // Clear stored centers
-    PointScene::vertex_attribute_container centerComponents;
+    this->_nodeCenterAttributes.clear();
 
     // Send lambda down the tree that collects all leaf centers
-    auto getLeafCenter = [&centerComponents]( csg::NodeType* p_node ) -> bool
+    auto getLeafCenters = [this]( csg::NodeType* p_node ) -> bool
     {
         // Return if not a leaf node
-        if ( !p_node->children().empty() )
+        if ( !p_node->isLeaf() || !p_node->isBoundary() )
             return true;
-        else
-            for ( auto& rp_child : p_node->children() )
-                if ( rp_child->values().empty() )
-                    return true;
-        
 
         auto center = detail::getCenter( *p_node );
         for ( const auto& r_component : center )
-            centerComponents.push_back( r_component );
+            this->_nodeCenterAttributes.push_back( r_component );
 
         return true;
     };
 
     for ( auto& rp_root : this->_roots )
-        rp_root->visit( getLeafCenter );
+        rp_root->visit( getLeafCenters );
 
     // Write leaf centers to buffer
-    this->_p_bufferManager->writeToBoundVertexBuffer( centerComponents );
+    this->_p_bufferManager->writeToBoundVertexBuffer( this->_nodeCenterAttributes );
 
     CIE_END_EXCEPTION_TRACING
 }

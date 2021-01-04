@@ -56,6 +56,7 @@ private:
 
 private:
     node_container             _roots;
+    vertex_attribute_container _nodeCenterAttributes;
 };
 
 

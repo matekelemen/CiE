@@ -13,24 +13,22 @@
 
 
 // Define target function
-const size_t depth          = 7;
-
-const double GAMMA          = 0.2;
-const double OMEGA          = 1.0;
-//const double OMEGACRITICAL  = 0.0;
-const size_t N              = 5;
-const size_t M              = 5;
+const size_t depth          = 6;
 
 auto targetFunction = [](const typename cie::csg::NodeType::point_type& parameters)
-{   
-    cie::mathieu::Complex determinant = cie::mathieu::hilbertDeterminant( 
+{
+    double gamma = 0.1;
+    double omega = 1.0;
+    // double omegaCritical = 0.0;
+
+    cie::Complex determinant = cie::hilbertDeterminant( 
                                             parameters[0],
                                             parameters[1],
-                                            GAMMA,
-                                            OMEGA,
+                                            gamma,
+                                            omega,
                                             parameters[2]/10.0,
-                                            N);
-    double result = abs(determinant[0]) < abs(determinant[1]) ? determinant[0] : determinant[1];
+                                            cie::csg::Dimension);
+    double result = std::abs(determinant.real()) < std::abs(determinant.imag()) ? determinant.real() : determinant.imag();
     return result;
 };
 
@@ -38,32 +36,32 @@ auto targetFunction = [](const typename cie::csg::NodeType::point_type& paramete
 namespace cie::csg {
 
 template <cie::detail::CubeType Node>
-std::shared_ptr<Node> makeRoot()
+std::shared_ptr<Node> makeRoot( Size numberOfPointsPerDimension = 5 )
 {
     PointType base;
     std::fill( base.begin(),
                base.end(),
-               0.0 );
+               0.1 );
 
     return std::make_shared<Node>(
         typename Node::sampler_ptr( new SamplerType(numberOfPointsPerDimension) ),
         typename Node::split_policy_ptr( new SplitterType ),
         0,
         base,
-        10.0 );
+        8.0 );
 }
 
 
 template <cie::detail::BoxType Node>
-std::shared_ptr<Node> makeRoot()
+std::shared_ptr<Node> makeRoot( Size numberOfPointsPerDimension = 5 )
 {
     PointType base, end;
     std::fill( base.begin(),
                base.end(),
-               0.0 );
+               0.1 );
     std::fill( end.begin(),
                end.end(),
-               10.0 );
+               8.0 );
 
     return std::make_shared<Node>(
         typename Node::sampler_ptr( new SamplerType(numberOfPointsPerDimension) ),
@@ -108,12 +106,11 @@ int main()
 
     auto p_camera = p_scene->getCamera();
     
-    auto p_cameraControls = gl::CameraControlsPtr(
-        new gl::FlyCameraControls
-    );
+    auto p_cameraControls = std::make_shared<gl::FlyCameraControls>();
     p_cameraControls->bind( p_window, p_camera );
+    p_cameraControls->setMovementScale( 1e-1 );
 
-    p_camera->setFieldOfView( 180.0 * M_PI/180.0 );
+    p_camera->setFieldOfView( 90.0 * M_PI/180.0 );
     p_camera->setClippingPlanes( 0.1, 100.0 );
     p_camera->setPosition( {0.0, 0.0, 10.0} );
 
