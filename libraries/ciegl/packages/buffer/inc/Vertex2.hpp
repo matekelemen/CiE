@@ -31,9 +31,7 @@ public:
     const Vertex2::value_type y() const;
 
 protected:
-    /**
-     * @brief Overloaded constructor for derived Vertex classes
-     */
+    /// Overloaded constructor for derived Vertex classes
     Vertex2( AttributeContainerPtr p_attributeContainer,
              Size offset,
              const Vertex2::offset_container& r_attributeOffsets );

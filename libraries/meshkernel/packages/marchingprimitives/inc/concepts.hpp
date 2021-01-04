@@ -4,6 +4,9 @@
 // --- Utility Includes ---
 #include "cieutils/packages/concepts/inc/basic_concepts.hpp"
 
+// --- Internal Includes ---
+#include "meshkernel/packages/traits/inc/MeshTraits.hpp"
+
 
 namespace cie::concepts {
 
@@ -25,11 +28,12 @@ struct isMarchingPrimitives
         false,
         isMarchingPrimitivesHelper
         <
-            typename T::target_type;
-            typename T::target_ptr;
-            typename T::edge_type;
-            typename T::output_arguments;
-            typename T::output_functor;
+            typename T::target_type
+            ,typename T::target_ptr
+            ,typename T::edge_type
+            ,typename T::output_arguments
+            ,typename T::output_functor
+            ,typename T::primitive_type
         >,
         void
     >
@@ -40,11 +44,11 @@ struct isMarchingPrimitives
 
 template <class T>
 concept MarchingPrimitives
-= detail::isMarchingPrimitivesHelper<T>::value
+= detail::isMarchingPrimitives<T>::value
+  && MeshObject<T>
   && requires ( T instance )
 {
     { instance.execute() };
-    { instance.setOutputFunctor() };
 };
 
 

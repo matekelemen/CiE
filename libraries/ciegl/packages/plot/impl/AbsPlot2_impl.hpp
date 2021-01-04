@@ -1,3 +1,6 @@
+#ifndef CIE_GL_ABS_PLOT_2_IMPL_HPP
+#define CIE_GL_ABS_PLOT_2_IMPL_HPP
+
 // --- Utility Includes ---
 #include "cieutils/packages/macros/inc/exceptions.hpp"
 #include "cieutils/packages/macros/inc/checks.hpp"
@@ -14,9 +17,12 @@ namespace cie::gl {
 
 /* --- AbsPlot2 --- */
 
-AbsPlot2::AbsPlot2( WindowPtr p_window ) :
+template <class Tag, class ...Args>
+requires Tag::value
+AbsPlot2<Tag,Args...>::AbsPlot2( WindowPtr p_window ) :
     AbsPlot( p_window ),
     _vertices(),
+    _p_indices( new typename AbsPlot2<Tag,Args...>::index_container ),
     _p_camera( nullptr ),
     _p_scene( nullptr ),
     _p_controls( nullptr )
@@ -25,9 +31,12 @@ AbsPlot2::AbsPlot2( WindowPtr p_window ) :
 }
 
 
-AbsPlot2::AbsPlot2() :
+template <class Tag, class ...Args>
+requires Tag::value
+AbsPlot2<Tag,Args...>::AbsPlot2() :
     AbsPlot(),
     _vertices(),
+    _p_indices( new typename AbsPlot2<Tag,Args...>::index_container ),
     _p_camera( nullptr ),
     _p_scene( nullptr ),
     _p_controls( nullptr )
@@ -36,7 +45,9 @@ AbsPlot2::AbsPlot2() :
 }
 
 
-void AbsPlot2::fit()
+template <class Tag, class ...Args>
+requires Tag::value
+void AbsPlot2<Tag,Args...>::fit()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -66,7 +77,7 @@ void AbsPlot2::fit()
         double offset = minValue;
         double scale  = maxValue - minValue;
 
-        return [offset,scale]( AbsPlot2::vertex_type::value_type& r_component ) -> void
+        return [offset,scale]( typename AbsPlot2<Tag,Args...>::vertex_type::value_type& r_component ) -> void
         {
             r_component -= offset;
             r_component /= scale;
@@ -101,13 +112,16 @@ void AbsPlot2::fit()
 }
 
 
-void AbsPlot2::initializeScene()
+template <class Tag, class ...Args>
+requires Tag::value
+void AbsPlot2<Tag,Args...>::initializeScene()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    auto p_scene = std::make_shared<AbsPlot2::Plot2Scene>( *this->_p_context,
-                                                        "Plot2Scene",
-                                                        this->_p_attributes );
+    auto p_scene = std::make_shared<typename AbsPlot2<Tag,Args...>::Plot2Scene>( *this->_p_context,
+                                                                                 "Plot2Scene",
+                                                                                 this->_p_attributes,
+                                                                                 this->_p_indices );
 
     this->_p_scene = p_scene;
     this->_p_window->addScene( p_scene );
@@ -118,8 +132,8 @@ void AbsPlot2::initializeScene()
                               { 0.0, 1.0, 0.0 } );
     this->_p_camera->setClippingPlanes( 0.5, 1.5 );
 
-    this->_p_controls = AbsPlot2::controls_ptr(
-        new AbsPlot2::controls_type(true)
+    this->_p_controls = typename AbsPlot2<Tag,Args...>::controls_ptr(
+        new typename AbsPlot2<Tag,Args...>::controls_type(true)
     );
     this->_p_controls->bind( this->_p_window, this->_p_camera );
 
@@ -127,48 +141,70 @@ void AbsPlot2::initializeScene()
 }
 
 
-/* --- AbsPlot2::Plot2Scene --- */
+/* --- AbsPlot2<Tag,Args...>::Plot2Scene --- */
 
-const std::filesystem::path CURRENT_SHADER_DIR = SOURCE_PATH / "libraries/ciegl/data/shaders/plot2";
+template <class Tag, class ...Args>
+requires Tag::value
+const std::filesystem::path
+AbsPlot2<Tag,Args...>::Plot2Scene::_shaderDirectory = SOURCE_PATH / "libraries/ciegl/data/shaders/plot2";
 
 
-AbsPlot2::Plot2Scene::Plot2Scene( utils::Logger& r_logger,
+template <class Tag, class ...Args>
+requires Tag::value
+AbsPlot2<Tag,Args...>::Plot2Scene::Plot2Scene( utils::Logger& r_logger,
                                const std::string& r_name,
-                               AttributeContainerPtr p_attributes ) :
+                               AttributeContainerPtr p_attributes,
+                               typename AbsPlot2<Tag,Args...>::index_container_ptr p_indices ) :
     Scene(
         r_logger,
         r_name,
-        makeVertexShader<GLFWVertexShader>( CURRENT_SHADER_DIR / "vertexShader.xml",
-                                            CURRENT_SHADER_DIR / "vertexShader.glsl" ),
+        makeVertexShader<GLFWVertexShader>( this->_shaderDirectory / "vertexShader.xml",
+                                            this->_shaderDirectory / "vertexShader.glsl" ),
         nullptr,
-        makeFragmentShader<GLFWFragmentShader>( CURRENT_SHADER_DIR / "fragmentShader.xml",
-                                                CURRENT_SHADER_DIR / "fragmentShader.glsl" )
+        makeFragmentShader<GLFWFragmentShader>( this->_shaderDirectory / "fragmentShader.xml",
+                                                this->_shaderDirectory / "fragmentShader.glsl" )
     ),
     _p_attributes( p_attributes ),
-    _updateFlag( true )
+    _p_indices( p_indices ),
+    _updateFlag( true ),
+    _drawMode( GL_LINE_STRIP )
 {
     CIE_BEGIN_EXCEPTION_TRACING
     
-    auto p_camera = this->makeCamera<AbsPlot2::camera_type>();
+    auto p_camera = this->makeCamera<typename AbsPlot2<Tag,Args...>::camera_type>();
     this->bindUniform( "transformation", p_camera->transformationMatrix() );
 
     CIE_END_EXCEPTION_TRACING
 }
 
 
-CameraPtr AbsPlot2::Plot2Scene::getCamera()
+template <class Tag, class ...Args>
+requires Tag::value
+CameraPtr AbsPlot2<Tag,Args...>::Plot2Scene::getCamera()
 {
     return *this->_cameras.begin();
 }
 
 
-void AbsPlot2::Plot2Scene::setUpdateFlag()
+template <class Tag, class ...Args>
+requires Tag::value
+void AbsPlot2<Tag,Args...>::Plot2Scene::setUpdateFlag()
 {
     this->_updateFlag = true;
 }
 
 
-void AbsPlot2::Plot2Scene::update_impl()
+template <class Tag, class ...Args>
+requires Tag::value
+void AbsPlot2<Tag,Args...>::Plot2Scene::setDrawMode( GLenum drawMode )
+{
+    this->_drawMode = drawMode;
+}
+
+
+template <class Tag, class ...Args>
+requires Tag::value
+void AbsPlot2<Tag,Args...>::Plot2Scene::update_impl()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -176,17 +212,17 @@ void AbsPlot2::Plot2Scene::update_impl()
     if ( this->_updateFlag )
     {
         this->_p_bufferManager->writeToBoundVertexBuffer( *this->_p_attributes );
+        this->_p_bufferManager->writeToBoundElementBuffer( *this->_p_indices );
         this->_updateFlag = false;
     }
 
     checkGLErrors( *this, "Error writing to buffer" );
 
-    GLint64 numberOfPoints;
-    glGetBufferParameteri64v( GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &numberOfPoints );
-    numberOfPoints /= sizeof( GLfloat );
-    numberOfPoints /= 2;
+    GLint64 numberOfIndices;
+    glGetBufferParameteri64v( GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &numberOfIndices );
+    numberOfIndices /= sizeof( ElementBuffer::data_type );
 
-    glDrawArrays( GL_LINE_STRIP, 0, numberOfPoints );
+    glDrawElements( this->_drawMode, numberOfIndices, GL_UNSIGNED_INT, 0 );
 
     CIE_END_EXCEPTION_TRACING
 }
@@ -195,3 +231,5 @@ void AbsPlot2::Plot2Scene::update_impl()
 
 
 } // namespace cie::gl
+
+#endif

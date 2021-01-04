@@ -120,7 +120,7 @@ protected:
     /**
      * @brief make space in the attribute container for the attributes
      * of this vertex.
-     * @note should be called only in the constructors of derived verties
+     * @note should be called only in the constructors of derived vertices
      */
     void resizeAttributeContainer();
 

@@ -13,7 +13,7 @@ namespace cie::mesh::detail {
 
 const std::vector<std::pair<Size,Size>> squareEdgeMap
 {
-	{0, 1}, {1,3}, {3,2}, {2,0}
+	{0,1}, {1,3}, {3,2}, {2,0}
 };
 
 
