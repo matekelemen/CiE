@@ -22,7 +22,9 @@ public:
     AbsPlot();
 
     virtual void update();
-    virtual void fit() = 0;
+    virtual void fit( bool keepAspectRatio = false ) = 0;
+
+    void show();
 
     const AttributeContainer& attributes() const;
 

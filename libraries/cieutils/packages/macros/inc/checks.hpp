@@ -40,7 +40,7 @@
 
 
 #ifdef CIE_ENABLE
-    #define CIE_DIVISION_BY_ZERO_CIE_TEST_CHECK(boolExpression)                  \
+    #define CIE_DIVISION_BY_ZERO_CHECK(boolExpression)                  \
         if (!(boolExpression)) [[unlikely]]                             \
         {                                                               \
             std::stringstream stream;                                   \
@@ -48,7 +48,7 @@
             CIE_THROW( cie::DivisionByZeroException, stream.str() );    \
         }
 #else
-    #define CIE_DIVISION_BY_ZERO_CIE_TEST_CHECK(boolExpression)
+    #define CIE_DIVISION_BY_ZERO_CHECK(boolExpression)
 #endif
 
 

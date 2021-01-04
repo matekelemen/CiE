@@ -121,7 +121,7 @@ std::array<ScalarType,N> operator*( const std::array<ScalarType,N>& vector, cons
 template <cie::concepts::NumericContainer ArrayType, cie::concepts::NumericType ScalarType>
 ArrayType operator/( const ArrayType& vector, const ScalarType& scalar )
 {
-    CIE_DIVISION_BY_ZERO_CIE_TEST_CHECK( scalar!=0 )
+    CIE_DIVISION_BY_ZERO_CHECK( scalar!=0 )
 
     ArrayType result(vector.size());
     std::transform( 
@@ -138,7 +138,7 @@ ArrayType operator/( const ArrayType& vector, const ScalarType& scalar )
 template <cie::Size N, cie::concepts::NumericType ScalarType>
 std::array<ScalarType,N> operator/( const std::array<ScalarType,N>& vector, const ScalarType& scalar )
 {
-    CIE_DIVISION_BY_ZERO_CIE_TEST_CHECK( scalar!=0 )
+    CIE_DIVISION_BY_ZERO_CHECK( scalar!=0 )
 
     std::array<ScalarType,N> result;
     std::transform( 

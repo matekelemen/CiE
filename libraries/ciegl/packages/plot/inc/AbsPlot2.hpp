@@ -37,14 +37,20 @@ public:
     using controls_type       = PanZoomCameraControls;
     using controls_ptr        = std::shared_ptr<controls_type>;
 
+protected:
+    using transform_functor   = std::function<void(typename AbsPlot2<Tag,Args...>::vertex_type::value_type&)>;
+
 public:
     AbsPlot2( WindowPtr p_window );
     AbsPlot2();
 
-    void fit() override;
+    void fit( bool keepAspectRatio = false ) override;
 
 private:
     void initializeScene();
+
+    void transform( transform_functor xTransform,
+                    transform_functor yTransform );
 
 protected:
     /// Internal Scene class used by AbsPlot2

@@ -47,7 +47,7 @@ AbsPlot2<Tag,Args...>::AbsPlot2() :
 
 template <class Tag, class ...Args>
 requires Tag::value
-void AbsPlot2<Tag,Args...>::fit()
+void AbsPlot2<Tag,Args...>::fit( bool keepAspectRatio )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -70,6 +70,28 @@ void AbsPlot2<Tag,Args...>::fit()
             yMax = rp_vertex->y();
     }
 
+    // Adjust aspect ratio
+    if ( keepAspectRatio )
+    {
+        auto maxRange = xMax - xMin;
+
+        if ( yMax - yMin > maxRange )
+        {
+            maxRange = yMax - yMin;
+
+            auto midPoint = (xMax + xMin) / 2;
+            xMax = midPoint + maxRange / 2;
+            xMin = midPoint - maxRange / 2;
+        }
+        else
+        {
+            auto midPoint = (yMax + yMin) / 2;
+            yMax = midPoint + maxRange / 2;
+            yMin = midPoint - maxRange / 2;
+        }
+        
+    }
+
     // Scale data
     auto makeNormalizeFunctor = []( double minValue, double maxValue )
     {
@@ -87,11 +109,7 @@ void AbsPlot2<Tag,Args...>::fit()
     auto normalizeX = makeNormalizeFunctor( xMin, xMax );
     auto normalizeY = makeNormalizeFunctor( yMin, yMax );
 
-    for ( auto& rp_vertex : this->_vertices )
-    {
-        normalizeX( rp_vertex->x() );
-        normalizeY( rp_vertex->y() );
-    }
+    this->transform( normalizeX, normalizeY );
 
     this->_p_scene->setUpdateFlag();
 
@@ -132,10 +150,28 @@ void AbsPlot2<Tag,Args...>::initializeScene()
                               { 0.0, 1.0, 0.0 } );
     this->_p_camera->setClippingPlanes( 0.5, 1.5 );
 
+    this->_p_camera->setAspectRatio( double(this->_p_window->getSize().first) / this->_p_window->getSize().second );
+
     this->_p_controls = typename AbsPlot2<Tag,Args...>::controls_ptr(
         new typename AbsPlot2<Tag,Args...>::controls_type(true)
     );
     this->_p_controls->bind( this->_p_window, this->_p_camera );
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+template <class Tag, class ...Args>
+void AbsPlot2<Tag,Args...>::transform( typename AbsPlot2<Tag,Args...>::transform_functor xTransform,
+                                       typename AbsPlot2<Tag,Args...>::transform_functor yTransform )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    for ( auto& rp_vertex : this->_vertices )
+    {
+        xTransform( rp_vertex->x() );
+        yTransform( rp_vertex->y() );
+    }
 
     CIE_END_EXCEPTION_TRACING
 }

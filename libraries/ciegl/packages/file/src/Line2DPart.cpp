@@ -32,7 +32,7 @@ Size Line2DPart::primitiveVertexSize() const
 }
 
 
-Size Line2DPart::writeSTL( const std::filesystem::path& r_path ) const
+void Line2DPart::writeSTL( const std::filesystem::path& r_path ) const
 {
     CIE_THROW( Exception, "Cannot triangulate Line2DPart" )
 }

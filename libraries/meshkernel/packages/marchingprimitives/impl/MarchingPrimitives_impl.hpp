@@ -90,7 +90,14 @@ StructuredMarchingPrimitives<TargetType,PrimitiveType>::StructuredMarchingPrimit
     {
         this->_meshOrigin[dim] = r_domain[dim].first;
 
+        CIE_DIVISION_BY_ZERO_CHECK( r_numberOfPoints[dim] > 1 )
+
         this->_meshEdgeLengths[dim] = ( r_domain[dim].second - r_domain[dim].first ) / ( r_numberOfPoints[dim] - 1 );
+
+        CIE_RUNTIME_GEOMETRY_CHECK(
+            this->_meshEdgeLengths[dim] > 0,
+            "Invalid domain"
+        )
     }
 
     CIE_END_EXCEPTION_TRACING

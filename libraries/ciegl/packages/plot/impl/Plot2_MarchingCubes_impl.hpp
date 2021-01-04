@@ -49,8 +49,7 @@ Plot2<ObjectType>::Plot2( ObjectType& r_marchingCubes ) :
     r_marchingCubes.setOutputFunctor( registerLine );
     r_marchingCubes.execute();
 
-    this->fit();
-    this->_p_window->beginLoop();
+    this->fit( true );
 
     CIE_END_EXCEPTION_TRACING
 }
@@ -60,7 +59,7 @@ template <concepts::MarchingPrimitives ObjectType>
 requires concepts::Cube<typename ObjectType::primitive_type>
 void plot2( ObjectType& r_marchingCubes )
 {
-    Plot2<ObjectType> tmp( r_marchingCubes );
+    Plot2<ObjectType>( r_marchingCubes ).show();
 }
 
 

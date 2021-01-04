@@ -28,13 +28,10 @@ CIE_TEST_CASE( "Plot2 - MarchingCubes", "[plot]" )
     MarchingCubes::domain_specifier domain {{ {-1.0,1.0}, {-1.0,1.0} }};
     MarchingCubes::resolution_specifier numberOfPoints { 25, 25 };
 
-    auto outputFunctor = []( Size primitiveIndex, const MarchingCubes::output_arguments& r_triangle ) -> void
-    {};
-
     MarchingCubes marchingCubes( p_target,
                                  domain,
                                  numberOfPoints,
-                                 outputFunctor );
+                                 nullptr );
 
     plot2( marchingCubes );
 }

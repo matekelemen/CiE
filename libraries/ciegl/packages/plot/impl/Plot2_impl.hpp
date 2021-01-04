@@ -67,8 +67,6 @@ Plot2<XContainer,YContainer>::Plot2( const XContainer& r_xContainer,
     // Adjust camera
     this->fit();
 
-    this->_p_window->beginLoop();
-
     CIE_END_EXCEPTION_TRACING
 }
 
@@ -78,7 +76,7 @@ template < concepts::NumericContainer XContainer,
 void plot2( const XContainer& r_XContainer,
             const YContainer& r_YContainer )
 {
-    Plot2<XContainer,YContainer>( r_XContainer, r_YContainer );
+    Plot2<XContainer,YContainer>( r_XContainer, r_YContainer ).show();
 }
 
 

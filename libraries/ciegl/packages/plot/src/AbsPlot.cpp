@@ -44,6 +44,12 @@ void AbsPlot::update()
 }
 
 
+void AbsPlot::show()
+{
+    this->_p_window->beginLoop();
+}
+
+
 const AttributeContainer& AbsPlot::attributes() const
 {
     return *this->_p_attributes;

@@ -9,5 +9,6 @@
 #include <ciegl/utility.hpp>
 #include <ciegl/file.hpp>
 #include <ciegl/control.hpp>
+#include <ciegl/plot.hpp>
 
 #endif

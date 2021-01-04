@@ -101,10 +101,11 @@ StructuredMarchingCubes<TargetType>::StructuredMarchingCubes( typename Structure
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    for ( auto meshEdgeLength : this->_meshEdgeLengths )
+    for ( auto meshEdgeLength : this->_meshEdgeLengths ){
+        std::cout << std::scientific << std::abs(meshEdgeLength - this->_meshEdgeLengths[0]) << std::endl;
         CIE_CHECK( 
-            meshEdgeLength == this->_meshEdgeLengths[0],
-            "Invalid domain for StructuredMarchingCubes, consider using StructuredMarchingBoxes" )
+            std::abs(meshEdgeLength - this->_meshEdgeLengths[0]) < 1e-15,
+            "Invalid domain for StructuredMarchingCubes, consider using StructuredMarchingBoxes" )}
 
     if ( TargetType::dimension == 3 )
     { /* Do nothing: default tables are set for 3 dimensions */ }
