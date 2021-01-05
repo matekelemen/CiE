@@ -162,6 +162,7 @@ void AbsPlot2<Tag,Args...>::initializeScene()
 
 
 template <class Tag, class ...Args>
+requires Tag::value
 void AbsPlot2<Tag,Args...>::transform( typename AbsPlot2<Tag,Args...>::transform_functor xTransform,
                                        typename AbsPlot2<Tag,Args...>::transform_functor yTransform )
 {
