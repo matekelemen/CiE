@@ -19,8 +19,8 @@ foreach( driver ${DRIVERS} )
 endforeach()
 
 # Copy python scripts
-file( GLOB PYTHON_SCRIPTS scripts/*.py )
-INSTALL_APPLICATION_SCRIPTS( ${PYTHON_SCRIPTS} )
+#file( GLOB PYTHON_SCRIPTS scripts/*.py )
+#INSTALL_APPLICATION_SCRIPTS( ${PYTHON_SCRIPTS} )
 
 # Copy data
-INSTALL_APPLICATION_DATA( )
+#INSTALL_APPLICATION_DATA( )

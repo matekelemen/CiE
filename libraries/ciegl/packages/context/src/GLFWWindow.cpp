@@ -107,7 +107,7 @@ GLFWWindow::GLFWWindow( Size id,
 GLFWWindow::~GLFWWindow()
 {
     glfwSetWindowShouldClose( this->_p_window, 1 );
-    glfwPollEvents();
+    //glfwPollEvents();
 }
 
 
