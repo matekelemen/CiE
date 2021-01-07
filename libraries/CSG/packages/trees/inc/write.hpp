@@ -5,7 +5,7 @@
 #include "pugixml.hpp"
 
 // --- Internal Includes ---
-#include "CSG/packages/trees/inc/spacetreenode.hpp"
+#include "CSG/packages/trees/inc/SpaceTreeNode.hpp"
 
 // --- STL Includes ---
 #include <filesystem>

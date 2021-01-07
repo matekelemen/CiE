@@ -2,7 +2,7 @@
 #include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Inludes ---
-#include "CSG/packages/trees/inc/primitive_sampler.hpp"
+#include "CSG/packages/trees/inc/CartesianGridSampler.hpp"
 
 // --- STL Includes ---
 #include <memory>

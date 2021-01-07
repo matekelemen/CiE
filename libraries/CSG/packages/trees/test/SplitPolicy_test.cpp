@@ -2,7 +2,9 @@
 #include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
-#include "CSG/packages/trees/inc/split_policy.hpp"
+#include "CSG/packages/trees/inc/MidPointSplitPolicy.hpp"
+#include "CSG/packages/trees/inc/LinearSplitPolicy.hpp"
+#include "CSG/packages/trees/inc/WeightedSplitPolicy.hpp"
 
 // --- STL Includes ---
 #include <array>
