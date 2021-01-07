@@ -22,7 +22,7 @@ using ValueType        = Double;
 using PointType        = typename CSGTraits<Dimension,CoordinateType>::point_type;
 
 using PrimitiveType    = Box<Dimension,CoordinateType>;
-using CellType         = BoxCell<PrimitiveType>;
+using CellType         = Cell<PrimitiveType>;
 using NodeType         = SpaceTreeNode<CellType,ValueType>;
 using NodePtr          = std::shared_ptr<NodeType>;
 

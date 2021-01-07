@@ -28,7 +28,7 @@ using ValueType         = Double;
 using PointType         = typename csg::CSGTraits<Dimension,CoordinateType>::point_type;
 
 using PrimitiveType    = csg::Cube<Dimension,CoordinateType>;
-using CellType         = csg::CubeCell<PrimitiveType>;
+using CellType         = csg::Cell<PrimitiveType>;
 using NodeType         = csg::SpaceTreeNode<CellType,ValueType>;
 using NodePtr          = std::shared_ptr<NodeType>;
 

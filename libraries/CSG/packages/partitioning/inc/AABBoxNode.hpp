@@ -23,7 +23,7 @@ namespace cie::csg {
  */
 template <concepts::BoxBoundable ObjectType>
 class AABBoxNode :
-    public BoxCell<AABBox<Traits<ObjectType>::dimension,typename Traits<ObjectType>::coordinate_type>>,
+    public Cell<AABBox<Traits<ObjectType>::dimension,typename Traits<ObjectType>::coordinate_type>>,
     public utils::AbsTree<std::deque,AABBoxNode<ObjectType>>,
     public std::enable_shared_from_this<AABBoxNode<ObjectType>>
 {

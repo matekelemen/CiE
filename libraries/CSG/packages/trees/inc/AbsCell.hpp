@@ -4,17 +4,16 @@
 // --- Internal Includes ---
 #include "CSG/packages/primitives/inc/Primitive.hpp"
 #include "CSG/packages/primitives/inc/concepts.hpp"
-#include "CSG/packages/trees/inc/indexconverter.hpp"
 
 // --- Utility Includes ---
 #include "cieutils/packages/trees/inc/abstree.hpp"
-#include "cieutils/packages/concepts/inc/container_concepts.hpp"
+#include "cieutils/packages/concepts/inc/basic_concepts.hpp"
+#include "cieutils/packages/concepts/inc/partial_specialization.hpp"
 #include "cieutils/packages/types/inc/types.hpp"
 
 // --- STL Includes ---
 #include <memory>
 #include <vector>
-#include <memory>
 
 namespace cie::csg {
 
@@ -56,6 +55,9 @@ protected:
     */
     virtual primitive_constructor_container_ptr split_internal( const typename AbsCell<PrimitiveType>::point_type& point ) = 0;
 };
+
+
+CIE_DEFINE_INVALID_CLASS_TEMPLATE_TO_SPECIALIZE( Cell )
 
 
 } // namespace cie::csg

@@ -1,40 +1,51 @@
 #ifndef CIE_CSG_TREES_CELL_IMPL_HPP
 #define CIE_CSG_TREES_CELL_IMPL_HPP
 
+// --- Utility Includes ---
+#include "cieutils/packages/exceptions/inc/exception.hpp"
+#include "cieutils/packages/stl_extension/inc/resize.hpp"
+#include "cieutils/packages/maths/inc/power.hpp"
+#include "cieutils/packages/macros/inc/checks.hpp"
+
+// --- Internal Includes ---
+#include "CSG/packages/trees/inc/indexconverter.hpp"
+
 
 namespace cie::csg {
 
 
-/* --- CubeCell --- */
+/* --- Cube cell --- */
 
 // 2 children per dimension
 template <concepts::Cube PrimitiveType>
 const GridIndexConverter<PrimitiveType::dimension>
-    CubeCell<PrimitiveType>::_childIndexConverter(2);
+    Cell<PrimitiveType>::_childIndexConverter(2);
 
 
 template <concepts::Cube PrimitiveType>
-CubeCell<PrimitiveType>::CubeCell(   const typename CubeCell<PrimitiveType>::point_type& base, 
-                                typename CubeCell<PrimitiveType>::coordinate_type length ) :
-    CubeCell<PrimitiveType>::cell_base_type( base, length )
+Cell<PrimitiveType>::Cell( const typename Cell<PrimitiveType>::point_type& base, 
+                           typename Cell<PrimitiveType>::coordinate_type length ) :
+    Cell<PrimitiveType>::cell_base_type( base, length )
 {
 }
 
 
 template <concepts::Cube PrimitiveType>
-inline typename CubeCell<PrimitiveType>::primitive_constructor_container_ptr
-CubeCell<PrimitiveType>::split_internal( const typename CubeCell<PrimitiveType>::point_type& point )
+inline typename Cell<PrimitiveType>::primitive_constructor_container_ptr
+Cell<PrimitiveType>::split_internal( const typename Cell<PrimitiveType>::point_type& point )
 {
-    auto p_constructorArgumentsContainer = typename CubeCell<PrimitiveType>::primitive_constructor_container_ptr(
-        new typename CubeCell<PrimitiveType>::primitive_constructor_container
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    auto p_constructorArgumentsContainer = typename Cell<PrimitiveType>::primitive_constructor_container_ptr(
+        new typename Cell<PrimitiveType>::primitive_constructor_container
     );
 
-    typename CubeCell<PrimitiveType>::point_type tempBase;
-    Size numberOfChildren = intPow(Size(2),CubeCell<PrimitiveType>::dimension);
+    typename Cell<PrimitiveType>::point_type tempBase;
+    Size numberOfChildren = intPow(Size(2),Cell<PrimitiveType>::dimension);
 
     for (Size childIndex=0; childIndex < numberOfChildren; ++childIndex)
     {
-        for (Size dim=0; dim<CubeCell<PrimitiveType>::dimension; ++dim)
+        for (Size dim=0; dim<Cell<PrimitiveType>::dimension; ++dim)
         {
             if (_childIndexConverter.convert(childIndex)[dim] == 0)
                 tempBase[dim]   = this->_base[dim];
@@ -46,56 +57,60 @@ CubeCell<PrimitiveType>::split_internal( const typename CubeCell<PrimitiveType>:
     }
 
     return p_constructorArgumentsContainer;
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
 
 template <concepts::Cube PrimitiveType>
-inline typename CubeCell<PrimitiveType>::primitive_constructor_container_ptr
-CubeCell<PrimitiveType>::split( const typename CubeCell<PrimitiveType>::point_type& r_point )
+inline typename Cell<PrimitiveType>::primitive_constructor_container_ptr
+Cell<PrimitiveType>::split( const typename Cell<PrimitiveType>::point_type& r_point )
 {
     return AbsCell<PrimitiveType>::split(r_point);
 }
 
 
 template <concepts::Cube PrimitiveType>
-inline typename CubeCell<PrimitiveType>::primitive_constructor_container_ptr
-CubeCell<PrimitiveType>::split( )
+inline typename Cell<PrimitiveType>::primitive_constructor_container_ptr
+Cell<PrimitiveType>::split( )
 {
-    return this->split_internal( typename CubeCell<PrimitiveType>::point_type() );
+    return this->split_internal( typename Cell<PrimitiveType>::point_type() );
 }
 
 
-/* --- BoxCell --- */
+/* --- Box cell --- */
 
 // 2 children per dimension
 template <concepts::Box PrimitiveType>
 const GridIndexConverter<PrimitiveType::dimension> 
-    BoxCell<PrimitiveType>::_childIndexConverter(2);
+    Cell<PrimitiveType>::_childIndexConverter(2);
 
 
 template <concepts::Box PrimitiveType>
-BoxCell<PrimitiveType>::BoxCell(  const typename BoxCell<PrimitiveType>::point_type& base, 
-                            const typename BoxCell<PrimitiveType>::point_type& lengths ) :
-    BoxCell<PrimitiveType>::cell_base_type( base, lengths )
+Cell<PrimitiveType>::Cell( const typename Cell<PrimitiveType>::point_type& base, 
+                           const typename Cell<PrimitiveType>::point_type& lengths ) :
+    Cell<PrimitiveType>::cell_base_type( base, lengths )
 {
 }
 
 
 template <concepts::Box PrimitiveType>
-inline typename BoxCell<PrimitiveType>::primitive_constructor_container_ptr
-BoxCell<PrimitiveType>::split_internal( const typename BoxCell<PrimitiveType>::point_type& point )
+inline typename Cell<PrimitiveType>::primitive_constructor_container_ptr
+Cell<PrimitiveType>::split_internal( const typename Cell<PrimitiveType>::point_type& point )
 {
-    auto p_constructorArgumentsContainer = typename BoxCell<PrimitiveType>::primitive_constructor_container_ptr(
-        new typename BoxCell<PrimitiveType>::primitive_constructor_container
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    auto p_constructorArgumentsContainer = typename Cell<PrimitiveType>::primitive_constructor_container_ptr(
+        new typename Cell<PrimitiveType>::primitive_constructor_container
     );
 
-    typename BoxCell<PrimitiveType>::point_type tempBase, tempLengths;
-    Size numberOfChildren = intPow(Size(2),BoxCell<PrimitiveType>::dimension);
+    typename Cell<PrimitiveType>::point_type tempBase, tempLengths;
+    Size numberOfChildren = intPow(Size(2),Cell<PrimitiveType>::dimension);
 
     for (Size childIndex=0; childIndex < numberOfChildren; ++childIndex)
     {
-        for (Size dim=0; dim<BoxCell<PrimitiveType>::dimension; ++dim)
+        for (Size dim=0; dim<Cell<PrimitiveType>::dimension; ++dim)
         {
             if (_childIndexConverter.convert(childIndex)[dim] == 0)
             {
@@ -113,6 +128,8 @@ BoxCell<PrimitiveType>::split_internal( const typename BoxCell<PrimitiveType>::p
     }
 
     return p_constructorArgumentsContainer;
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 

@@ -17,7 +17,7 @@ template <concepts::BoxBoundable ObjectType>
 AABBoxNode<ObjectType>::AABBoxNode( const typename AABBoxNode<ObjectType>::point_type& r_base,
                                     const typename AABBoxNode<ObjectType>::point_type& r_lengths,
                                     typename AABBoxNode<ObjectType>::self_ptr p_parent ) :
-    BoxCell<AABBox<Traits<ObjectType>::dimension,typename Traits<ObjectType>::coordinate_type>>( r_base, r_lengths ),
+    Cell<AABBox<Traits<ObjectType>::dimension,typename Traits<ObjectType>::coordinate_type>>( r_base, r_lengths ),
     utils::AbsTree<std::deque,AABBoxNode<ObjectType>>(),
     _containedObjects(),
     _intersectedObjects(),

@@ -55,7 +55,7 @@ CIE_TEST_CASE( "SpaceTreeNode", "[trees]" )
 
         // Define specialised types
         using PrimitiveType = Cube<Dimension,CoordinateType>;
-        using CellType      = CubeCell<PrimitiveType>;
+        using CellType      = Cell<PrimitiveType>;
         using NodeType      = SpaceTreeNode<CellType,BoolValue>;
 
         // Define primitive constructor parameters
@@ -114,7 +114,7 @@ CIE_TEST_CASE( "SpaceTreeNode", "[trees]" )
 
         // Define specialised types
         using PrimitiveType = Box<Dimension,CoordinateType>;
-        using CellType      = BoxCell<PrimitiveType>;
+        using CellType      = Cell<PrimitiveType>;
 
         { // Midpoint splitting
             CIE_TEST_CASE_INIT( "Midpoint splitter" )
