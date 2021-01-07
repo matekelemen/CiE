@@ -3,6 +3,7 @@
 
 #include "CSG/packages/primitives/inc/Primitive.hpp"
 #include "CSG/packages/primitives/inc/csgobject.hpp"
+#include "CSG/packages/primitives/inc/CSGObjectWrapper.hpp"
 #include "CSG/packages/primitives/inc/Cube.hpp"
 #include "CSG/packages/primitives/inc/Box.hpp"
 #include "CSG/packages/primitives/inc/Sphere.hpp"

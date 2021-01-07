@@ -16,8 +16,8 @@ namespace cie::csg {
 
 /// Interface for point-queriable objects
 template < Size N, 
-           concepts::CopyConstructible ValueType = Bool,
-           concepts::NumericType CoordinateType = Double >
+           concepts::CopyConstructible ValueType,
+           concepts::NumericType CoordinateType >
 class CSGObject : public CSGTraits<N,CoordinateType>
 {
 public:
