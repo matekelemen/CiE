@@ -1,0 +1,12 @@
+<shader>
+    <attributes>
+    </attributes>
+    <uniforms>
+        <u0 name="cameraPosition" type="vec3" size="3" />
+    </uniforms>
+    <textures>
+    </textures>
+    <outputs>
+        <o0 name="color" size="4" stride="0" offset="0" type="float"/>
+    </outputs>
+</shader>

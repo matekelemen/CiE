@@ -130,14 +130,16 @@ int main( int argc, char const* argv[] )
     );
 
     auto p_window = p_context->newWindow( 1024, 768 );
-    auto p_scene  = std::make_shared<ViewerScene>( *p_context );
+    auto p_scene  = std::make_shared<gl::Triangulated3DPartScene>( *p_context,
+                                                                   gl::Triangulated3DPartScene::part_container(),
+                                                                   gl::CameraPtr(nullptr) );
     p_window->addScene( p_scene);
 
     // March and add model
     auto timerID = p_scene->tic();
 
     Size resolution = 200;
-    auto p_model = gl::PartPtr( new MarchingPart(
+    auto p_part = gl::PartPtr( new MarchingPart(
         p_target,
         { -1.0, -1.0, -1.0 },
         { resolution, resolution, resolution },
@@ -147,10 +149,10 @@ int main( int argc, char const* argv[] )
     p_scene->toc( "Finished scanning", timerID );
     //p_model->writeSTL( OUTPUT_PATH / "csg2stl.stl" );
 
-    p_scene->addModel( p_model );
+    p_scene->addPart( p_part );
 
     // Set initial camera pose
-    auto p_camera = p_scene->getCamera();
+    auto p_camera = p_scene->camera();
     p_camera->setAspectRatio( double(p_window->getSize().first) / p_window->getSize().second );
 
     p_camera->setPose( {2.0, 2.0, 0.0},
