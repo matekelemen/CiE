@@ -7,6 +7,5 @@
 #include "CSG/packages/primitives/inc/Cube.hpp"
 #include "CSG/packages/primitives/inc/Box.hpp"
 #include "CSG/packages/primitives/inc/Sphere.hpp"
-#include "CSG/packages/primitives/inc/csgfactory.hpp"
 
 #endif
