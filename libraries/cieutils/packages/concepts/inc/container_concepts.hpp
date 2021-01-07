@@ -69,6 +69,12 @@ concept IteratorContainer
   && IteratorType<typename ContainerType::value_type>;
 
 
+template <class ContainerType, class ValueType>
+concept ClassPointerContainer
+= STLContainer<ContainerType>
+  && ClassPointer<typename ContainerType::value_type,ValueType>;
+
+
 // ---------------------------------------------------------
 // SPECIALIZED STL CONTAINERS
 // ---------------------------------------------------------

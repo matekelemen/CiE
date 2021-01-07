@@ -318,6 +318,17 @@ const typename Scene::camera_container& Scene::cameras() const
 }
 
 
+CameraPtr Scene::camera( Size index )
+{
+    CIE_OUT_OF_RANGE_CHECK( index < this->_cameras.size() )
+
+    auto itp_camera = this->_cameras.begin();
+    std::advance( itp_camera, index );
+
+    return *itp_camera;
+}
+
+
 Scene& Scene::setVertexShader( ShaderPtr p_vertexShader )
 {
     _p_vertexShader = p_vertexShader;

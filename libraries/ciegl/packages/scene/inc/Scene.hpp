@@ -86,6 +86,8 @@ public:
 
     const camera_container& cameras() const;
 
+    CameraPtr camera( Size index = 0 );
+
     virtual Scene& setVertexShader( ShaderPtr p_vertexShader );
     virtual Scene& setGeometryShader( ShaderPtr p_geometryShader );
     virtual Scene& setFragmentShader( ShaderPtr p_fragmentShader );

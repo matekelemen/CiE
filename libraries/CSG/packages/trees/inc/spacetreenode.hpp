@@ -127,9 +127,7 @@ public:
     target_map_ptr evaluateMap( const TargetFunction<typename CellType::point_type,value_type>& r_target,
                                 target_map_ptr p_targetMap = nullptr );
 
-    /**
-     * Clear data container and call clear on children.
-    */
+    /// Clear data container and call clear on children.
     void clear();
 
     /**
