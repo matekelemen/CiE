@@ -26,7 +26,7 @@ using CellType         = BoxCell<PrimitiveType>;
 using NodeType         = SpaceTreeNode<CellType,ValueType>;
 using NodePtr          = std::shared_ptr<NodeType>;
 
-using SamplerType      = BoxSampler<Dimension,CoordinateType>;
+using SamplerType      = CartesianGridSampler<PrimitiveType>;
 using SplitterType     = WeightedSplitPolicy< typename NodeType::sample_point_iterator,
                                               typename NodeType::value_iterator >;
 

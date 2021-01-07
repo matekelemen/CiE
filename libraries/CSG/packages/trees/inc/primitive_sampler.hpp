@@ -4,6 +4,7 @@
 // --- Utility Includes ---
 #include "cieutils/packages/macros/inc/assertions.hpp"
 #include "cieutils/packages/concepts/inc/basic_concepts.hpp"
+#include "cieutils/packages/concepts/inc/partial_specialization.hpp"
 
 // --- Internal Includes ---
 #include "CSG/packages/primitives/inc/Box.hpp"
@@ -21,9 +22,7 @@ namespace cie::csg {
 // PRIMITIVE SAMPLER INTERFACE
 // ---------------------------------------------------------
 
-/**
- * Interface for computing sample points on primitives.
-*/
+/// Interface for computing sample points on primitives.
 template <concepts::Primitive PrimitiveType>
 class PrimitiveSampler :
     public CSGTraits<PrimitiveType::dimension,typename PrimitiveType::coordinate_type>
@@ -42,18 +41,16 @@ using PrimitiveSamplerPtr   = std::shared_ptr<PrimitiveSampler<PrimitiveType>>;
 
 
 
-/**
- * Interface for grid-based samplers. 
-*/
+/// Interface for cartesian samplers
 template <concepts::Primitive PrimitiveType>
-class GridSampler : public PrimitiveSampler<PrimitiveType>
+class AbsCartesianGridSampler : public PrimitiveSampler<PrimitiveType>
 {
 public:
-    GridSampler( Size numberOfPointsPerDimension );
+    AbsCartesianGridSampler( Size numberOfPointsPerDimension );
 
     virtual Size size() const override;
     Size numberOfPointsPerDimension() const;
-    GridSampler<PrimitiveType>& setNumberOfPointsPerDimension( Size numberOfPointsPerDimension );
+    void setNumberOfPointsPerDimension( Size numberOfPointsPerDimension );
 
 protected:
     const GridIndexConverter<PrimitiveType::dimension>& indexConverter() const;
@@ -66,42 +63,38 @@ private:
 
 
 // ---------------------------------------------------------
-// SPECIALIZED PRIMITIVE SAMPLERS
+// SPECIALIZED GRID SAMPLERS
 // ---------------------------------------------------------
 
-/**
- * Generate points on a cube grid.
-*/
-template <  Size Dimension,
-            concepts::NumericType CoordinateType = Double >
-class CubeSampler : public GridSampler<Cube<Dimension,CoordinateType>>
+/// Invalid default template
+CIE_DEFINE_INVALID_CLASS_TEMPLATE_TO_SPECIALIZE( CartesianGridSampler )
+
+
+template <concepts::Cube PrimitiveType>
+class CartesianGridSampler<PrimitiveType> : public AbsCartesianGridSampler<PrimitiveType>
 {
 public:
-    CubeSampler( Size numberOfPointsPerDimension );
+    using typename AbsCartesianGridSampler<PrimitiveType>::point_type;
 
-    virtual typename CubeSampler<Dimension,CoordinateType>::point_type getSamplePoint
-    (
-        const typename CubeSampler<Dimension,CoordinateType>::primitive_type& r_primitive,
-        Size index
-    ) const override;
+public:
+    CartesianGridSampler( Size numberOfPointsPerDimension );
+
+    virtual point_type getSamplePoint( const PrimitiveType& r_primitive,
+                                       Size index ) const override;
 };
 
 
-/**
- * Generate points on a box grid.
-*/
-template <  Size Dimension, 
-            concepts::NumericType CoordinateType = Double >
-class BoxSampler : public GridSampler<Box<Dimension,CoordinateType>>
+template <concepts::Box PrimitiveType>
+class CartesianGridSampler<PrimitiveType> : public AbsCartesianGridSampler<PrimitiveType>
 {
 public:
-    BoxSampler( Size numberOfPointsPerDimension );
+    using typename AbsCartesianGridSampler<PrimitiveType>::point_type;
 
-    virtual typename BoxSampler<Dimension,CoordinateType>::point_type getSamplePoint
-    ( 
-        const typename BoxSampler<Dimension,CoordinateType>::primitive_type& r_primitive,
-        Size index 
-    ) const override;
+public:
+    CartesianGridSampler( Size numberOfPointsPerDimension );
+
+    virtual point_type getSamplePoint( const PrimitiveType& r_primitive,
+                                       Size index ) const override;
 };
 
 

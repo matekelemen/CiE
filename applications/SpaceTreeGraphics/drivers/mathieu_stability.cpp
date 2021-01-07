@@ -32,17 +32,17 @@ using CellType         = csg::CubeCell<PrimitiveType>;
 using NodeType         = csg::SpaceTreeNode<CellType,ValueType>;
 using NodePtr          = std::shared_ptr<NodeType>;
 
-using SamplerType      = csg::CubeSampler<Dimension,CoordinateType>;
+using SamplerType      = csg::CartesianGridSampler<PrimitiveType>;
 using SplitterType     = csg::MidPointSplitPolicy< typename NodeType::sample_point_iterator,
                                                    typename NodeType::value_iterator >;
 
 using GeometryFunction = csg::TargetFunction<PointType,ValueType>;
 
-using MarchingCubes    = mesh::UnstructuredMarchingCubes<csg::CSGObject<Dimension,Bool,CoordinateType>>;
+using MarchingCubes    = mesh::UnstructuredMarchingCubes<csg::CSGObject<Dimension,Bool,CoordinateType>,PrimitiveType>;
 
 
 // Target function
-auto targetFunction = [](const PointType& r_parameters)
+auto targetFunction = [](const PointType& r_parameters) -> ValueType
 {
     double gamma = 0.1;
     double omega = 1.0;

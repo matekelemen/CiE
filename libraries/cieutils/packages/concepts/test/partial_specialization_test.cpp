@@ -6,7 +6,7 @@
 namespace cie::concepts {
 
 
-CIE_DEFINE_INVALID_CLASS_TEMPLATE_FOR_SPECIALIZATION( PartialSpecializationTestClass )
+CIE_DEFINE_INVALID_CLASS_TEMPLATE_TO_SPECIALIZE( PartialSpecializationTestClass )
 
 template <Integer T>
 class PartialSpecializationTestClass<T>

@@ -11,7 +11,7 @@ namespace cie::csg {
 // ---------------------------------------------------------
 
 template <concepts::Primitive PrimitiveType>
-GridSampler<PrimitiveType>::GridSampler( Size numberOfPointsPerDimension ) :
+AbsCartesianGridSampler<PrimitiveType>::AbsCartesianGridSampler( Size numberOfPointsPerDimension ) :
     _p_indexConverter( new GridIndexConverter<PrimitiveType::dimension>(numberOfPointsPerDimension) ),
     _numberOfPointsPerDimension( numberOfPointsPerDimension )
 {
@@ -21,7 +21,7 @@ GridSampler<PrimitiveType>::GridSampler( Size numberOfPointsPerDimension ) :
 
 template <concepts::Primitive PrimitiveType>
 inline Size
-GridSampler<PrimitiveType>::size() const
+AbsCartesianGridSampler<PrimitiveType>::size() const
 {
     return this->_size;
 }
@@ -29,26 +29,25 @@ GridSampler<PrimitiveType>::size() const
 
 template <concepts::Primitive PrimitiveType>
 inline Size
-GridSampler<PrimitiveType>::numberOfPointsPerDimension() const
+AbsCartesianGridSampler<PrimitiveType>::numberOfPointsPerDimension() const
 {
     return this->_numberOfPointsPerDimension;
 }
 
 
 template <concepts::Primitive PrimitiveType>
-GridSampler<PrimitiveType>&
-GridSampler<PrimitiveType>::setNumberOfPointsPerDimension( Size numberOfPointsPerDimension )
+void
+AbsCartesianGridSampler<PrimitiveType>::setNumberOfPointsPerDimension( Size numberOfPointsPerDimension )
 {
     this->_numberOfPointsPerDimension = numberOfPointsPerDimension;
     this->_size = intPow( this->_numberOfPointsPerDimension, PrimitiveType::dimension );
     _p_indexConverter.reset( new GridIndexConverter<PrimitiveType::dimension>(numberOfPointsPerDimension) );
-    return *this;
 }
 
 
 template <concepts::Primitive PrimitiveType>
 const GridIndexConverter<PrimitiveType::dimension>&
-GridSampler<PrimitiveType>::indexConverter() const
+AbsCartesianGridSampler<PrimitiveType>::indexConverter() const
 {
     return *this->_p_indexConverter;
 }
@@ -58,24 +57,23 @@ GridSampler<PrimitiveType>::indexConverter() const
 // SPECIALIZED PRIMITIVE SAMPLERS
 // ---------------------------------------------------------
 
-/* --- CubeSampler --- */
+/* --- Cube sampler --- */
 
-template <  Size Dimension,
-            concepts::NumericType CoordinateType >
-CubeSampler<Dimension,CoordinateType>::CubeSampler( Size numberOfPointsPerDimension ) :
-    GridSampler<Cube<Dimension,CoordinateType>>( numberOfPointsPerDimension )
+template <concepts::Cube PrimitiveType>
+CartesianGridSampler<PrimitiveType>::CartesianGridSampler( Size numberOfPointsPerDimension ) :
+    AbsCartesianGridSampler<PrimitiveType>( numberOfPointsPerDimension )
 {
 }
 
 
-template <  Size Dimension,
-            concepts::NumericType CoordinateType >
-inline typename CubeSampler<Dimension,CoordinateType>::point_type
-CubeSampler<Dimension,CoordinateType>::getSamplePoint(
-        const typename CubeSampler<Dimension,CoordinateType>::primitive_type& r_primitive,
-        Size index ) const
+template <concepts::Cube PrimitiveType>
+inline typename CartesianGridSampler<PrimitiveType>::point_type
+CartesianGridSampler<PrimitiveType>::getSamplePoint( const PrimitiveType& r_primitive,
+                                                     Size index ) const
 {
-    typename CubeSampler<Dimension,CoordinateType>::point_type point;
+    using CoordinateType = typename CartesianGridSampler<PrimitiveType>::coordinate_type;
+
+    typename CartesianGridSampler<PrimitiveType>::point_type point;
     auto it_base     = r_primitive.base().begin();
     auto it_pointEnd = point.end();
 
@@ -95,23 +93,22 @@ CubeSampler<Dimension,CoordinateType>::getSamplePoint(
 
 
 
-/* --- BoxSampler --- */
+/* --- Box sampler --- */
 
-template <  Size Dimension,
-            concepts::NumericType CoordinateType >
-BoxSampler<Dimension,CoordinateType>::BoxSampler( Size numberOfPointsPerDimension ) :
-    GridSampler<Box<Dimension,CoordinateType>>( numberOfPointsPerDimension )
+template <concepts::Box PrimitiveType>
+CartesianGridSampler<PrimitiveType>::CartesianGridSampler( Size numberOfPointsPerDimension ) :
+    AbsCartesianGridSampler<PrimitiveType>( numberOfPointsPerDimension )
 {
 }
 
-template <  Size Dimension, 
-            concepts::NumericType CoordinateType >
-inline typename BoxSampler<Dimension,CoordinateType>::point_type
-BoxSampler<Dimension,CoordinateType>::getSamplePoint(
-        const typename BoxSampler<Dimension,CoordinateType>::primitive_type& r_primitive,
-        Size index ) const
+template <concepts::Box PrimitiveType>
+inline typename CartesianGridSampler<PrimitiveType>::point_type
+CartesianGridSampler<PrimitiveType>::getSamplePoint( const PrimitiveType& r_primitive,
+                                                     Size index ) const
 {
-    typename BoxSampler<Dimension,CoordinateType>::point_type point;
+    using CoordinateType = typename CartesianGridSampler<PrimitiveType>::coordinate_type;
+
+    typename CartesianGridSampler<PrimitiveType>::point_type point;
     auto it_base        = r_primitive.base().begin();
     auto it_length      = r_primitive.lengths().begin();
     auto it_pointEnd    = point.end();

@@ -64,7 +64,7 @@ CIE_TEST_CASE( "SpaceTreeNode", "[trees]" )
 
         // Construct components
         auto p_sampler = typename NodeType::sampler_ptr(
-            new CubeSampler<Dimension,Double>(numberOfPointsPerDimension)
+            new CartesianGridSampler<PrimitiveType>(numberOfPointsPerDimension)
         );
 
         auto p_splitPolicy = typename NodeType::split_policy_ptr(
@@ -73,16 +73,16 @@ CIE_TEST_CASE( "SpaceTreeNode", "[trees]" )
         );
 
         // Construct a node
-        CIE_TEST_REQUIRE_NOTHROW(NodeType(   p_sampler,
-                                    p_splitPolicy,
-                                    0,
-                                    base,
-                                    length ));
-        NodeType root(  p_sampler,
-                        p_splitPolicy,
-                        0,
-                        base,
-                        length );
+        CIE_TEST_REQUIRE_NOTHROW(NodeType( p_sampler,
+                                           p_splitPolicy,
+                                           0,
+                                           base,
+                                           length ));
+        NodeType root( p_sampler,
+                       p_splitPolicy,
+                       0,
+                       base,
+                       length );
 
         CIE_TEST_CHECK_THROWS( root.isBoundary() );
 
@@ -127,7 +127,7 @@ CIE_TEST_CASE( "SpaceTreeNode", "[trees]" )
 
             // Construct components
             auto p_sampler = typename NodeType::sampler_ptr(
-                new BoxSampler<Dimension,Double>(numberOfPointsPerDimension)
+                new CartesianGridSampler<PrimitiveType>(numberOfPointsPerDimension)
             );
 
             auto p_splitPolicy = typename NodeType::split_policy_ptr(
@@ -167,7 +167,7 @@ CIE_TEST_CASE( "SpaceTreeNode", "[trees]" )
 
             // Construct components
             auto p_sampler = typename NodeType::sampler_ptr(
-                new BoxSampler<Dimension,Double>(numberOfPointsPerDimension)
+                new CartesianGridSampler<PrimitiveType>(numberOfPointsPerDimension)
             );
 
             auto p_splitPolicy = typename NodeType::split_policy_ptr(
@@ -207,7 +207,7 @@ CIE_TEST_CASE( "SpaceTreeNode", "[trees]" )
 
             // Construct components
             auto p_sampler = typename NodeType::sampler_ptr(
-                new BoxSampler<Dimension,Double>(numberOfPointsPerDimension)
+                new CartesianGridSampler<PrimitiveType>(numberOfPointsPerDimension)
             );
 
             auto p_splitPolicy = typename NodeType::split_policy_ptr(

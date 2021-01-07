@@ -17,7 +17,7 @@ struct TrueTemplateBase {};
 
 
 /// Define an invalid class template to be (partially) specialized later 
-#define CIE_DEFINE_INVALID_CLASS_TEMPLATE_FOR_SPECIALIZATION( className )           \
+#define CIE_DEFINE_INVALID_CLASS_TEMPLATE_TO_SPECIALIZE( className )           \
     template <class ...Args>                                                        \
     class className :                                                               \
         public cie::concepts::detail::TrueTemplateBase<std::false_type,Args...>     \
