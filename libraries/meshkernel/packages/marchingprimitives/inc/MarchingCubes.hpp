@@ -3,6 +3,7 @@
 
 // --- CSG Includes ---
 #include "CSG/packages/primitives/inc/Cube.hpp"
+#include "CSG/packages/primitives/inc/Box.hpp"
 #include "CSG/packages/trees/inc/indexconverter.hpp"
 
 // --- Internal Includes ---
@@ -19,26 +20,36 @@ namespace cie::mesh {
 
 namespace detail {
 template <concepts::Cube PrimitiveType>
-typename PrimitiveType::point_type getVertexOnCube( const PrimitiveType& r_primitive,
-                                                    Size vertexIndex );
+typename PrimitiveType::point_type getVertexOnPrimitive( const PrimitiveType& r_primitive,
+                                                         Size vertexIndex );
+
+template <concepts::Box PrimitiveType>
+typename PrimitiveType::point_type getVertexOnPrimitive( const PrimitiveType& r_primitive,
+                                                         Size vertexIndex );
 } // namespace detail
 
 
 
-template <concepts::CSGObject TargetType>
-class UnstructuredMarchingCubes : public UnstructuredMarchingPrimitives<TargetType,csg::Cube<TargetType::dimension,typename TargetType::coordinate_type>>
+template < concepts::CSGObject TargetType,
+           class PrimitiveType = csg::Cube<TargetType::dimension,typename TargetType::coordinate_type> >
+requires (concepts::Cube<PrimitiveType> || concepts::Box<PrimitiveType>)
+class UnstructuredMarchingCubes : public UnstructuredMarchingPrimitives<TargetType,PrimitiveType>
 {
 public:
-    using primitive_container     = std::vector<typename UnstructuredMarchingCubes<TargetType>::primitive_type>;
+    using typename UnstructuredMarchingPrimitives<TargetType,PrimitiveType>::point_type;
+    using typename UnstructuredMarchingPrimitives<TargetType,PrimitiveType>::target_ptr;
+    using typename UnstructuredMarchingPrimitives<TargetType,PrimitiveType>::output_functor;
+
+    using primitive_container     = std::vector<PrimitiveType>;
     using primitive_container_ptr = std::shared_ptr<primitive_container>;
 
 public:
-    UnstructuredMarchingCubes( typename UnstructuredMarchingCubes<TargetType>::target_ptr p_target,
+    UnstructuredMarchingCubes( target_ptr p_target,
                                primitive_container_ptr p_primitives,
-                               typename UnstructuredMarchingCubes<TargetType>::output_functor outputFunctor );
+                               output_functor outputFunctor );
 
-    typename UnstructuredMarchingCubes<TargetType>::point_type getVertexOnPrimitive( const typename UnstructuredMarchingCubes<TargetType>::primitive_type& r_primitive,
-                                                                                     Size vertexIndex ) const override;
+    point_type getVertexOnPrimitive( const PrimitiveType& r_primitive,
+                                     Size vertexIndex ) const override;
 
 protected:
     virtual Size primitiveVertexCount() const override;
@@ -47,15 +58,17 @@ protected:
 
 
 
-template <concepts::CSGObject TargetType>
-class StructuredMarchingCubes : public StructuredMarchingPrimitives<TargetType,csg::Cube<TargetType::dimension,typename TargetType::coordinate_type>>
+template < concepts::CSGObject TargetType,
+           class PrimitiveType = csg::Cube<TargetType::dimension,typename TargetType::coordinate_type> >
+requires (concepts::Cube<PrimitiveType> || concepts::Box<PrimitiveType>)
+class StructuredMarchingCubes : public StructuredMarchingPrimitives<TargetType,PrimitiveType>
 {
 public:
-    using typename StructuredMarchingPrimitives<TargetType,typename StructuredMarchingCubes<TargetType>::primitive_type>::primitive_type;
-    using typename StructuredMarchingPrimitives<TargetType,primitive_type>::target_ptr;
-    using typename StructuredMarchingPrimitives<TargetType,primitive_type>::domain_specifier;
-    using typename StructuredMarchingPrimitives<TargetType,primitive_type>::resolution_specifier;
-    using typename StructuredMarchingPrimitives<TargetType,primitive_type>::output_functor;
+    using typename StructuredMarchingPrimitives<TargetType,PrimitiveType>::point_type;
+    using typename StructuredMarchingPrimitives<TargetType,PrimitiveType>::target_ptr;
+    using typename StructuredMarchingPrimitives<TargetType,PrimitiveType>::domain_specifier;
+    using typename StructuredMarchingPrimitives<TargetType,PrimitiveType>::resolution_specifier;
+    using typename StructuredMarchingPrimitives<TargetType,PrimitiveType>::output_functor;
 
 public:
     StructuredMarchingCubes( target_ptr p_target,
@@ -70,8 +83,17 @@ public:
 
     virtual Size numberOfRemainingPrimitives() const override;
 
-    typename StructuredMarchingCubes<TargetType>::point_type getVertexOnPrimitive( const typename StructuredMarchingCubes<TargetType>::primitive_type& r_primitive,
-                                                                                   Size vertexIndex ) const override;
+    point_type getVertexOnPrimitive( const PrimitiveType& r_primitive,
+                                     Size vertexIndex ) const override;
+
+    private:
+    /// Check whether the mesh domain can be discretized with cubes
+    template <concepts::Cube T>
+    void checkMesh() const;
+
+    /// Do nothing
+    template <concepts::Box T>
+    void checkMesh() const;
 };
 
 

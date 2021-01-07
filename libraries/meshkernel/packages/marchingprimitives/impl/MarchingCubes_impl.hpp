@@ -21,8 +21,8 @@ namespace cie::mesh {
 namespace detail {
 template <concepts::Cube PrimitiveType>
 inline typename PrimitiveType::point_type
-getVertexOnCube( const PrimitiveType& r_primitive,
-                 Size vertexIndex )
+getVertexOnPrimitive( const PrimitiveType& r_primitive,
+                      Size vertexIndex )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -36,14 +36,34 @@ getVertexOnCube( const PrimitiveType& r_primitive,
 
     CIE_END_EXCEPTION_TRACING
 }
+
+template <concepts::Box PrimitiveType>
+inline typename PrimitiveType::point_type
+getVertexOnPrimitive( const PrimitiveType& r_primitive,
+                      Size vertexIndex )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    auto vertex = r_primitive.base();
+
+    for ( Size bitIndex=0; bitIndex<PrimitiveType::dimension; ++bitIndex )
+        if ( utils::getBit(vertexIndex,bitIndex) )
+            vertex[bitIndex] += r_primitive.lengths()[bitIndex];
+
+    return vertex;
+
+    CIE_END_EXCEPTION_TRACING
+}
 } // namespace detail
 
 
-template <concepts::CSGObject TargetType>
-UnstructuredMarchingCubes<TargetType>::UnstructuredMarchingCubes( typename UnstructuredMarchingCubes<TargetType>::target_ptr p_target,
-                                          typename UnstructuredMarchingCubes<TargetType>::primitive_container_ptr p_primitives,
-                                          typename UnstructuredMarchingCubes<TargetType>::output_functor outputFunctor ) :
-    UnstructuredMarchingPrimitives<TargetType,csg::Cube<TargetType::dimension,typename TargetType::coordinate_type>>(
+template < concepts::CSGObject TargetType,
+           class PrimitiveType >
+requires (concepts::Cube<PrimitiveType> || concepts::Box<PrimitiveType>)
+UnstructuredMarchingCubes<TargetType,PrimitiveType>::UnstructuredMarchingCubes( typename UnstructuredMarchingCubes<TargetType,PrimitiveType>::target_ptr p_target,
+                                                                               typename UnstructuredMarchingCubes<TargetType,PrimitiveType>::primitive_container_ptr p_primitives,
+                                                                               typename UnstructuredMarchingCubes<TargetType,PrimitiveType>::output_functor outputFunctor ) :
+    UnstructuredMarchingPrimitives<TargetType,PrimitiveType>(
         p_target,
         detail::cubeEdgeMap,
         detail::marchingCubesConnectivityMap,
@@ -66,46 +86,48 @@ UnstructuredMarchingCubes<TargetType>::UnstructuredMarchingCubes( typename Unstr
 }
 
 
-template <concepts::CSGObject TargetType>
+template < concepts::CSGObject TargetType,
+           class PrimitiveType >
+requires (concepts::Cube<PrimitiveType> || concepts::Box<PrimitiveType>)
 inline Size
-UnstructuredMarchingCubes<TargetType>::primitiveVertexCount() const
+UnstructuredMarchingCubes<TargetType,PrimitiveType>::primitiveVertexCount() const
 {
-    return intPow(2, UnstructuredMarchingCubes<TargetType>::dimension);
+    return intPow(2, UnstructuredMarchingCubes<TargetType,PrimitiveType>::dimension);
 }
 
 
-template <concepts::CSGObject TargetType>
-inline typename UnstructuredMarchingCubes<TargetType>::point_type
-UnstructuredMarchingCubes<TargetType>::getVertexOnPrimitive( const typename UnstructuredMarchingCubes<TargetType>::primitive_type& r_primitive,
-                                                             Size vertexIndex ) const
+template < concepts::CSGObject TargetType,
+           class PrimitiveType >
+requires (concepts::Cube<PrimitiveType> || concepts::Box<PrimitiveType>)
+inline typename UnstructuredMarchingCubes<TargetType,PrimitiveType>::point_type
+UnstructuredMarchingCubes<TargetType,PrimitiveType>::getVertexOnPrimitive( const PrimitiveType& r_primitive,
+                                                                           Size vertexIndex ) const
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    return detail::getVertexOnCube( r_primitive, vertexIndex );
+    return detail::getVertexOnPrimitive( r_primitive, vertexIndex );
 
     CIE_END_EXCEPTION_TRACING
 }
 
 
-template <concepts::CSGObject TargetType>
-StructuredMarchingCubes<TargetType>::StructuredMarchingCubes( typename StructuredMarchingCubes<TargetType>::target_ptr p_target,
-                                                              const typename StructuredMarchingCubes<TargetType>::domain_specifier& r_domain,
-                                                              const typename StructuredMarchingCubes<TargetType>::resolution_specifier& r_numberOfPoints,
-                                                              typename StructuredMarchingCubes<TargetType>::output_functor outputFunctor ) :
-    StructuredMarchingPrimitives<TargetType,csg::Cube<TargetType::dimension,typename TargetType::coordinate_type>>( p_target,
-                                                                                                                    r_domain,
-                                                                                                                    r_numberOfPoints,
-                                                                                                                    detail::cubeEdgeMap,
-                                                                                                                    detail::marchingCubesConnectivityMap,
-                                                                                                                    outputFunctor )
+template < concepts::CSGObject TargetType,
+           class PrimitiveType >
+requires (concepts::Cube<PrimitiveType> || concepts::Box<PrimitiveType>)
+StructuredMarchingCubes<TargetType,PrimitiveType>::StructuredMarchingCubes( typename StructuredMarchingCubes<TargetType,PrimitiveType>::target_ptr p_target,
+                                                                            const typename StructuredMarchingCubes<TargetType,PrimitiveType>::domain_specifier& r_domain,
+                                                                            const typename StructuredMarchingCubes<TargetType,PrimitiveType>::resolution_specifier& r_numberOfPoints,
+                                                                            typename StructuredMarchingCubes<TargetType,PrimitiveType>::output_functor outputFunctor ) :
+    StructuredMarchingPrimitives<TargetType,PrimitiveType>( p_target,
+                                                            r_domain,
+                                                            r_numberOfPoints,
+                                                            detail::cubeEdgeMap,
+                                                            detail::marchingCubesConnectivityMap,
+                                                            outputFunctor )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    for ( auto meshEdgeLength : this->_meshEdgeLengths ){
-        std::cout << std::scientific << std::abs(meshEdgeLength - this->_meshEdgeLengths[0]) << std::endl;
-        CIE_CHECK( 
-            std::abs(meshEdgeLength - this->_meshEdgeLengths[0]) < 1e-15,
-            "Invalid domain for StructuredMarchingCubes, consider using StructuredMarchingBoxes" )}
+    this->checkMesh<PrimitiveType>();
 
     if ( TargetType::dimension == 3 )
     { /* Do nothing: default tables are set for 3 dimensions */ }
@@ -121,10 +143,12 @@ StructuredMarchingCubes<TargetType>::StructuredMarchingCubes( typename Structure
 }
 
 
-template <concepts::CSGObject TargetType>
+template < concepts::CSGObject TargetType,
+           class PrimitiveType >
+requires (concepts::Cube<PrimitiveType> || concepts::Box<PrimitiveType>)
 inline Size
-StructuredMarchingCubes<TargetType>::getGlobalVertexIndex( Size primitiveIndex,
-                                                           Size vertexIndex ) const
+StructuredMarchingCubes<TargetType,PrimitiveType>::getGlobalVertexIndex( Size primitiveIndex,
+                                                                         Size vertexIndex ) const
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -137,7 +161,7 @@ StructuredMarchingCubes<TargetType>::getGlobalVertexIndex( Size primitiveIndex,
     Size globalIndex               = 0;
     Size numberOfVerticesInSubMesh = 1;
 
-    for ( Size dim=0; dim<StructuredMarchingCubes<TargetType>::dimension; ++dim )
+    for ( Size dim=0; dim<StructuredMarchingCubes<TargetType,PrimitiveType>::dimension; ++dim )
     {
         // Index contribution from the local origin (base of the primitive)
         // + index contribution from the local vertex index
@@ -153,17 +177,21 @@ StructuredMarchingCubes<TargetType>::getGlobalVertexIndex( Size primitiveIndex,
 }
 
 
-template <concepts::CSGObject TargetType>
+template < concepts::CSGObject TargetType,
+           class PrimitiveType >
+requires (concepts::Cube<PrimitiveType> || concepts::Box<PrimitiveType>)
 inline Size
-StructuredMarchingCubes<TargetType>::primitiveVertexCount() const
+StructuredMarchingCubes<TargetType,PrimitiveType>::primitiveVertexCount() const
 {
-    return intPow(2, StructuredMarchingCubes<TargetType>::dimension);
+    return intPow(2, StructuredMarchingCubes<TargetType,PrimitiveType>::dimension);
 }
 
 
-template <concepts::CSGObject TargetType>
+template < concepts::CSGObject TargetType,
+           class PrimitiveType >
+requires (concepts::Cube<PrimitiveType> || concepts::Box<PrimitiveType>)
 inline Size
-StructuredMarchingCubes<TargetType>::numberOfRemainingPrimitives() const
+StructuredMarchingCubes<TargetType,PrimitiveType>::numberOfRemainingPrimitives() const
 {
     return std::accumulate(
         this->_numberOfPoints.begin(),
@@ -174,16 +202,42 @@ StructuredMarchingCubes<TargetType>::numberOfRemainingPrimitives() const
 }
 
 
-template <concepts::CSGObject TargetType>
-typename StructuredMarchingCubes<TargetType>::point_type
-StructuredMarchingCubes<TargetType>::getVertexOnPrimitive( const typename StructuredMarchingCubes<TargetType>::primitive_type& r_primitive,
-                                                           Size vertexIndex ) const
+template < concepts::CSGObject TargetType,
+           class PrimitiveType >
+requires (concepts::Cube<PrimitiveType> || concepts::Box<PrimitiveType>)
+typename StructuredMarchingCubes<TargetType,PrimitiveType>::point_type
+StructuredMarchingCubes<TargetType,PrimitiveType>::getVertexOnPrimitive( const PrimitiveType& r_primitive,
+                                                                         Size vertexIndex ) const
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    return detail::getVertexOnCube( r_primitive, vertexIndex );
+    return detail::getVertexOnPrimitive( r_primitive, vertexIndex );
 
     CIE_END_EXCEPTION_TRACING
+}
+
+
+template < concepts::CSGObject TargetType,
+           class PrimitiveType >
+requires (concepts::Cube<PrimitiveType> || concepts::Box<PrimitiveType>)
+template <concepts::Cube T>
+void
+StructuredMarchingCubes<TargetType,PrimitiveType>::checkMesh() const
+{
+    for ( auto meshEdgeLength : this->_meshEdgeLengths )
+        CIE_CHECK( 
+            std::abs(meshEdgeLength - this->_meshEdgeLengths[0]) < 1e-15,
+            "Invalid domain for StructuredMarchingCubes, consider using StructuredMarchingBoxes" )
+}
+
+
+template < concepts::CSGObject TargetType,
+           class PrimitiveType >
+requires (concepts::Cube<PrimitiveType> || concepts::Box<PrimitiveType>)
+template <concepts::Box T>
+void
+StructuredMarchingCubes<TargetType,PrimitiveType>::checkMesh() const
+{
 }
 
 
