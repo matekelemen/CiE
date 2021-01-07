@@ -2,25 +2,25 @@
 #include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal includes ---
-#include "CSG/packages/trees/inc/indexconverter.hpp"
+#include "CSG/packages/trees/inc/CartesianIndexConverter.hpp"
 
 
 namespace cie::csg {
 
 
-CIE_TEST_CASE( "GridIndexConverter", "[trees]" )
+CIE_TEST_CASE( "CartesianIndexConverter", "[trees]" )
 {
-    CIE_TEST_CASE_INIT( "GridIndexConverter" )
+    CIE_TEST_CASE_INIT( "CartesianIndexConverter" )
 
     const Size Dimension            = 2;
     Size numberOfPointsPerDimension = 3;
 
-    CIE_TEST_REQUIRE_NOTHROW( GridIndexConverter<Dimension>(numberOfPointsPerDimension) );
-    GridIndexConverter<Dimension> converter(numberOfPointsPerDimension);
+    CIE_TEST_REQUIRE_NOTHROW( CartesianIndexConverter<Dimension>(numberOfPointsPerDimension) );
+    CartesianIndexConverter<Dimension> converter(numberOfPointsPerDimension);
 
     CIE_TEST_REQUIRE( converter.numberOfPoints() == 9 );
     
-    UIntArray<Dimension> test;
+    CartesianIndexConverter<Dimension>::output_index_type test;
     Size counter = 0;
 
     // 0

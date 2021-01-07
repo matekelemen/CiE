@@ -11,7 +11,7 @@
 // --- Internal Includes ---
 #include "CSG/packages/trees/inc/AbsCell.hpp"
 #include "CSG/packages/trees/inc/split_policy.hpp"
-#include "CSG/packages/trees/inc/indexconverter.hpp"
+#include "CSG/packages/trees/inc/CartesianIndexConverter.hpp"
 
 // --- STL Includes ---
 #include <deque>

@@ -2,7 +2,7 @@
 #define CIE_CSG_PRIMITIVE_SAMPLER_IMPL_HPP
 
 // --- Internal Includes ---
-#include "CSG/packages/trees/inc/indexconverter.hpp"
+#include "CSG/packages/trees/inc/CartesianIndexConverter.hpp"
 
 namespace cie::csg {
 
@@ -12,7 +12,7 @@ namespace cie::csg {
 
 template <concepts::Primitive PrimitiveType>
 AbsCartesianGridSampler<PrimitiveType>::AbsCartesianGridSampler( Size numberOfPointsPerDimension ) :
-    _p_indexConverter( new GridIndexConverter<PrimitiveType::dimension>(numberOfPointsPerDimension) ),
+    _p_indexConverter( new CartesianIndexConverter<PrimitiveType::dimension>(numberOfPointsPerDimension) ),
     _numberOfPointsPerDimension( numberOfPointsPerDimension )
 {
     this->setNumberOfPointsPerDimension( numberOfPointsPerDimension );
@@ -41,12 +41,12 @@ AbsCartesianGridSampler<PrimitiveType>::setNumberOfPointsPerDimension( Size numb
 {
     this->_numberOfPointsPerDimension = numberOfPointsPerDimension;
     this->_size = intPow( this->_numberOfPointsPerDimension, PrimitiveType::dimension );
-    _p_indexConverter.reset( new GridIndexConverter<PrimitiveType::dimension>(numberOfPointsPerDimension) );
+    _p_indexConverter.reset( new CartesianIndexConverter<PrimitiveType::dimension>(numberOfPointsPerDimension) );
 }
 
 
 template <concepts::Primitive PrimitiveType>
-const GridIndexConverter<PrimitiveType::dimension>&
+const CartesianIndexConverter<PrimitiveType::dimension>&
 AbsCartesianGridSampler<PrimitiveType>::indexConverter() const
 {
     return *this->_p_indexConverter;

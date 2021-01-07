@@ -8,7 +8,7 @@
 #include "cieutils/packages/macros/inc/checks.hpp"
 
 // --- Internal Includes ---
-#include "CSG/packages/trees/inc/indexconverter.hpp"
+#include "CSG/packages/trees/inc/CartesianIndexConverter.hpp"
 
 
 namespace cie::csg {
@@ -18,7 +18,7 @@ namespace cie::csg {
 
 // 2 children per dimension
 template <concepts::Cube PrimitiveType>
-const GridIndexConverter<PrimitiveType::dimension>
+const CartesianIndexConverter<PrimitiveType::dimension>
     Cell<PrimitiveType>::_childIndexConverter(2);
 
 
@@ -83,7 +83,7 @@ Cell<PrimitiveType>::split( )
 
 // 2 children per dimension
 template <concepts::Box PrimitiveType>
-const GridIndexConverter<PrimitiveType::dimension> 
+const CartesianIndexConverter<PrimitiveType::dimension> 
     Cell<PrimitiveType>::_childIndexConverter(2);
 
 

@@ -3,7 +3,7 @@
 
 // --- Internal Includes ---
 #include "CSG/packages/trees/inc/AbsCell.hpp"
-#include "CSG/packages/trees/inc/indexconverter.hpp"
+#include "CSG/packages/trees/inc/CartesianIndexConverter.hpp"
 #include "CSG/packages/primitives/inc/Cube.hpp"
 #include "CSG/packages/primitives/inc/Box.hpp"
 
@@ -30,7 +30,7 @@ protected:
     virtual typename Cell<PrimitiveType>::primitive_constructor_container_ptr split_internal( const typename Cell<PrimitiveType>::point_type& point ) override;
 
 protected:
-    static const GridIndexConverter<PrimitiveType::dimension> _childIndexConverter;
+    static const CartesianIndexConverter<PrimitiveType::dimension> _childIndexConverter;
 };
 
 
@@ -48,7 +48,7 @@ protected:
     virtual typename Cell<PrimitiveType>::primitive_constructor_container_ptr split_internal( const typename Cell<PrimitiveType>::point_type& point ) override;
 
 protected:
-    static const GridIndexConverter<PrimitiveType::dimension> _childIndexConverter;
+    static const CartesianIndexConverter<PrimitiveType::dimension> _childIndexConverter;
 };
 
 

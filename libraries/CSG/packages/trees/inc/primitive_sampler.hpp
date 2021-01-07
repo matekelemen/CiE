@@ -11,7 +11,7 @@
 #include "CSG/packages/primitives/inc/Cube.hpp"
 #include "CSG/packages/primitives/inc/Primitive.hpp"
 
-#include "CSG/packages/trees/inc/indexconverter.hpp"
+#include "CSG/packages/trees/inc/CartesianIndexConverter.hpp"
 #include "CSG/packages/primitives/inc/csgobject.hpp"
 
 
@@ -53,10 +53,10 @@ public:
     void setNumberOfPointsPerDimension( Size numberOfPointsPerDimension );
 
 protected:
-    const GridIndexConverter<PrimitiveType::dimension>& indexConverter() const;
+    const CartesianIndexConverter<PrimitiveType::dimension>& indexConverter() const;
 
 private:
-    GridIndexConverterPtr<PrimitiveType::dimension> _p_indexConverter;
+    CartesianIndexConverterPtr<PrimitiveType::dimension> _p_indexConverter;
     Size                                            _numberOfPointsPerDimension;
     Size                                            _size;
 };

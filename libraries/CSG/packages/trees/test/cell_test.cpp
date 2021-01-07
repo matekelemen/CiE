@@ -34,8 +34,8 @@ CIE_TEST_CASE( "Cell", "[trees]" )
         using PrimitiveType = Cube<2,Double>;
         using TestCell      = Cell<PrimitiveType>;
 
-        CIE_TEST_REQUIRE_NOTHROW( TestCell( DoubleArray<2>({1.0,1.0}), 2.0) );
-        TestCell cell( DoubleArray<2>({2.0,2.0}), 2.0 );
+        CIE_TEST_REQUIRE_NOTHROW( TestCell( TestCell::point_type({1.0,1.0}), 2.0) );
+        TestCell cell( TestCell::point_type({2.0,2.0}), 2.0 );
 
         CIE_TEST_REQUIRE_NOTHROW( cell.split() );
         auto p_ConstructorArgumentContainer = cell.split();
@@ -86,11 +86,11 @@ CIE_TEST_CASE( "boolean::Cell", "[trees]" )
     using PrimitiveType = Box<2,Double>;
     using TestCell      = Cell<PrimitiveType>;
 
-    CIE_TEST_REQUIRE_NOTHROW( TestCell( DoubleArray<2>({1.0,1.0}), DoubleArray<2>({0.0,1.0}) ) );
-    TestCell cell( DoubleArray<2>({0.0,1.0}), DoubleArray<2>({4.0,2.0}) );
+    CIE_TEST_REQUIRE_NOTHROW( TestCell( TestCell::point_type({1.0,1.0}), TestCell::point_type({0.0,1.0}) ) );
+    TestCell cell( TestCell::point_type({0.0,1.0}), TestCell::point_type({4.0,2.0}) );
 
-    CIE_TEST_REQUIRE_NOTHROW( cell.split(DoubleArray<2>({1.0,2.0})) );
-    auto p_ConstructorArgumentContainer = cell.split( DoubleArray<2>({1.0,2.0}) );
+    CIE_TEST_REQUIRE_NOTHROW( cell.split(TestCell::point_type({1.0,2.0})) );
+    auto p_ConstructorArgumentContainer = cell.split( TestCell::point_type({1.0,2.0}) );
     CIE_TEST_REQUIRE( p_ConstructorArgumentContainer->size() == 4 );
 
     CIE_TEST_CHECK( std::abs( std::get<0>(p_ConstructorArgumentContainer->at(0))[0] - 0.0) < 1e-16 ); // <-- base.x
