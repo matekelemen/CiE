@@ -7,7 +7,7 @@
 // --- Internal Includes ---
 #include "CSG/packages/partitioning/inc/AABBox.hpp"
 #include "CSG/packages/partitioning/inc/boundingBox.hpp"
-#include "CSG/packages/trees/inc/cell.hpp"
+#include "CSG/packages/trees/inc/Cell.hpp"
 
 // --- STL Includes ---
 #include <deque>

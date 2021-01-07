@@ -2,7 +2,7 @@
 #include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
-#include "CSG/packages/trees/inc/cell.hpp"
+#include "CSG/packages/trees/inc/Cell.hpp"
 #include "CSG/packages/primitives/inc/Cube.hpp"
 #include "CSG/packages/primitives/inc/Box.hpp"
 #include "cmake_variables.hpp"

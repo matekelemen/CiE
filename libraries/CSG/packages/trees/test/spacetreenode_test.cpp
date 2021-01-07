@@ -3,7 +3,7 @@
 
 // --- Internal Includes ---
 #include "CSG/packages/trees/inc/spacetreenode.hpp"
-#include "CSG/packages/trees/inc/cell.hpp"
+#include "CSG/packages/trees/inc/Cell.hpp"
 #include "CSG/packages/trees/inc/primitive_sampler.hpp"
 #include "CSG/packages/trees/inc/write.hpp"
 #include "cmake_variables.hpp"

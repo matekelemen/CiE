@@ -9,7 +9,7 @@
 #include "cieutils/packages/concurrency/inc/ThreadSafeMap.hpp"
 
 // --- Internal Includes ---
-#include "CSG/packages/trees/inc/cell.hpp"
+#include "CSG/packages/trees/inc/AbsCell.hpp"
 #include "CSG/packages/trees/inc/split_policy.hpp"
 #include "CSG/packages/trees/inc/indexconverter.hpp"
 

@@ -4,6 +4,6 @@
 #include "CSG/packages/trees/inc/spacetreenode.hpp"
 #include "CSG/packages/trees/inc/split_policy.hpp"
 #include "CSG/packages/trees/inc/primitive_sampler.hpp"
-#include "CSG/packages/trees/inc/cell.hpp"
+#include "CSG/packages/trees/inc/Cell.hpp"
 
 #endif

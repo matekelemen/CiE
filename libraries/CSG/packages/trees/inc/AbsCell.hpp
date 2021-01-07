@@ -1,5 +1,5 @@
-#ifndef CIE_CSG_CELL_HPP
-#define CIE_CSG_CELL_HPP
+#ifndef CIE_CSG_TREES_ABS_CELL_HPP
+#define CIE_CSG_TREES_ABS_CELL_HPP
 
 // --- Internal Includes ---
 #include "CSG/packages/primitives/inc/Primitive.hpp"
@@ -17,10 +17,6 @@
 #include <memory>
 
 namespace cie::csg {
-
-// ---------------------------------------------------------
-// CELL INTERFACE
-// ---------------------------------------------------------
 
 /**
  * Node interface of a tree of primitives, splittable around a single point.
@@ -62,55 +58,8 @@ protected:
 };
 
 
-// ---------------------------------------------------------
-// BASIC CELL TYPES
-// ---------------------------------------------------------
-
-/* --- CubeCell --- */
-
-template <concepts::Primitive CubeType>
-class CubeCell : public AbsCell<CubeType>
-{
-public:
-    CubeCell(   const typename CubeCell<CubeType>::point_type& base, 
-                typename CubeCell<CubeType>::coordinate_type length );
-
-    typename CubeCell<CubeType>::primitive_constructor_container_ptr split( const typename CubeCell<CubeType>::point_type& r_point );
-
-    /**
-     * A cube will only produce subcubes when split if it's split at the
-     * midpoint, so the actual split point is unnecessary and ignored.
-    */
-    typename CubeCell<CubeType>::primitive_constructor_container_ptr split( );
-
-protected:
-    virtual typename CubeCell<CubeType>::primitive_constructor_container_ptr split_internal( const typename CubeCell<CubeType>::point_type& point ) override;
-
-protected:
-    static const GridIndexConverter<CubeType::dimension> _childIndexConverter;
-};
-
-
-
-/* --- BoxCell --- */
-
-template <concepts::Primitive BoxType>
-class BoxCell : public AbsCell<BoxType>
-{
-public:
-    BoxCell( const typename BoxCell<BoxType>::point_type& base, 
-             const typename BoxCell<BoxType>::point_type& lengths );
-
-protected:
-    virtual typename BoxCell<BoxType>::primitive_constructor_container_ptr split_internal( const typename BoxCell<BoxType>::point_type& point ) override;
-
-protected:
-    static const GridIndexConverter<BoxType::dimension> _childIndexConverter;
-};
-
-
 } // namespace cie::csg
 
-#include "CSG/packages/trees/impl/cell_impl.hpp"
+#include "CSG/packages/trees/impl/AbsCell_impl.hpp"
 
 #endif
