@@ -21,8 +21,14 @@ template <concepts::NumericType ValueType = Double>
 class Matrix
 {
 public:
-    typedef ValueType   value_type;
+    using value_type     = ValueType;
+    using container_type = std::vector<value_type>;
 
+    using size_type      = typename container_type::size_type;
+    using iterator       = typename container_type::iterator;
+    using const_iterator = typename container_type::const_iterator;
+
+public:
     explicit Matrix( );
 
     Matrix( Size size1, Size size2 );
@@ -43,6 +49,11 @@ public:
     ValueType operator[]( Size i ) const;
 
 	const std::vector<ValueType>& data() const { return data_; }
+
+    iterator begin();
+    const_iterator begin() const;
+    iterator end();
+    const_iterator end() const;
 
     void transpose();
 

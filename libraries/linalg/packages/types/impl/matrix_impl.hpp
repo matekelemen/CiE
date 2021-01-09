@@ -139,6 +139,38 @@ inline std::array<Size, 2> Matrix<ValueType>::sizes( ) const
 
 
 template <concepts::NumericType ValueType>
+inline typename Matrix<ValueType>::iterator
+Matrix<ValueType>::begin()
+{
+    return this->data_.begin();
+}
+
+
+template <concepts::NumericType ValueType>
+inline typename Matrix<ValueType>::const_iterator
+Matrix<ValueType>::begin() const
+{
+    return this->data_.begin();
+}
+
+
+template <concepts::NumericType ValueType>
+inline typename Matrix<ValueType>::iterator
+Matrix<ValueType>::end()
+{
+    return this->data_.end();
+}
+
+
+template <concepts::NumericType ValueType>
+inline typename Matrix<ValueType>::const_iterator
+Matrix<ValueType>::end() const
+{
+    return this->data_.end();
+}
+
+
+template <concepts::NumericType ValueType>
 inline void Matrix<ValueType>::transpose()
 {
     Size temp = size1_;
