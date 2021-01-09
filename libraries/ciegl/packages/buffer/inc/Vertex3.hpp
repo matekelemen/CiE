@@ -26,9 +26,7 @@ public:
     const Vertex3::value_type z() const;
 
 protected:
-    /**
-     * @brief Overloaded constructor for derived Vertex classes
-     */
+    /// Overloaded constructor for derived Vertex classes
     Vertex3( AttributeContainerPtr p_attributeContainer,
              Size offset,
              const Vertex3::offset_container& r_attributeOffsets );

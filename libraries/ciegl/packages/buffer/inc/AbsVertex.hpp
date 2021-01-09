@@ -6,6 +6,7 @@
 
 // --- Utility Includes ---
 #include "cieutils/packages/types/inc/types.hpp"
+#include "cieutils/packages/concepts/inc/basic_concepts.hpp"
 
 // --- Internal Includes ---
 #include "ciegl/packages/buffer/inc/AttributeContainer.hpp"
@@ -145,6 +146,16 @@ protected:
 
 
 } // namespace cie::gl
+
+
+namespace cie::concepts {
+
+template <class T>
+concept GLVertex
+= DerivedFrom<T,gl::AbsVertex>;
+
+} // namespace cie::concepts
+
 
 #include "ciegl/packages/buffer/impl/AbsVertex_impl.hpp"
 

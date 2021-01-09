@@ -6,6 +6,7 @@
 
 // --- Internal Includes ---
 #include "ciegl/packages/buffer/inc/AbsBuffer.hpp"
+#include "ciegl/packages/traits/inc/GLTraits.hpp"
 
 // --- STL Includes ---
 #include <vector>
@@ -17,12 +18,18 @@
 namespace cie::gl {
 
 
-class Part {
+class Part : public GLTraits
+{
 public:
     using data_type       = typename VertexBuffer::data_type;
     using data_container  = std::vector<data_type>;
-    using index_type      = typename ElementBuffer::data_type;
-    using index_container = std::vector<index_type>;
+
+    using GLTraits::attribute_type;
+    using GLTraits::attribute_container;
+    using GLTraits::attribute_container_ptr;
+
+    using GLTraits::index_type;
+    using GLTraits::index_container;
 
 public:
     Part();
