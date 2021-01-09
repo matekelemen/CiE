@@ -5,46 +5,47 @@
 #include "cieutils/packages/macros/inc/exceptions.hpp"
 
 // --- STL Includes ---
+#include <numeric>
 #include <cmath>
 #include <stdexcept>
 
 
 namespace cie::linalg {
 
-template <typename T>
-double norm2(const T& object)
+template <concepts::NumericContainer T>
+inline typename T::value_type
+norm2( const T& r_object )
 {
-    double out = 0.0;
-    for (size_t i=0; i<object.size(); ++i)
-    {
-        out += object[i] * object[i];
-    }
-    return out;
+    return std::accumulate(
+        r_object.begin(),
+        r_object.end(),
+        0.0,
+        []( auto lhs, auto rhs ) { return lhs + rhs*rhs; }
+    );
 }
 
 
-template <typename T>
-double norm(const T& object)
+template <concepts::NumericContainer T>
+inline typename T::value_type
+norm( const T& r_object )
 {
-    return std::sqrt(norm2<T>(object));
+    return std::sqrt( norm2<T>(r_object) );
 }
 
 
-template <typename T>
-void normalize(T& object, NormFunction<T> measure, double tolerance)
+template <concepts::NumericContainer T>
+inline void
+normalize( T& r_object,
+           NormFunction<T> measure,
+           typename T::value_type tolerance )
 {
-    double objectNorm = measure(object);
+    typename T::value_type objectNorm = measure(r_object);
+
     if ( std::abs(objectNorm)<tolerance )
-    {
         CIE_THROW( std::runtime_error, "Cannot normalize an object with 0 norm!" )
-    }
     else
-    {
-        for (size_t i=0; i<object.size(); ++i)
-        {
-            object[i] /= objectNorm;
-        } // for (size_t i=0; i<object.size(); ++i)
-    } // else
+        for ( auto& r_component : r_object )
+            r_component /= objectNorm;
 }
 
 } // namespace cie::linalg
