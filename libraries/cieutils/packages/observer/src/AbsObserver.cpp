@@ -47,11 +47,8 @@ void Observer::detach()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    if (_subject.lock() != nullptr && !_subject.expired())
-    {
-        _subject.lock()->detachObserver( shared_from_this() );
-        _subject.lock().reset();
-    }
+    if ( auto p_subject = _subject.lock() )
+        p_subject->detachObserver( this->shared_from_this() );
 
     CIE_END_EXCEPTION_TRACING
 }
