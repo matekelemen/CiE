@@ -21,7 +21,8 @@ CIE_TEST_CASE( "GLFWBufferManager", "[buffer]" )
         glVersion.first,
         glVersion.second,
         MSAASamples,
-        TEST_OUTPUT_PATH / "GLFWBufferManager_test.txt"
+        TEST_OUTPUT_PATH / "GLFWBufferManager_test.txt",
+        false
     );
 
     // Window
@@ -51,8 +52,6 @@ CIE_TEST_CASE( "GLFWBufferManager", "[buffer]" )
         CIE_TEST_CHECK_NOTHROW( p_bufferManager->bindVertexBuffer(p_vertexBuffer) );
         CIE_TEST_CHECK_NOTHROW( p_bufferManager->bindElementBuffer(p_elementBuffer) );
     }
-
-    p_context->closeWindow( p_window );
 }
 
 

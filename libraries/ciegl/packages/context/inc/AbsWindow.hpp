@@ -39,35 +39,27 @@ public:
                 Size height,
                 utils::Logger& r_logger );
 
-    /**
-     * Update all scenes and draw
-     */
+    ~AbsWindow();
+
+    /// Update all scenes and draw
     virtual void update();
 
-    /**
-     * Resize this window. Calls setSize_impl internally
-     */
+    /// Make window active
+    virtual void activate() = 0;
+
+    /// Resize this window. Calls setSize_impl internally
     void setSize( Size width,
                   Size height );
 
     const std::pair<Size,Size>& getSize() const;
 
-    /**
-     * Construct a new scene and add it to this window
-     */
+    /// Construct a new scene and add it to this window
     template < class SceneType,
                class ...Args>
-    ScenePtr makeScene( const std::string& r_name,
-                        Args&&... args );
+    std::shared_ptr<SceneType> makeScene( const std::string& r_name,
+                                          Args&&... args );
 
-    /**
-     * Attempt to add a scene to this window
-     */
-    virtual void addScene( ScenePtr p_scene );
-
-    /**
-     * Attempt to remove a scene from this window
-     */
+    /// Attempt to remove a scene from this window
     virtual void removeScene( ScenePtr p_scene );
 
     const scene_container& scenes() const;
@@ -83,6 +75,9 @@ public:
     void setWindowResizeCallback( WindowResizeCallback function );
 
 protected:
+    /// Attempt to add a scene to this window
+    virtual void addScene( ScenePtr p_scene );
+
     virtual void setSize_impl(  Size width,
                                 Size height ) = 0;
 
@@ -107,6 +102,7 @@ protected:
 
 using WindowPtr         = std::shared_ptr<AbsWindow>;
 using WindowConstPtr    = std::shared_ptr<const AbsWindow>;
+using WindowWeakPtr     = std::weak_ptr<AbsWindow>;
 
 
 } // namespace cie::gl

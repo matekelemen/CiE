@@ -112,7 +112,7 @@ Arrow<VertexType>::updateShape()
     // Get basis on the plane normal to the arrow
     point_type normal;
 
-    if ( tangent[0] < 1.0 - tolerance )
+    if ( std::abs(tangent[1]) > tolerance )
         normal = cross( {1.0, 0.0, 0.0}, tangent );
     else
         normal = cross( {0.0, 1.0, 0.0}, tangent );
@@ -142,11 +142,13 @@ Arrow<VertexType>::updateShape()
     // Set position of the vertices on the circles
     attribute_type angleIncrement = 2.0 * M_PI / attribute_type(this->_resolution);
 
+    attribute_type baseRatio = 1.0 - this->_headRatio;
+
     for ( Size vertexOnCircleIndex=0; vertexOnCircleIndex<this->_resolution; ++vertexOnCircleIndex )
     {
         attribute_type angle               = vertexOnCircleIndex * angleIncrement;
-        attribute_type normalCoefficient   = std::cos( angle );
-        attribute_type binormalCoefficient = std::sin( angle );
+        attribute_type normalCoefficient   = std::sin( angle );
+        attribute_type binormalCoefficient = std::cos( angle );
         point_type unitOnPlane         = normalCoefficient*normal + binormalCoefficient*binormal;
 
         // Base - source end
@@ -158,13 +160,13 @@ Arrow<VertexType>::updateShape()
         // Base - head end
         setVertexPosition(
             this->_vertices[this->_resolution + vertexOnCircleIndex + 1],
-            this->_source + this->_headRatio * tangent + this->_baseRadius * unitOnPlane
+            this->_source + baseRatio * tangent + this->_baseRadius * unitOnPlane
         );
 
         // Head
         setVertexPosition(
             this->_vertices[2 * this->_resolution + vertexOnCircleIndex + 1],
-            this->_source + this->_headRatio * tangent + this->_headRadius * unitOnPlane
+            this->_source + baseRatio * tangent + this->_headRadius * unitOnPlane
         );
     }
 

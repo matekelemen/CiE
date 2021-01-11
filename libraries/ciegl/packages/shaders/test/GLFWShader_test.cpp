@@ -22,7 +22,8 @@ CIE_TEST_CASE( "GLFWShader", "[shader]" )
         glVersion.first,
         glVersion.second,
         MSAASamples,
-        TEST_OUTPUT_PATH / "GLFWShader_test.txt"
+        TEST_OUTPUT_PATH / "GLFWShader_test.txt",
+        false
     );
 
     // Window

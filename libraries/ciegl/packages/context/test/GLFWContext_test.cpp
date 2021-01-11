@@ -24,20 +24,14 @@ CIE_TEST_CASE( "GLFWContext", "[context]" )
         ContextPtr p_context;
 
         CIE_TEST_REQUIRE_NOTHROW(
-            p_context = gl::GLFWContextSingleton::get(
-                TEST_OUTPUT_PATH / "GLFWContext_test0.log",
-                false
-            )
+            p_context = gl::GLFWContextSingleton::get( false )
         );
     }
 
     {
         CIE_TEST_CASE_INIT( "Window creation" )
 
-        auto p_context = gl::GLFWContextSingleton::get(
-            TEST_OUTPUT_PATH / "GLFWContext_test1.log",
-            false
-        );
+        auto p_context = gl::GLFWContextSingleton::get( false );
 
         WindowPtr p_window;
         CIE_TEST_REQUIRE_NOTHROW(
@@ -49,7 +43,6 @@ CIE_TEST_CASE( "GLFWContext", "[context]" )
         );
 
         CIE_TEST_CHECK_NOTHROW( p_context->focusWindow(p_window) );
-        CIE_TEST_REQUIRE_NOTHROW( p_context->closeWindow(p_window) );
     }
 
 }

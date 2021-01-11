@@ -14,7 +14,8 @@ namespace cie {
 class ViewerScene final : public gl::Scene
 {
 public:
-    ViewerScene( utils::Logger& r_logger );
+    ViewerScene( utils::Logger& r_logger,
+                 const std::string& r_name );
 
     void addModel( gl::PartPtr p_model );
     void removeModel( gl::PartPtr p_model );

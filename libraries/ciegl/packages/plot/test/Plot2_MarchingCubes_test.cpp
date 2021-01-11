@@ -7,6 +7,10 @@
 // --- Internal Includes ---
 #include "ciegl/packages/plot/inc/Plot2_MarchingCubes.hpp"
 
+// --- STL Includes ---
+#include <chrono>
+#include <thread>
+
 
 namespace cie::gl {
 
@@ -33,7 +37,10 @@ CIE_TEST_CASE( "Plot2 - MarchingCubes", "[plot]" )
                                  numberOfPoints,
                                  nullptr );
 
-    plot2( marchingCubes );
+    Plot2<MarchingCubes> plot( marchingCubes );
+    plot.update();
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    //plot2( marchingCubes );
 }
 
 

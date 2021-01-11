@@ -4,8 +4,6 @@
 
 // --- Internal Incldues ---
 #include "ciegl/packages/scene/inc/PartScene.hpp"
-#include "ciegl/packages/camera/inc/Camera.hpp"
-#include "ciegl/packages/camera/inc/PerspectiveProjection.hpp"
 
 // --- STL Includes ---
 #include <algorithm>
@@ -17,7 +15,6 @@ namespace cie::gl {
 PartScene::PartScene( utils::Logger& r_logger,
                       const std::string& r_name,
                       PartScene::part_container&& r_parts,
-                      CameraPtr p_camera,
                       ShaderPtr p_vertexShader,
                       ShaderPtr p_geometryShader,
                       ShaderPtr p_fragmentShader,
@@ -36,16 +33,6 @@ PartScene::PartScene( utils::Logger& r_logger,
     CIE_BEGIN_EXCEPTION_TRACING
 
     glEnable( GL_DEPTH_TEST );
-
-    // Register camera or construct one if it was not provided
-    if ( p_camera )
-        this->addCamera( p_camera );
-    else
-        p_camera = this->makeCamera<Camera<PerspectiveProjection>>();
-
-    // Bind required uniforms
-    this->bindUniform( "transformation", p_camera->transformationMatrix() );
-    this->bindUniform( "cameraPosition", p_camera->position() );
 
     CIE_END_EXCEPTION_TRACING
 }
@@ -105,7 +92,7 @@ void PartScene::updateParts()
     {
         this->_p_bufferManager->writeToBoundVertexBuffer(
             attributeByteOffset,
-            rp_part->data()
+            *rp_part->attributes()
         );
 
         // Offset vertex indices (without modifying the original ones)

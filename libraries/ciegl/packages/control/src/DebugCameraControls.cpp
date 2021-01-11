@@ -74,7 +74,10 @@ void DebugCameraControls::onKeyboardPress( KeyEnum key,
     );
 
     if ( key == GLFW_KEY_ESCAPE )
-        this->_p_window->endLoop();
+    {
+        auto p_window = this->getWindow();
+        p_window->endLoop();
+    }
 }
 
 

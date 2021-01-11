@@ -39,7 +39,7 @@ public:
                            KeyEnum action,
                            KeyEnum modifiers );
 
-    void bind( WindowPtr p_window,
+    void bind( WindowWeakPtr wp_window,
                CameraPtr p_camera );
 
 protected:
@@ -86,11 +86,15 @@ protected:
     {}
 
 protected:
-    WindowPtr _p_window;
-    CameraPtr _p_camera;
-    double    _x;
-    double    _y;
+    WindowPtr getWindow();
 
+protected:
+    WindowWeakPtr _p_window;
+    CameraPtr     _p_camera;
+    double        _x;
+    double        _y;
+
+    KeyEnum           _escapeKey;
     std::set<KeyEnum> _activeKeys;
 };
 

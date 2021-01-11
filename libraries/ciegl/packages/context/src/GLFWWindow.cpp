@@ -34,6 +34,9 @@ GLFWWindow::GLFWWindow( Size id,
     if ( !_p_window )
         CIE_THROW( Exception, "Failed to create window" )
 
+    glfwMakeContextCurrent( _p_window );
+    this->log( "Make context current" );
+
     // Set window pointer
     glfwSetWindowUserPointer( _p_window, this );
 
@@ -106,8 +109,17 @@ GLFWWindow::GLFWWindow( Size id,
 
 GLFWWindow::~GLFWWindow()
 {
-    glfwSetWindowShouldClose( this->_p_window, 1 );
-    //glfwPollEvents();
+    glfwDestroyWindow( this->_p_window );
+}
+
+
+void GLFWWindow::activate()
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    glfwMakeContextCurrent( _p_window );
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 

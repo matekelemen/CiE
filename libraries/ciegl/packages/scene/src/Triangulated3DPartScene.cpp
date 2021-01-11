@@ -3,6 +3,8 @@
 
 // --- Internal Includes ---
 #include "ciegl/packages/scene/inc/Triangulated3DPartScene.hpp"
+#include "ciegl/packages/camera/inc/Camera.hpp"
+#include "ciegl/packages/camera/inc/PerspectiveProjection.hpp"
 #include "ciegl/packages/shaders/inc/GLFWShader.hpp"
 #include "cmake_variables.hpp"
 
@@ -28,43 +30,43 @@ Triangulated3DPartScene::Triangulated3DPartScene( utils::Logger& r_logger,
     PartScene( r_logger,
                r_name,
                std::forward<Triangulated3DPartScene::part_container>(r_parts),
-               p_camera,
                p_vertexShader,
                p_geometryShader,
                p_fragmentShader,
                p_vertexBuffer,
                p_elementBuffer )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    // Register camera or construct one if it was not provided
+    if ( p_camera )
+        this->addCamera( p_camera );
+    else
+        p_camera = this->makeCamera<Camera<PerspectiveProjection>>();
+
+    // Bind required uniforms
+    this->bindUniform( "transformation", p_camera->transformationMatrix() );
+    this->bindUniform( "cameraPosition", p_camera->position() );
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
 Triangulated3DPartScene::Triangulated3DPartScene( utils::Logger& r_logger,
                                                   const std::string& r_name,
-                                                  Triangulated3DPartScene::part_container&& r_parts,
-                                                  CameraPtr p_camera ) :
+                                                  Triangulated3DPartScene::part_container&& r_parts ) :
     Triangulated3DPartScene( r_logger,
                              r_name,
                              std::forward<Triangulated3DPartScene::part_container>(r_parts),
-                             p_camera,
-                             gl::makeVertexShader<gl::GLFWVertexShader>( SHADER_DIR / "vertexShader.xml",
-                                                                         SHADER_DIR / "vertexShader.glsl" ),
-                             gl::makeGeometryShader<gl::GLFWGeometryShader>( SHADER_DIR / "geometryShader.xml",
-                                                                             SHADER_DIR / "geometryShader.glsl" ),
-                             gl::makeFragmentShader<gl::GLFWFragmentShader>( SHADER_DIR / "fragmentShader.xml",
-                                                                             SHADER_DIR / "fragmentShader.glsl" ),
+                             nullptr,
+                             makeVertexShader<GLFWVertexShader>( SHADER_DIR / "vertexShader.xml",
+                                                                 SHADER_DIR / "vertexShader.glsl" ),
+                             makeGeometryShader<GLFWGeometryShader>( SHADER_DIR / "geometryShader.xml",
+                                                                     SHADER_DIR / "geometryShader.glsl" ),
+                             makeFragmentShader<GLFWFragmentShader>( SHADER_DIR / "fragmentShader.xml",
+                                                                     SHADER_DIR / "fragmentShader.glsl" ),
                             nullptr,
                             nullptr )
-{
-}
-
-
-Triangulated3DPartScene::Triangulated3DPartScene( utils::Logger& r_logger,
-                                                  Triangulated3DPartScene::part_container&& r_parts,
-                                                  CameraPtr p_camera ) :
-    Triangulated3DPartScene( r_logger,
-                             "Triangulated3DPartScene",
-                             std::forward<Triangulated3DPartScene::part_container>(r_parts),
-                             p_camera )
 {
 }
 

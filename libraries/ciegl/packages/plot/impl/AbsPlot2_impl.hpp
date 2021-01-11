@@ -27,7 +27,11 @@ AbsPlot2<Tag,Args...>::AbsPlot2( WindowPtr p_window ) :
     _p_scene( nullptr ),
     _p_controls( nullptr )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     this->initializeScene();
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -41,7 +45,11 @@ AbsPlot2<Tag,Args...>::AbsPlot2() :
     _p_scene( nullptr ),
     _p_controls( nullptr )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     this->initializeScene();
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -136,14 +144,12 @@ void AbsPlot2<Tag,Args...>::initializeScene()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    auto p_scene = std::make_shared<typename AbsPlot2<Tag,Args...>::Plot2Scene>( *this->_p_context,
-                                                                                 "Plot2Scene",
-                                                                                 this->_p_attributes,
-                                                                                 this->_p_indices );
+    auto p_scene = this->_p_window->makeScene<typename AbsPlot2<Tag,Args...>::Plot2Scene>( "Plot2Scene",
+                                                                                           this->_p_attributes,
+                                                                                           this->_p_indices );
 
     this->_p_scene = p_scene;
-    this->_p_window->addScene( p_scene );
-    
+
     this->_p_camera = p_scene->getCamera();
     this->_p_camera->setPose( { 0.0, 0.0, 1.0 },
                               { 0.0, 0.0, -1.0 },

@@ -20,6 +20,8 @@ public:
 public:
     ~GLFWWindow();
 
+    virtual void activate() override;
+
     const GLFWwindow* get() const;
     GLFWwindow* get();
 

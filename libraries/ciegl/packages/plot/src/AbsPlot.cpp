@@ -11,28 +11,21 @@
 namespace cie::gl {
 
 
-const std::filesystem::path PLOT_LOG_PATH = OUTPUT_PATH / "plot.log";
-
-
 AbsPlot::AbsPlot( WindowPtr p_window ) :
-    _p_context( GLFWContextSingleton::get( PLOT_LOG_PATH, true ) ),
     _p_window( p_window ),
     _p_attributes( new AttributeContainer )
 {
+    CIE_CHECK_POINTER( p_window )
 }
 
 
 AbsPlot::AbsPlot() :
-    _p_context( GLFWContextSingleton::get( PLOT_LOG_PATH, true ) ),
     _p_window( nullptr ),
     _p_attributes( new AttributeContainer )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    this->_p_window = this->_p_context->newWindow(
-        800,
-        600
-    );
+    this->_p_window = GLFWContextSingleton::get( true )->newWindow();
 
     CIE_END_EXCEPTION_TRACING
 }
@@ -40,13 +33,21 @@ AbsPlot::AbsPlot() :
 
 void AbsPlot::update()
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
     this->_p_window->update();
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
 void AbsPlot::show()
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+    
     this->_p_window->beginLoop();
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 

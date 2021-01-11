@@ -30,7 +30,6 @@ public:
     PartScene( utils::Logger& r_logger,
                const std::string& r_name,
                part_container&& r_parts,
-               CameraPtr p_camera,
                ShaderPtr p_vertexShader,
                ShaderPtr p_geometryShader,
                ShaderPtr p_fragmentShader,

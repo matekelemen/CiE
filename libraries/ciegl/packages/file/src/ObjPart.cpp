@@ -47,7 +47,7 @@ void ObjPart::load( std::istream& r_stream )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    this->_data.clear();
+    this->_p_attributes->clear();
     this->_indices.clear();
 
     std::string line, token;
@@ -107,11 +107,11 @@ void ObjPart::load( std::istream& r_stream )
         {
             std::stringstream lineStream( line );
 
-            Size vertexBegin = this->_data.size();
-            this->_data.resize( vertexBegin + this->dimension() );
+            Size vertexBegin = this->_p_attributes->size();
+            this->_p_attributes->resize( vertexBegin + this->dimension() );
 
             for ( Size dim=0; dim<this->dimension(); ++dim )
-                lineStream >> this->_data[vertexBegin + dim];
+                lineStream >> this->_p_attributes->at(vertexBegin + dim);
         }
         else if ( isFace )
         {

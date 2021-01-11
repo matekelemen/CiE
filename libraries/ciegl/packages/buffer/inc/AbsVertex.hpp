@@ -10,6 +10,7 @@
 
 // --- Internal Includes ---
 #include "ciegl/packages/buffer/inc/AttributeContainer.hpp"
+#include "ciegl/packages/traits/inc/GLTraits.hpp"
 
 // --- STL Includes ---
 #include <vector>
@@ -20,7 +21,7 @@
 namespace cie::gl {
 
 
-class AbsVertex
+class AbsVertex : public GLTraits
 {
 public:
     using value_type           = typename AttributeContainer::value_type;

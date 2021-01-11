@@ -90,8 +90,8 @@ public:
                 // Compute vertex from edge midpoint
                 auto vertex = ( marchingCubes.getVertex( primitiveIndex, r_edge.first ) + marchingCubes.getVertex( primitiveIndex, r_edge.second ) ) / 2.0;
 
-                for ( MarchingPart::data_type component : vertex )
-                    this->_data.push_back( component );
+                for ( MarchingPart::attribute_type component : vertex )
+                    this->_p_attributes->push_back( component );
 
                 this->_indices.push_back( vertexCounter++ );
             }
@@ -183,15 +183,15 @@ int main()
         4,                                          // <-- OpenGL version major
         5,                                          // <-- OpenGL version minor
         0,                                          // <-- Number of MSAA samples
-        OUTPUT_PATH / "mathieu_stability_log.txt",  // <-- log file
+        OUTPUT_PATH / "mathieu_stability.log",      // <-- log file
         true                                        // <-- use console output
     );
 
     auto p_window = p_context->newWindow( 1024, 768 );
-    auto p_scene = std::make_shared<gl::Triangulated3DPartScene>( *p_context,
-                                                                  gl::Triangulated3DPartScene::part_container(),
-                                                                  gl::CameraPtr(nullptr) );
-    p_window->addScene( p_scene );
+    auto p_scene = p_window->makeScene<gl::Triangulated3DPartScene>(
+        "Triangulated3DPartScene",
+        gl::Triangulated3DPartScene::part_container()
+    );
 
     // March and add part
     auto p_target = MarchingCubes::target_ptr( new csg::CSGObjectWrapper<Dimension,Bool,CoordinateType>( 
@@ -223,6 +223,9 @@ int main()
     //p_camera->rotate( M_PI / 4.0,
     //                  { -1.0, 1.0, 0.0 } );
     //p_camera->rotateRoll( -M_PI / 4.0 );
+
+    // Add axes
+    p_window->makeScene<gl::Axes3DScene>( "Axes", p_camera );
 
     // Start event loop
     p_window->beginLoop();

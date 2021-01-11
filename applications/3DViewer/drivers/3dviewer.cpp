@@ -51,8 +51,7 @@ int main( int argc, char const* argv[] )
     );
     configureGLFWWindow( p_window );
 
-    auto p_scene = std::make_shared<ViewerScene>( *p_context );
-    p_window->addScene( p_scene );
+    auto p_scene = p_window->makeScene<ViewerScene>( "ViewerScene" );
 
     // Load geometry
     // TODO: add support for other file types too
@@ -97,6 +96,9 @@ int main( int argc, char const* argv[] )
         new gl::ArcBallCameraControls(true)
     );
     p_controls->bind( p_window, p_camera );
+
+    // Add axes
+    p_window->makeScene<gl::Axes3DScene>( "Axes", p_camera );
 
     // Loop
     p_window->beginLoop();

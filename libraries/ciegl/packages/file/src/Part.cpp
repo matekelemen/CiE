@@ -12,7 +12,7 @@ namespace cie::gl {
 
 
 Part::Part() :
-    _data(),
+    _p_attributes( new Part::attribute_container ),
     _indices()
 {
 }
@@ -20,7 +20,7 @@ Part::Part() :
 
 Size Part::attributeByteCount() const
 {
-    return this->_data.size() * sizeof( Part::data_type );
+    return this->_p_attributes->size() * sizeof( Part::attribute_type );
 }
 
 
@@ -32,7 +32,7 @@ Size Part::indexByteCount() const
 
 Size Part::numberOfVertices() const
 {
-    return this->_data.size() / this->vertexAttributeSize();
+    return this->_p_attributes->size() / this->vertexAttributeSize();
 }
 
 
@@ -48,9 +48,9 @@ void Part::load( std::istream& r_stream )
 }
 
 
-const Part::data_container& Part::data() const
+const Part::attribute_container_ptr& Part::attributes() const
 {
-    return this->_data;
+    return this->_p_attributes;
 }
 
 
@@ -68,7 +68,7 @@ Size Part::primitiveAttributeSize() const
 
 Size Part::primitiveByteSize() const
 {
-    return this->primitiveAttributeSize() * sizeof( Part::data_type );
+    return this->primitiveAttributeSize() * sizeof( Part::attribute_type );
 }
 
 

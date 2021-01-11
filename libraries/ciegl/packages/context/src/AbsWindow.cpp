@@ -73,9 +73,18 @@ AbsWindow::AbsWindow( Size id,
 }
 
 
+AbsWindow::~AbsWindow()
+{
+    auto localBlock = this->newBlock( "close window" );
+    this->logID( "", this->getID() );
+}
+
+
 void AbsWindow::update()
 {
     CIE_BEGIN_EXCEPTION_TRACING
+
+    this->activate();
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );

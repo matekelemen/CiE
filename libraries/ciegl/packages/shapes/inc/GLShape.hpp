@@ -32,6 +32,8 @@ public:
                        Size componentIndex,
                        attribute_type value ) override;
 
+    const vertex_container& vertices() const;
+
 protected:
     GLShape() = delete;
     GLShape( const GLShape<VertexType>& r_rhs ) = delete;

@@ -83,8 +83,8 @@ public:
                 // Compute vertex from edge midpoint
                 auto vertex = ( marchingCubes.getVertex( primitiveIndex, r_edge.first ) + marchingCubes.getVertex( primitiveIndex, r_edge.second ) ) / 2.0;
 
-                for ( MarchingPart::data_type component : vertex )
-                    this->_data.push_back( component );
+                for ( MarchingPart::attribute_type component : vertex )
+                    this->_p_attributes->push_back( component );
 
                 this->_indices.push_back( vertexCounter++ );
             }
@@ -125,15 +125,16 @@ int main( int argc, char const* argv[] )
 
     // Graphics setup
     auto p_context = gl::GLFWContextSingleton::get(
-        OUTPUT_PATH / "csg2stl.log",                    // <-- log file
-        true                                            // use console output
+        4, 5, 0,
+        OUTPUT_PATH / "csg2stl.log", // <-- log file
+        true
     );
 
     auto p_window = p_context->newWindow( 1024, 768 );
-    auto p_scene  = std::make_shared<gl::Triangulated3DPartScene>( *p_context,
-                                                                   gl::Triangulated3DPartScene::part_container(),
-                                                                   gl::CameraPtr(nullptr) );
-    p_window->addScene( p_scene);
+    auto p_scene  = p_window->makeScene<gl::Triangulated3DPartScene>(
+        "Triangulated3DPartScene",
+        gl::Triangulated3DPartScene::part_container()
+    );
 
     // March and add model
     auto timerID = p_scene->tic();
@@ -169,6 +170,9 @@ int main( int argc, char const* argv[] )
     p_controls->setMovementScale( 0.01 );
     p_controls->setRotationScale( 0.005 );
     p_controls->setZoomScale( 1.01 );
+
+    // Add axes
+    //p_window->makeScene<gl::Axes3DScene>( "Axes", p_camera );
 
     // Event loop
     p_window->beginLoop();

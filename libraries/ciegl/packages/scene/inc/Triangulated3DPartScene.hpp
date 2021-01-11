@@ -14,12 +14,7 @@ public:
     // Constructor for the AbsWindow::makeScene
     Triangulated3DPartScene( utils::Logger& r_logger,
                              const std::string& r_name,
-                             Triangulated3DPartScene::part_container&& r_parts,
-                             CameraPtr p_camera = nullptr );
-
-    Triangulated3DPartScene( utils::Logger& r_logger,
-                             Triangulated3DPartScene::part_container&& r_parts,
-                             CameraPtr p_camera = nullptr );
+                             Triangulated3DPartScene::part_container&& r_parts );
 
 protected:
     virtual void update_impl() override;

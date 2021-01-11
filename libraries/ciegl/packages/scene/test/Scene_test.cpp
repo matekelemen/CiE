@@ -54,7 +54,8 @@ CIE_TEST_CASE( "Scene", "[scene]" )
             glVersion.first,
             glVersion.second,
             MSAASamples,
-            TEST_OUTPUT_PATH / "GLFWScene_test.txt"
+            TEST_OUTPUT_PATH / "GLFWScene_test.txt",
+            false
         );
 
     // Window

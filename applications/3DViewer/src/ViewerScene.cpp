@@ -22,10 +22,11 @@ namespace cie {
 const std::filesystem::path SHADER_DIR = SOURCE_PATH / "applications/3DViewer/data/shaders";
 
 
-ViewerScene::ViewerScene( utils::Logger& r_logger ) :
+ViewerScene::ViewerScene( utils::Logger& r_logger,
+                          const std::string& r_name ) :
     gl::Scene(
         r_logger,
-        "3dViewerScene",
+        r_name,
         gl::makeVertexShader<gl::GLFWVertexShader>( SHADER_DIR / "vertexShader.xml",
                                                     SHADER_DIR / "vertexShader.glsl" ),
         gl::makeGeometryShader<gl::GLFWGeometryShader>( SHADER_DIR / "geometryShader.xml",
@@ -98,7 +99,7 @@ void ViewerScene::updateModels()
     {
         this->_p_bufferManager->writeToBoundVertexBuffer(
             attributeByteOffset,
-            rp_model->data()
+            *rp_model->attributes()
         );
 
         // Offset vertex indices

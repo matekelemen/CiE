@@ -21,9 +21,6 @@ namespace cie::gl {
 class Part : public GLTraits
 {
 public:
-    using data_type       = typename VertexBuffer::data_type;
-    using data_container  = std::vector<data_type>;
-
     using GLTraits::attribute_type;
     using GLTraits::attribute_container;
     using GLTraits::attribute_container_ptr;
@@ -50,7 +47,7 @@ public:
     virtual void load( std::istream& r_stream );
 
     /// Get attribute container
-    const data_container& data() const;
+    const attribute_container_ptr& attributes() const;
 
     /// Get primitive vertex maps
     const index_container& indices() const;
@@ -74,8 +71,13 @@ public:
     virtual void writeSTL( const std::filesystem::path& r_path ) const = 0;
 
 protected:
-    data_container  _data;
-    index_container _indices;
+    Part( const Part& r_rhs ) = delete;
+    Part( Part&& r_rhs ) = delete;
+    Part& operator=( const Part& r_rhs ) = delete;
+
+protected:
+    attribute_container_ptr _p_attributes;
+    index_container         _indices;
 };
 
 

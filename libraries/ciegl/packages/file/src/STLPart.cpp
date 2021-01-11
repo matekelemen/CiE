@@ -50,7 +50,7 @@ void STLPart::load( std::istream& r_stream )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    this->_data.clear();
+    this->_p_attributes->clear();
     this->_indices.clear();
 
     // Header - 80 chars
@@ -74,11 +74,11 @@ void STLPart::load( std::istream& r_stream )
     }
 
     // Allocate memory for the data
-    this->_data.reserve( numberOfTriangles * this->primitiveAttributeSize() );
+    this->_p_attributes->reserve( numberOfTriangles * this->primitiveAttributeSize() );
 
     // Triangles and their normals
-    using data_type = typename STLPart::data_type;
-    data_type tmp;
+    using attribute_type = typename STLPart::attribute_type;
+    attribute_type tmp;
     uint16_t attributeByteCount;
 
     for ( Size triangleIndex=0; triangleIndex<numberOfTriangles; ++triangleIndex )
@@ -93,7 +93,7 @@ void STLPart::load( std::istream& r_stream )
             for ( Size componentIndex=0; componentIndex<this->dimension(); ++componentIndex )
             {
                 r_stream.read( reinterpret_cast<char*>(&tmp), sizeof(tmp) );
-                this->_data.push_back( tmp );
+                this->_p_attributes->push_back( tmp );
             }
         }
 

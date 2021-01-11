@@ -29,7 +29,6 @@ public:
     const AttributeContainer& attributes() const;
 
 protected:
-    ContextPtr            _p_context;
     WindowPtr             _p_window;
     AttributeContainerPtr _p_attributes;
 };

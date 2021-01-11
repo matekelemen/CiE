@@ -85,8 +85,7 @@ int main( std::function<ValueType(const PointType&,Double)> targetFunction,
     );
 
     // Scene for drawing space tree leaf node centers
-    auto p_scene = std::make_shared<PointScene>( *p_context, "SpaceTreeScene" );
-    p_window->addScene( p_scene );
+    auto p_scene = p_window->makeScene<PointScene>( "SpaceTreeScene" );
 
     p_scene->addRoot( p_root );
 

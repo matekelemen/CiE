@@ -33,10 +33,12 @@ public:
     Arrow( typename Arrow<VertexType>::attribute_container_ptr p_attributes,
            const point_type& r_source,
            const point_type& r_sink,
-           attribute_type headRatio = 0.25,
+           attribute_type headRatio = 0.4,
            attribute_type baseRadius = 0.1,
-           attribute_type headRadius = 0.25,
-           const Size resolution = 6 );
+           attribute_type headRadius = 0.2,
+           const Size resolution = 4 );
+
+    Arrow( Arrow<VertexType>&& r_rhs ) = default;
 
     virtual void updateShape() override;
 

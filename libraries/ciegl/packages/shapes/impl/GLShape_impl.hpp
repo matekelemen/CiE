@@ -27,7 +27,15 @@ void GLShape<VertexType>::setAttribute( Size attributeIndex,
         rp_vertex->at( attributeIndex, componentIndex ) = value;
 
     CIE_END_EXCEPTION_TRACING
-}      
+}
+
+
+template <concepts::GLVertex VertexType>
+inline const typename GLShape<VertexType>::vertex_container&
+GLShape<VertexType>::vertices() const
+{
+    return this->_vertices;
+}
 
 
 } // namespace cie::gl

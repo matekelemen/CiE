@@ -3,7 +3,8 @@
 
 // --- Utility Includes ---
 #include "cieutils/packages/macros/inc/checks.hpp"
-
+#include "cieutils/packages/macros/inc/exceptions.hpp"
+#include <iostream>
 
 namespace cie::gl {
 
@@ -16,14 +17,16 @@ inline AbsVertex::attribute_range AbsVertex::attribute( Size index )
 
     auto it_begin = this->_p_attributes->begin() + this->_offset + this->_r_attributeOffsets[index];
 
-    AttributeContainer::iterator it_end;
+    Size attributeSize = 0;
 
     if ( index != this->_r_attributeOffsets.size() - 1 )
-        it_end = this->_p_attributes->begin() + this->_offset + this->_r_attributeOffsets[index+1];
+        attributeSize = this->_r_attributeOffsets[index+1] - this->_r_attributeOffsets[index];
     else
-        it_end = this->_p_attributes->begin() + this->_offset + this->numberOfAttributes();
+        attributeSize = this->numberOfAttributes() - this->_r_attributeOffsets.back();
 
-    return AbsVertex::attribute_range( it_begin, it_end );
+    CIE_OUT_OF_RANGE_CHECK( this->_offset + attributeSize < this->_p_attributes->size() )
+
+    return AbsVertex::attribute_range( it_begin, it_begin + attributeSize );
 
     CIE_END_EXCEPTION_TRACING
 }
@@ -37,14 +40,16 @@ inline AbsVertex::attribute_const_range AbsVertex::attribute( Size index ) const
 
     auto it_begin = this->_p_attributes->begin() + this->_offset + this->_r_attributeOffsets[index];
 
-    AttributeContainer::const_iterator it_end;
+    Size attributeSize = 0;
 
     if ( index != this->_r_attributeOffsets.size() - 1 )
-        it_end = this->_p_attributes->begin() + this->_offset + this->_r_attributeOffsets[index+1];
+        attributeSize = this->_r_attributeOffsets[index+1] - this->_r_attributeOffsets[index];
     else
-        it_end = this->_p_attributes->begin() + this->_offset + this->numberOfAttributes();
+        attributeSize = this->numberOfAttributes() - this->_r_attributeOffsets.back();
 
-    return AbsVertex::attribute_const_range( it_begin, it_end );
+    CIE_OUT_OF_RANGE_CHECK( this->_offset + attributeSize < this->_p_attributes->size() )
+
+    return AbsVertex::attribute_const_range( it_begin, it_begin + attributeSize );
 
     CIE_END_EXCEPTION_TRACING
 }

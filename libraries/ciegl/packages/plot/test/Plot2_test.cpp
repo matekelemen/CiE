@@ -12,6 +12,10 @@
 #include <math.h>
 #include <cmath>
 
+// --- STL Includes ---
+#include <chrono>
+#include <thread>
+
 
 namespace cie::gl {
 
@@ -34,7 +38,10 @@ CIE_TEST_CASE( "Plot2", "[plot]" )
         Y.push_back( std::cos(x) );
     }
 
-    plot2( X, Y );
+    Plot2<XContainer,YContainer> plot( X, Y );
+    plot.update();
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    //plot2( X, Y );
 }
 
 

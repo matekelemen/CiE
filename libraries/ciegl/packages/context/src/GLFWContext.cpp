@@ -54,7 +54,6 @@ GLFWContext::GLFWContext( Size versionMajor,
 
 GLFWContext::~GLFWContext()
 {
-    this->closeAllWindows();
     glfwTerminate();
 }
 
@@ -75,13 +74,11 @@ WindowPtr GLFWContext::newWindow_impl( Size width,
     );
 
     if ( !this->_isCurrent )
-        {
-            glfwMakeContextCurrent( detail::getGLFWwindow(p_newWindow) );
-            this->log( "make context current" );
-            initializeGLADIfNecessary();
-            this->_isCurrent = true;
-            glDebugMessageCallback( messageCallback, this );
-        }
+    {
+        initializeGLADIfNecessary();
+        this->_isCurrent = true;
+        glDebugMessageCallback( messageCallback, this );
+    }
 
     return p_newWindow;
 
@@ -179,40 +176,58 @@ ContextPtr GLFWContextSingleton::get( Size versionMajor,
 }
 
 
-ContextPtr GLFWContextSingleton::get( const std::filesystem::path& r_logFilePath )
+ContextPtr GLFWContextSingleton::get()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    // Make sure the context is initialized 
-    GLFWContextSingleton::get();
+    ContextPtr p_context;
 
-    // Create log file if it's not currently in use
-    auto& r_fileManager = GLFWContextSingleton::_p_context->fileManager();
+    if ( GLFWContextSingleton::_p_context )
+        p_context = GLFWContextSingleton::_p_context;
+    else
+        p_context = GLFWContextSingleton::get( 4,
+                                               5,
+                                               0,
+                                               OUTPUT_PATH / "graphics.log",
+                                               false );
 
-    try{
-        auto p_file = r_fileManager.filePtr(
-            r_fileManager.newFile( r_logFilePath )
-        );
-        GLFWContextSingleton::_p_context->addStream( p_file );
-    }
-    catch ( const std::exception& r_exception )
-    {
-        GLFWContextSingleton::_p_context->warn( r_exception.what() );
-    }
-
-    return GLFWContextSingleton::_p_context;
+    return p_context;
 
     CIE_END_EXCEPTION_TRACING
 }
 
 
-ContextPtr GLFWContextSingleton::get( const std::filesystem::path& r_logFilePath,
-                                      bool useConsole )
+ContextPtr GLFWContextSingleton::get( const std::filesystem::path& r_logFilePath )
 {
-    GLFWContextSingleton::get( r_logFilePath );
-    GLFWContextSingleton::_p_context->useConsole( useConsole );
+    CIE_BEGIN_EXCEPTION_TRACING
 
-    return GLFWContextSingleton::_p_context;
+    auto p_context = GLFWContextSingleton::get();
+
+    // Create log file if it's not currently in use
+    auto& r_fileManager = p_context->fileManager();
+
+    auto p_file = r_fileManager.filePtr(
+        r_fileManager.newFile( r_logFilePath )
+    );
+    p_context->addStream( p_file );
+
+    return p_context;
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+ContextPtr GLFWContextSingleton::get( bool useConsole )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    auto p_context = GLFWContextSingleton::get();
+
+    p_context->useConsole( useConsole );
+
+    return p_context;
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 

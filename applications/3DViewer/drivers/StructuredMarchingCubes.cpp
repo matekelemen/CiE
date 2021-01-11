@@ -86,8 +86,8 @@ public:
                 // Compute vertex from edge midpoint
                 auto vertex = ( marchingCubes.getVertex( primitiveIndex, r_edge.first ) + marchingCubes.getVertex( primitiveIndex, r_edge.second ) ) / 2.0;
 
-                for ( MarchingPart::data_type component : vertex )
-                    this->_data.push_back( component );
+                for ( MarchingPart::attribute_type component : vertex )
+                    this->_p_attributes->push_back( component );
 
                 this->_indices.push_back( vertexCounter++ );
             }
@@ -128,13 +128,11 @@ int main( int argc, char const* argv[] )
 
     // Graphics setup
     auto p_context = gl::GLFWContextSingleton::get(
-        OUTPUT_PATH / "StructuredMarchingCubes.log",    // <-- log file
-        true                                            // use console output
+        OUTPUT_PATH / "StructuredMarchingCubes.log" // <-- log file
     );
 
     auto p_window = p_context->newWindow( 1024, 768 );
-    auto p_scene  = std::make_shared<ViewerScene>( *p_context );
-    p_window->addScene( p_scene);
+    auto p_scene  = p_window->makeScene<ViewerScene>( "ViewerScene" );
 
     // March and add model
     auto timerID = p_scene->tic();

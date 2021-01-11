@@ -311,7 +311,7 @@ void ArcBallCameraControls::onCursorMovement( double x,
     CIE_BEGIN_EXCEPTION_TRACING
 
     // Flip y
-    y = this->_p_window->getSize().second - y;
+    y = this->getWindow()->getSize().second - y;
 
     // Update
     this->_dx = x - this->_x;
@@ -414,12 +414,6 @@ ArcBallCameraControls::makeConfigurationMap( ArcBallCameraControls::configuratio
     configMap.emplace(
         it_pair->second,
         std::bind( &ArcBallCameraControls::decreaseZoomScale, this )
-    );
-
-    // Escape for closing the window
-    configMap.emplace(
-        GLFW_KEY_ESCAPE,
-        std::bind( &AbsWindow::endLoop, this->_p_window.get() )
     );
 
     return configMap;

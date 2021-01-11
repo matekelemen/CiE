@@ -25,6 +25,8 @@ ColoredVertex3::ColoredVertex3( AttributeContainerPtr p_attributeContainer,
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
+    this->resizeAttributeContainer();
+
     std::copy( r_point.begin(),
                r_point.end(),
                this->attribute(0).begin() );
@@ -39,19 +41,11 @@ ColoredVertex3::ColoredVertex3( AttributeContainerPtr p_attributeContainer,
 
 ColoredVertex3::ColoredVertex3( AttributeContainerPtr p_attributeContainer,
                                 Size offset ) :
-    Vertex3( p_attributeContainer,
-             offset,
-             coloredVertex3OffsetContainer )
+    ColoredVertex3( p_attributeContainer,
+                    offset,
+                    {0.0, 0.0, 0.0},
+                    {1.0, 1.0, 1.0, 1.0} )
 {
-    CIE_BEGIN_EXCEPTION_TRACING
-
-    auto color = this->attribute(0);
-
-    std::fill( color.begin(),
-               color.end(),
-               1.0 );
-
-    CIE_END_EXCEPTION_TRACING
 }
 
 

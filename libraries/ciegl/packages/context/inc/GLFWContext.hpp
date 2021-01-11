@@ -58,9 +58,7 @@ private:
                  const std::filesystem::path& r_logFileName = OUTPUT_PATH / "GLFWContext.log",
                  bool useConsole = false );
 
-    /**
-     * Check whether GLAD was initialized and initialize it if it wasn't
-     */
+    /// Check whether GLAD was initialized and initialize it if it wasn't
     void initializeGLADIfNecessary();
 
     WindowPtr newWindow_impl( size_t width              = 800,
@@ -76,9 +74,7 @@ private:
 
 
 
-/**
- * GLFWContext manager
- */
+/// GLFWContext manager
 class GLFWContextSingleton
 {
 public:
@@ -99,11 +95,14 @@ public:
      * @note throw an error if the requested parameters do not match the
      * parameters of the existing context
      */
-    static ContextPtr get( Size versionMajor = 4,
-                           Size versionMinor = 5,
-                           Size MSAASamples  = 0,
-                           const std::filesystem::path& r_logFilePath = OUTPUT_PATH / "GLFWContext.log",
-                           bool useConsole = false );
+    static ContextPtr get( Size versionMajor,
+                           Size versionMinor,
+                           Size MSAASamples,
+                           const std::filesystem::path& r_logFilePath,
+                           bool useConsole );
+
+    /// Get the existing context or create a default one
+    static ContextPtr get();
 
     /**
      * Initialize the GLFW context or return the existing one,
@@ -115,15 +114,11 @@ public:
     static ContextPtr get( const std::filesystem::path& r_logFilePath );
 
     /**
-     * Initialize the GLFW context or return the existing one,
-     * and add a log file to its list of streams
-     * 
-     * @param r_logFilePath path to the log file
+     * Initialize the GLFW context or return the existing one
      * @param useConsole print log output to std::cout
      * @return a pointer to the GLFW context
      */
-    static ContextPtr get( const std::filesystem::path& r_logFilePath,
-                           bool useConsole );
+    static ContextPtr get( bool useConsole );
 
 private:
     static ContextPtr _p_context;
