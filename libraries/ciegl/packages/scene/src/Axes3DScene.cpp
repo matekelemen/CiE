@@ -1,10 +1,16 @@
+// --- External Includes ---
+#include "glm/glm.hpp"
+
 // --- Utility Includes ---
 #include "cieutils/packages/macros/inc/exceptions.hpp"
+#include "cieutils/packages/macros/inc/checks.hpp"
 #include "cieutils/packages/ranges/inc/TransformView.hpp"
 
 // --- Internal Includes ---
 #include "ciegl/packages/scene/inc/Axes3DScene.hpp"
 #include "ciegl/packages/file/inc/GenericPart.hpp"
+#include "ciegl/packages/camera/inc/Camera.hpp"
+#include "ciegl/packages/camera/inc/OrthographicProjection.hpp"
 #include "cmake_variables.hpp"
 
 
@@ -18,13 +24,16 @@ Axes3DScene::Axes3DScene( utils::Logger& r_logger,
                       r_name,
                       GL_TRIANGLES,
                       SOURCE_PATH / "libraries/ciegl/data/shaders/coloredAxes" ),
-    _arrows()
+    _p_axes( nullptr ),
+    _box( {{0.0, 0.2}, {0.0, 0.2}} ),
+    _transformationMatrix()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
+    CIE_CHECK_POINTER( p_camera )
+
     // Set camera and bind uniforms
     this->addCamera( p_camera );
-    this->bindUniform( "transformation", p_camera->transformationMatrix() );
 
     // Get number of vertex attributes
     Size vertexAttributeSize = makeVertex<ColoredVertex3>(
@@ -35,80 +44,62 @@ Axes3DScene::Axes3DScene( utils::Logger& r_logger,
         new GenericPart( 3, vertexAttributeSize, 3 )
     );
 
-    auto insertIndices = [p_part]( const GenericPart::index_container& r_indices, Size indexOffset )
-    {
-        CIE_BEGIN_EXCEPTION_TRACING
-
-        auto view = utils::makeTransformView<GenericPart::index_container::value_type>(
-            r_indices,
-            [indexOffset]( auto index ) { return index + indexOffset; }  
-        );
-
-        p_part->indices().reserve( p_part->indices().size() + r_indices.size() );
-
-        p_part->indices().insert( p_part->indices().begin(),
-                                  view.begin(),
-                                  view.end() );
-
-        CIE_END_EXCEPTION_TRACING
-    };
-
-    Size indexOffset = 0;
-    Axes3DScene::arrow_type* p_arrow;
-
-    // x axis (red)
-    this->_arrows.emplace_back( Axes3DScene::arrow_type(
+    this->_p_axes = Axes3DScene::axes_ptr( new Axes(
         p_part->attributes(),
-        {0.0, 0.0, 0.0},
-        {1.0, 0.0, 0.0}
-    ));
+        3
+    ) );
 
-    p_arrow = &this->_arrows.back();
-
-    p_arrow->setAttribute( 1, 1, 0.0 ); // green component
-    p_arrow->setAttribute( 1, 2, 0.0 ); // blue component
-
-    insertIndices( p_arrow->indices(),
-                   indexOffset );
-
-    indexOffset += p_arrow->vertices().size();
-
-    // y axis (green)
-    this->_arrows.emplace_back( Axes3DScene::arrow_type(
-        p_part->attributes(),
-        {0.0, 0.0, 0.0},
-        {0.0, 1.0, 0.0}
-    ));
-
-    p_arrow = &this->_arrows.back();
-
-    p_arrow->setAttribute( 1, 0, 0.0 ); // red component
-    p_arrow->setAttribute( 1, 2, 0.0 ); // blue component
-
-    insertIndices( p_arrow->indices(),
-                   indexOffset );
-
-    indexOffset += p_arrow->vertices().size();
-
-    // z axis (blue)
-    this->_arrows.emplace_back( Axes3DScene::arrow_type(
-        p_part->attributes(),
-        {0.0, 0.0, 0.0},
-        {0.0, 0.0, 1.0}
-    ));
-
-    p_arrow = &this->_arrows.back();
-
-    p_arrow->setAttribute( 1, 0, 0.0 ); // red component
-    p_arrow->setAttribute( 1, 1, 0.0 ); // green component
-
-    insertIndices( p_arrow->indices(),
-                   indexOffset );
-
-    indexOffset += p_arrow->vertices().size();
+    p_part->indices() = this->_p_axes->indices();
 
     // Add the part containing the arrows
     this->addPart( p_part );
+
+    // Bind uniforms to internal camera
+    this->bindUniform( "transformation", this->_transformationMatrix );
+    this->bindUniform( "cameraPosition", p_camera->position() );
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+void Axes3DScene::update_impl()
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    auto p_camera     = this->camera( 0 );
+    auto p_axes       = this->_p_axes;
+    const auto& r_box = this->_box;
+
+    Axes::vector_type position {
+        ( r_box[0].second + r_box[0].first ) / 2.0,
+        ( r_box[1].second + r_box[1].first ) / 2.0,
+        0.0
+    };
+
+    p_axes->setPose( this->_p_axes->position(),
+                     p_camera->direction(),
+                     p_camera->up() );
+
+    double aspectRatio = this->camera()->aspectRatio();
+    double scaleX      = 1.0 / ( ( r_box[0].second - r_box[0].first ) / 2.0 ) * aspectRatio;
+    double scaleY      = 1.0 / ( ( r_box[1].second - r_box[1].first ) / 2.0 );
+
+    position[0] /= aspectRatio;
+
+    this->_transformationMatrix = glm::ortho(
+        -position[0] * scaleX,
+        (1.0 - position[0]) * scaleX,
+        -position[1] * scaleY,
+        (1.0 - position[1]) * scaleY
+    )
+    *
+    glm::lookAt(
+        this->_p_axes->position(),
+        this->_p_axes->position() + this->_p_axes->direction(),
+        this->_p_axes->up()
+    );
+
+    GenericPartScene::update_impl();
 
     CIE_END_EXCEPTION_TRACING
 }

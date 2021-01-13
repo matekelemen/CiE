@@ -28,7 +28,7 @@ namespace cie {
 /* --- TypeDefs --- */
 
 const Size Dimension  = 3;
-using CoordinateType  = double;
+using CoordinateType  = Double;
 using TargetValueType = Bool;
 
 using CSGObject           = csg::CSGObject<Dimension,TargetValueType,CoordinateType>;
@@ -172,7 +172,7 @@ int main( int argc, char const* argv[] )
     p_controls->setZoomScale( 1.01 );
 
     // Add axes
-    //p_window->makeScene<gl::Axes3DScene>( "Axes", p_camera );
+    p_window->makeScene<gl::Axes3DScene>( "Axes", p_camera );
 
     // Event loop
     p_window->beginLoop();

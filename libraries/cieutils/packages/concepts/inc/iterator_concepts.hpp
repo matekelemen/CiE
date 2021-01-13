@@ -6,6 +6,7 @@
 
 // --- STL Includes ---
 #include <iterator>
+#include <memory>
 
 namespace cie::concepts {
 

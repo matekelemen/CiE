@@ -4,7 +4,6 @@
 // --- Utility Includes ---
 #include "cieutils/packages/macros/inc/checks.hpp"
 #include "cieutils/packages/macros/inc/exceptions.hpp"
-#include <iostream>
 
 namespace cie::gl {
 
@@ -24,7 +23,7 @@ inline AbsVertex::attribute_range AbsVertex::attribute( Size index )
     else
         attributeSize = this->numberOfAttributes() - this->_r_attributeOffsets.back();
 
-    CIE_OUT_OF_RANGE_CHECK( this->_offset + attributeSize < this->_p_attributes->size() )
+    CIE_OUT_OF_RANGE_CHECK( this->_offset + attributeSize <= this->_p_attributes->size() )
 
     return AbsVertex::attribute_range( it_begin, it_begin + attributeSize );
 
@@ -47,7 +46,7 @@ inline AbsVertex::attribute_const_range AbsVertex::attribute( Size index ) const
     else
         attributeSize = this->numberOfAttributes() - this->_r_attributeOffsets.back();
 
-    CIE_OUT_OF_RANGE_CHECK( this->_offset + attributeSize < this->_p_attributes->size() )
+    CIE_OUT_OF_RANGE_CHECK( this->_offset + attributeSize <= this->_p_attributes->size() )
 
     return AbsVertex::attribute_const_range( it_begin, it_begin + attributeSize );
 

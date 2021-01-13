@@ -4,6 +4,7 @@
 // --- Utility Includes ---
 #include "cieutils/packages/macros/inc/checks.hpp"
 #include "cieutils/packages/macros/inc/exceptions.hpp"
+#include "cieutils/packages/stl_extension/inc/resize.hpp"
 
 // --- STL Includes ---
 #include <algorithm>
@@ -123,7 +124,9 @@ ArrayType operator/( const ArrayType& vector, const ScalarType& scalar )
 {
     CIE_DIVISION_BY_ZERO_CHECK( scalar!=0 )
 
-    ArrayType result(vector.size());
+    ArrayType result;
+    cie::utils::resize( result, vector.size() );
+
     std::transform( 
         vector.begin(), 
         vector.end(), 

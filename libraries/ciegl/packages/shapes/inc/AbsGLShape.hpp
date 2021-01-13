@@ -36,6 +36,12 @@ public:
     /// Get vertex connectivity
     virtual index_container indices() const = 0;
 
+    /// Get pointer to attribute container
+    const attribute_container_ptr attributes() const;
+
+    /// Get pointer to attribute container
+    attribute_container_ptr attributes();
+
 protected:
     AbsGLShape() = delete;
     AbsGLShape( const AbsGLShape& r_rhs ) = delete;

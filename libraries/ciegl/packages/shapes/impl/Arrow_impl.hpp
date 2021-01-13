@@ -128,9 +128,13 @@ Arrow<VertexType>::updateShape()
     // Functor for setting the position of a vertex
     auto setVertexPosition = []( typename Arrow<VertexType>::vertex_ptr p_vertex, const point_type& r_position ) -> void
     {
+        CIE_BEGIN_EXCEPTION_TRACING
+
         auto vertexPosition = p_vertex->position();
         for ( Size dim=0; dim<vertexPosition.size(); ++dim )
             vertexPosition[dim] = r_position[dim];
+
+        CIE_END_EXCEPTION_TRACING
     };
 
     // Set position of the source vertex

@@ -41,6 +41,10 @@ public:
                const AbsCamera::vector_type& r_direction = {0.0, 0.0, -1.0},
                const AbsCamera::vector_type& r_up        = {0.0, 1.0, 0.0} );
 
+    AbsCamera( const AbsCamera& r_rhs ) = default;
+
+    AbsCamera( AbsCamera&& r_rhs ) = default;
+
     /**
      * Update matrices
      * By default, transformation matrices are kept

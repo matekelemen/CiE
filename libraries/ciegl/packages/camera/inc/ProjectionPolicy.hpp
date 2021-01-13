@@ -20,6 +20,10 @@ protected:
 protected:
     ProjectionPolicy();
 
+    ProjectionPolicy( const ProjectionPolicy& r_rhs ) = default;
+
+    ProjectionPolicy( ProjectionPolicy&& r_rhs ) = default;
+
     virtual void zoom_impl( double scale ) = 0;
     virtual void updateProjectionMatrix_impl() = 0;
 

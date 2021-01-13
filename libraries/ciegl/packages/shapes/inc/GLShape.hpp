@@ -28,9 +28,9 @@ public:
     
     GLShape( GLShape<VertexType>&& r_rhs ) = default;
 
-    void setAttribute( Size attributeIndex,
-                       Size componentIndex,
-                       attribute_type value ) override;
+    virtual void setAttribute( Size attributeIndex,
+                               Size componentIndex,
+                               attribute_type value ) override;
 
     const vertex_container& vertices() const;
 

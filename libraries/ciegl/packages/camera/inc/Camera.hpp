@@ -27,6 +27,10 @@ public:
             const AbsCamera::vector_type& r_direction = {0.0, 0.0, -1.0},
             const AbsCamera::vector_type& r_up        = {0.0, 1.0, 0.0} );
 
+    Camera( const Camera<ProjectionType>& r_rhs ) = default;
+
+    Camera( Camera<ProjectionType>&& r_rhs ) = default;
+
     const typename AbsCamera::internal_matrix_type& projectionMatrix() const override;
 
     void zoom( double scale ) override;

@@ -5,11 +5,12 @@
 #include "ciegl/packages/context/inc/GLFWWindow.hpp"
 #include "ciegl/packages/context/inc/GLFWContext.hpp"
 #include "ciegl/packages/shapes/inc/Arrow.hpp"
+#include "ciegl/packages/shapes/inc/CompoundShape.hpp"
+#include "ciegl/packages/camera/inc/Camera.hpp"
+#include "ciegl/packages/camera/inc/OrthographicProjection.hpp"
 #include "ciegl/packages/buffer/inc/Vertex3.hpp"
 #include "ciegl/packages/file/inc/GenericPart.hpp"
 #include "ciegl/packages/scene/inc/GenericPartScene.hpp"
-#include "ciegl/packages/camera/inc/Camera.hpp"
-#include "ciegl/packages/camera/inc/OrthographicProjection.hpp"
 #include "cmake_variables.hpp"
 
 // --- STL Includes ---
@@ -20,9 +21,9 @@
 namespace cie::gl {
 
 
-CIE_TEST_CASE( "Arrow", "[shapes]" )
+CIE_TEST_CASE( "CompoundShape", "[shapes]" )
 {
-    CIE_TEST_CASE_INIT( "Arrow" )
+    CIE_TEST_CASE_INIT( "CompoundShape" )
 
     auto p_context = GLFWContextSingleton::get();
     auto p_window  = p_context->newWindow( 1024, 768 );
@@ -33,30 +34,40 @@ CIE_TEST_CASE( "Arrow", "[shapes]" )
         SOURCE_PATH / "libraries/ciegl/data/shaders/Triangulated3DPartScene"
     );
 
-    auto p_camera = p_scene->makeCamera<Camera<OrthographicProjection>>( "Camera" );
+    auto p_camera = p_scene->makeCamera<Camera<OrthographicProjection>>(
+        "Camera"
+    );
 
-    p_camera->setPose( {1.2, 0.0, 0.8},
-                       {0.0, 0.0, -1.0},
-                       {0.0, 1.0, 0.0} );
-    p_camera->rotateYaw( 30.0 * 3.14159265 / 180.0 );
+    p_camera->setPose( {1.0, 1.0, 0.0},
+                       {-1.0, -1.0, 0.0},
+                       {0.0, 0.0, 1.0} );
     p_camera->setFieldOfView( 90.0 * 3.14159265 / 180.0 );
     p_camera->setClippingPlanes( 1e-3, 1e2 );
 
     p_scene->bindUniform( "transformation", p_camera->transformationMatrix() );
     p_scene->bindUniform( "cameraPosition", p_camera->position() );
 
-    using VertexType = Vertex3;
-    using ArrowType  = Arrow<VertexType>;
+    using VertexType   = Vertex3;
+    using ArrowType    = Arrow<VertexType>;
+    using CompoundType = CompoundShape<VertexType>;
 
     auto p_part = std::make_shared<GenericPart>( 3, 3, 3 );
 
-    CIE_TEST_CHECK_NOTHROW( ArrowType( p_part->attributes(),
-                                       {0.0,0.0,0.0},
-                                       {1.0,0.0,0.0} ) );
-    ArrowType arrow( p_part->attributes(),
-                     {0.0, 0.0, 0.0},
-                     {1.0, 1.0, 1.0} );
-    p_part->indices() = arrow.indices();
+    auto p_arrow0 = CompoundType::shape_ptr( new ArrowType(
+        p_part->attributes(),
+        {0.0, 0.0, 0.0},
+        {1.0, 0.0, 0.0}
+    ) );
+
+    auto p_arrow1 = CompoundType::shape_ptr( new ArrowType(
+        p_part->attributes(),
+        {0.0, 0.0, 0.0},
+        {0.0, 0.0, 1.0}
+    ) );
+
+    auto compoundShape = CompoundType( {p_arrow0, p_arrow1} );
+
+    p_part->indices() = compoundShape.indices();
 
     p_scene->addPart( p_part );
     p_window->update();

@@ -75,6 +75,13 @@ concept ClassPointerContainer
   && ClassPointer<typename ContainerType::value_type,ValueType>;
 
 
+template <class ContainerType, class InterfaceType>
+concept InterfaceContainer
+= STLContainer<ContainerType>
+  && Pointer<typename ContainerType::value_type>
+  && DerivedFrom<typename std::pointer_traits<typename ContainerType::value_type>::element_type,InterfaceType>;
+
+
 // ---------------------------------------------------------
 // SPECIALIZED STL CONTAINERS
 // ---------------------------------------------------------

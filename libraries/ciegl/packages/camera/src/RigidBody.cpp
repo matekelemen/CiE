@@ -64,7 +64,7 @@ void RigidBody::setPose( const RigidBody::vector_type& r_position,
 
     // Check whether direction and up are perpendicular
     CIE_RUNTIME_GEOMETRY_CHECK(
-        std::abs(glm::dot( r_direction, r_up )) < 1e-15,
+        std::abs(glm::dot( r_direction, r_up )) < 1e-8,
         "Camera direction and up do not define a cartesian system!"
     )
 

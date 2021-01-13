@@ -4,15 +4,17 @@
 in vec3 position;
 in vec4 color;
 
-// --- Output Declarations ---
-out vec4 vColor;
-
 // --- Uniform Declarations ---
 uniform mat4 transformation;
+
+// --- Output Declarations ---
+out vec3 vPosition;
+out vec4 vColor;
 
 
 void main()
 {
-    vColor = color;
+    vPosition = position;
+    vColor    = color;
     gl_Position = vec4( transformation * vec4(position, 1.0) );
 }

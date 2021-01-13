@@ -3,12 +3,14 @@
 
 // --- Internal Includes ---
 #include "ciegl/packages/scene/inc/GenericPartScene.hpp"
-#include "ciegl/packages/buffer/inc/ColoredVertex3.hpp"
-#include "ciegl/packages/shapes/inc/Arrow.hpp"
+#include "ciegl/packages/camera/inc/AbsCamera.hpp"
+#include "ciegl/packages/shapes/inc/Axes.hpp"
 #include "ciegl/packages/traits/inc/GLTraits.hpp"
 
 // --- STL Includes ---
 #include <vector>
+#include <array>
+#include <utility>
 
 
 namespace cie::gl {
@@ -19,8 +21,8 @@ class Axes3DScene :
     public GLTraits
 {
 public:
-    using arrow_type      = Arrow<ColoredVertex3>;
-    using arrow_container = std::vector<arrow_type>;
+    using axes_ptr   = std::shared_ptr<Axes>;
+    using screen_box = std::array<std::pair<double,double>,2>;
 
 public:
     Axes3DScene( utils::Logger& r_logger,
@@ -28,7 +30,12 @@ public:
                  CameraPtr p_camera );
 
 protected:
-    arrow_container _arrows;
+    virtual void update_impl() override;
+
+protected:
+    axes_ptr                        _p_axes;
+    screen_box                      _box;
+    AbsCamera::internal_matrix_type _transformationMatrix;
 };
 
 

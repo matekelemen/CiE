@@ -63,25 +63,17 @@ public:
      */
     void activate( bool log = true );
 
-    /**
-     * Check whether this scene is active
-     */
+    /// Check whether this scene is active
     bool isActive() const;
 
-    /**
-     * Create a new camera and add it to this Scene
-     */
+    /// Create a new camera and add it to this Scene
     template <class CameraType, class ...Args>
     CameraPtr makeCamera( Args&&... args );
 
-    /**
-     * Add a camera to this Scene
-     */
+    /// Add a camera to this Scene
     void addCamera( CameraPtr p_camera );
 
-    /**
-     * Remove camera from this Scene
-     */
+    /// Remove camera from this Scene
     void removeCamera( CameraPtr p_camera );
 
     const camera_container& cameras() const;
@@ -101,40 +93,28 @@ public:
 
     const uniform_container& uniforms() const;
 
-    /**
-     * Bind a 4x4 float matrix to a uniform with the specified name
-     */
+    /// Bind a 4x4 float matrix to a uniform with the specified name
     void bindUniform( const std::string& r_name,
                       const glm::mat4& r_uniform );
 
-    /**
-     * Bind a 3D double vector to a uniform with the specified name
-     */
+    /// Bind a 3D double vector to a uniform with the specified name
     void bindUniform( const std::string& r_name,
                       const glm::dvec3& r_uniform );
 
-    /**
-     * Bind a 3D float vector to a uniform with the specified name
-     */
+    /// Bind a 3D float vector to a uniform with the specified name
     void bindUniform( const std::string& r_name,
                       const glm::vec3& r_uniform );
 
-    /**
-     * Bind a float scalar to a uniform with the specified name
-     */
+    /// Bind a float scalar to a uniform with the specified name
     void bindUniform( const std::string& r_name,
                       const GLfloat& r_uniform );
 
 protected:
-    /**
-     * Implementation-specific drawing
-     */
+    /// Implementation-specific drawing
     virtual void update_impl() = 0;
 
 private:
-    /**
-     * Find uniform in the internal list by its name
-     */
+    /// Find uniform in the internal list by its name
     GLUniformPtr& findUniform( const std::string& r_name );
 
 protected:

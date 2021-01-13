@@ -2,6 +2,7 @@
     <attributes>
     </attributes>
     <uniforms>
+        <u0 name="cameraPosition" type="vec3" size="3" />
     </uniforms>
     <textures>
     </textures>
