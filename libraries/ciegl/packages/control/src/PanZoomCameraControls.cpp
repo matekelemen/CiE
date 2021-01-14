@@ -11,6 +11,7 @@
 // --- Internal Includes ---
 #include "ciegl/packages/control/inc/PanZoomCameraControls.hpp"
 #include "ciegl/packages/utility/inc/glm_overloads.hpp"
+#include "ciegl/packages/control/inc/utilities.hpp"
 #include "cmake_variables.hpp"
 
 // --- STL Includes ---
@@ -208,7 +209,7 @@ void PanZoomCameraControls::onCursorMovement( double x,
     CIE_BEGIN_EXCEPTION_TRACING
 
     // Flip y
-    y = this->getWindow()->getSize().second - y;
+    transformScreenCoordinates( x, y, this->_p_window );
 
     // Update
     this->_dx = x - this->_x;

@@ -39,6 +39,7 @@ public:
                            KeyEnum action,
                            KeyEnum modifiers );
 
+    /// Bind window and camera to this instance
     void bind( WindowWeakPtr wp_window,
                CameraPtr p_camera );
 
