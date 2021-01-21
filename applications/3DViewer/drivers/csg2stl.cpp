@@ -148,7 +148,7 @@ int main( int argc, char const* argv[] )
     ) );
 
     p_scene->toc( "Finished scanning", timerID );
-    //p_model->writeSTL( OUTPUT_PATH / "csg2stl.stl" );
+    p_part->writeSTL( OUTPUT_PATH / "csg2stl.stl" );
 
     p_scene->addPart( p_part );
 

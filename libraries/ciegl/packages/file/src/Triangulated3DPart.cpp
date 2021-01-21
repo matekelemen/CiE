@@ -44,16 +44,16 @@ void Triangulated3DPart::writeSTL( const std::filesystem::path& r_path ) const
     {
         Size triangleBegin = triangleIndex * this->primitiveVertexSize();
         
-        Size p0Begin       = this->_indices[triangleBegin];
-        Size p1Begin       = this->_indices[triangleBegin + 1];
-        Size p2Begin       = this->_indices[triangleBegin + 2];
+        Size p0Begin       = this->_indices[triangleBegin] * this->vertexAttributeSize();
+        Size p1Begin       = this->_indices[triangleBegin + 1] * this->vertexAttributeSize();
+        Size p2Begin       = this->_indices[triangleBegin + 2] * this->vertexAttributeSize();
 
         // Compute normal
-        glm::vec3 p0( _p_attributes->at(triangleBegin), _p_attributes->at(triangleBegin+1), _p_attributes->at(triangleBegin+2) );
+        glm::vec3 p0( _p_attributes->at(p0Begin), _p_attributes->at(p0Begin + 1), _p_attributes->at(p0Begin + 2) );
 
         glm::vec3 normal = glm::normalize(glm::cross(
-            glm::vec3( _p_attributes->at(p2Begin), _p_attributes->at(p2Begin+1), _p_attributes->at(p2Begin+2) ) - p0,
-            glm::vec3( _p_attributes->at(p1Begin), _p_attributes->at(p1Begin+1), _p_attributes->at(p1Begin+2) ) - p0
+            glm::vec3( _p_attributes->at(p2Begin), _p_attributes->at(p2Begin + 1), _p_attributes->at(p2Begin + 2) ) - p0,
+            glm::vec3( _p_attributes->at(p1Begin), _p_attributes->at(p1Begin + 1), _p_attributes->at(p1Begin + 2) ) - p0
         ));
 
         // Write normal

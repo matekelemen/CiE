@@ -38,7 +38,7 @@ Size Part::numberOfVertices() const
 
 Size Part::numberOfPrimitives() const
 {
-    return this->_indices.size() / this->primitiveAttributeSize();
+    return this->_indices.size() / this->primitiveVertexSize();
 }
 
 
