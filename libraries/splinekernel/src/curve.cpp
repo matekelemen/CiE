@@ -149,7 +149,7 @@ std::array<std::vector<double>, 2> evaluate2DCurveDeBoor( const std::vector<doub
     std::vector<double> curveY( numberOfSamples, 0.0 );
 
     #pragma omp parallel for collapse(2)
-    for( int i = 0; i < numberOfSamples; ++i )
+    for( int i = 0; i < static_cast<int>(numberOfSamples); ++i )
     {
         for( size_t j = 0; j < numberOfPoints; ++j )
         {

@@ -2,6 +2,7 @@ project( ciegl CXX )
 
 include_directories( "../../external/glfw/include" )
 include_directories( "../../external/glm" )
+include_directories( "../../external/stb" )
 
 # ---------------------------------------------------------
 # GATHER FILES AND INCLUDE DIRECTORIES

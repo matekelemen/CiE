@@ -87,6 +87,13 @@ struct GeometryException : public Exception
 };
 
 
+struct MemoryException : public Exception
+{
+    MemoryException( const String& r_location,
+                     const String& r_message );
+};
+
+
 } // namespace cie
 
 

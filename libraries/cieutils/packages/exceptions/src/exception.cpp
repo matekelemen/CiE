@@ -96,4 +96,11 @@ GeometryException::GeometryException(   const String& r_location,
 }
 
 
+MemoryException::MemoryException( const String& r_location,
+                                  const String& r_message ) :
+    Exception( r_location, "Memory exception\n" + r_message )
+{
+}
+
+
 } // namespace cie
