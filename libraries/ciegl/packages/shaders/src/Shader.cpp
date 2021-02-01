@@ -59,10 +59,10 @@ Shader::Shader( const std::filesystem::path& r_configPath,
     for ( auto attribute : configNode )
     {
         _attributes.emplace_back(
-            attribute.attribute("name").value(),
-            attribute.attribute("size").as_int(),
-            attribute.attribute("stride").as_int(),
-            attribute.attribute("offset").as_int()
+            attribute.attribute( "name" ).value(),
+            attribute.attribute( "size" ).as_int(),
+            attribute.attribute( "stride" ).as_int(),
+            attribute.attribute( "offset" ).as_int()
         );
     }
 
@@ -71,9 +71,9 @@ Shader::Shader( const std::filesystem::path& r_configPath,
     for ( auto uniform : configNode )
     {
         _uniforms.emplace_back(
-            uniform.attribute("name").value(),
-            uniform.attribute("size").as_int(),
-            uniform.attribute("type").value()
+            uniform.attribute( "name" ).value(),
+            uniform.attribute( "size" ).as_int(),
+            uniform.attribute( "type" ).value()
         );
     }
 
@@ -82,9 +82,10 @@ Shader::Shader( const std::filesystem::path& r_configPath,
     for ( auto texture : configNode )
     {
         _textures.emplace_back(
-            texture.attribute("name").value(),
-            texture.attribute("size").as_int(),
-            texture.attribute("type").value()
+            texture.attribute( "name" ).value(),
+            texture.attribute( "size" ).as_int(),
+            texture.attribute( "channels" ).as_int(),
+            texture.attribute( "type" ).value()
         );
     }
 

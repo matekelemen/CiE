@@ -96,7 +96,6 @@ public:
     /**
      * Data global to all vertices.
      * For example: transformation matrix, background color, etc.
-     * TODO
      * Requires:
      *  - name      : name of the uniform in the shader code
      *  - size      : number of components that make up the uniform
@@ -118,29 +117,35 @@ public:
         const Size size() const         { return _size; }
         const std::string& type() const { return _type; }
 
-    private:
+    protected:
         const Size        _size;
         const std::string _type;
     };
 
 
-    /**
-     * Represents a texture.
-     * TODO
-     */
+    /// Represents a texture in a shader
     class Texture : public Uniform
     {
     public:
+        /**
+         * @param r_name name of the texture in the shader
+         * @param size number of dimensions (1, 2 or 3)
+         * @param channels number of components in a pixel (example: RGB -> 3)
+         * @param r_type texture data type ()
+         */
         Texture( const std::string& r_name,
                  Size size,
+                 Size channels,
                  const std::string& r_type ) :
-            Uniform( r_name, size, r_type )
+            Uniform( r_name, size, r_type ),
+            _channels( channels )
         {}
+
+    protected:
+        Size _channels;
     };
 
-    /**
-     * Represents an output of the fragment shader
-     */
+    /// Represents an output of the fragment shader
     class Output :
         public utils::NamedObject,
         public utils::IDObject<Size>

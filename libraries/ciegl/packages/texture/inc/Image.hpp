@@ -23,7 +23,12 @@ public:
     Image();
 
     /// Default constructor -> Image::load
-    Image( const std::filesystem::path& r_filePath );
+    /**
+     * @param r_filePath path to an image file
+     * @param flip flip y axis and move the origin to the bottom left
+     */
+    Image( const std::filesystem::path& r_filePath,
+           bool flip = false );
 
     /// Default constructor -> copy assignment operator
     Image( const Image& r_rhs );
@@ -41,10 +46,13 @@ public:
      * - jpeg (or jpg), png, tga, bmp, psd, gif, pic, pnm
      * see @ref{stbi_load}
      * 
+     * @param r_filePath path to an image file
+     * @param flip flip y axis and move the origin to the bottom left
      * @note only the first frame will be loaded from gifs
      * @note extensions must be lowercase, otherwise they won't be recognised
      */
-    void load( const std::filesystem::path& r_filePath );
+    void load( const std::filesystem::path& r_filePath,
+               bool flip = false );
 
     /// Write image to file
     /**
@@ -86,6 +94,8 @@ public:
 
     /// Get total number of components in the image
     Size size() const;
+
+    const value_type* data() const;
 
 private:
     /// Attempt to allocate memory and check whether it was successful

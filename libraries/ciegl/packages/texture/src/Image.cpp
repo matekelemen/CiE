@@ -31,12 +31,13 @@ Image::Image() :
 }
 
 
-Image::Image( const std::filesystem::path& r_filePath ) :
+Image::Image( const std::filesystem::path& r_filePath,
+              bool flip ) :
     Image()
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    this->load( r_filePath );
+    this->load( r_filePath, flip );
 
     CIE_END_EXCEPTION_TRACING
 }
@@ -81,7 +82,8 @@ Image::~Image()
 }
 
 
-void Image::load( const std::filesystem::path& r_filePath )
+void Image::load( const std::filesystem::path& r_filePath,
+                  bool flip )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -102,6 +104,9 @@ void Image::load( const std::filesystem::path& r_filePath )
 
     int width=0, height=0, numberOfChannels=0;
 
+    if ( flip )
+        stbi_set_flip_vertically_on_load( 1 );
+
     this->_p_data = stbi_load(
         r_filePath.string().c_str(),
         &width, &height, &numberOfChannels,
@@ -110,6 +115,9 @@ void Image::load( const std::filesystem::path& r_filePath )
 
     if ( !this->_p_data )
         CIE_THROW( Exception, "Failed to load " + r_filePath.string() )
+
+    if ( flip )
+        stbi_set_flip_vertically_on_load( 0 );
 
     this->_width            = Size( width );
     this->_height           = Size( height );
@@ -258,6 +266,12 @@ Size Image::size() const
 {
     return this->_width * this->_height * this->_numberOfChannels;
 }
+
+
+const Image::value_type* Image::data() const
+{
+    return this->_p_data;
+} 
 
 
 Image::value_type* Image::allocate( Size width, Size height, Size numberOfChannels ) const

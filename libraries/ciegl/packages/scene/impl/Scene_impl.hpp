@@ -26,6 +26,21 @@ Scene::makeCamera( Args&&... args )
 }
 
 
+template <class ...Args>
+void
+Scene::loadTexture( const std::string& r_name,
+                    Args&&... args )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    auto& rp_texture = this->findTexture( r_name );
+
+    rp_texture->write( std::forward<Args>(args)... );
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
 } // namespace cie::gl
 
 

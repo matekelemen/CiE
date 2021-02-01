@@ -113,7 +113,7 @@ Scene::Scene( utils::Logger& r_logger,
     this->_p_bufferManager->bindVertexBuffer( p_vertexBuffer, true );
     this->_p_bufferManager->bindElementBuffer( p_elementBuffer, true );
 
-    // Map vertex shader attributes
+    // Map shader attributes
     for ( const auto& r_attribute : this->_p_vertexShader->attributes() )
     {
         GLint attributeID = glGetAttribLocation( this->getID(),
@@ -133,7 +133,6 @@ Scene::Scene( utils::Logger& r_logger,
         checkGLErrors( *this, "Failed to enable attribute: " + r_attribute.name() );
     }
 
-
     // Bind fragment shader outputs
     for ( const auto& r_output : this->_p_fragmentShader->outputs() )
         glBindFragDataLocation( this->getID(),
@@ -149,6 +148,17 @@ Scene::Scene( utils::Logger& r_logger,
     for ( const auto& r_uniform : this->_p_fragmentShader->uniforms() )
         this->_uniforms.emplace_back(
             new GLUniformPlaceholder( r_uniform, this->getID() )
+        );
+
+    // Create empty textures
+    for ( const auto& r_texture : this->_p_vertexShader->textures() )
+        this->_textures.emplace_back(
+            new Texture( r_texture )
+        );
+
+    for ( const auto& r_texture : this->_p_fragmentShader->textures() )
+        this->_textures.emplace_back(
+            new Texture( r_texture )
         );
 
     // Check gl errors
@@ -387,6 +397,12 @@ const Scene::uniform_container& Scene::uniforms() const
 }
 
 
+const Scene::texture_container& Scene::textures() const
+{
+    return this->_textures;
+}
+
+
 void Scene::bindUniform( const std::string& r_name,
                          const glm::mat4& r_uniform )
 {
@@ -511,6 +527,29 @@ GLUniformPtr& Scene::findUniform( const std::string& r_name )
     )
 
     return *itp_uniform;
+}
+
+
+TexturePtr& Scene::findTexture( const std::string& r_name )
+{
+    auto it = std::find_if(
+        this->_textures.begin(),
+        this->_textures.end(),
+        [&r_name]( const TexturePtr& rp_uniform ) -> bool
+        {
+            if ( rp_uniform->name() == r_name )     [[unlikely]]
+                return true;
+            else                                    [[likely]]
+                return false;
+        }
+    );
+
+    CIE_CHECK(
+        it != this->_textures.end(),
+        "Uniform not found: " + r_name
+    )
+
+    return *it;
 }
 
 

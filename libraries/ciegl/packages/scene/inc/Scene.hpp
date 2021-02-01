@@ -14,6 +14,7 @@
 #include "ciegl/packages/shaders/inc/Shader.hpp"
 #include "ciegl/packages/buffer/inc/AbsBufferManager.hpp"
 #include "ciegl/packages/scene/inc/GLUniform.hpp"
+#include "ciegl/packages/texture/inc/Texture.hpp"
 
 // --- STL Includes ---
 #include <memory>
@@ -30,6 +31,7 @@ class Scene :
 public:
     using camera_container  = std::list<CameraPtr>;
     using uniform_container = std::list<GLUniformPtr>;
+    using texture_container = std::list<TexturePtr>;
 
 public:
 
@@ -92,6 +94,7 @@ public:
     virtual const BufferManagerPtr& bufferManager() const;
 
     const uniform_container& uniforms() const;
+    const texture_container& textures() const;
 
     /// Bind a 4x4 float matrix to a uniform with the specified name
     void bindUniform( const std::string& r_name,
@@ -109,6 +112,11 @@ public:
     void bindUniform( const std::string& r_name,
                       const GLfloat& r_uniform );
 
+    /// Load data to a texture
+    template <class ...Args>
+    void loadTexture( const std::string& r_name,
+                      Args&&... args );
+
 protected:
     /// Implementation-specific drawing
     virtual void update_impl() = 0;
@@ -116,6 +124,9 @@ protected:
 private:
     /// Find uniform in the internal list by its name
     GLUniformPtr& findUniform( const std::string& r_name );
+
+    /// Find texture in the internal list by its name
+    TexturePtr& findTexture( const std::string& r_name );
 
 protected:
     camera_container    _cameras;
@@ -126,6 +137,7 @@ protected:
 
     BufferManagerPtr    _p_bufferManager;
     uniform_container   _uniforms;
+    texture_container   _textures;
     GLuint              _vaoID;
 
     static Size         _activeSceneID;

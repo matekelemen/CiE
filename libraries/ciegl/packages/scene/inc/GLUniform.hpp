@@ -22,9 +22,7 @@ namespace cie::gl {
 
 /* --- GLUniform --- */
 
-/**
- * Interface for loading uniforms into GL.
- */
+/// Interface for loading uniforms into GL.
 class GLUniform :
     public Shader::Uniform,
     public utils::IDObject<GLint>
@@ -38,8 +36,16 @@ protected:
     };
 
 public:
+    /**
+     * Construct a uniform from a shader's uniform data,
+     * specific to a program
+     * @param r_shaderUniform uniform data loaded from a shader
+     * @param programID id of the program containing the shader
+     */
     GLUniform( const Shader::Uniform& r_shaderUniform,
                Size programID );
+
+    /// Upload the uniform's data to the GPU
     virtual void write() = 0;
 
     const Properties& properties() const;
