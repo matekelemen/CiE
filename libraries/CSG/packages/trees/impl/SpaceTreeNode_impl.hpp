@@ -35,58 +35,20 @@ SpaceTreeNode<CellType,ValueType>::SpaceTreeNode(   typename SpaceTreeNode<CellT
 template <  class CellType,
             class ValueType >
 inline bool
-SpaceTreeNode<CellType,ValueType>::divide(  const TargetFunction<typename CellType::point_type,ValueType>& r_target,
+SpaceTreeNode<CellType,ValueType>::divide(  const typename SpaceTreeNode<CellType,ValueType>::target_function& r_target,
                                             Size level )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    // Clear children
-    this->_children.clear();
+    mp::ThreadPool pool;
+    bool result = this->divide_internal(
+        r_target,
+        level,
+        pool
+    );
+    pool.terminate();
 
-    // Evaluate target and set boundary flag
-    evaluate( r_target );
-
-    // Do nothing if this is the last level
-    if ( this->_level >= level )
-        return false;
-
-    // Split if boundary
-    if ( _isBoundary == 1 )
-    {
-        auto splitPoint = _p_splitPolicy->operator()(
-            _values.begin(),
-            _values.end(),
-            typename SpaceTreeNode<CellType,ValueType>::sample_point_iterator(0,*this)
-        );
-
-        auto nodeConstructor    = std::make_tuple(  _p_sampler,
-                                                    _p_splitPolicy,
-                                                    this->_level + 1 );
-        auto p_cellConstructors = this->split( splitPoint );
-
-        for ( const auto& cellConstructor : *p_cellConstructors )
-        {
-            // Construct a child
-            auto compoundConstructor = std::tuple_cat(nodeConstructor,cellConstructor);
-            auto p_node = utils::make_shared_from_tuple<SpaceTreeNode<CellType,ValueType>>(compoundConstructor);
-            
-            // Check whether child is valid
-            if ( p_node->isDegenerate() )
-                continue;
-
-            this->_children.push_back(p_node);
-
-            // Call divide on child
-            #ifndef MSVC
-            #pragma omp task
-            #endif
-            { p_node->divide( r_target, level ); }
-        }
-
-        return true;
-    }
-
-    return false;
+    return result;
 
     CIE_END_EXCEPTION_TRACING
 }
@@ -95,7 +57,7 @@ SpaceTreeNode<CellType,ValueType>::divide(  const TargetFunction<typename CellTy
 template <  class CellType,
             class ValueType >
 inline bool
-SpaceTreeNode<CellType,ValueType>::divide(  const TargetFunction<typename CellType::point_type,ValueType>& r_target,
+SpaceTreeNode<CellType,ValueType>::divide(  const typename SpaceTreeNode<CellType,ValueType>::target_function& r_target,
                                             Size level,
                                             typename SpaceTreeNode<CellType,ValueType>::target_map_ptr p_targetMap )
 {
@@ -163,7 +125,7 @@ SpaceTreeNode<CellType,ValueType>::divide(  const TargetFunction<typename CellTy
 template <  class CellType,
             class ValueType >
 inline void
-SpaceTreeNode<CellType,ValueType>::evaluate( const TargetFunction<typename CellType::point_type,ValueType>& r_target )
+SpaceTreeNode<CellType,ValueType>::evaluate( const typename SpaceTreeNode<CellType,ValueType>::target_function& r_target )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -348,6 +310,66 @@ inline const typename SpaceTreeNode<CellType,ValueType>::sampler_ptr&
 SpaceTreeNode<CellType,ValueType>::sampler() const
 {
     return _p_sampler;
+}
+
+
+template <  class CellType,
+            class ValueType >
+inline bool
+SpaceTreeNode<CellType,ValueType>::divide_internal( const typename SpaceTreeNode<CellType,ValueType>::target_function& r_target,
+                                                    Size level,
+                                                    mp::ThreadPool& r_pool )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    // Clear children
+    this->_children.clear();
+
+    // Evaluate target and set boundary flag
+    evaluate( r_target );
+
+    // Do nothing if this is the last level
+    if ( this->_level >= level )
+        return false;
+
+    // Split if boundary
+    if ( this->_isBoundary == 1 )
+    {
+        auto splitPoint = _p_splitPolicy->operator()(
+            _values.begin(),
+            _values.end(),
+            typename SpaceTreeNode<CellType,ValueType>::sample_point_iterator(0,*this)
+        );
+
+        auto nodeConstructor    = std::make_tuple(  _p_sampler,
+                                                    _p_splitPolicy,
+                                                    this->_level + 1 );
+        auto p_cellConstructors = this->split( splitPoint );
+
+        for ( const auto& cellConstructor : *p_cellConstructors )
+        {
+            // Construct a child
+            auto compoundConstructor = std::tuple_cat(nodeConstructor,cellConstructor);
+            auto p_node = utils::make_shared_from_tuple<SpaceTreeNode<CellType,ValueType>>(compoundConstructor);
+            
+            // Check whether child is valid
+            if ( p_node->isDegenerate() )
+                continue;
+
+            this->_children.push_back(p_node);
+
+            // Schedule divide on child
+            r_pool.queueJob( [p_node,r_target,&r_pool,level]() -> void
+                { p_node->divide_internal(r_target, level, r_pool); }
+            );
+        }
+
+        return true;
+    }
+
+    return false;
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 

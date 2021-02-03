@@ -40,6 +40,8 @@ public:
 
     ~ThreadPool();
 
+    static Size maxNumberOfThreads();
+
     /// Queue a job for execution
     void queueJob( job_type job );
 

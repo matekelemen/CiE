@@ -14,7 +14,7 @@ ThreadPool::ThreadPool( Size size ) :
     if ( size == 0 )
         CIE_THROW( Exception, "Cannot create thread pool of size 0!" )
 
-    Size maxNumberOfThreads = std::thread::hardware_concurrency();
+    Size maxNumberOfThreads = ThreadPool::maxNumberOfThreads();
     
     if ( maxNumberOfThreads == 0 )
         maxNumberOfThreads = 1;
@@ -33,7 +33,7 @@ ThreadPool::ThreadPool( Size size ) :
 
 
 ThreadPool::ThreadPool() :
-    ThreadPool( std::thread::hardware_concurrency() )
+    ThreadPool( ThreadPool::maxNumberOfThreads() )
 {
 }
 
@@ -41,6 +41,12 @@ ThreadPool::ThreadPool() :
 ThreadPool::~ThreadPool()
 {
     this->terminate();
+}
+
+
+Size ThreadPool::maxNumberOfThreads()
+{
+    return std::thread::hardware_concurrency();
 }
 
 
@@ -85,10 +91,11 @@ void ThreadPool::jobScheduler()
 {
     while ( true )
     {
-        ThreadPool::job_type job = nullptr;
+        ThreadPool::job_type job;
 
         {
             std::unique_lock<ThreadPool::mutex_type> lock( this->_mutex );
+
             this->_condition.wait(
                 lock,
                 [this]{ return !this->_jobs.empty() || this->_terminate; }
@@ -103,7 +110,7 @@ void ThreadPool::jobScheduler()
                 break;
         }
 
-        if ( job != nullptr )
+        if ( job )
             job();
     }
 }

@@ -30,8 +30,7 @@ int main()
     log << "\e[38;2;0;255;0m";  // Green
     {
         auto localBlock = log.newBlock( "INFO" );
-        mp::ThreadPool pool;
-        localBlock << "Number of threads: " + std::to_string(pool.size());
+        localBlock << "Number of threads: " + std::to_string(mp::ThreadPool::maxNumberOfThreads());
         localBlock << "Number of jobs   : " + std::to_string(numberOfJobs);
         localBlock << "Job type         : recursive fibonacci";
         localBlock << "Job arguments    : " + std::to_string(fibonacciIndex);

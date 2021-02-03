@@ -7,6 +7,7 @@
 // --- Utility Includes ---
 #include "cieutils/packages/trees/inc/abstree.hpp"
 #include "cieutils/packages/concurrency/inc/ThreadSafeMap.hpp"
+#include "cieutils/packages/concurrency/inc/ThreadPool.hpp"
 
 // --- Internal Includes ---
 #include "CSG/packages/trees/inc/AbsCell.hpp"
@@ -40,9 +41,7 @@ class SpaceTreeNode :
     public utils::AbsTree<std::vector,SpaceTreeNode<CellType,ValueType>>
 {
 public:
-    /**
-     * Point iterator that lazily generates sample points. 
-    */
+    /// Point iterator that lazily generates sample points. 
     struct sample_point_iterator
     {
         typedef typename SpaceTreeNode::point_type  value_type;
@@ -87,6 +86,8 @@ public:
     using target_map_type       = mp::ThreadSafeMap<target_map_base_type>;
     using target_map_ptr        = std::shared_ptr<target_map_type>;
 
+    using target_function       = TargetFunction<typename CellType::point_type,value_type>;
+
 public:
     /**
      * Constructor that forwards its arguments to the 
@@ -102,21 +103,21 @@ public:
      * Evaluate the target function at all sample points and split the
      * node if the results have mixed signs.
     */
-    bool divide(    const TargetFunction<typename CellType::point_type,value_type>& r_target,
-                    Size level );
+    bool divide( const target_function& r_target,
+                 Size level );
 
     /**
      * Evaluate the target function at all sample points, store the results in a map,
      * and split the node if the results have mixed signs.
     */
-    bool divide(    const TargetFunction<typename CellType::point_type,value_type>& r_target,
+    bool divide(    const target_function& r_target,
                     Size level,
                     target_map_ptr p_targetMap );
 
     /**
      * Evaluate the target function at all sample points and store the results.
     */ 
-    virtual void evaluate( const TargetFunction<typename CellType::point_type,value_type>& r_target );
+    virtual void evaluate( const target_function& r_target );
 
     /**
      * Alternative to evaluate.
@@ -124,7 +125,7 @@ public:
      * 
      * Note: insane overhead; probably only worth it if the target function is very expensive
     */
-    target_map_ptr evaluateMap( const TargetFunction<typename CellType::point_type,value_type>& r_target,
+    target_map_ptr evaluateMap( const target_function& r_target,
                                 target_map_ptr p_targetMap = nullptr );
 
     /// Clear data container and call clear on children.
@@ -143,6 +144,11 @@ public:
     const split_policy_ptr& splitPolicy() const;
     const value_container_type& values() const;
     const sampler_ptr& sampler() const;
+
+protected:
+    bool divide_internal( const target_function& r_target,
+                          Size level,
+                          mp::ThreadPool& r_pool );
 
 protected:
     split_policy_ptr        _p_splitPolicy;
