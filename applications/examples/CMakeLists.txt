@@ -22,6 +22,7 @@ ENDFUNCTION()
 # Build executable
 ADD_DRIVER( "drivers/marching_squares.cpp" ciegl )
 ADD_DRIVER( "drivers/marching_squares_ellipsis.cpp" ciegl )
+ADD_DRIVER( "drivers/fcm_ellipsoid.cpp" csg )
 
 # Copy python scripts
 #file( GLOB PYTHON_SCRIPTS scripts/*.py )
