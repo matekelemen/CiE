@@ -14,9 +14,24 @@ namespace cie::csg {
 // ---------------------------------------------------------
 // ABSTRACT BASE
 // ---------------------------------------------------------
-template <  Size N, 
-            concepts::CopyConstructible ValueType,
-            concepts::NumericType CoordinateType    >
+
+template < Size Dimension, 
+           concepts::CopyConstructible ValueType,
+           concepts::NumericType CoordinateType >
+ValueType
+CSGObject<Dimension,ValueType,CoordinateType>::evaluate( const typename CSGObject<Dimension,ValueType,CoordinateType>::point_type& r_point ) const
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    return this->at( r_point );
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+template < Size N, 
+           concepts::CopyConstructible ValueType,
+           concepts::NumericType CoordinateType >
 template <class ContainerType>
 ValueType
 CSGObject<N,ValueType,CoordinateType>::evaluate( const ContainerType& point ) const

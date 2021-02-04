@@ -21,10 +21,14 @@ template < Size N,
 class CSGObject : public CSGTraits<N,CoordinateType>
 {
 public:
-    typedef CSGObject abstract_base_type;
-    typedef ValueType value_type;
+    using typename CSGTraits<N,CoordinateType>::point_type;
+
+    using abstract_base_type = CSGObject<N,ValueType,CoordinateType>;
+    using value_type         = ValueType;
 
 public:
+    ValueType evaluate( const point_type& r_point ) const;
+
     template <class ContainerType>
     ValueType evaluate( const ContainerType& point ) const
         requires concepts::ClassContainer<ContainerType,CoordinateType>;

@@ -16,9 +16,7 @@
 namespace cie::csg {
 
 
-/**
- * Cube template
-*/
+/// Cube template
 template < Size Dimension,
            concepts::NumericType CoordinateType = Double>
 class Cube : public AbsPrimitive<Dimension,CoordinateType>
@@ -56,9 +54,7 @@ protected:
 
 namespace boolean {
 
-/**
- * Cube with point membership test
-*/
+/// Cube with point membership test
 template <Size Dimension, concepts::NumericType CoordinateType = Double>
 class Cube :
     public cie::csg::Cube<Dimension,CoordinateType>,
