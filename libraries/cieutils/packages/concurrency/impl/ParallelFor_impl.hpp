@@ -65,6 +65,44 @@ ParallelFor<IndexType,StorageType>::operator()( IndexType indexMin,
 
 template < concepts::Integer IndexType,
            class StorageType >
+inline void
+ParallelFor<IndexType,StorageType>::operator()( IndexType indexMax,
+                                                typename StorageType::loop_function&& r_function )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    this->execute(
+        std::move( this->makeIndexPartition(0, indexMax, 1) ),
+        1,
+        std::forward<typename StorageType::loop_function>(r_function)
+    );
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+template < concepts::Integer IndexType,
+           class StorageType >
+template <concepts::STLContainer ContainerType>
+inline void
+ParallelFor<IndexType,StorageType>::operator()( ContainerType& r_container,
+                                                typename StorageType::object_loop_function<typename ContainerType::value_type>&& r_function )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    this->execute(
+        std::move( this->makeIndexPartition(0,r_container.size(),1) ),
+        1,
+        r_container,
+        std::forward<typename StorageType::object_loop_function<typename ContainerType::value_type>>( r_function )
+    );
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+template < concepts::Integer IndexType,
+           class StorageType >
 typename ParallelFor<IndexType,StorageType>::index_partition
 ParallelFor<IndexType,StorageType>::makeIndexPartition( IndexType indexMin,
                                                         IndexType indexMax,
@@ -135,6 +173,43 @@ ParallelFor<IndexType,StorageType>::execute( const typename ParallelFor<IndexTyp
                 {
                     std::apply(
                         [i,&r_function]( auto&... args ) -> void { r_function(i,args...); },
+                        storageReference
+                    );
+                }
+            }
+        );
+    }
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+template < concepts::Integer IndexType,
+           class StorageType >
+template <concepts::STLContainer ContainerType>
+void
+ParallelFor<IndexType,StorageType>::execute( const typename ParallelFor<IndexType,StorageType>::index_partition& r_indexPartition,
+                                             IndexType stepSize,
+                                             ContainerType& r_container,
+                                             typename StorageType::object_loop_function<typename ContainerType::value_type>&& r_function )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    CIE_OUT_OF_RANGE_CHECK( r_indexPartition.size() <= this->_p_pool->size() + 1 )
+
+    // Schedule jobs
+    for ( IndexType parititonIndex=0; parititonIndex<r_indexPartition.size()-1; ++parititonIndex )
+    {
+        this->_p_pool->queueJob(
+            [this, parititonIndex, stepSize, r_indexPartition, r_function, &r_container]() -> void
+            {
+                typename StorageType::storage_type storage = this->_storage.values();
+                typename StorageType::reference_storage storageReference = std::make_from_tuple<typename StorageType::reference_storage>( storage );
+
+                for ( IndexType i=r_indexPartition[parititonIndex]; i<r_indexPartition[parititonIndex+1]; i+=stepSize )
+                {
+                    std::apply(
+                        [i,&r_function,&r_container]( auto&... args ) -> void { r_function(r_container[i],args...); },
                         storageReference
                     );
                 }

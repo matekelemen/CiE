@@ -4,7 +4,7 @@
 // --- Internal Includes ---
 #include "cieutils/packages/concurrency/inc/ThreadStorage.hpp"
 #include "cieutils/packages/concurrency/inc/ThreadPool.hpp"
-#include "cieutils/packages/concepts/inc/basic_concepts.hpp"
+#include "cieutils/packages/concepts/inc/container_concepts.hpp"
 #include "cieutils/packages/types/inc/types.hpp"
 
 // --- STL Includes ---
@@ -38,6 +38,13 @@ public:
                      IndexType stepSize,
                      typename StorageType::loop_function&& r_function );
 
+    void operator()( IndexType indexMax,
+                     typename StorageType::loop_function&& r_function );
+
+    template <concepts::STLContainer ContainerType>
+    void operator()( ContainerType& r_container,
+                     typename StorageType::object_loop_function<typename ContainerType::value_type>&& r_function );
+
 protected:
     virtual index_partition makeIndexPartition( IndexType indexMin,
                                                 IndexType indexMax,
@@ -46,6 +53,12 @@ protected:
     void execute( const index_partition& r_indexPartition,
                   IndexType stepSize,
                   const typename StorageType::loop_function& r_function );
+
+    template <concepts::STLContainer ContainerType>
+    void execute( const index_partition& r_indexPartition,
+                  IndexType stepSize,
+                  ContainerType& r_container,
+                  typename StorageType::object_loop_function<typename ContainerType::value_type>&& r_function );
 
 private:
     StorageType            _storage;

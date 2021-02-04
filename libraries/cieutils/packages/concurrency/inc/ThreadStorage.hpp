@@ -20,6 +20,8 @@ public:
     using storage_type      = std::tuple<Args...>;
     using reference_storage = std::tuple<Args&...>;
     using loop_function     = std::function<void(index_type,Args&...)>;
+    template <class ValueType>
+    using object_loop_function = std::function<void(ValueType&,Args&...)>;
 
 public:
     ThreadStorage( Args&&... r_args ) :
