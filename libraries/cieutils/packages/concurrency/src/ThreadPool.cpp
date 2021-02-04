@@ -91,7 +91,7 @@ void ThreadPool::jobScheduler()
 {
     while ( true )
     {
-        ThreadPool::job_type job;
+        ThreadPool::job_type job = nullptr;
 
         {
             std::unique_lock<ThreadPool::mutex_type> lock( this->_mutex );

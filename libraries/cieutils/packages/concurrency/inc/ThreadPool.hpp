@@ -11,6 +11,7 @@
 #include <deque>
 #include <vector>
 #include <functional>
+#include <memory>
 
 
 namespace cie::mp {
@@ -67,6 +68,9 @@ private:
     mutex_type              _mutex;
     std::condition_variable _condition;
 };
+
+
+using ThreadPoolPtr = std::shared_ptr<ThreadPool>;
 
 
 } // namespace cie::mp
