@@ -30,16 +30,16 @@ class AbsElement : public DoFMap<CIE_DOF_CONTAINER_TYPE>
 {
     // MEMBER TYPEDEFS -------------------------------------
 public:
-    typedef BasisType                                      basis_type;
-    static const Size                                       dimension = BasisType::dimension;
-    typedef typename BasisType::kernel_type                kernel_type;
-    typedef typename kernel_type::number_type               NT;
-    typedef std::array<NT,dimension>                        point_type;
+    typedef BasisType                               basis_type;
+    static const Size                               dimension = BasisType::dimension;
+    typedef typename BasisType::kernel_type         kernel_type;
+    typedef typename kernel_type::number_type       NT;
+    typedef std::array<NT,dimension>                point_type;
 
-    typedef std::vector<NT>                                 coefficient_container;
-    typedef std::vector<NT>                                 value_container;
-    typedef std::vector<point_type>                         point_container;
-    typedef std::array<value_container,dimension>           basis_value_container;
+    typedef std::vector<NT>                         coefficient_container;
+    typedef std::vector<NT>                         value_container;
+    typedef std::vector<point_type>                 point_container;
+    typedef std::array<value_container,dimension>   basis_value_container;
 
     // MEMBER CLASSES --------------------------------------
 public:

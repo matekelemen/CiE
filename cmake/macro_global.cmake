@@ -7,6 +7,11 @@
 #       - test
 #       - [packages] (optional, with identical substructure)
 MACRO(COLLECT_PACKAGE directory headers sources tests)
+    set( temp_headers "" )
+    set( temp_impl "" )
+    set( temp_sources "" )
+    set( temp_tests "" )
+
     FILE( GLOB temp_headers ${directory}/inc/*.hpp )
     FILE( GLOB temp_impl ${directory}/impl/*.hpp )
     FILE( GLOB temp_sources ${directory}/src/*.cpp )
@@ -24,6 +29,10 @@ MACRO(COLLECT_PACKAGE directory headers sources tests)
                              packageHeaders
                              packageSources
                              packageTests )
+            
+            list( APPEND ${headers} ${packageHeaders} )
+            list( APPEND ${sources} ${packageSources} )
+            list( APPEND ${tests} ${packageTests} )
         endforeach()
     endif()
 ENDMACRO()

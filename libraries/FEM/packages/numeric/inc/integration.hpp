@@ -23,10 +23,10 @@ template <  Size Dimension,
 class AbsIntegrator
 {
 public:
-    static const Size                               dimension = Dimension;
-    typedef Kernel<NT>                              kernel_type;
-    typedef std::array<NT,dimension>                point_type;
-    typedef std::function<NT(const point_type&)>    function_type;
+    static const Size dimension = Dimension;
+    using kernel_type           = Kernel<Dimension, NT>;
+    using point_type            = typename kernel_type::point_type;
+    using function_type         = std::function<NT(const point_type&)>;
 
 public:
     virtual NT operator()( function_type function ) const = 0;

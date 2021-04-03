@@ -16,7 +16,7 @@ namespace cie::fem
 {
 
 
-CIE_TEST_CASE( "PolynomialBasisFunctionSet", "numeric" )
+CIE_TEST_CASE( "PolynomialBasisFunctionSet", "[numeric]" )
 {
     CIE_TEST_CASE_INIT( "PolynomialBasisFunctionSet" )
 

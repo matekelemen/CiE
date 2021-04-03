@@ -57,11 +57,11 @@ public:
 template <  Size Dimension,
             concepts::NumericType NT,
             class SelfType >
-class AbsBasisFunctionSet : Kernel<NT>
+class AbsBasisFunctionSet : Kernel<Dimension,NT>
 {
 public:                                                         // <-- member typedefs
     static const Size                                           dimension = Dimension;
-    typedef Kernel<NT>                                          kernel_type;
+    typedef Kernel<Dimension,NT>                                kernel_type;
     typedef std::array<std::pair<NT,NT>,dimension>              domain_container;
     typedef BasisFunction<NT>                                   function_type;
     typedef std::array<std::vector<function_type>,dimension>    function_container;
