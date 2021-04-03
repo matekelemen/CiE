@@ -1,17 +1,22 @@
+set( CIE_EXTERNAL_SOURCE_DIR "${CIE_SOURCE_DIR}/external" )
+
 # Testing
-include_directories( "${CIE_SOURCE_DIR}/external/catch" )
+include_directories( "${CIE_EXTERNAL_SOURCE_DIR}/catch" )
+
+# Linear Algebra (eigen)
+add_subdirectory( "${CIE_EXTERNAL_SOURCE_DIR}/eigen" )
 
 # Bindings
-set(PYBIND11_CPP_STANDARD -std=c++17)
-add_subdirectory( "${CIE_SOURCE_DIR}/external/pybind11" )
+set(PYBIND11_CPP_STANDARD -std=c++20)
+add_subdirectory( "${CIE_EXTERNAL_SOURCE_DIR}/pybind11" )
 
 # Graphics
 find_package( OpenGL REQUIRED )
-add_subdirectory( "${CIE_SOURCE_DIR}/external/glfw" )
-add_subdirectory( "${CIE_SOURCE_DIR}/external/glm" )
-add_subdirectory( "${CIE_SOURCE_DIR}/external/glad" )
+add_subdirectory( "${CIE_EXTERNAL_SOURCE_DIR}/glfw" )
+add_subdirectory( "${CIE_EXTERNAL_SOURCE_DIR}/glm" )
+add_subdirectory( "${CIE_EXTERNAL_SOURCE_DIR}/glad" )
 set( BUILD_SHARED_LIBS ON "Always build shared libraries" CACHE BOOL "Always build shared libraries" FORCE )
 
 # FileIO
-add_subdirectory( "${CIE_SOURCE_DIR}/external/xml" )
-include_directories( "${CIE_SOURCE_DIR}/external/xml/src" )
+add_subdirectory( "${CIE_EXTERNAL_SOURCE_DIR}/xml" )
+include_directories( "${CIE_EXTERNAL_SOURCE_DIR}/xml/src" )

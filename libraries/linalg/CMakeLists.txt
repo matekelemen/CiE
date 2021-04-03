@@ -14,6 +14,7 @@ list( INSERT LINALG_TEST_SOURCE_FILES 0 ${LINALG_SOURCE_DRIVERS} )
 # LIBRARIES AND EXECUTABLES
 # ---------------------------------------------------------
 ADD_SHARED_LIBRARY(  linalg ${LINALG_LIBRARY_SOURCE_FILES} ${LINALG_HEADER_FILES}  )
+target_include_directories( linalg PUBLIC "${CIE_EXTERNAL_SOURCE_DIR}/eigen" )
 TARGET_LINK_LIBRARIES_INSTALL( linalg cieutils )
 
 add_executable( linalg_testrunner ${LINALG_TEST_SOURCE_FILES} )

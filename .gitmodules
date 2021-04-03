@@ -10,3 +10,6 @@
 [submodule "external/xml"]
 	path = external/xml
 	url = https://github.com/zeux/pugixml.git
+[submodule "external/eigen"]
+	path = external/eigen
+	url = https://gitlab.com/libeigen/eigen.git
