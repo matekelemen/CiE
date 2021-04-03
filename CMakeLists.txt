@@ -5,6 +5,8 @@ project( CiE CXX )
 set( CMAKE_CXX_STANDARD 20 )
 set( CIE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR} )
 
+include( cmake/macro_essentials.cmake )
+
 # ---------------------------------------------------------
 # OPTIONS
 # ---------------------------------------------------------
@@ -43,6 +45,19 @@ endif(  )
 include( cmake/vars_install.cmake )
 
 # ---------------------------------------------------------
+# TARGET SELECTION
+# ---------------------------------------------------------
+SUBDIRLIST( CIE_LIBRARY_NAMES "${CIE_SOURCE_DIR}/libraries" )
+foreach( libraryName ${CIE_LIBRARY_NAMES} )
+    set( CIE_BUILD_LIBRARY_${libraryName} ON CACHE BOOL "build library: ${libraryName}" )
+endforeach()
+
+SUBDIRLIST( CIE_APPLICATION_NAMES "${CIE_SOURCE_DIR}/applications" )
+foreach( applicationName ${CIE_APPLICATION_NAMES} )
+    set( CIE_BUILD_APPLICATION_${applicationName} ON CACHE BOOL "build application: ${applicationName}" )
+endforeach()
+
+# ---------------------------------------------------------
 # GLOBAL MACRO DEFINITIONS
 # ---------------------------------------------------------
 include( cmake/macro_global.cmake )
@@ -61,25 +76,25 @@ include_directories( ${CMAKE_BINARY_DIR}/generated )
 include( cmake/compiler.cmake )
 
 # ---------------------------------------------------------
-# EXTERNAL
+# EXTERNAL DEPENDENCIES
 # ---------------------------------------------------------
 include( cmake/external.cmake )
 
 # ---------------------------------------------------------
-# BUILD LIBRARIES AND TESTS
+# LIBRARIES AND TESTS
 # ---------------------------------------------------------
-include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/libraries" )
-add_subdirectory( libraries )
+include_directories( "${CIE_SOURCE_DIR}/libraries" )
+add_subdirectory( "${CIE_SOURCE_DIR}/libraries" )
 
 # ---------------------------------------------------------
-# BUILD APPLICATIONS
+# APPLICATIONS
 # ---------------------------------------------------------
-add_subdirectory( applications )
+add_subdirectory( "${CIE_SOURCE_DIR}/applications" )
 
 # ---------------------------------------------------------
-# TESTRUNNER
+# GLOBAL TESTRUNNER
 # ---------------------------------------------------------
 add_custom_target( testrunner
                     COMMAND ${CMAKE_COMMAND} 
                         "-DVAR=${INSTALL_TEST_PREFIX}" 
-                        -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/testrunner.cmake" )
+                        -P "${CIE_SOURCE_DIR}/cmake/testrunner.cmake" )

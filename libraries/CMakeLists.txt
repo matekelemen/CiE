@@ -1,9 +1,9 @@
-# Collect subdirectories
-SUBDIRLIST( subdirs ${CMAKE_CURRENT_SOURCE_DIR} )
+message( STATUS "\n---------- CIE LIBRARIES BEGIN ----------" )
 
-# Add subdirectories
-foreach( subdir ${subdirs} )
-    add_subdirectory( ${subdir} )
+foreach( libraryName ${CIE_LIBRARY_NAMES} )
+    if( CIE_BUILD_LIBRARY_${libraryName} )
+        add_subdirectory( "${libraryName}" )
+    endif()
 endforeach()
 
 #add_subdirectory( linalg )
@@ -12,3 +12,5 @@ endforeach()
 #add_subdirectory( meshkernel )
 #add_subdirectory( FEM )
 #add_subdirectory( ciegl )
+
+message( STATUS "---------- CIE LIBRARIES END ----------\n" )

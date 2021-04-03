@@ -1,3 +1,5 @@
+message( STATUS "\n---------- CIE EXTERNAL DEPENDENCIES BEGIN ----------" )
+
 set( CIE_EXTERNAL_SOURCE_DIR "${CIE_SOURCE_DIR}/external" )
 
 # Testing
@@ -7,7 +9,8 @@ include_directories( "${CIE_EXTERNAL_SOURCE_DIR}/catch" )
 add_subdirectory( "${CIE_EXTERNAL_SOURCE_DIR}/eigen" )
 
 # Bindings
-set(PYBIND11_CPP_STANDARD -std=c++20)
+set(PYBIND11_CPP_STANDARD "-std=c++${CMAKE_CXX_STANDARD}")
+message( STATUS ${PYBIND11_CPP_STAMDARD} )
 add_subdirectory( "${CIE_EXTERNAL_SOURCE_DIR}/pybind11" )
 
 # Graphics
@@ -20,3 +23,5 @@ set( BUILD_SHARED_LIBS ON "Always build shared libraries" CACHE BOOL "Always bui
 # FileIO
 add_subdirectory( "${CIE_EXTERNAL_SOURCE_DIR}/xml" )
 include_directories( "${CIE_EXTERNAL_SOURCE_DIR}/xml/src" )
+
+message( STATUS "---------- CIE EXTERNAL DEPENDENCIES END ----------\n" )

@@ -1,7 +1,9 @@
-# Collect subdirectories
-SUBDIRLIST( subdirs ${CMAKE_CURRENT_SOURCE_DIR} )
+message( STATUS "\n---------- CIE APPLICATIONS BEGIN ----------" )
 
-# Add subdirectories
-foreach( subdir ${subdirs} )
-    add_subdirectory( ${subdir} )
+foreach( applicationName ${CIE_APPLICATION_NAMES} )
+    if( CIE_BUILD_APPLICATION_${applicationName} )
+        add_subdirectory( "${applicationName}" )
+    endif()
 endforeach()
+
+message( STATUS "---------- CIE APPLICATIONS END ----------\n" )
