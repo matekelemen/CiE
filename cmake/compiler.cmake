@@ -21,11 +21,6 @@ if ( CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Cla
 	if( ${CIE_ENABLE_OPENMP} )
 		set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp" )
 	endif()
-	
-	# OpenACC
-	if( ${CIE_ENABLE_OPENACC} )
-		set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenacc" )
-	endif()
 
 # -------------------------------------------------
 # MSVC

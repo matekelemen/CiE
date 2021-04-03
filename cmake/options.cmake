@@ -13,8 +13,6 @@ else()
     set( CIE_ENABLE_OPENMP ON CACHE BOOL "enable openmp directives" )
 endif()
 
-set( CIE_ENABLE_OPENACC OFF CACHE BOOL "enable openacc directives" )
-
 # ---------------------------------------------------------
 # OPENGL OPTIONS
 # ---------------------------------------------------------
