@@ -1,5 +1,5 @@
-#ifndef CIE_FEM_MATHS_POLYNOMIAL_1D_IMPL_HPP
-#define CIE_FEM_MATHS_POLYNOMIAL_1D_IMPL_HPP
+#ifndef CIE_FEM_MATHS_UNIVARIATE_POLYNOMIAL_IMPL_HPP
+#define CIE_FEM_MATHS_UNIVARIATE_POLYNOMIAL_IMPL_HPP
 
 // --- Utility Includes ---
 #include "cieutils/packages/macros/inc/exceptions.hpp"
@@ -10,44 +10,30 @@ namespace cie::fem::maths {
 
 
 template <concepts::NumericType NT>
-Polynomial1D<NT>::Polynomial1D( typename Polynomial1D<NT>::coefficient_container&& r_coefficients ) :
+UnivariatePolynomial<NT>::UnivariatePolynomial( typename UnivariatePolynomial<NT>::coefficient_container&& r_coefficients ) :
     _coefficients( std::move(r_coefficients) )
 {
 }
 
 
 template <concepts::NumericType NT>
-Polynomial1D<NT>::Polynomial1D( const typename Polynomial1D<NT>::coefficient_container& r_coefficients ) :
+UnivariatePolynomial<NT>::UnivariatePolynomial( const typename UnivariatePolynomial<NT>::coefficient_container& r_coefficients ) :
     _coefficients( r_coefficients )
 {
 }
 
 
 template <concepts::NumericType NT>
-Polynomial1D<NT>::Polynomial1D() :
-    Polynomial1D<NT>( {0} )
-{
-}
-
-
-template <concepts::NumericType NT>
-Polynomial1D<NT>::Polynomial1D( const Polynomial1D<NT>& r_rhs ) :
-    _coefficients( r_rhs._coefficients )
-{
-}
-
-
-template <concepts::NumericType NT>
-typename Polynomial1D<NT>::value_type
-Polynomial1D<NT>::operator()( const typename Polynomial1D<NT>::argument_type& r_argument ) const
+typename UnivariatePolynomial<NT>::value_type
+UnivariatePolynomial<NT>::operator()( const typename UnivariatePolynomial<NT>::argument_type& r_argument ) const
 {
     return this->operator()( r_argument[0] );
 }
 
 
 template <concepts::NumericType NT>
-typename Polynomial1D<NT>::value_type
-Polynomial1D<NT>::operator()( NT argument ) const
+typename UnivariatePolynomial<NT>::value_type
+UnivariatePolynomial<NT>::operator()( NT argument ) const
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -73,12 +59,12 @@ Polynomial1D<NT>::operator()( NT argument ) const
 
 
 template <concepts::NumericType NT>
-typename Polynomial1D<NT>::derivative_type
-Polynomial1D<NT>::derivative() const
+typename UnivariatePolynomial<NT>::derivative_type
+UnivariatePolynomial<NT>::derivative() const
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    typename Polynomial1D<NT>::coefficient_container derivativeCoefficients;
+    typename UnivariatePolynomial<NT>::coefficient_container derivativeCoefficients;
 
     Size polynomialOrder = this->_coefficients.size();
 
@@ -93,7 +79,7 @@ Polynomial1D<NT>::derivative() const
             *p_derivativeCoefficient++ = power * (*p_coefficient++);
     }
 
-    return Polynomial1D<NT>( derivativeCoefficients );
+    return UnivariatePolynomial<NT>( derivativeCoefficients );
 
     CIE_END_EXCEPTION_TRACING
 }

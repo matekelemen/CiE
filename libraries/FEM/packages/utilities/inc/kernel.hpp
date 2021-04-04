@@ -70,7 +70,7 @@ public:
     struct dense
     {
         template <Size NumberOfRows, Size NumberOfColumns>
-        using matrix_type = Eigen::Matrix<NT,NumberOfRows,NumberOfColumns>;
+        using matrix_type = linalg::MatrixWrapper<Eigen::Matrix<NT,NumberOfRows,NumberOfColumns>>;
 
         using square_matrix = matrix_type<Dimension,Dimension>;
     };

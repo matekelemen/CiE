@@ -2,17 +2,17 @@
 #include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
-#include "FEM/packages/maths/packages/polynomial/inc/Polynomial1D.hpp"
+#include "FEM/packages/maths/packages/polynomial/inc/UnivariatePolynomial.hpp"
 
 
 namespace cie::fem::maths {
 
 
-CIE_TEST_CASE( "Polynomial1D", "[maths/polynomial]" )
+CIE_TEST_CASE( "UnivariatePolynomial", "[maths]" )
 {
-    CIE_TEST_CASE_INIT( "Polynomial1D" )
+    CIE_TEST_CASE_INIT( "UnivariatePolynomial" )
 
-    using Polynomial = Polynomial1D<double>;
+    using Polynomial = UnivariatePolynomial<double>;
 
     auto checkPolynomial = []( const Polynomial& r_polynomial )
     {

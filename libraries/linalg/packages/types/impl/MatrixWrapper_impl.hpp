@@ -98,10 +98,10 @@ inline VT&
 MatrixWrapper<MT,VT,IT,CIT>::operator()( typename MatrixWrapper<MT,VT,IT,CIT>::size_type rowIndex,
                                          typename MatrixWrapper<MT,VT,IT,CIT>::size_type columnIndex )
 {
-    CIE_OUT_OF_RANGE_CHECK( rowIndex < this->numberOfRows )
-    CIE_OUT_OF_RANGE_CHECK( columnIndex < this->numberOfColumns )
+    CIE_OUT_OF_RANGE_CHECK( rowIndex < this->numberOfRows() )
+    CIE_OUT_OF_RANGE_CHECK( columnIndex < this->numberOfColumns() )
 
-    return this->_matrix( rowIndex, columnIndex );
+    return this->_wrapped( rowIndex, columnIndex );
 }
 
 
@@ -110,10 +110,10 @@ inline VT
 MatrixWrapper<MT,VT,IT,CIT>::operator()( typename MatrixWrapper<MT,VT,IT,CIT>::size_type rowIndex,
                                          typename MatrixWrapper<MT,VT,IT,CIT>::size_type columnIndex ) const
 {
-    CIE_OUT_OF_RANGE_CHECK( rowIndex < this->numberOfRows )
-    CIE_OUT_OF_RANGE_CHECK( columnIndex < this->numberOfColumns )
+    CIE_OUT_OF_RANGE_CHECK( rowIndex < this->numberOfRows() )
+    CIE_OUT_OF_RANGE_CHECK( columnIndex < this->numberOfColumns() )
 
-    return this->_matrix( rowIndex, columnIndex );
+    return this->_wrapped( rowIndex, columnIndex );
 }
 
 

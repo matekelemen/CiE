@@ -32,6 +32,8 @@ public:
     template <class ...Args>
     MatrixWrapper( Args&&... r_args );
 
+    MatrixWrapper<MatrixType,ValueType,IteratorType,ConstIteratorType>& operator=( const MatrixWrapper<MatrixType,ValueType,IteratorType,ConstIteratorType>& r_rhs ) = default;
+
     IteratorType begin();
     ConstIteratorType begin() const;
 
