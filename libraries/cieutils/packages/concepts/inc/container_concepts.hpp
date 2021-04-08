@@ -41,45 +41,45 @@ concept STLContainer
 
 template <class ContainerType, class ValueType>
 concept ClassContainer
-= STLContainer<ContainerType>
-  && std::is_same_v<typename ContainerType::value_type, ValueType>;
+= STLContainer<typename std::remove_reference<ContainerType>::type>
+  && std::is_same_v<typename std::remove_reference<ContainerType>::type::value_type, ValueType>;
 
 
 template <class ContainerType>
 concept NumericContainer
-= STLContainer<ContainerType>
-  && NumericType<typename ContainerType::value_type>;
+= STLContainer<typename std::remove_reference<ContainerType>::type>
+  && NumericType<typename std::remove_reference<ContainerType>::type::value_type>;
 
 
 template <class ContainerType>
 concept PointerContainer
-= STLContainer<ContainerType>
-  && Pointer<typename ContainerType::value_type>;
+= STLContainer<typename std::remove_reference<ContainerType>::type>
+  && Pointer<typename std::remove_reference<ContainerType>::type::value_type>;
 
 
 template <class ContainerType>
 concept NonPointerContainer
-= STLContainer<ContainerType>
+= STLContainer<typename std::remove_reference<ContainerType>::type>
   && !PointerContainer<ContainerType>;
 
 
 template <class ContainerType>
 concept IteratorContainer
-= STLContainer<ContainerType>
-  && IteratorType<typename ContainerType::value_type>;
+= STLContainer<typename std::remove_reference<ContainerType>::type>
+  && IteratorType<typename std::remove_reference<ContainerType>::type::value_type>;
 
 
 template <class ContainerType, class ValueType>
 concept ClassPointerContainer
-= STLContainer<ContainerType>
-  && ClassPointer<typename ContainerType::value_type,ValueType>;
+= STLContainer<typename std::remove_reference<ContainerType>::type>
+  && ClassPointer<typename std::remove_reference<ContainerType>::type::value_type,ValueType>;
 
 
 template <class ContainerType, class InterfaceType>
 concept InterfaceContainer
-= STLContainer<ContainerType>
-  && Pointer<typename ContainerType::value_type>
-  && DerivedFrom<typename std::pointer_traits<typename ContainerType::value_type>::element_type,InterfaceType>;
+= STLContainer<typename std::remove_reference<ContainerType>::type>
+  && Pointer<typename std::remove_reference<ContainerType>::type::value_type>
+  && DerivedFrom<typename std::pointer_traits<typename std::remove_reference<ContainerType>::type::value_type>::element_type,InterfaceType>;
 
 
 // ---------------------------------------------------------
