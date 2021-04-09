@@ -25,14 +25,6 @@ UnivariatePolynomial<NT>::UnivariatePolynomial( const typename UnivariatePolynom
 
 template <concepts::NumericType NT>
 typename UnivariatePolynomial<NT>::value_type
-UnivariatePolynomial<NT>::operator()( const typename UnivariatePolynomial<NT>::argument_type& r_argument ) const
-{
-    return this->operator()( r_argument[0] );
-}
-
-
-template <concepts::NumericType NT>
-typename UnivariatePolynomial<NT>::value_type
 UnivariatePolynomial<NT>::operator()( NT argument ) const
 {
     CIE_BEGIN_EXCEPTION_TRACING
@@ -59,7 +51,7 @@ UnivariatePolynomial<NT>::operator()( NT argument ) const
 
 
 template <concepts::NumericType NT>
-typename UnivariatePolynomial<NT>::derivative_type
+typename UnivariatePolynomial<NT>::derivative_ptr
 UnivariatePolynomial<NT>::derivative() const
 {
     CIE_BEGIN_EXCEPTION_TRACING
@@ -79,7 +71,9 @@ UnivariatePolynomial<NT>::derivative() const
             *p_derivativeCoefficient++ = power * (*p_coefficient++);
     }
 
-    return UnivariatePolynomial<NT>( derivativeCoefficients );
+    return typename UnivariatePolynomial<NT>::derivative_ptr(
+        new UnivariatePolynomial<NT>( std::move(derivativeCoefficients) )
+    );
 
     CIE_END_EXCEPTION_TRACING
 }

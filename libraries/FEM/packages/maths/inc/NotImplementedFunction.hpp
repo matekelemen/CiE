@@ -21,7 +21,7 @@ private:
 public:
     base_type::value_type operator()( const base_type::argument_type& r_argument ) const override;
 
-    base_type::derivative_type derivative() const override;
+    base_type::derivative_ptr derivative() const override;
 };
 
 

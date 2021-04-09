@@ -4,6 +4,9 @@
 // --- Utility Includes ---
 #include "cieutils/packages/concepts/inc/basic_concepts.hpp"
 
+// --- STL Includes ---
+#include <memory>
+
 
 namespace cie::fem::maths {
 
@@ -17,10 +20,11 @@ public:
     using value_type        = ValueType;
     using argument_type     = ArgumentType;
     using derivative_type   = DerivativeType;
+    using derivative_ptr    = std::shared_ptr<derivative_type>;
 
 public:
     virtual value_type operator()( const ArgumentType& r_argument ) const = 0;
-    virtual derivative_type derivative() const = 0;
+    virtual derivative_ptr derivative() const = 0;
 };
 
 

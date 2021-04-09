@@ -14,7 +14,7 @@ CIE_TEST_CASE( "UnivariatePolynomial", "[maths]" )
 
     using Polynomial = UnivariatePolynomial<double>;
 
-    auto checkPolynomial = []( const Polynomial& r_polynomial )
+    auto checkPolynomial = []( const UnivariateScalarFunction<double>& r_polynomial )
     {
         CIE_TEST_CHECK_NOTHROW( r_polynomial( 0 ) );
         CIE_TEST_CHECK( r_polynomial(0) == Approx(0.0) );
@@ -24,7 +24,7 @@ CIE_TEST_CASE( "UnivariatePolynomial", "[maths]" )
         CIE_TEST_CHECK( r_polynomial(-2) == Approx(4.0) );
     };
 
-    auto checkDerivative = []( const Polynomial& r_derivative )
+    auto checkDerivative = []( const UnivariateScalarFunction<double>& r_derivative )
     {
         CIE_TEST_CHECK_NOTHROW( r_derivative( 0 ) );
         CIE_TEST_CHECK( r_derivative(0) == Approx(0.0) );
@@ -54,8 +54,8 @@ CIE_TEST_CASE( "UnivariatePolynomial", "[maths]" )
     }
 
     CIE_TEST_REQUIRE_NOTHROW( polynomial.derivative() );
-    Polynomial derivative = polynomial.derivative();
-    checkDerivative( derivative );
+    auto p_derivative = polynomial.derivative();
+    checkDerivative( *p_derivative );
 
     {
         CIE_TEST_REQUIRE_NOTHROW( Polynomial() );

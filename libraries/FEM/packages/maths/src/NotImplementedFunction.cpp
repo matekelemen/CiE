@@ -17,9 +17,9 @@ NotImplementedFunction::value_type NotImplementedFunction::operator()( const Not
 }
 
 
-NotImplementedFunction::derivative_type NotImplementedFunction::derivative() const
+NotImplementedFunction::derivative_ptr NotImplementedFunction::derivative() const
 {
-    return NotImplementedFunction();
+    return NotImplementedFunction::derivative_ptr( new NotImplementedFunction );
 }
 
 
