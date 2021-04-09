@@ -7,13 +7,19 @@
 #include "cieutils/packages/stl_extension/inc/resize.hpp"
 #include "cieutils/packages/macros/inc/exceptions.hpp"
 
+// --- Internal Includes ---
+#include "FEM/packages/maths/inc/SeparableScalarFunction.hpp"
+
+// --- STL Includes ---
+#include <numeric>
+
 
 namespace cie::fem::maths {
 
 
 template <Size Dimension, concepts::NumericType NT>
 template <concepts::PointerContainer BasisContainer>
-requires concepts::DerivedFrom<typename std::remove_reference<BasisContainer>::type::value_type::element_type,ScalarFunction<Dimension,NT>>
+requires concepts::DerivedFrom<typename std::remove_reference<BasisContainer>::type::value_type::element_type,UnivariateScalarFunction<NT>>
 TensorProductAnsatzSet<Dimension,NT>::TensorProductAnsatzSet( BasisContainer&& r_basisFunctions )
 {
     CIE_BEGIN_EXCEPTION_TRACING
@@ -23,9 +29,30 @@ TensorProductAnsatzSet<Dimension,NT>::TensorProductAnsatzSet( BasisContainer&& r
 
     utils::reserve( this->_ansatzFunctions, numberOfAnsatzFunctions );
 
-    for ( Size ansatzIndex=0; ansatzIndex<numberOfAnsatzFunctions; ++ansatzIndex )
+    typename SeparableScalarFunction<Dimension,NT>::univariate_container basisProduct;
+    utils::resize( basisProduct, Dimension );
+
+    std::vector<Size> states;
+    utils::resize( states, numberOfBasisFunctions );
+    std::iota( states.begin(), states.end(), 0 );
+
+    auto permutation = utils::makeInternalStateIterator(
+        states,
+        Dimension
+    );
+
+    for ( Size ansatzIndex=0; ansatzIndex<numberOfAnsatzFunctions; ++ansatzIndex,++permutation )
     {
-        // TODO
+        const auto& r_state = *permutation;
+
+        for ( Size dim=0; dim<Dimension; ++dim )
+            basisProduct[dim] = r_basisFunctions[*r_state[dim]];
+
+        this->_ansatzFunctions.push_back(
+            typename TensorProductAnsatzSet<Dimension,NT>::ansatz_ptr(
+                new SeparableScalarFunction<Dimension,NT>( basisProduct )
+            )
+        );
     }
 
     CIE_END_EXCEPTION_TRACING

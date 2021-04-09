@@ -19,10 +19,10 @@ class SeparableVectorFunction;
 /** A multivariate function representable as a product of univariate functions. 
  */
 template <Size Dimension, concepts::NumericType NT>
-class SeparableScalarFunction : public ScalarFunction<Dimension,NT,SeparableVectorFunction<Dimension,Dimension,NT>>
+class SeparableScalarFunction : public ScalarFunction<Dimension,NT>
 {
 private:
-    using base_type = ScalarFunction<Dimension,NT,SeparableVectorFunction<Dimension,Dimension,NT>>;
+    using base_type = ScalarFunction<Dimension,NT>;
 
 public:
     using univariate_function = UnivariateScalarFunction<NT>;

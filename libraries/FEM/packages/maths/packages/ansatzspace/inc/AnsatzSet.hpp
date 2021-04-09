@@ -17,7 +17,7 @@ class AnsatzSet
 {
 public:
     using ansatz_function = ScalarFunction<Dimension,NT>;
-    using ansatz_ptr = std::shared_ptr<const ansatz_function>;
+    using ansatz_ptr = std::shared_ptr<ansatz_function>;
     using ansatz_container = std::vector<ansatz_ptr>;
 
 public:

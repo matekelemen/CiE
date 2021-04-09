@@ -22,10 +22,10 @@ class SeparableMatrixFunction;
  * univariate polynomials.
  */
 template <Size ValueDimension, Size Dimension, concepts::NumericType NT>
-class SeparableVectorFunction : public VectorFunction<ValueDimension,Dimension,NT,SeparableMatrixFunction<ValueDimension,Dimension,Dimension,NT>>
+class SeparableVectorFunction : public VectorFunction<ValueDimension,Dimension,NT>
 {
 private:
-    using base_type = VectorFunction<ValueDimension,Dimension,NT,SeparableMatrixFunction<ValueDimension,Dimension,Dimension,NT>>;
+    using base_type = VectorFunction<ValueDimension,Dimension,NT>;
 
 public:
     using scalar_function = SeparableScalarFunction<Dimension,NT>;

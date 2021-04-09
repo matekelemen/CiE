@@ -6,7 +6,7 @@
 
 // --- Internal Includes ---
 #include "FEM/packages/maths/packages/ansatzspace/inc/AnsatzSet.hpp"
-#include "FEM/packages/maths/inc/ScalarFunction.hpp"
+#include "FEM/packages/maths/inc/UnivariateScalarFunction.hpp"
 
 
 namespace cie::fem::maths {
@@ -16,13 +16,14 @@ template <Size Dimension, concepts::NumericType NT>
 class TensorProductAnsatzSet : public AnsatzSet<Dimension,NT>
 {
 public:
-    template <concepts::STLContainer BasisContainer>
-    requires concepts::DerivedFrom<typename std::remove_reference<BasisContainer>::type::value_type,ScalarFunction<Dimension,NT>>
+    template <concepts::PointerContainer BasisContainer>
+    requires concepts::DerivedFrom<typename std::remove_reference<BasisContainer>::type::value_type::element_type,UnivariateScalarFunction<NT>>
     TensorProductAnsatzSet( BasisContainer&& r_basisFunctions );
 };
 
 
 } // namespace cie::fem::maths
 
+#include "FEM/packages/maths/packages/ansatzspace/impl/TensorProductAnsatzSet_impl.hpp"
 
 #endif

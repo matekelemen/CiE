@@ -50,14 +50,14 @@ SeparableVectorFunction<ValueDimension,Dimension,NT>::derivative() const
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    typename SeparableVectorFunction<ValueDimension,Dimension,NT>::derivative_type::function_container derivatives;
+    typename SeparableMatrixFunction<ValueDimension,Dimension,Dimension,NT>::function_container derivatives;
     utils::resize( derivatives, Dimension );
 
     auto it_componentEnd = this->_components.end();
     auto it_derivative = derivatives.begin();
 
     for ( auto it_component=this->_components.begin(); it_component!=it_componentEnd; ++it_component,++it_derivative )
-        *it_derivative = (*it_component)->derivative();
+        *it_derivative = std::dynamic_pointer_cast<SeparableVectorFunction<ValueDimension,Dimension,NT>>((*it_component)->derivative());
 
     return typename SeparableVectorFunction<ValueDimension,Dimension,NT>::derivative_ptr(
         new SeparableMatrixFunction<ValueDimension,Dimension,Dimension,NT>( std::move(derivatives) )

@@ -38,7 +38,7 @@ AnsatzSet<Dimension,NT>::operator[]( Size index ) const
     CIE_OUT_OF_RANGE_CHECK( index < this->_ansatzFunctions.size() )
     CIE_CHECK_POINTER( this->_ansatzFunctions[index] )
 
-    return this->_ansatzFunctions[index];
+    return *this->_ansatzFunctions[index];
 }
 
 
@@ -49,7 +49,7 @@ AnsatzSet<Dimension,NT>::at( Size index ) const
     CIE_OUT_OF_RANGE_CHECK( index < this->_ansatzFunctions.size() )
     CIE_CHECK_POINTER( this->_ansatzFunctions[index] )
 
-    return this->_ansatzFunctions[index];
+    return *this->_ansatzFunctions[index];
 }
 
 
@@ -69,7 +69,7 @@ AnsatzSet<Dimension,NT>::emplace_back( Args&&... r_args )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    auto p_ansatzFunction = std::make_shared<AnsatzFunction>( std::forward<Args>(args)... );
+    auto p_ansatzFunction = std::make_shared<AnsatzFunction>( std::forward<Args>(r_args)... );
 
     this->_ansatzFunctions.push_back( p_ansatzFunction );
 

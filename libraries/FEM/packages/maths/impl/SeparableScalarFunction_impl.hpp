@@ -55,7 +55,7 @@ SeparableScalarFunction<Dimension,NT>::derivative() const
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    typename SeparableScalarFunction<Dimension,NT>::derivative_type::function_container derivatives;
+    typename SeparableVectorFunction<Dimension,Dimension,NT>::function_container derivatives;
     utils::resize( derivatives, Dimension );
 
     auto univariates = this->_univariates;
