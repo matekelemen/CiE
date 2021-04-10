@@ -15,6 +15,14 @@ namespace cie::fem::maths {
 
 
 template <concepts::NumericType NT>
+UnivariateLagrangeBasisPolynomial<NT>::UnivariateLagrangeBasisPolynomial( std::initializer_list<NT>&& r_nodes,
+                                                                          Size basisIndex ) :
+    UnivariateLagrangeBasisPolynomial<NT>( std::vector<NT>(std::move(r_nodes)), basisIndex )
+{
+}
+
+
+template <concepts::NumericType NT>
 template <concepts::NumericContainer NodeContainer>
 UnivariateLagrangeBasisPolynomial<NT>::UnivariateLagrangeBasisPolynomial( NodeContainer&& r_nodes, Size basisIndex )
 {

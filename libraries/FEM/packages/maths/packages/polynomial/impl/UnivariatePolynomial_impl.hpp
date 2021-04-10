@@ -24,6 +24,13 @@ UnivariatePolynomial<NT>::UnivariatePolynomial( const typename UnivariatePolynom
 
 
 template <concepts::NumericType NT>
+UnivariatePolynomial<NT>::UnivariatePolynomial( typename UnivariatePolynomial<NT>::coefficient_list&& r_coefficients ) :
+    _coefficients( std::move(r_coefficients) )
+{
+}
+
+
+template <concepts::NumericType NT>
 typename UnivariatePolynomial<NT>::value_type
 UnivariatePolynomial<NT>::operator()( NT argument ) const
 {

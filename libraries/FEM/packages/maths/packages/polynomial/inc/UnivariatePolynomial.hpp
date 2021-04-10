@@ -22,6 +22,7 @@ private:
 
 public:
     using coefficient_container = std::vector<NT>;
+    using coefficient_list = std::initializer_list<NT>;
 
     using typename base_type::value_type;
     using typename base_type::derivative_ptr;
@@ -30,6 +31,8 @@ public:
     UnivariatePolynomial( coefficient_container&& r_coefficients );
 
     UnivariatePolynomial( const coefficient_container& r_coefficients );
+
+    UnivariatePolynomial( coefficient_list&& r_coefficients );
 
     UnivariatePolynomial() = default;
 

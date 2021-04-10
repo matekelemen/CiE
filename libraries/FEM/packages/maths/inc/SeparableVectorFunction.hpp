@@ -31,6 +31,7 @@ public:
     using scalar_function = SeparableScalarFunction<Dimension,NT>;
     using function_ptr = std::shared_ptr<scalar_function>;
     using function_container = std::array<function_ptr,ValueDimension>;
+    using function_list = std::initializer_list<function_ptr>;
 
     using typename base_type::value_type;
     using typename base_type::argument_type;
@@ -40,6 +41,8 @@ public:
     SeparableVectorFunction( function_container&& r_components );
 
     SeparableVectorFunction( const function_container& r_components );
+
+    SeparableVectorFunction( function_list&& r_components );
 
     SeparableVectorFunction() = default;
 

@@ -4,6 +4,10 @@
 // --- Utility Includes ---
 #include "cieutils/packages/macros/inc/exceptions.hpp"
 #include "cieutils/packages/stl_extension/inc/resize.hpp"
+#include "cieutils/packages/macros/inc/checks.hpp"
+
+// --- STL Includes ---
+#include <algorithm>
 
 
 namespace cie::fem::maths {
@@ -20,6 +24,22 @@ template <Size VD0, Size VD1, Size D, concepts::NumericType NT>
 SeparableMatrixFunction<VD0,VD1,D,NT>::SeparableMatrixFunction( const typename SeparableMatrixFunction<VD0,VD1,D,NT>::function_container& r_functions ) :
     _functions( r_functions )
 {
+}
+
+
+template <Size VD0, Size VD1, Size D, concepts::NumericType NT>
+SeparableMatrixFunction<VD0,VD1,D,NT>::SeparableMatrixFunction( typename SeparableMatrixFunction<VD0,VD1,D,NT>::function_list&& r_functions )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    CIE_OUT_OF_RANGE_CHECK( r_functions.size() == VD0 )
+    utils::resize( this->_functions, VD0 );
+
+    std::copy( r_functions.begin(),
+               r_functions.end(),
+               this->_functions.begin() );
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 

@@ -18,8 +18,12 @@ template <concepts::NumericType NT>
 class UnivariateLagrangeBasisPolynomial : public UnivariatePolynomial<NT>
 {
 public:
+    UnivariateLagrangeBasisPolynomial( std::initializer_list<NT>&& r_nodes,
+                                       Size basisIndex );
+
     template <concepts::NumericContainer NodeContainer>
-    UnivariateLagrangeBasisPolynomial( NodeContainer&& r_nodes, Size basisIndex );
+    UnivariateLagrangeBasisPolynomial( NodeContainer&& r_nodes,
+                                       Size basisIndex );
 
     UnivariateLagrangeBasisPolynomial() = default;
 

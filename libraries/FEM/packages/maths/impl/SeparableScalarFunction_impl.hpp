@@ -4,6 +4,10 @@
 // --- Utility Includes ---
 #include "cieutils/packages/macros/inc/exceptions.hpp"
 #include "cieutils/packages/stl_extension/inc/resize.hpp"
+#include "cieutils/packages/macros/inc/checks.hpp"
+
+// --- STL Includes ---
+#include <algorithm>
 
 
 namespace cie::fem::maths {
@@ -20,6 +24,22 @@ template <Size Dimension, concepts::NumericType NT>
 SeparableScalarFunction<Dimension,NT>::SeparableScalarFunction( const typename SeparableScalarFunction<Dimension,NT>::univariate_container& r_univariates ) :
     _univariates( r_univariates )
 {
+}
+
+
+template <Size Dimension, concepts::NumericType NT>
+SeparableScalarFunction<Dimension,NT>::SeparableScalarFunction( typename SeparableScalarFunction<Dimension,NT>::univariate_list&& r_univariates )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    CIE_OUT_OF_RANGE_CHECK( r_univariates.size() == Dimension )
+    utils::resize( this->_univariates, Dimension );
+
+    std::copy( r_univariates.begin(),
+               r_univariates.end(),
+               this->_univariates.begin() );
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 

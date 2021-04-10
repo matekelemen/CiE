@@ -17,9 +17,17 @@ namespace cie::fem::maths {
 template < Size Dimension,
            concepts::NumericType NT,
            class DerivativeType = VectorFunction<Dimension,Dimension,NT> >
-using ScalarFunction = AbsFunction< NT,
-                                    typename Kernel<Dimension,NT>::point_type,
-                                    DerivativeType >;
+struct ScalarFunction :
+    public AbsFunction< NT,
+                        typename Kernel<Dimension,NT>::point_type,
+                        DerivativeType >,
+    public Kernel<Dimension,NT>
+{};
+
+
+template < Size Dimension,
+           concepts::NumericType NT >
+using ScalarFunctionPtr = std::shared_ptr<ScalarFunction<Dimension,NT>>;
 
 
 } // namespace cie::fem::maths

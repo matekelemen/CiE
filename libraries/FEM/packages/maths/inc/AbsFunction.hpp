@@ -25,6 +25,9 @@ public:
 public:
     virtual value_type operator()( const ArgumentType& r_argument ) const = 0;
     virtual derivative_ptr derivative() const = 0;
+
+    value_type evaluate( const ArgumentType& r_argument ) const
+    { return this->operator()(r_argument); }
 };
 
 

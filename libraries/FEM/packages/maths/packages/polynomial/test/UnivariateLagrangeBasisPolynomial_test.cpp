@@ -44,6 +44,9 @@ CIE_TEST_CASE( "UnivariateLagrangeBasisPolynomial", "[maths]" )
     CIE_TEST_CHECK( polynomial(1.0/3.0) == Approx(0.0).margin(1e-14) );
     CIE_TEST_CHECK( polynomial(2.0/3.0) == Approx(0.0).margin(1e-14) );
     CIE_TEST_CHECK( polynomial(1.0) == Approx(1.0) );
+
+    // Check construction via initializer list
+    CIE_TEST_CHECK_NOTHROW( Polynomial( {0.0, 1.0, 2.0}, 0 ) );
 }
 
 
