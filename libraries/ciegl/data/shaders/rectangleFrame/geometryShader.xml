@@ -1,0 +1,11 @@
+<shader>
+    <attributes>
+    </attributes>
+    <uniforms>
+        <u0 name="transformation" type="mat4" size="16"/>
+    </uniforms>
+    <textures>
+    </textures>
+    <outputs>
+    </outputs>
+</shader>

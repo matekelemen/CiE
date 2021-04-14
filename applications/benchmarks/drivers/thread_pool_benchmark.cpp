@@ -51,6 +51,8 @@ int main()
             pool.queueJob( std::bind(&crappyFibonacci, fibonacciIndex) );
         pool.terminate();
     }
+
+    return 0;
 }
 
 

@@ -52,6 +52,9 @@ public:
     /// Number of jobs in the queue
     Size numberOfJobs() const;
 
+    /// TODO
+    void barrier() const;
+
     void terminate();
 
 private:

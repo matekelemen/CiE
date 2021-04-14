@@ -106,13 +106,17 @@ public:
     bool divide( const target_function& r_target,
                  Size level );
 
+    bool divide( const target_function& r_target,
+                 Size level,
+                 mp::ThreadPool& r_threadPool );
+
     /**
      * Evaluate the target function at all sample points, store the results in a map,
      * and split the node if the results have mixed signs.
     */
-    bool divide(    const target_function& r_target,
-                    Size level,
-                    target_map_ptr p_targetMap );
+    bool divide( const target_function& r_target,
+                 Size level,
+                 target_map_ptr p_targetMap );
 
     /**
      * Evaluate the target function at all sample points and store the results.

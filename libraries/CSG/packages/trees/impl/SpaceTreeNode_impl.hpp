@@ -41,12 +41,33 @@ SpaceTreeNode<CellType,ValueType>::divide(  const typename SpaceTreeNode<CellTyp
     CIE_BEGIN_EXCEPTION_TRACING
 
     mp::ThreadPool pool;
-    bool result = this->divide_internal(
+    bool result = this->divide(
         r_target,
         level,
         pool
     );
     pool.terminate();
+
+    return result;
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+template <  class CellType,
+            class ValueType >
+inline bool
+SpaceTreeNode<CellType,ValueType>::divide( const typename SpaceTreeNode<CellType,ValueType>::target_function& r_target,
+                                           Size level,
+                                           mp::ThreadPool& r_threadPool )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    bool result = this->divide_internal(
+        r_target,
+        level,
+        r_threadPool
+    );
 
     return result;
 

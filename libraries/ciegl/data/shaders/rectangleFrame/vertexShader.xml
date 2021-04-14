@@ -1,0 +1,12 @@
+<shader>
+    <attributes>
+        <a0 name="position" type="vec2" size="2" stride="4" offset="0"/>
+        <a1 name="lengths" type="vec2" size="2" stride="4" offset="2"/>
+    </attributes>
+    <uniforms>
+    </uniforms>
+    <textures>
+    </textures>
+    <outputs>
+    </outputs>
+</shader>

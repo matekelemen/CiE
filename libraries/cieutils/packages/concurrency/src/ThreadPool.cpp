@@ -72,6 +72,13 @@ Size ThreadPool::numberOfJobs() const
 }
 
 
+void ThreadPool::barrier() const
+{
+    // TODO
+    while ( !this->_jobs.empty() ) {}
+}
+
+
 void ThreadPool::terminate()
 {
     {
