@@ -18,9 +18,18 @@ template < Size ValueDimension,
            Size Dimension,
            concepts::NumericType NT,
            class DerivativeType = MatrixFunction<ValueDimension,Dimension,Dimension,NT> >
-using VectorFunction = AbsFunction< typename Kernel<ValueDimension,NT>::point_type,
-                                    typename Kernel<Dimension,NT>::point_type,
-                                    DerivativeType >;
+struct VectorFunction :
+    public AbsFunction< typename Kernel<ValueDimension,NT>::point_type,
+                        typename Kernel<Dimension,NT>::point_type,
+                        DerivativeType >,
+    public Kernel<Dimension,NT>
+{};
+
+
+template < Size VD,
+           Size D,
+           concepts::NumericType NT >
+using VectorFunctionPtr = std::shared_ptr<VectorFunction<VD,D,NT>>;
 
 
 } // namespace cie::fem::maths

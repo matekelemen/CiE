@@ -24,6 +24,13 @@ SeparableVectorFunction<ValueDimension,Dimension,NT>::SeparableVectorFunction( c
 
 
 template <Size ValueDimension, Size Dimension, concepts::NumericType NT>
+SeparableVectorFunction<ValueDimension,Dimension,NT>::SeparableVectorFunction( typename SeparableVectorFunction<ValueDimension,Dimension,NT>::function_list&& r_components ) :
+    _components( std::move(r_components) )
+{
+}
+
+
+template <Size ValueDimension, Size Dimension, concepts::NumericType NT>
 inline typename SeparableVectorFunction<ValueDimension,Dimension,NT>::value_type
 SeparableVectorFunction<ValueDimension,Dimension,NT>::operator()( const typename SeparableVectorFunction<ValueDimension,Dimension,NT>::argument_type& r_argument ) const
 {

@@ -28,6 +28,7 @@ public:
     using univariate_function = UnivariateScalarFunction<NT>;
     using univariate_ptr = std::shared_ptr<univariate_function>;
     using univariate_container = std::array<univariate_ptr,Dimension>;
+    using univariate_list = std::initializer_list<univariate_ptr>;
 
     using typename base_type::value_type;
     using typename base_type::argument_type;
@@ -37,6 +38,8 @@ public:
     SeparableScalarFunction( univariate_container&& r_univariates );
 
     SeparableScalarFunction( const univariate_container& r_univariates );
+
+    SeparableScalarFunction( univariate_list&& r_univariates );
 
     SeparableScalarFunction();
 

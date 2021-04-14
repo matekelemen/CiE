@@ -23,6 +23,7 @@ public:
     using vector_function = SeparableVectorFunction<ValueDimension1,Dimension,NT>;
     using function_ptr = std::shared_ptr<vector_function>;
     using function_container = std::array<function_ptr,ValueDimension0>;
+    using function_list = std::initializer_list<function_ptr>;
 
     using typename base_type::value_type;
     using typename base_type::argument_type;
@@ -32,6 +33,8 @@ public:
     SeparableMatrixFunction( function_container&& r_functions );
 
     SeparableMatrixFunction( const function_container& r_functions );
+
+    SeparableMatrixFunction( function_list&& r_functions );
 
     SeparableMatrixFunction() = default;
 

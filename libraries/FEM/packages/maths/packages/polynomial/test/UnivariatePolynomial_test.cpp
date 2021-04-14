@@ -66,6 +66,8 @@ CIE_TEST_CASE( "UnivariatePolynomial", "[maths]" )
         CIE_TEST_CHECK( defaultPolynomial(-2) == Approx(0.0) );
     }
 
+    // Construction via initializer list
+    CIE_TEST_CHECK_NOTHROW( Polynomial({0, 0, 1}) );
 }
 
 
