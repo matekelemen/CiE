@@ -43,9 +43,6 @@ using Splitter       = csg::MidPointSplitPolicy<Node::sample_point_iterator,Node
 
 const std::filesystem::path SHADER_DIR = SOURCE_PATH / "libraries/ciegl/data/shaders/rectangleFrame";
 
-const Size numberOfSamplePointsPerDimension = 20;
-const Size depth = 10;
-
 
 // -------------------------------------------------------------------------
 // CLASS DECLARATION
@@ -84,6 +81,7 @@ private:
     mp::ThreadPool       _threadPool;
 
     gl::VertexBuffer::data_container_type _vertexData;
+    Size                 _depth;
 };
 
 
@@ -114,14 +112,15 @@ BadAppleScene::BadAppleScene( utils::Logger& r_logger,
     this->bindUniform( "transformation", p_camera->transformationMatrix() );
 
     this->_p_root = NodePtr( new Node(
-        Node::sampler_ptr( new Sampler(numberOfSamplePointsPerDimension) ),
+        Node::sampler_ptr( new Sampler(args.get<Size>( "sampling-order" )) ),
         Node::split_policy_ptr( new Splitter ),
         0,
         PointType {0.0, 0.0},
         1.0
     ) );
 
-    this->_vertexData.resize( 4 * intPow(4, depth) );
+    this->_depth = args.get<Size>( "depth" );
+    this->_vertexData.resize( 4 * intPow(4, this->_depth) );
 }
 
 
@@ -145,7 +144,7 @@ gl::Image& BadAppleScene::frame()
 
 void BadAppleScene::updateTree()
 {
-    this->_vertexData.resize( 4 * intPow(4, depth) );
+    this->_vertexData.resize( 4 * intPow(4, this->_depth) );
 
     // Load next frame
     this->_frame.load( this->_framePath.c_str(), true );
@@ -157,7 +156,7 @@ void BadAppleScene::updateTree()
     this->_p_root->clear();
     this->_p_root->divide(
         target
-        ,depth
+        ,this->_depth
         ,this->_threadPool
     );
     this->_threadPool.barrier();
@@ -213,6 +212,8 @@ utils::CommandLineArguments badAppleArguments( int argc, char const* argv[] )
 {
     utils::CommandLineArguments args( argc, argv );
     args.addDefaultKeywordArgument( "save-frames", "false" );
+    args.addDefaultKeywordArgument( "depth", "9" );
+    args.addDefaultKeywordArgument( "sampling-order", "12" );
     return args;
 }
 
@@ -226,7 +227,7 @@ int main( int argc, char const* argv[] )
     // Parse command line arguments
     auto args = badAppleArguments( argc, argv );
 
-    bool saveFrames = args.get<bool>("save-frames");
+    const bool saveFrames    = args.get<bool>( "save-frames" );
 
     // Graphics setup
     auto p_context = gl::GLFWContextSingleton::get();
@@ -239,11 +240,6 @@ int main( int argc, char const* argv[] )
                        {0.0, 1.0, 0.0} );
     p_camera->setClippingPlanes( 0.3, 1.0 );
     p_camera->setAspectRatio( p_window->getSize().first / p_window->getSize().second );
-
-    auto p_controls = std::make_shared<gl::PanZoomCameraControls>();
-    p_controls->bind( p_window, p_camera );
-    p_controls->setMovementScale( 0.05f );
-    p_controls->setZoomScale( 0.6f );
 
     using Clock = std::chrono::high_resolution_clock;
     auto t0 = Clock::now();
