@@ -43,6 +43,16 @@ Image::Image( const std::filesystem::path& r_filePath,
 }
 
 
+Image::Image( Size width, Size height, Size numberOfChannels ) :
+    _p_data( nullptr ),
+    _width( width ),
+    _height( height ),
+    _numberOfChannels( numberOfChannels )
+{
+    this->_p_data = this->allocate( width, height, numberOfChannels );
+}
+
+
 Image::Image( const Image& r_rhs ) :
     Image()
 {
@@ -230,6 +240,24 @@ void Image::resize( Size width, Size height )
 }
 
 
+void Image::verticalFlip()
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    Size tripleWidth = 3 * this->_width;
+    Size halfHeight = this->_height/2;
+
+    for ( Size rowIndex=0; rowIndex < halfHeight; ++rowIndex )
+        std::swap_ranges(
+            this->_p_data + tripleWidth * rowIndex,
+            this->_p_data + tripleWidth * (rowIndex+1),
+            this->_p_data + tripleWidth * (this->_height - rowIndex - 1)
+        );
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
 void Image::clear()
 {
     CIE_BEGIN_EXCEPTION_TRACING
@@ -269,6 +297,12 @@ Size Image::size() const
 
 
 const Image::value_type* Image::data() const
+{
+    return this->_p_data;
+} 
+
+
+Image::value_type* Image::data()
 {
     return this->_p_data;
 } 

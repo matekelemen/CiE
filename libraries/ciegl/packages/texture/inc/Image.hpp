@@ -30,6 +30,9 @@ public:
     Image( const std::filesystem::path& r_filePath,
            bool flip = false );
 
+    /// Alloc constructor
+    Image( Size width, Size height, Size numberOfChannels );
+
     /// Default constructor -> copy assignment operator
     Image( const Image& r_rhs );
 
@@ -74,6 +77,9 @@ public:
      */
     void resize( Size width, Size height );
 
+    /// Flip the image vertically
+    void verticalFlip();
+
     /// Delete and deallocate data, reset sizes
     void clear();
 
@@ -96,6 +102,8 @@ public:
     Size size() const;
 
     const value_type* data() const;
+
+    value_type* data();
 
 private:
     /// Attempt to allocate memory and check whether it was successful
