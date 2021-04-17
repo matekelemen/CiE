@@ -3,6 +3,7 @@
 
 
 #include "cieutils/packages/concurrency/inc/ThreadPool.hpp"
+#include "cieutils/packages/concurrency/inc/ParallelFor.hpp"
 
 
 #endif

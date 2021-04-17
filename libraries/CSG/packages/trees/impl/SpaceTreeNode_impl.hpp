@@ -68,6 +68,7 @@ SpaceTreeNode<CellType,ValueType>::divide( const typename SpaceTreeNode<CellType
         level,
         r_threadPool
     );
+    r_threadPool.barrier();
 
     return result;
 

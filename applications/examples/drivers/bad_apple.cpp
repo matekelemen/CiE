@@ -43,8 +43,8 @@ using Splitter       = csg::MidPointSplitPolicy<Node::sample_point_iterator,Node
 
 const std::filesystem::path SHADER_DIR = SOURCE_PATH / "libraries/ciegl/data/shaders/rectangleFrame";
 
-const Size numberOfSamplePointsPerDimension = 15;
-const Size depth = 9;
+const Size numberOfSamplePointsPerDimension = 20;
+const Size depth = 10;
 
 
 // -------------------------------------------------------------------------
@@ -158,7 +158,7 @@ void BadAppleScene::updateTree()
     this->_p_root->divide(
         target
         ,depth
-        //,this->_threadPool
+        ,this->_threadPool
     );
     this->_threadPool.barrier();
 
@@ -289,8 +289,6 @@ int main( int argc, char const* argv[] )
         p_scene->updateTree();
 
         while (checkDelay()) {}
-
-        //p_window->update();
 
         if ( saveFrames )
         {

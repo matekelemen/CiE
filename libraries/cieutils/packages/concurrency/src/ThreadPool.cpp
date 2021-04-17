@@ -1,5 +1,6 @@
 // --- Internal Includes ---
 #include "cieutils/packages/macros/inc/exceptions.hpp"
+#include "cieutils/packages/macros/inc/checks.hpp"
 #include "cieutils/packages/concurrency/inc/ThreadPool.hpp"
 
 
@@ -22,10 +23,12 @@ ThreadPool::ThreadPool( Size size ) :
     if ( maxNumberOfThreads < size )
         size = maxNumberOfThreads;
 
+    _barrier = false;
+
     // Initialize threads
     this->_threads.reserve( size );
 
-    for ( Size i=0; i<size; ++i )
+    for ( _numberOfActiveThreads=0; _numberOfActiveThreads<size; ++_numberOfActiveThreads )
         this->_threads.push_back( std::thread(&ThreadPool::jobScheduler, this) );
 
     CIE_END_EXCEPTION_TRACING
@@ -56,7 +59,7 @@ void ThreadPool::queueJob( ThreadPool::job_type job )
         std::unique_lock<ThreadPool::mutex_type> lock( this->_mutex );
         this->_jobs.push_back( job );
     }
-    this->_condition.notify_one();
+    this->_jobCondition.notify_one();
 }
 
 
@@ -72,10 +75,35 @@ Size ThreadPool::numberOfJobs() const
 }
 
 
-void ThreadPool::barrier() const
+void ThreadPool::barrier()
 {
-    // TODO
-    while ( !this->_jobs.empty() ) {}
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    std::unique_lock<ThreadPool::mutex_type> lock( this->_mutex );
+    
+    CIE_CHECK(
+        !this->_barrier,
+        "barrier was called on an ongoing barrier!"
+    )
+
+    this->_masterCondition.wait(
+        lock,
+        [this]{ return this->_numberOfActiveThreads == this->_threads.size(); }
+    );
+
+    this->_barrier = true;
+
+    this->_jobCondition.notify_all();
+
+    this->_masterCondition.wait(
+        lock,
+        [this]{ return (this->_terminate) || (this->_numberOfActiveThreads == 0); }
+    );
+
+    this->_barrier = false;
+    this->_barrierCondition.notify_all();
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -84,7 +112,8 @@ void ThreadPool::terminate()
     {
         std::unique_lock<ThreadPool::mutex_type> lock( this->_mutex );
         this->_terminate = true;
-        this->_condition.notify_all();
+        this->_jobCondition.notify_all();
+        this->_barrierCondition.notify_all();
     }
 
     for ( auto& r_thread : this->_threads )
@@ -96,6 +125,8 @@ void ThreadPool::terminate()
 
 void ThreadPool::jobScheduler()
 {
+    auto id = this->threadID();
+
     while ( true )
     {
         ThreadPool::job_type job = nullptr;
@@ -103,23 +134,69 @@ void ThreadPool::jobScheduler()
         {
             std::unique_lock<ThreadPool::mutex_type> lock( this->_mutex );
 
-            this->_condition.wait(
+            this->_jobCondition.wait(
                 lock,
-                [this]{ return !this->_jobs.empty() || this->_terminate; }
+                [this]{ return !this->_jobs.empty() || this->_terminate || this->_barrier; }
             );
 
+            // Got a job? -> strip it!
             if ( !this->_jobs.empty() )
             {
                 job = this->_jobs.front();
                 this->_jobs.pop_front();
             }
-            else
-                break;
         }
 
+        // Have a stripped job? -> execute it!
         if ( job )
             job();
+
+        // Don't have a stripped job? -> terminate or set blocked for barrier
+        else
+        {
+            std::unique_lock<ThreadPool::mutex_type> lock( this->_mutex );
+
+            // Terminate thread
+            if ( this->_terminate )
+                break;
+
+            // Enqueue at barrier
+            else if ( this->_barrier )
+            {
+                if ( this->_numberOfActiveThreads )
+                    --this->_numberOfActiveThreads;
+
+                this->_masterCondition.notify_all();
+
+                this->_barrierCondition.wait(
+                    lock,
+                    [this]{ return (!this->_barrier) || this->_terminate; }
+                );
+
+                ++this->_numberOfActiveThreads;
+                this->_masterCondition.notify_all();
+            }
+            else
+                CIE_THROW( Exception, "Thread has no job, no barrier, and is not terminated" )
+        } // job queue empty
     }
+}
+
+
+Size ThreadPool::threadID() const
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    auto it_threadEnd = this->_threads.end();
+    auto id = std::this_thread::get_id();
+
+    for ( auto it=this->_threads.begin(); it!=it_threadEnd; ++it )
+        if ( it->get_id() == id )
+            return std::distance( this->_threads.begin(), it );
+
+    return std::distance( this->_threads.begin(), it_threadEnd );
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 

@@ -180,6 +180,8 @@ ParallelFor<IndexType,StorageType>::execute( const typename ParallelFor<IndexTyp
         );
     }
 
+    this->_p_pool->barrier();
+
     CIE_END_EXCEPTION_TRACING
 }
 
@@ -216,6 +218,8 @@ ParallelFor<IndexType,StorageType>::execute( const typename ParallelFor<IndexTyp
             }
         );
     }
+
+    this->_p_pool->barrier();
 
     CIE_END_EXCEPTION_TRACING
 }

@@ -53,7 +53,7 @@ public:
     Size numberOfJobs() const;
 
     /// TODO
-    void barrier() const;
+    void barrier();
 
     void terminate();
 
@@ -62,14 +62,26 @@ private:
     ThreadPool( ThreadPool&& r_rhs ) = delete;
     ThreadPool& operator=( const ThreadPool& r_rhs ) = delete;
 
+    /**
+     * @brief Looping function running on all threads
+     * Upon notification, sets the lock and checks the job queue,
+     * strips and executes one if there are any.
+     */
     void jobScheduler();
+
+    Size threadID() const;
 
 private:
     bool                    _terminate;
     thread_container        _threads;
     job_container           _jobs;
     mutex_type              _mutex;
-    std::condition_variable _condition;
+    std::condition_variable _jobCondition;
+    std::condition_variable _barrierCondition;
+    std::condition_variable _masterCondition;
+
+    Size                    _numberOfActiveThreads;
+    bool                    _barrier;
 };
 
 

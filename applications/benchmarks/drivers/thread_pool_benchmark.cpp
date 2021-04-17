@@ -44,13 +44,44 @@ int main()
     }
 
     {
-        auto localBlock = log.newBlock( "ThreadPool" );
-
         mp::ThreadPool pool;
+        auto localBlock = log.newBlock( "ThreadPool - job queue" );
+
         for ( unsigned int i=0; i<numberOfJobs; ++i )
             pool.queueJob( std::bind(&crappyFibonacci, fibonacciIndex) );
         pool.terminate();
     }
+
+    {
+        auto localBlock = log.newBlock( "ThreadPool - parallel for" );
+
+        mp::ParallelFor<>()(
+            0, numberOfJobs, 1,
+            [fibonacciIndex]( Size index ){ crappyFibonacci(fibonacciIndex); }
+        );
+    }
+
+    #ifdef _OPENMP
+    #pragma omp parallel
+    {
+        #pragma omp single
+        {
+            auto localBlock = log.newBlock( "OpenMP - tasks" );
+            for ( unsigned int i=0; i<numberOfJobs; ++i )
+            {
+                #pragma omp task
+                crappyFibonacci( fibonacciIndex );
+            }
+        }
+    }
+
+    {
+        auto localBlock = log.newBlock( "OpenMP - parallel for" );
+        #pragma omp parallel for
+        for ( unsigned int i=0; i<numberOfJobs; ++i )
+            crappyFibonacci( fibonacciIndex );
+    }
+    #endif
 
     return 0;
 }

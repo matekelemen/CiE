@@ -33,7 +33,7 @@ int main()
     utils::Logger log( OUTPUT_PATH / "space_tree_benchmark.log", true );
 
     const Size depth = 10;
-    const Size numberOfPointsPerDimension = 5;
+    const Size numberOfPointsPerDimension = 6;
 
     log << "\x1b[38;2;0;255;0m";
     {
@@ -59,8 +59,12 @@ int main()
     ) );
 
     {
-        auto localBlock = log.newBlock( "divide" );
-        p_root->divide( target, depth );
+        mp::ThreadPool pool;
+        {
+            auto localBlock = log.newBlock( "divide" );
+            p_root->divide( target, depth, pool );
+        }
+        pool.terminate();
     }
 
     return 0;
