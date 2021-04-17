@@ -43,8 +43,8 @@ using Splitter       = csg::MidPointSplitPolicy<Node::sample_point_iterator,Node
 
 const std::filesystem::path SHADER_DIR = SOURCE_PATH / "libraries/ciegl/data/shaders/rectangleFrame";
 
-const Size numberOfSamplePointsPerDimension = 12;
-const Size depth = 8;
+const Size numberOfSamplePointsPerDimension = 15;
+const Size depth = 9;
 
 
 // -------------------------------------------------------------------------
@@ -61,6 +61,8 @@ public:
     gl::CameraPtr getCamera();
 
     std::string& framePath();
+
+    gl::Image& frame();
 
     void updateTree();
 
@@ -135,6 +137,12 @@ std::string& BadAppleScene::framePath()
 }
 
 
+gl::Image& BadAppleScene::frame()
+{
+    return this->_frame;
+}
+
+
 void BadAppleScene::updateTree()
 {
     this->_vertexData.resize( 4 * intPow(4, depth) );
@@ -201,6 +209,14 @@ ValueType BadAppleScene::sampleImage( CT x, CT y ) const
 }
 
 
+utils::CommandLineArguments badAppleArguments( int argc, char const* argv[] )
+{
+    utils::CommandLineArguments args( argc, argv );
+    args.addDefaultKeywordArgument( "save-frames", "false" );
+    return args;
+}
+
+
 // -------------------------------------------------------------------------
 // MAIN
 // -------------------------------------------------------------------------
@@ -208,18 +224,20 @@ ValueType BadAppleScene::sampleImage( CT x, CT y ) const
 int main( int argc, char const* argv[] )
 {
     // Parse command line arguments
-    utils::CommandLineArguments args( argc, argv );
-    
+    auto args = badAppleArguments( argc, argv );
+
+    bool saveFrames = args.get<bool>("save-frames");
+
     // Graphics setup
     auto p_context = gl::GLFWContextSingleton::get();
-    auto p_window = p_context->newWindow( 1024, 768 );
+    auto p_window = p_context->newWindow( 960, 720 );
     auto p_scene = p_window->makeScene<BadAppleScene>( "BadAppleScene", args );
 
     auto p_camera = p_scene->getCamera();
     p_camera->setPose( {0.5, 0.5, 0.5},
                        {0.0, 0.0, -1.0},
                        {0.0, 1.0, 0.0} );
-    p_camera->setClippingPlanes( 0.3, 1.1 );
+    p_camera->setClippingPlanes( 0.3, 1.0 );
     p_camera->setAspectRatio( p_window->getSize().first / p_window->getSize().second );
 
     auto p_controls = std::make_shared<gl::PanZoomCameraControls>();
@@ -234,7 +252,7 @@ int main( int argc, char const* argv[] )
     {
         auto now = Clock::now();
         float elapsed = std::chrono::duration_cast<std::chrono::duration<float>>(now - t0).count();
-        if ( elapsed < 1.0/24.0 )
+        if ( elapsed < 1.0/30.0 )
             return true;
         else
         {
@@ -253,13 +271,33 @@ int main( int argc, char const* argv[] )
             frames.insert( r_framePath.path().string() );
     }
 
+    // Main loop init
+    gl::Image screenshot( 
+        p_window->getSize().first,
+        p_window->getSize().second,
+        3
+    );
+
+    std::string baseName = "frame_";
+    std::string extension = ".png";
+
     // Main loop
+    Size frameIndex = 0;
     for ( const auto& r_framePath : frames )
     {
         p_scene->framePath() = r_framePath;
         p_scene->updateTree();
 
         while (checkDelay()) {}
+
+        //p_window->update();
+
+        if ( saveFrames )
+        {
+            std::stringstream frameIndexString;
+            frameIndexString << std::setfill('0') << std::setw(5) << frameIndex++;
+            p_window->screenshot( baseName + frameIndexString.str() + extension, &screenshot );
+        }
 
         p_window->update();
     }

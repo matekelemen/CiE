@@ -139,6 +139,45 @@ void AbsWindow::endLoop()
 }
 
 
+void AbsWindow::screenshot( const std::filesystem::path& r_outputPath,
+                            Image* p_targetImage ) const
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    bool hasTargetImage = false;
+
+    if ( !p_targetImage )
+        p_targetImage = new Image(
+            this->_size.first,
+            this->_size.second,
+            3
+        );
+    else
+    {
+        CIE_OUT_OF_RANGE_CHECK( p_targetImage->width() == this->_size.first )
+        CIE_OUT_OF_RANGE_CHECK( p_targetImage->height() == this->_size.second )
+        CIE_OUT_OF_RANGE_CHECK( p_targetImage->numberOfChannels() == 3 )
+        hasTargetImage = true;
+    }
+
+    glReadPixels(
+        0, 0,
+        this->_size.first, this->_size.second,
+        GL_RGB,
+        GL_UNSIGNED_BYTE,
+        p_targetImage->data()
+    );
+
+    p_targetImage->verticalFlip();
+    p_targetImage->write( r_outputPath );
+
+    if ( !hasTargetImage )
+        delete p_targetImage;
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
 void AbsWindow::addScene( ScenePtr p_scene )
 {
     CIE_BEGIN_EXCEPTION_TRACING

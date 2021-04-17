@@ -11,12 +11,14 @@
 // --- Internal Includes ---
 #include "ciegl/packages/scene/inc/Scene.hpp"
 #include "ciegl/packages/control/inc/callback_types.hpp"
+#include "ciegl/packages/texture/inc/Image.hpp"
 
 // --- STL Includes ---
 #include <memory>
 #include <utility>
 #include <list>
 #include <functional>
+#include <filesystem>
 
 
 namespace cie::gl {
@@ -66,6 +68,14 @@ public:
 
     void beginLoop();
     void endLoop();
+
+    /** Copy window data into an RGB image and write it to disk
+     *  @param r_outputPath relative or full path of the new image file
+     *  @param p_targetImage preallocated image. If none is given, allocation
+     *  is performed internally
+     */
+    void screenshot( const std::filesystem::path& r_outputPath,
+                     Image* p_targetImage = nullptr ) const;
 
     void setMouseButtonCallback( MouseButtonCallback function );
     void setCursorPositionCallback( CursorPositionCallback function );
