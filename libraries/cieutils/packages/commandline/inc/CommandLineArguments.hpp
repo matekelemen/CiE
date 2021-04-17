@@ -28,6 +28,14 @@ public:
 public:
     CommandLineArguments( int argc, char const* argv[] );
 
+    CommandLineArguments() = default;
+
+    CommandLineArguments( CommandLineArguments&& r_rhs ) = default;
+
+    CommandLineArguments( const CommandLineArguments& r_rhs ) = default;
+
+    CommandLineArguments& operator=( const CommandLineArguments& r_rhs ) = default;
+
     /**
      * Add default keyword argument
      */

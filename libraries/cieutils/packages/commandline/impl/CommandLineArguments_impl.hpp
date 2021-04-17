@@ -2,6 +2,9 @@
 #include "cieutils/packages/macros/inc/exceptions.hpp"
 #include "cieutils/packages/macros/inc/checks.hpp"
 
+// --- STL Includes ---
+#include <sstream>
+
 
 namespace cie::utils {
 
@@ -148,6 +151,28 @@ CommandLineArguments::get<double>( Size index ) const
     return std::stod( *this->find(index) );
 }
 
+
+
+/* --- bool --- */
+
+template <>
+inline bool
+CommandLineArguments::get<bool>( const std::string& r_key ) const
+{
+    bool value;
+    std::istringstream( this->find(r_key)->second ) >> std::boolalpha >> value;
+    return value;
+}
+
+
+template <>
+inline bool
+CommandLineArguments::get<bool>( Size index ) const
+{
+    bool value;
+    std::istringstream( *this->find(index) ) >> std::boolalpha >> value;
+    return value;
+}
 
 
 /* --- DEFAULT --- */
