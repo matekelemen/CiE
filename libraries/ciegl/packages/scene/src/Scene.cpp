@@ -145,10 +145,11 @@ Scene::Scene( utils::Logger& r_logger,
             new GLUniformPlaceholder( r_uniform, this->getID() )
         );
 
-    for ( const auto& r_uniform : this->_p_geometryShader->uniforms() )
-        this->_uniforms.emplace_back(
-            new GLUniformPlaceholder( r_uniform, this->getID() )
-        );
+    if ( this->_p_geometryShader )
+        for ( const auto& r_uniform : this->_p_geometryShader->uniforms() )
+            this->_uniforms.emplace_back(
+                new GLUniformPlaceholder( r_uniform, this->getID() )
+            );
 
     for ( const auto& r_uniform : this->_p_fragmentShader->uniforms() )
         this->_uniforms.emplace_back(
