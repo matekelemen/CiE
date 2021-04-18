@@ -17,13 +17,13 @@
 namespace cie::gl {
 
 
-Axes3DScene::Axes3DScene( utils::Logger& r_logger,
-                          const std::string& r_name,
-                          CameraPtr p_camera ) :
-    GenericPartScene( r_logger,
-                      r_name,
+Axes3DScene::Axes3DScene( const std::string& r_name,
+                          CameraPtr p_camera,
+                          utils::Logger& r_logger ) :
+    GenericPartScene( r_name,
                       GL_TRIANGLES,
-                      SOURCE_PATH / "libraries/ciegl/data/shaders/coloredAxes" ),
+                      SOURCE_PATH / "libraries/ciegl/data/shaders/coloredAxes",
+                      r_logger ),
     _p_axes( nullptr ),
     _box( {{0.0, 0.2}, {0.0, 0.2}} ),
     _transformationMatrix()

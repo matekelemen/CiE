@@ -19,11 +19,11 @@ namespace cie::gl {
 Size Scene::_activeSceneID = std::numeric_limits<Size>().max();
 
 
-Scene::Scene( utils::Logger& r_logger,
-              const std::string& r_name,
+Scene::Scene( const std::string& r_name,
               ShaderPtr p_vertexShader,
               ShaderPtr p_geometryShader,
               ShaderPtr p_fragmentShader,
+              utils::Logger& r_logger,
               VertexBufferPtr p_vertexBuffer,
               ElementBufferPtr p_elementBuffer ) :
     utils::Loggee( r_logger, r_name ),

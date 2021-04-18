@@ -6,6 +6,7 @@
 
 // --- Utility Includes ---
 #include "cieutils/packages/logging/inc/Loggee.hpp"
+#include "cieutils/packages/logging/inc/LoggerSingleton.hpp"
 
 // --- Internal Includes ---
 #include "ciegl/packages/camera/inc/RigidBody.hpp"
@@ -35,7 +36,7 @@ public:
     using external_vector_type = glm::dvec3;
 
 public:
-    AbsCamera( utils::Logger& r_logger,
+    AbsCamera( utils::Logger& r_logger                   = utils::LoggerSingleton::get(),
                const std::string& r_name                 = "AbsCamera",
                const AbsCamera::vector_type& r_position  = {0.0, 0.0, 1.0},
                const AbsCamera::vector_type& r_direction = {0.0, 0.0, -1.0},
@@ -44,6 +45,8 @@ public:
     AbsCamera( const AbsCamera& r_rhs ) = default;
 
     AbsCamera( AbsCamera&& r_rhs ) = default;
+
+    AbsCamera& operator=( const AbsCamera& r_rhs ) = delete;
 
     /**
      * Update matrices

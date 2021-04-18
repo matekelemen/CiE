@@ -25,7 +25,7 @@ AbsPlot::AbsPlot() :
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    this->_p_window = GLFWContextSingleton::get( true )->newWindow();
+    this->_p_window = GLFWContextSingleton::get()->newWindow();
 
     CIE_END_EXCEPTION_TRACING
 }

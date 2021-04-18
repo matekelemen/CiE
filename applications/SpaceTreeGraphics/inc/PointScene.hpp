@@ -42,8 +42,8 @@ public:
     using vertex_attribute_container = typename gl::VertexBuffer::data_container_type;
 
 public:
-    PointScene( utils::Logger& r_logger,
-                const std::string& r_name );
+    PointScene( const std::string& r_name,
+                utils::Logger& r_logger );
 
     PointScene& addRoot( csg::NodePtr p_root );
 

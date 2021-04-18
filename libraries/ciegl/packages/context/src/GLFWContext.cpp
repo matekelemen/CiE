@@ -18,19 +18,17 @@ namespace cie::gl {
 GLFWContext::GLFWContext( Size versionMajor,
                           Size versionMinor,
                           Size MSAASamples,
-                          const std::filesystem::path& r_logFileName,
-                          bool useConsole  )   :
+                          utils::LoggerPtr p_logger  )   :
     AbsContext( versionMajor,
                 versionMinor,
                 MSAASamples,
-                r_logFileName,
-                useConsole ),
+                p_logger ),
     _isGLADInitialized( false ),
     _isCurrent( false )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    auto scopedBlock = this->newBlock( "GLFWContext init" );
+    auto scopedBlock = _p_logger->newBlock( "GLFWContext init" );
 
     glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, versionMajor );
     glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, versionMinor );
@@ -42,11 +40,11 @@ GLFWContext::GLFWContext( Size versionMajor,
     glfwSetErrorCallback( callback_errorPrint );
 
     if ( !glfwInit() )
-        this->error<Exception>( "Failed to initialize GLFW" );
+        _p_logger->error<Exception>( "Failed to initialize GLFW" );
     else
-        this->log( "GLFW initialization successful" );
+        _p_logger->log( "GLFW initialization successful" );
 
-    log( "Open context" );
+    _p_logger->log( "Open context" );
     
     CIE_END_EXCEPTION_TRACING
 }
@@ -70,7 +68,7 @@ WindowPtr GLFWContext::newWindow_impl( Size width,
                         r_name,
                         width,
                         height,
-                        *this )
+                        *_p_logger)
     );
 
     if ( !this->_isCurrent )
@@ -94,10 +92,10 @@ void GLFWContext::focusWindow( WindowPtr p_window )
     if ( p_window != nullptr )
     {
         // TODO
-        log( "Focus on window " );
+        _p_logger->log( "Focus on window " );
     }
     else
-        error<Exception>( "Focus on non-existent window!" );
+        _p_logger->error<Exception>( "Focus on non-existent window!" );
 
     CIE_END_EXCEPTION_TRACING
 }
@@ -120,9 +118,9 @@ void GLFWContext::initializeGLADIfNecessary()
         return;
 
     if ( (!gladLoadGLLoader( (GLADloadproc)glfwGetProcAddress )) )
-        error<Exception>( "Failed to initialize GLAD" );
+        _p_logger->error<Exception>( "Failed to initialize GLAD" );
     else
-        log("Initialize GLAD");
+        _p_logger->log("Initialize GLAD");
 
     _isGLADInitialized = true;
 
@@ -140,8 +138,7 @@ ContextPtr GLFWContextSingleton::_p_context = nullptr;
 ContextPtr GLFWContextSingleton::get( Size versionMajor,
                                       Size versionMinor,
                                       Size MSAASamples,
-                                      const std::filesystem::path& r_logFilePath,
-                                      bool useConsole )
+                                      utils::LoggerPtr p_logger )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
@@ -155,7 +152,7 @@ ContextPtr GLFWContextSingleton::get( Size versionMajor,
             ||
             GLFWContextSingleton::_p_context->MSAASamples() != MSAASamples
         )
-            GLFWContextSingleton::_p_context->error( "GLFWContext parameter mismatch!" );
+            GLFWContextSingleton::_p_context->logger().error( "GLFWContext parameter mismatch!" );
 
         // TODO: Add stream if necessary
     }
@@ -165,8 +162,7 @@ ContextPtr GLFWContextSingleton::get( Size versionMajor,
             versionMajor,
             versionMinor,
             MSAASamples,
-            r_logFilePath,
-            useConsole
+            p_logger
         ) );
     }
 
@@ -188,8 +184,7 @@ ContextPtr GLFWContextSingleton::get()
         p_context = GLFWContextSingleton::get( 4,
                                                5,
                                                0,
-                                               OUTPUT_PATH / "graphics.log",
-                                               false );
+                                               utils::LoggerSingleton::getPtr() );
 
     return p_context;
 
@@ -197,33 +192,21 @@ ContextPtr GLFWContextSingleton::get()
 }
 
 
-ContextPtr GLFWContextSingleton::get( const std::filesystem::path& r_logFilePath )
+ContextPtr GLFWContextSingleton::get( utils::LoggerPtr p_logger )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    auto p_context = GLFWContextSingleton::get();
+    ContextPtr p_context;
 
-    // Create log file if it's not currently in use
-    auto& r_fileManager = p_context->fileManager();
-
-    auto p_file = r_fileManager.filePtr(
-        r_fileManager.newFile( r_logFilePath )
-    );
-    p_context->addStream( p_file );
-
-    return p_context;
-
-    CIE_END_EXCEPTION_TRACING
-}
-
-
-ContextPtr GLFWContextSingleton::get( bool useConsole )
-{
-    CIE_BEGIN_EXCEPTION_TRACING
-
-    auto p_context = GLFWContextSingleton::get();
-
-    p_context->useConsole( useConsole );
+    if ( !GLFWContextSingleton::_p_context )
+        p_context = GLFWContextSingleton::get( 4, 5, 0, p_logger );
+    else
+    {
+        if ( &p_context->logger() != &*p_logger )
+            CIE_THROW( Exception, "Cannot assign new logger to GLFWContextSingleton" )
+    
+        p_context = GLFWContextSingleton::_p_context;
+    }
 
     return p_context;
 

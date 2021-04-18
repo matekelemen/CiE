@@ -4,6 +4,7 @@
 // --- Utility Includes ---
 #include "cieutils/packages/concepts/inc/container_concepts.hpp"
 #include "cieutils/packages/logging/inc/Loggee.hpp"
+#include "cieutils/packages/logging/inc/LoggerSingleton.hpp"
 
 // --- Internal Includes ---
 #include "ciegl/packages/buffer/inc/AbsBuffer.hpp"
@@ -23,8 +24,8 @@ public:
     using element_buffer_container  = std::list<ElementBufferPtr>;
 
 public:
-    AbsBufferManager( utils::Logger& r_logger,
-                      const std::string& r_name = "AbsBufferManager" );
+    AbsBufferManager( const std::string& r_name = "AbsBufferManager",
+                      utils::Logger& r_logger = utils::LoggerSingleton::get() );
 
     /**
      * Create new vertex buffer

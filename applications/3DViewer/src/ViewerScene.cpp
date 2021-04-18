@@ -22,24 +22,24 @@ namespace cie {
 const std::filesystem::path SHADER_DIR = SOURCE_PATH / "applications/3DViewer/data/shaders";
 
 
-ViewerScene::ViewerScene( utils::Logger& r_logger,
-                          const std::string& r_name ) :
+ViewerScene::ViewerScene( const std::string& r_name,
+                          utils::Logger& r_logger ) :
     gl::Scene(
-        r_logger,
         r_name,
         gl::makeVertexShader<gl::GLFWVertexShader>( SHADER_DIR / "vertexShader.xml",
                                                     SHADER_DIR / "vertexShader.glsl" ),
         gl::makeGeometryShader<gl::GLFWGeometryShader>( SHADER_DIR / "geometryShader.xml",
                                                         SHADER_DIR / "geometryShader.glsl" ),
         gl::makeFragmentShader<gl::GLFWFragmentShader>( SHADER_DIR / "fragmentShader.xml",
-                                                        SHADER_DIR / "fragmentShader.glsl" )
+                                                        SHADER_DIR / "fragmentShader.glsl" ),
+        r_logger
     ),
     _models(),
     _updateModels(true)
 {
     glEnable( GL_DEPTH_TEST );
 
-    auto p_camera = this->makeCamera<gl::Camera<gl::PerspectiveProjection>>();
+    auto p_camera = this->makeCamera<gl::Camera<gl::PerspectiveProjection>>( r_logger );
     this->bindUniform( "transformation", p_camera->transformationMatrix() );
     this->bindUniform( "cameraPosition", p_camera->position() );
 }

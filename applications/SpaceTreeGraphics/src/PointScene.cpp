@@ -50,19 +50,19 @@ typename csg::NodeType::point_type getCenter( const GeometryType& r_geometry )
 } // namespace detail
 
 
-PointScene::PointScene( utils::Logger& r_logger,
-                        const std::string& r_name ) :
+PointScene::PointScene( const std::string& r_name,
+                        utils::Logger& r_logger ) :
     Scene(
-        r_logger,
         r_name,
         gl::makeVertexShader<gl::GLFWVertexShader>( detail::POINT_SHADER_PATH / "vertexShader.xml", detail::POINT_SHADER_PATH / "vertexShader.glsl" ),
         gl::makeGeometryShader<gl::GLFWGeometryShader>( detail::POINT_SHADER_PATH / "geometryShader.xml", detail::POINT_SHADER_PATH / "geometryShader.glsl" ),
-        gl::makeFragmentShader<gl::GLFWFragmentShader>( detail::POINT_SHADER_PATH / "fragmentShader.xml", detail::POINT_SHADER_PATH / "fragmentShader.glsl" )
+        gl::makeFragmentShader<gl::GLFWFragmentShader>( detail::POINT_SHADER_PATH / "fragmentShader.xml", detail::POINT_SHADER_PATH / "fragmentShader.glsl" ),
+        r_logger
     ),
     _roots(),
     _nodeCenterAttributes()
 {
-    auto p_camera = this->makeCamera<gl::Camera<gl::PerspectiveProjection>>();
+    auto p_camera = this->makeCamera<gl::Camera<gl::PerspectiveProjection>>( r_logger );
     this->bindUniform( "transformation", p_camera->transformationMatrix() );
 }
 

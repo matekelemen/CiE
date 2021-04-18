@@ -7,6 +7,7 @@
 
 // --- Utility Includes ---
 #include "cieutils/packages/logging/inc/Loggee.hpp"
+#include "cieutils/packages/logging/inc/LoggerSingleton.hpp"
 #include "cieutils/packages/types/inc/IDObject.hpp"
 
 // --- Internal Includes ---
@@ -43,11 +44,11 @@ public:
      *       but will bind them during construction. New buffers are
      *       generated if none are supplied.
      */
-    Scene( utils::Logger& r_logger,
-           const std::string& r_name,
+    Scene( const std::string& r_name,
            ShaderPtr p_vertexShader,
            ShaderPtr p_geometryShader,
            ShaderPtr p_fragmentShader,
+           utils::Logger& r_logger = utils::LoggerSingleton::get(),
            VertexBufferPtr p_vertexBuffer   = nullptr,
            ElementBufferPtr p_elementBuffer = nullptr );
 

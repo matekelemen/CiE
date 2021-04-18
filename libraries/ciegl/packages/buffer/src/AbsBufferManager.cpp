@@ -8,8 +8,8 @@
 namespace cie::gl {
 
 
-AbsBufferManager::AbsBufferManager( utils::Logger& r_logger,
-                                    const std::string& r_name ) :
+AbsBufferManager::AbsBufferManager( const std::string& r_name,
+                                    utils::Logger& r_logger ) :
     utils::Loggee( r_logger, r_name )
 {
 }

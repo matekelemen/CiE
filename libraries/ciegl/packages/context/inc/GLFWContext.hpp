@@ -55,8 +55,7 @@ private:
     GLFWContext( Size versionMajor                    = 4,
                  Size versionMinor                    = 5,
                  Size MSAASamples                     = 0, 
-                 const std::filesystem::path& r_logFileName = OUTPUT_PATH / "GLFWContext.log",
-                 bool useConsole = false );
+                 utils::LoggerPtr p_logger = utils::LoggerSingleton::getPtr() );
 
     /// Check whether GLAD was initialized and initialize it if it wasn't
     void initializeGLADIfNecessary();
@@ -98,8 +97,7 @@ public:
     static ContextPtr get( Size versionMajor,
                            Size versionMinor,
                            Size MSAASamples,
-                           const std::filesystem::path& r_logFilePath,
-                           bool useConsole );
+                           utils::LoggerPtr p_logger = utils::LoggerSingleton::getPtr() );
 
     /// Get the existing context or create a default one
     static ContextPtr get();
@@ -111,14 +109,7 @@ public:
      * @param r_logFilePath path to the log file
      * @return a pointer to the GLFW context
      */
-    static ContextPtr get( const std::filesystem::path& r_logFilePath );
-
-    /**
-     * Initialize the GLFW context or return the existing one
-     * @param useConsole print log output to std::cout
-     * @return a pointer to the GLFW context
-     */
-    static ContextPtr get( bool useConsole );
+    static ContextPtr get( utils::LoggerPtr p_logger );
 
 private:
     static ContextPtr _p_context;

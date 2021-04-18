@@ -21,7 +21,7 @@ public:
     using projection_type = ProjectionType;
 
 public:
-    Camera( utils::Logger& r_logger,
+    Camera( utils::Logger& r_logger                   = utils::LoggerSingleton::get(),
             const std::string& r_name                 = "Camera",
             const AbsCamera::vector_type& r_position  = {0.0, 0.0, 1.0},
             const AbsCamera::vector_type& r_direction = {0.0, 0.0, -1.0},
@@ -30,6 +30,8 @@ public:
     Camera( const Camera<ProjectionType>& r_rhs ) = default;
 
     Camera( Camera<ProjectionType>&& r_rhs ) = default;
+
+    Camera<ProjectionType>& operator=( const Camera<ProjectionType>& r_rhs ) = delete;
 
     const typename AbsCamera::internal_matrix_type& projectionMatrix() const override;
 

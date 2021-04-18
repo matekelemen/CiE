@@ -18,9 +18,9 @@ namespace cie::gl {
 class GLFWBufferManager : public AbsBufferManager
 {
 public:
-    GLFWBufferManager( utils::Logger& r_logger,
-                       GLuint drawMode );
-    GLFWBufferManager( utils::Logger& r_logger );
+    GLFWBufferManager( GLuint drawMode,
+                       utils::Logger& r_logger = utils::LoggerSingleton::get() );
+    GLFWBufferManager( utils::Logger& r_logger = utils::LoggerSingleton::get() );
 
     void setDrawMode( GLuint drawMode );
 

@@ -71,12 +71,13 @@ int main( std::function<ValueType(const PointType&,Double)> targetFunction,
     p_root->divide(target,depth);
 
     // Context creation
+    auto p_log = std::make_shared<utils::Logger>( OUTPUT_PATH / "drop_merge.log", true );
+
     auto p_context = gl::GLFWContextSingleton::get(
-        4,                               // <-- OpenGL version major
-        5,                               // <-- OpenGL version minor
-        0,                               // <-- Number of MSAA samples
-        OUTPUT_PATH / "drop_merge.log",  // <-- log file
-        true                             // <-- use console output
+        4,        // <-- OpenGL version major
+        5,        // <-- OpenGL version minor
+        0,        // <-- Number of MSAA samples
+        p_log
     );
     
     auto p_window = p_context->newWindow(
@@ -85,7 +86,7 @@ int main( std::function<ValueType(const PointType&,Double)> targetFunction,
     );
 
     // Scene for drawing space tree leaf node centers
-    auto p_scene = p_window->makeScene<PointScene>( "SpaceTreeScene" );
+    auto p_scene = p_window->makeScene<PointScene>( "SpaceTreeScene", *p_log );
 
     p_scene->addRoot( p_root );
 
@@ -140,13 +141,7 @@ int main( std::function<ValueType(const PointType&,Double)> targetFunction,
         auto timerID = p_scene->tic();
 
         // Divide
-        #pragma omp parallel
-        {
-        #pragma omp single
-        {
         p_root->divide(target,depth);
-        }
-        }
 
         p_scene->toc( "Dividing",
                       timerID,

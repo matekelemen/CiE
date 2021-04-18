@@ -17,7 +17,7 @@ namespace cie {
 int main( int argc, char const* argv[] )
 {
     // Set up logging
-    utils::Logger log( INSTALL_PATH / "/STLConverter.log", true );
+    auto p_log = std::make_shared<utils::Logger>( INSTALL_PATH / "/STLConverter.log", true );
 
     // Parse command line arguments
     utils::CommandLineArguments args( argc, argv );
@@ -25,7 +25,7 @@ int main( int argc, char const* argv[] )
     // Parse and write loop
     for ( const auto& r_filePath : args.arguments() )
     {
-        auto localBlock = log.newBlock( r_filePath );
+        auto localBlock = p_log->newBlock( r_filePath );
 
         std::filesystem::path filePath( r_filePath );
 
@@ -49,7 +49,7 @@ int main( int argc, char const* argv[] )
 
         // Write file
         auto outputFileName = filePath.replace_extension( ".stl" );
-        log.log( "Write STL to " + outputFileName.string() );
+        p_log->log( "Write STL to " + outputFileName.string() );
         p_model->writeSTL( outputFileName );
     }
 

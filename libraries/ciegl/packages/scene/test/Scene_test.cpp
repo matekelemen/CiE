@@ -86,7 +86,7 @@ CIE_TEST_CASE( "Scene", "[scene]" )
 
     {
         CIE_TEST_CASE_INIT( "create scene" )
-        auto localBlock = p_context->newBlock( "basic scene" );
+        auto localBlock = p_context->logger().newBlock( "basic scene" );
 
         CIE_TEST_REQUIRE_NOTHROW( 
             p_scene = p_window->makeScene<TestScene>(
@@ -119,7 +119,7 @@ CIE_TEST_CASE( "Scene", "[scene]" )
 
     {
         CIE_TEST_CASE_INIT( "multiple scenes" )
-        auto localBlock = p_context->newBlock( "two scenes" );
+        auto localBlock = p_context->logger().newBlock( "two scenes" );
 
         ScenePtr p_secondScene;
 
@@ -213,7 +213,7 @@ CIE_TEST_CASE( "Scene", "[scene]" )
 
     {
         CIE_TEST_CASE_INIT( "scene with uniforms" )
-        auto localBlock = p_context->newBlock( "scene with uniforms" );
+        auto localBlock = p_context->logger().newBlock( "scene with uniforms" );
 
         // Primary scene for triangles
         CIE_TEST_REQUIRE_NOTHROW( 
@@ -232,6 +232,7 @@ CIE_TEST_CASE( "Scene", "[scene]" )
                 ,p_wireframeVertexShader
                 ,p_wireframeGeometryShader
                 ,p_wireframeFragmentShader
+                ,p_context->logger()
                 ,p_scene->bufferManager()->boundVertexBuffer()
                 ,p_scene->bufferManager()->boundElementBuffer()
                 )

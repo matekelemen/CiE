@@ -51,9 +51,9 @@ const std::filesystem::path SHADER_DIR = SOURCE_PATH / "libraries/ciegl/data/sha
 class BadAppleScene : public gl::Scene
 {
 public:
-    BadAppleScene( utils::Logger& r_logger,
-                   const std::string& r_name,
-                   utils::CommandLineArguments& args );
+    BadAppleScene( const std::string& r_name,
+                   utils::CommandLineArguments& args,
+                   utils::Logger& r_logger );
 
     gl::CameraPtr getCamera();
 
@@ -89,14 +89,14 @@ private:
 // CLASS DEFINITION
 // -------------------------------------------------------------------------
 
-BadAppleScene::BadAppleScene( utils::Logger& r_logger,
-                              const std::string& r_name,
-                              utils::CommandLineArguments& args ) :
-    gl::Scene( r_logger,
-               r_name,
+BadAppleScene::BadAppleScene( const std::string& r_name,
+                              utils::CommandLineArguments& args,
+                              utils::Logger& r_logger ) :
+    gl::Scene( r_name,
                gl::makeVertexShader<gl::GLFWVertexShader>( SHADER_DIR / "vertexShader.xml", SHADER_DIR / "vertexShader.glsl" ),
                gl::makeGeometryShader<gl::GLFWGeometryShader>( SHADER_DIR / "geometryShader.xml", SHADER_DIR / "geometryShader.glsl" ),
-               gl::makeFragmentShader<gl::GLFWFragmentShader>( SHADER_DIR / "fragmentShader.xml", SHADER_DIR / "fragmentShader.glsl" ) )
+               gl::makeFragmentShader<gl::GLFWFragmentShader>( SHADER_DIR / "fragmentShader.xml", SHADER_DIR / "fragmentShader.glsl" ),
+               r_logger )
 {
     if ( args.arguments().empty() )
         throw std::runtime_error( "No frame specified!" );
@@ -108,7 +108,7 @@ BadAppleScene::BadAppleScene( utils::Logger& r_logger,
 
     this->_framePath = args.arguments()[0];
 
-    auto p_camera = this->makeCamera<gl::Camera<gl::OrthographicProjection>>();
+    auto p_camera = this->makeCamera<gl::Camera<gl::OrthographicProjection>>( r_logger );
     this->bindUniform( "transformation", p_camera->transformationMatrix() );
 
     this->_p_root = NodePtr( new Node(
@@ -230,9 +230,10 @@ int main( int argc, char const* argv[] )
     const bool saveFrames    = args.get<bool>( "save-frames" );
 
     // Graphics setup
-    auto p_context = gl::GLFWContextSingleton::get();
+    auto p_log = std::make_shared<utils::Logger>( OUTPUT_PATH / "bad_apple.log" );
+    auto p_context = gl::GLFWContextSingleton::get( p_log );
     auto p_window = p_context->newWindow( 960, 720 );
-    auto p_scene = p_window->makeScene<BadAppleScene>( "BadAppleScene", args );
+    auto p_scene = p_window->makeScene<BadAppleScene>( "BadAppleScene", args, *p_log );
 
     auto p_camera = p_scene->getCamera();
     p_camera->setPose( {0.5, 0.5, 0.5},

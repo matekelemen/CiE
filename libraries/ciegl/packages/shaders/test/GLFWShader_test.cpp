@@ -16,15 +16,7 @@ CIE_TEST_CASE( "GLFWShader", "[shader]" )
     CIE_TEST_CASE_INIT( "GLFWShader" )
 
     // Context
-    std::pair<Size,Size> glVersion { 4, 5 };
-    Size MSAASamples = 0;
-    auto p_context = GLFWContextSingleton::get(
-        glVersion.first,
-        glVersion.second,
-        MSAASamples,
-        TEST_OUTPUT_PATH / "GLFWShader_test.txt",
-        false
-    );
+    auto p_context = GLFWContextSingleton::get();
 
     // Window
     WindowPtr p_window;

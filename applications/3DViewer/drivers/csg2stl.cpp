@@ -124,16 +124,18 @@ int main( int argc, char const* argv[] )
     CSGObjectPtr p_target = makeTarget();
 
     // Graphics setup
+    auto p_logger = std::make_shared<utils::Logger>( OUTPUT_PATH / "csg2stl.log", true );
+
     auto p_context = gl::GLFWContextSingleton::get(
         4, 5, 0,
-        OUTPUT_PATH / "csg2stl.log", // <-- log file
-        true
+        p_logger
     );
 
     auto p_window = p_context->newWindow( 1024, 768 );
     auto p_scene  = p_window->makeScene<gl::Triangulated3DPartScene>(
         "Triangulated3DPartScene",
-        gl::Triangulated3DPartScene::part_container()
+        gl::Triangulated3DPartScene::part_container(),
+        *p_logger
     );
 
     // March and add model
@@ -172,7 +174,7 @@ int main( int argc, char const* argv[] )
     p_controls->setZoomScale( 1.01 );
 
     // Add axes
-    p_window->makeScene<gl::Axes3DScene>( "Axes", p_camera );
+    p_window->makeScene<gl::Axes3DScene>( "Axes", p_camera, *p_logger );
 
     // Event loop
     p_window->beginLoop();

@@ -12,19 +12,19 @@
 namespace cie::gl {
 
 
-PartScene::PartScene( utils::Logger& r_logger,
-                      const std::string& r_name,
+PartScene::PartScene( const std::string& r_name,
                       PartScene::part_container&& r_parts,
                       ShaderPtr p_vertexShader,
                       ShaderPtr p_geometryShader,
                       ShaderPtr p_fragmentShader,
+                      utils::Logger& r_logger,
                       VertexBufferPtr p_vertexBuffer,
                       ElementBufferPtr p_elementBuffer ) :
-    Scene( r_logger,
-           r_name,
+    Scene( r_name,
            p_vertexShader,
            p_geometryShader,
            p_fragmentShader,
+           r_logger,
            p_vertexBuffer,
            p_elementBuffer ),
     _parts( r_parts ),

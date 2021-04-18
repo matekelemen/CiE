@@ -127,12 +127,12 @@ int main( int argc, char const* argv[] )
     CSGObjectPtr p_target = makeTarget();
 
     // Graphics setup
-    auto p_context = gl::GLFWContextSingleton::get(
-        OUTPUT_PATH / "StructuredMarchingCubes.log" // <-- log file
-    );
+    auto p_log = std::make_shared<utils::Logger>( OUTPUT_PATH / "StructuredMarchingCubes.log", true );
+
+    auto p_context = gl::GLFWContextSingleton::get( p_log );
 
     auto p_window = p_context->newWindow( 1024, 768 );
-    auto p_scene  = p_window->makeScene<ViewerScene>( "ViewerScene" );
+    auto p_scene  = p_window->makeScene<ViewerScene>( "ViewerScene", *p_log );
 
     // March and add model
     auto timerID = p_scene->tic();

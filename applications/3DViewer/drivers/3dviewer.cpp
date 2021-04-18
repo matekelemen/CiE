@@ -37,12 +37,13 @@ int main( int argc, char const* argv[] )
     auto filePath = args.get<std::string>(0);
 
     // Graphics setup
+    auto p_logger = std::make_shared<utils::Logger>( OUTPUT_PATH / "3dviewer.log", true );
+
     auto p_context = gl::GLFWContextSingleton::get(
-        4,                                      // <-- OpenGL version major
-        5,                                      // <-- OpenGL version minor
-        4,                                      // <-- Number of MSAA samples
-        OUTPUT_PATH / "3dviewer_log.txt",       // <-- log file
-        true                                    // <-- use console output
+        4,         // <-- OpenGL version major
+        5,         // <-- OpenGL version minor
+        4,         // <-- Number of MSAA samples
+        p_logger
     );
 
     auto p_window = p_context->newWindow(
@@ -51,7 +52,7 @@ int main( int argc, char const* argv[] )
     );
     configureGLFWWindow( p_window );
 
-    auto p_scene = p_window->makeScene<ViewerScene>( "ViewerScene" );
+    auto p_scene = p_window->makeScene<ViewerScene>( "ViewerScene", *p_logger );
 
     // Load geometry
     // TODO: add support for other file types too
@@ -98,7 +99,7 @@ int main( int argc, char const* argv[] )
     p_controls->bind( p_window, p_camera );
 
     // Add axes
-    p_window->makeScene<gl::Axes3DScene>( "Axes", p_camera );
+    p_window->makeScene<gl::Axes3DScene>( "Axes", p_camera, *p_logger );
 
     // Loop
     p_window->beginLoop();

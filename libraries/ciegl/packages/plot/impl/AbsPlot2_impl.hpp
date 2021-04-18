@@ -194,18 +194,17 @@ AbsPlot2<Tag,Args...>::Plot2Scene::_shaderDirectory = SOURCE_PATH / "libraries/c
 
 template <class Tag, class ...Args>
 requires Tag::value
-AbsPlot2<Tag,Args...>::Plot2Scene::Plot2Scene( utils::Logger& r_logger,
-                               const std::string& r_name,
-                               AttributeContainerPtr p_attributes,
-                               typename AbsPlot2<Tag,Args...>::index_container_ptr p_indices ) :
+AbsPlot2<Tag,Args...>::Plot2Scene::Plot2Scene( const std::string& r_name,
+                                               AttributeContainerPtr p_attributes,
+                                               typename AbsPlot2<Tag,Args...>::index_container_ptr p_indices ) :
     Scene(
-        r_logger,
         r_name,
         makeVertexShader<GLFWVertexShader>( this->_shaderDirectory / "vertexShader.xml",
                                             this->_shaderDirectory / "vertexShader.glsl" ),
         nullptr,
         makeFragmentShader<GLFWFragmentShader>( this->_shaderDirectory / "fragmentShader.xml",
-                                                this->_shaderDirectory / "fragmentShader.glsl" )
+                                                this->_shaderDirectory / "fragmentShader.glsl" ),
+        utils::LoggerSingleton::get()
     ),
     _p_attributes( p_attributes ),
     _p_indices( p_indices ),

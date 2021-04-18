@@ -13,19 +13,18 @@ namespace cie::gl {
 AbsContext::AbsContext( Size versionMajor,
                         Size versionMinor,
                         Size MSAASamples,
-                        const std::filesystem::path& r_logFileName,
-                        bool useConsole ) :
-    utils::Logger( r_logFileName, useConsole ),
+                        utils::LoggerPtr p_logger ) :
     _version( versionMajor, versionMinor ),
     _MSAASamples( MSAASamples ),
-    _windowCounter( 0 )
+    _windowCounter( 0 ),
+    _p_logger( std::move(p_logger) )
 {
 }
 
 
 AbsContext::~AbsContext()
 {
-    this->log( "Destroy context" );
+    _p_logger->log( "Destroy context" );
 }
 
 
@@ -49,7 +48,7 @@ WindowPtr AbsContext::newWindow( Size width,
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    auto scopedBlock = this->newBlock( "new window" );
+    auto scopedBlock = _p_logger->newBlock( "new window" );
 
     auto p_window = this->newWindow_impl( width,
                                           height,
@@ -57,11 +56,17 @@ WindowPtr AbsContext::newWindow( Size width,
 
     p_window->setID( this->_windowCounter++ );
 
-    this->logs( "ID_", p_window->getID() );
+    _p_logger->logs( "ID_", p_window->getID() );
 
     return p_window;
 
     CIE_END_EXCEPTION_TRACING
+}
+
+
+utils::Logger& AbsContext::logger()
+{
+    return *this->_p_logger;
 }
 
 

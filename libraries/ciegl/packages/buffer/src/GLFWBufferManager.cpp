@@ -8,16 +8,16 @@
 namespace cie::gl {
 
 
-GLFWBufferManager::GLFWBufferManager( utils::Logger& r_logger,
-                                      GLuint drawMode ) :
-    AbsBufferManager( r_logger, "GLFWBufferManager" )
+GLFWBufferManager::GLFWBufferManager( GLuint drawMode,
+                                      utils::Logger& r_logger ) :
+    AbsBufferManager( "GLFWBufferManager", r_logger )
 {
     this->setDrawMode( drawMode );
 }
 
 
 GLFWBufferManager::GLFWBufferManager( utils::Logger& r_logger ) :
-    GLFWBufferManager( r_logger, GL_DYNAMIC_DRAW )
+    GLFWBufferManager( GL_DYNAMIC_DRAW, r_logger )
 {
 }
 

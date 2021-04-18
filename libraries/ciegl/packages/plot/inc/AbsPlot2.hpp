@@ -57,8 +57,7 @@ protected:
     class Plot2Scene : public Scene
     {
     public:
-        Plot2Scene( utils::Logger& r_logger,
-                    const std::string& r_name,
+        Plot2Scene( const std::string& r_name,
                     AttributeContainerPtr p_attributes,
                     index_container_ptr p_indices );
         CameraPtr getCamera();

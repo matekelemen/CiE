@@ -36,7 +36,7 @@ private:
                 const std::string& r_name,
                 Size width,
                 Size height,
-                utils::Logger& r_logger );
+                utils::Logger& r_logger = utils::LoggerSingleton::get() );
 
 private:
     GLFWwindow* _p_window;

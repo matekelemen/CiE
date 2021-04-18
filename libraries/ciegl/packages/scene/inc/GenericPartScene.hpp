@@ -15,20 +15,20 @@ namespace cie::gl {
 class GenericPartScene : public PartScene
 {
 public:
-    GenericPartScene( utils::Logger& r_logger,
-                      const std::string& r_name,
+    GenericPartScene( const std::string& r_name,
                       Size drawMode,
                       GenericPartScene::part_container&& r_parts,
                       ShaderPtr p_vertexShader,
                       ShaderPtr p_geometryShader,
                       ShaderPtr p_fragmentShader,
+                      utils::Logger& r_logger,
                       VertexBufferPtr p_vertexBuffer,
                       ElementBufferPtr p_elementBuffer );
 
-    GenericPartScene( utils::Logger& r_logger,
-                      const std::string& r_name,
+    GenericPartScene( const std::string& r_name,
                       Size drawMode,
-                      const std::filesystem::path& r_shaderDirectory );
+                      const std::filesystem::path& r_shaderDirectory,
+                      utils::Logger& r_logger = utils::LoggerSingleton::get() );
 
     void setDrawMode( Size drawMode );
 

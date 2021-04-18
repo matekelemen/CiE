@@ -7,15 +7,13 @@ namespace cie::gl {
 template < class SceneType,
            class ...Args >
 inline std::shared_ptr<SceneType>
-AbsWindow::makeScene( const std::string& r_name, Args&&... args )
+AbsWindow::makeScene( Args&&... args )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
     auto localBlock = this->newBlock( "construct new scene" );
 
-    auto p_scene = std::make_shared<SceneType>( this->logger(),
-                                                r_name,
-                                                std::forward<Args>(args)... );
+    auto p_scene = std::make_shared<SceneType>( std::forward<Args>(args)... );
 
     this->log( p_scene->name() );
 

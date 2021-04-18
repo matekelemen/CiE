@@ -25,9 +25,9 @@ public:
     using screen_box = std::array<std::pair<double,double>,2>;
 
 public:
-    Axes3DScene( utils::Logger& r_logger,
-                 const std::string& r_name,
-                 CameraPtr p_camera );
+    Axes3DScene( const std::string& r_name,
+                 CameraPtr p_camera,
+                 utils::Logger& r_logger = utils::LoggerSingleton::get() );
 
 protected:
     virtual void update_impl() override;

@@ -9,21 +9,21 @@
 namespace cie::gl {
 
 
-GenericPartScene::GenericPartScene( utils::Logger& r_logger,
-                                    const std::string& r_name,
+GenericPartScene::GenericPartScene( const std::string& r_name,
                                     Size drawMode,
                                     GenericPartScene::part_container&& r_parts,
                                     ShaderPtr p_vertexShader,
                                     ShaderPtr p_geometryShader,
                                     ShaderPtr p_fragmentShader,
+                                    utils::Logger& r_logger,
                                     VertexBufferPtr p_vertexBuffer,
                                     ElementBufferPtr p_elementBuffer ) :
-    PartScene( r_logger,
-               r_name,
+    PartScene( r_name,
                std::forward<GenericPartScene::part_container>(r_parts),
                p_vertexShader,
                p_geometryShader,
                p_fragmentShader,
+               r_logger,
                p_vertexBuffer,
                p_elementBuffer ),
     _drawMode( drawMode )
@@ -31,12 +31,11 @@ GenericPartScene::GenericPartScene( utils::Logger& r_logger,
 }
 
 
-GenericPartScene::GenericPartScene( utils::Logger& r_logger,
-                                    const std::string& r_name,
+GenericPartScene::GenericPartScene( const std::string& r_name,
                                     Size drawMode,
-                                    const std::filesystem::path& r_shaderDirectory ) :
-    GenericPartScene( r_logger,
-                      r_name,
+                                    const std::filesystem::path& r_shaderDirectory,
+                                    utils::Logger& r_logger ) :
+    GenericPartScene( r_name,
                       drawMode,
                       {},
                       makeVertexShader<GLFWVertexShader>( r_shaderDirectory / "vertexShader.xml",
@@ -45,6 +44,7 @@ GenericPartScene::GenericPartScene( utils::Logger& r_logger,
                                                               r_shaderDirectory / "geometryShader.glsl" ),
                       makeFragmentShader<GLFWFragmentShader>( r_shaderDirectory / "fragmentShader.xml",
                                                               r_shaderDirectory / "fragmentShader.glsl" ),
+                      r_logger,
                       nullptr,
                       nullptr )
 {

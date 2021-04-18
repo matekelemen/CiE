@@ -6,6 +6,7 @@
 #include "cieutils/packages/types/inc/NamedObject.hpp"
 #include "cieutils/packages/types/inc/IDObject.hpp"
 #include "cieutils/packages/logging/inc/Loggee.hpp"
+#include "cieutils/packages/logging/inc/LoggerSingleton.hpp"
 #include "cieutils/packages/observer/inc/Subject.hpp"
 
 // --- Internal Includes ---
@@ -39,7 +40,7 @@ public:
                 const std::string& r_name,
                 Size width,
                 Size height,
-                utils::Logger& r_logger );
+                utils::Logger& r_logger = utils::LoggerSingleton::get() );
 
     ~AbsWindow();
 
@@ -58,8 +59,7 @@ public:
     /// Construct a new scene and add it to this window
     template < class SceneType,
                class ...Args>
-    std::shared_ptr<SceneType> makeScene( const std::string& r_name,
-                                          Args&&... args );
+    std::shared_ptr<SceneType> makeScene( Args&&... args );
 
     /// Attempt to remove a scene from this window
     virtual void removeScene( ScenePtr p_scene );

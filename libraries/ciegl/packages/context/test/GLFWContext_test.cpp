@@ -5,6 +5,7 @@
 #include "ciegl/packages/context/inc/GLFWContext.hpp"
 #include "ciegl/packages/context/inc/GLFWWindow.hpp"
 #include "ciegl/packages/context/inc/GLFWMonitor.hpp"
+#include "cmake_variables.hpp"
 
 
 namespace cie::gl {
@@ -24,14 +25,14 @@ CIE_TEST_CASE( "GLFWContext", "[context]" )
         ContextPtr p_context;
 
         CIE_TEST_REQUIRE_NOTHROW(
-            p_context = gl::GLFWContextSingleton::get( false )
+            p_context = gl::GLFWContextSingleton::get()
         );
     }
 
     {
         CIE_TEST_CASE_INIT( "Window creation" )
 
-        auto p_context = gl::GLFWContextSingleton::get( false );
+        auto p_context = gl::GLFWContextSingleton::get();
 
         WindowPtr p_window;
         CIE_TEST_REQUIRE_NOTHROW(

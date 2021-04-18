@@ -18,7 +18,7 @@ void GLAPIENTRY messageCallback(    GLenum source,
 {
     std::string messageString = message;
     auto p_context = const_cast<GLFWContext*>( reinterpret_cast<const GLFWContext*>( logger ) );
-    p_context->log( std::to_string(source) + ": " + message + "\n" );
+    p_context->logger().log( std::to_string(source) + ": " + message + "\n" );
 }
 
 

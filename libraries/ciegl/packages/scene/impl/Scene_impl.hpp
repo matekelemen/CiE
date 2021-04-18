@@ -15,7 +15,7 @@ Scene::makeCamera( Args&&... args )
     CIE_BEGIN_EXCEPTION_TRACING
 
     auto p_camera = CameraPtr(
-        new CameraType( this->logger(), std::forward<Args>(args)... )
+        new CameraType( std::forward<Args>(args)... )
     );
 
     this->addCamera( p_camera );

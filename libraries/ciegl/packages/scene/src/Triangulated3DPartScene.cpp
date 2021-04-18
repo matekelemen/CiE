@@ -18,21 +18,21 @@ namespace cie::gl {
 const std::filesystem::path SHADER_DIR = SOURCE_PATH / "libraries/ciegl/data/shaders/Triangulated3DPartScene";
 
 
-Triangulated3DPartScene::Triangulated3DPartScene( utils::Logger& r_logger,
-                                                  const std::string& r_name,
+Triangulated3DPartScene::Triangulated3DPartScene( const std::string& r_name,
                                                   Triangulated3DPartScene::part_container&& r_parts,
                                                   CameraPtr p_camera,
                                                   ShaderPtr p_vertexShader,
                                                   ShaderPtr p_geometryShader,
                                                   ShaderPtr p_fragmentShader,
+                                                  utils::Logger& r_logger,
                                                   VertexBufferPtr p_vertexBuffer,
                                                   ElementBufferPtr p_elementBuffer ) :
-    PartScene( r_logger,
-               r_name,
+    PartScene( r_name,
                std::forward<Triangulated3DPartScene::part_container>(r_parts),
                p_vertexShader,
                p_geometryShader,
                p_fragmentShader,
+               r_logger,
                p_vertexBuffer,
                p_elementBuffer )
 {
@@ -52,11 +52,10 @@ Triangulated3DPartScene::Triangulated3DPartScene( utils::Logger& r_logger,
 }
 
 
-Triangulated3DPartScene::Triangulated3DPartScene( utils::Logger& r_logger,
-                                                  const std::string& r_name,
-                                                  Triangulated3DPartScene::part_container&& r_parts ) :
-    Triangulated3DPartScene( r_logger,
-                             r_name,
+Triangulated3DPartScene::Triangulated3DPartScene( const std::string& r_name,
+                                                  Triangulated3DPartScene::part_container&& r_parts,
+                                                  utils::Logger& r_logger ) :
+    Triangulated3DPartScene( r_name,
                              std::forward<Triangulated3DPartScene::part_container>(r_parts),
                              nullptr,
                              makeVertexShader<GLFWVertexShader>( SHADER_DIR / "vertexShader.xml",
@@ -65,8 +64,9 @@ Triangulated3DPartScene::Triangulated3DPartScene( utils::Logger& r_logger,
                                                                      SHADER_DIR / "geometryShader.glsl" ),
                              makeFragmentShader<GLFWFragmentShader>( SHADER_DIR / "fragmentShader.xml",
                                                                      SHADER_DIR / "fragmentShader.glsl" ),
-                            nullptr,
-                            nullptr )
+                             r_logger,
+                             nullptr,
+                             nullptr )
 {
 }
 

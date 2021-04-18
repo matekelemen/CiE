@@ -27,12 +27,12 @@ public:
     using part_container = std::list<PartPtr>;
 
 public:
-    PartScene( utils::Logger& r_logger,
-               const std::string& r_name,
+    PartScene( const std::string& r_name,
                part_container&& r_parts,
                ShaderPtr p_vertexShader,
                ShaderPtr p_geometryShader,
                ShaderPtr p_fragmentShader,
+               utils::Logger& r_logger,
                VertexBufferPtr p_vertexBuffer,
                ElementBufferPtr p_elementBuffer );
 

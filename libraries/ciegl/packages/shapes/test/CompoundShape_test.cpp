@@ -26,7 +26,7 @@ CIE_TEST_CASE( "CompoundShape", "[shapes]" )
     CIE_TEST_CASE_INIT( "CompoundShape" )
 
     auto p_context = GLFWContextSingleton::get();
-    auto p_window  = p_context->newWindow( 1024, 768 );
+    auto p_window  = p_context->newWindow();
 
     auto p_scene   = p_window->makeScene<GenericPartScene>(
         "ArrowScene",
@@ -34,9 +34,7 @@ CIE_TEST_CASE( "CompoundShape", "[shapes]" )
         SOURCE_PATH / "libraries/ciegl/data/shaders/Triangulated3DPartScene"
     );
 
-    auto p_camera = p_scene->makeCamera<Camera<OrthographicProjection>>(
-        "Camera"
-    );
+    auto p_camera = p_scene->makeCamera<Camera<OrthographicProjection>>();
 
     p_camera->setPose( {1.0, 1.0, 0.0},
                        {-1.0, -1.0, 0.0},

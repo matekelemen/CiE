@@ -4,6 +4,7 @@
 // --- Utility Includes ---
 #include "cieutils/packages/types/inc/types.hpp"
 #include "cieutils/packages/logging/inc/Logger.hpp"
+#include "cieutils/packages/logging/inc/LoggerSingleton.hpp"
 
 // --- Internal Includes ---
 #include "ciegl/packages/context/inc/AbsMonitor.hpp"
@@ -23,8 +24,7 @@ namespace cie::gl {
 /**
  * Interface for an OpenGL context.
 */
-class AbsContext :
-    public utils::Logger
+class AbsContext
 {
 public:
     using window_container = std::list<WindowPtr>;
@@ -34,8 +34,7 @@ public:
     AbsContext( Size versionMajor,
                 Size versionMinor,
                 Size MSAASamples,
-                const std::filesystem::path& r_logFileName,
-                bool useConsole = false );
+                utils::LoggerPtr p_logger = utils::LoggerSingleton::getPtr() );
 
     ~AbsContext();
 
@@ -52,6 +51,8 @@ public:
     /// Make the specified window active.
     virtual void focusWindow( WindowPtr p_window ) = 0;
 
+    utils::Logger& logger();
+
 protected:
     virtual WindowPtr newWindow_impl( Size width,
                                       Size height,
@@ -64,6 +65,7 @@ protected:
     Size                        _MSAASamples;
 
     Size                        _windowCounter;
+    utils::LoggerPtr            _p_logger;
 };
 
 

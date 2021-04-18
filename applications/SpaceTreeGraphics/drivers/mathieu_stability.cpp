@@ -163,8 +163,6 @@ int main()
         auto p_root = csg::makeRoot<NodeType>();
         const Size depth = 8;
 
-        #pragma omp parallel
-        #pragma omp single
         p_root->divide(targetFunction,depth);
 
         auto pushLeafCube = [&p_root,&p_cubes]( NodeType* p_node ) -> bool
@@ -179,18 +177,20 @@ int main()
     }
 
     // Graphics setup
+    auto p_log = std::make_shared<utils::Logger>( OUTPUT_PATH / "mathieu_stability.log", true );
+
     auto p_context = gl::GLFWContextSingleton::get(
         4,                                          // <-- OpenGL version major
         5,                                          // <-- OpenGL version minor
         0,                                          // <-- Number of MSAA samples
-        OUTPUT_PATH / "mathieu_stability.log",      // <-- log file
-        true                                        // <-- use console output
+        p_log
     );
 
     auto p_window = p_context->newWindow( 1024, 768 );
     auto p_scene = p_window->makeScene<gl::Triangulated3DPartScene>(
         "Triangulated3DPartScene",
-        gl::Triangulated3DPartScene::part_container()
+        gl::Triangulated3DPartScene::part_container(),
+        *p_log
     );
 
     // March and add part
@@ -225,7 +225,7 @@ int main()
     //p_camera->rotateRoll( -M_PI / 4.0 );
 
     // Add axes
-    p_window->makeScene<gl::Axes3DScene>( "Axes", p_camera );
+    p_window->makeScene<gl::Axes3DScene>( "Axes", p_camera, *p_log );
 
     // Start event loop
     p_window->beginLoop();
