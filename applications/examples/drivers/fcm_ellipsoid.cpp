@@ -125,8 +125,8 @@ int main()
                         { p_node->evaluate( target ); }
                     );
                 }
-
-        pool.terminate();
+        
+        pool.barrier();
     }
 
     /* --- COLLECT RESULTS --- */
@@ -135,14 +135,20 @@ int main()
 
     std::ofstream file( OUTPUT_PATH / "fcm_ellipsoid.csv" );
 
-    for ( const auto& r_node : nodes )
     {
-        Size insideCounter = 0;
-        for ( auto value : r_node.values() )
-            if ( value )
-                ++insideCounter;
-        
-        file << insideCounter / numberOfSamplesPerNode << std::endl;
+        auto localBlock = log.newBlock( "output" );
+
+        for ( const auto& r_node : nodes )
+        {
+            Size insideCounter = 0;
+            for ( auto value : r_node.values() )
+                if ( value )
+                    ++insideCounter;
+            
+            file << insideCounter / numberOfSamplesPerNode << std::endl;
+        }
+
+        log << "Cell fill ratios written to " + (OUTPUT_PATH / "fcm_ellipsoid.csv").string();
     }
 
     return 0;
