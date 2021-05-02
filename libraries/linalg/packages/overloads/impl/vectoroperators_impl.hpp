@@ -165,6 +165,38 @@ ArrayType operator*( const ScalarType& scalar, const ArrayType& vector )
 // ---------------------------------------------------------
 // VECTOR - VECTOR OPERATORS
 // ---------------------------------------------------------
+
+template <cie::concepts::NumericContainer ArrayType>
+void operator+=( ArrayType& r_lhs, const ArrayType& r_rhs )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    CIE_OUT_OF_RANGE_CHECK( r_lhs.size() == r_rhs.size() )
+
+    auto it_rhs = r_rhs.begin();
+
+    for ( auto& r_component : r_lhs )
+        r_component += *it_rhs++;
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+template <cie::concepts::NumericContainer ArrayType>
+void operator-=( ArrayType& r_lhs, const ArrayType& r_rhs )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    CIE_OUT_OF_RANGE_CHECK( r_lhs.size() == r_rhs.size() )
+
+    auto it_rhs = r_rhs.begin();
+
+    for ( auto& r_component : r_lhs )
+        r_component -= *it_rhs++;
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
 template <cie::concepts::NumericContainer ArrayType>
 ArrayType operator+( const ArrayType& lhs, const ArrayType& rhs )
 {

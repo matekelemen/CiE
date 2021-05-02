@@ -40,6 +40,12 @@ ArrayType operator/( const ArrayType& vector, const ScalarType& scalar );
 // ---------------------------------------------------------
 
 template <cie::concepts::NumericContainer ArrayType>
+void operator+=( ArrayType& r_lhs, const ArrayType& r_rhs );
+
+template <cie::concepts::NumericContainer ArrayType>
+void operator-=( ArrayType& r_lhs, const ArrayType& r_rhs );
+
+template <cie::concepts::NumericContainer ArrayType>
 ArrayType operator+( const ArrayType& lhs, const ArrayType& rhs );
 
 template <cie::concepts::NumericContainer ArrayType>

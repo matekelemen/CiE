@@ -49,7 +49,9 @@ CIE_TEST_CASE( "DoubleVector operator overloads", "[overloads]" )
     }
 
     // SCALAR DIVISION
-    CIE_TEST_REQUIRE_THROWS( resultDoubleVector = v1 / 0.0 );
+    #ifdef CIE_ENABLE_DIVISION_BY_ZERO_CHECKS
+        CIE_TEST_REQUIRE_THROWS( resultDoubleVector = v1 / 0.0 );
+    #endif
     CIE_TEST_REQUIRE_NOTHROW( resultDoubleVector = v1 / scalar );
     CIE_TEST_REQUIRE( resultDoubleVector.size() == v1.size() );
     for (size_t i=0; i<resultDoubleVector.size(); ++i){

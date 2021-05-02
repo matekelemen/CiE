@@ -1,42 +1,77 @@
 #ifndef LINALG_QUATERNION_HPP
 #define LINALG_QUATERNION_HPP
 
-// ---- Internal Includes ---
-#include "linalg/packages/types/inc/arraytypes.hpp"
+// ---- Utility Includes ---
+#include "cieutils/packages/concepts/inc/basic_concepts.hpp"
 
 // --- STL Includes ---
-#include <iterator>
+#include <array>
+
 
 namespace cie::linalg {
 
 
+template <concepts::NumericType NT>
 class Quaternion
 {
 public:
+    using component_container = std::array<NT,4>;
+    using iterator            = component_container::iterator;
+    using const_iterator      = component_container::const_iterator;
+
+public:
+    Quaternion( component_container&& r_components );
+    
+    Quaternion( const component_container& r_components );
+
     Quaternion();
-    explicit Quaternion( const DoubleArray<4>& coefficients );
-    Quaternion( const Quaternion& copy );
-    void operator=( const Quaternion& copy );
 
-    const DoubleArray<4>& coefficients() const;
-    double operator[](size_t index) const;
+    Quaternion( Quaternion<NT>&& r_rhs ) = default;
 
-    DoubleArray<4>::const_iterator begin() const;
-    DoubleArray<4>::const_iterator end() const;
+    Quaternion( const Quaternion<NT>& r_rhs ) = default;
 
+    Quaternion<NT>& operator=( const Quaternion<NT>& r_rhs ) = default;
 
-    friend Quaternion operator+( const Quaternion& lhs, const Quaternion& rhs );
-    friend Quaternion operator-( const Quaternion& lhs, const Quaternion& rhs );
-    friend Quaternion operator*( const Quaternion& lhs, const Quaternion& rhs );
-    friend Quaternion operator*( const Quaternion& quaternion, double scalar );
-    friend Quaternion operator*( double scalar, const Quaternion& quaternion );
-    friend Quaternion conjugate( const Quaternion& quaternion );
+    void operator+=( const Quaternion<NT>& r_rhs);
 
-private:
-    DoubleArray<4>  _coefficients;
+    void operator-=( const Quaternion<NT>& r_rhs);
+    
+    void operator*=( const Quaternion<NT>& r_rhs);
+
+    void conjugate();
+
+    void normalize();
+
+    NT normSquared() const;
+
+    const component_container& components() const;
+
+    NT operator[]( Size index ) const;
+    NT& operator[]( Size index );
+
+    const_iterator begin() const;
+    iterator begin();
+
+    const_iterator end() const;
+    iterator end();
+
+protected:
+    component_container  _components;
 };
 
 
+template <concepts::NumericType NT>
+Quaternion<NT> operator+( const Quaternion<NT>& r_lhs, const Quaternion<NT>& r_rhs );
+
+template <concepts::NumericType NT>
+Quaternion<NT> operator-( const Quaternion<NT>& r_lhs, const Quaternion<NT>& r_rhs );
+
+template <concepts::NumericType NT>
+Quaternion<NT> operator*( const Quaternion<NT>& r_lhs, const Quaternion<NT>& r_rhs );
+
+
 } // namespace cie::linalg
+
+#include "linalg/packages/quaternions/impl/quaternion_impl.hpp"
 
 #endif

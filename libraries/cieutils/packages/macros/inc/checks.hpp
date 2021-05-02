@@ -39,7 +39,7 @@
 #endif
 
 
-#ifdef CIE_ENABLE
+#ifdef CIE_ENABLE_DIVISION_BY_ZERO_CHECKS
     #define CIE_DIVISION_BY_ZERO_CHECK(boolExpression)                  \
         if (!(boolExpression)) [[unlikely]]                             \
         {                                                               \
