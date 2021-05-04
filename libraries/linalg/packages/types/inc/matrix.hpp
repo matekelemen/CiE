@@ -57,6 +57,10 @@ public:
 
     void transpose();
 
+public:
+    Size rows() const;
+    Size cols() const;
+
 private:
     void checkIndices(Size i, Size j) const;
 

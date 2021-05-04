@@ -1,8 +1,12 @@
+#define _USE_MATH_DEFINES
+
 // --- Utility Includes ---
 #include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
 #include "linalg/packages/quaternions/inc/quaternion.hpp"
+#include "linalg/packages/types/inc/matrix.hpp"
+#include "linalg/packages/overloads/inc/product.hpp"
 
 // --- STL Includes ---
 #include <memory>
@@ -45,6 +49,35 @@ CIE_TEST_CASE( "Quaternion", "[quaternions]" )
 
     CIE_TEST_CHECK( p.begin() == p.components().begin() );
     CIE_TEST_CHECK( p.end() == p.components().end() );
+
+    CIE_TEST_CHECK( p.normSquared() == Approx(14.0) );
+    CIE_TEST_CHECK_NOTHROW( p.normalize() );
+    CIE_TEST_CHECK( p.normSquared() == Approx(1.0) );
+    const double norm = std::sqrt(14.0);
+    CIE_TEST_CHECK( p[0] == Approx(0.0) );
+    CIE_TEST_CHECK( p[1] == Approx(1.0 / norm) );
+    CIE_TEST_CHECK( p[2] == Approx(2.0 / norm) );
+    CIE_TEST_CHECK( p[3] == Approx(3.0 / norm) );
+
+    // Check construction from axis + angle
+    std::array<double,3> axis { 0.0, 0.0, 1.0 };
+    const double angle = 90.0 * M_PI / 180.0;
+    CIE_TEST_CHECK_NOTHROW( p.loadFromAxisAndAngle(axis, angle) );
+    const double sqrt2Over2 = std::sqrt(2.0) / 2.0;
+    CIE_TEST_CHECK( p[0] == Approx(sqrt2Over2) );
+    CIE_TEST_CHECK( p[1] == Approx(0.0) );
+    CIE_TEST_CHECK( p[2] == Approx(0.0) );
+    CIE_TEST_CHECK( p[3] == Approx(sqrt2Over2) );
+
+    MatrixWrapper<Matrix<double>> rotationMatrix(3,3);
+    CIE_TEST_CHECK_NOTHROW( p.toRotationMatrix(rotationMatrix) );
+    
+    VectorWrapper<std::array<double,3>> vector;
+    vector[0] = 1.0; vector[1] = 0.0; vector[2] = 0.0;
+    CIE_TEST_CHECK_NOTHROW( vector = dotProduct(rotationMatrix, vector) );
+    CIE_TEST_CHECK( vector[0] == Approx(0.0).margin(1e-14) );
+    CIE_TEST_CHECK( vector[1] == Approx(1.0) );
+    CIE_TEST_CHECK( vector[2] == Approx(0.0).margin(1e-14) );
 }
 
 
@@ -60,6 +93,10 @@ CIE_TEST_CASE( "Quaternion operator overloads", "[quaternions]" )
     r = q - p;
     for (size_t i=0; i<4; ++i)
         CIE_TEST_CHECK( r[i] == Approx( 2*i-10.0 ) );
+
+    r *= 2.0;
+    for ( Size i=0; i<4; ++i )
+        CIE_TEST_CHECK( r[i] == Approx( 2.0 * (2*i-10.0) ) );
 
     r = p;
     r.conjugate();

@@ -3,6 +3,7 @@
 
 // --- Utility Includes ---
 #include "cieutils/packages/types/inc/types.hpp"
+#include "cieutils/packages/concepts/inc/container_concepts.hpp"
 
 
 namespace cie::linalg {
@@ -46,6 +47,9 @@ public:
 
     ValueType& operator()( size_type rowIndex, size_type columnIndex );
     ValueType operator()( size_type rowIndex, size_type columnIndex ) const;
+
+public:
+    operator const MatrixType&() const;
 
 protected:
     MatrixType _wrapped;

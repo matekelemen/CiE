@@ -14,6 +14,12 @@
 // ---------------------------------------------------------
 
 template <cie::concepts::NumericContainer ArrayType, cie::concepts::NumericType ScalarType>
+void operator*=( ArrayType& vector, const ScalarType& scalar );
+
+template <cie::concepts::NumericContainer ArrayType, cie::concepts::NumericType ScalarType>
+void operator/=( ArrayType& vector, const ScalarType& scalar );
+
+template <cie::concepts::NumericContainer ArrayType, cie::concepts::NumericType ScalarType>
 ArrayType operator+( const ArrayType& vector, const ScalarType& scalar );
 
 template <cie::concepts::NumericContainer ArrayType, cie::concepts::NumericType ScalarType>

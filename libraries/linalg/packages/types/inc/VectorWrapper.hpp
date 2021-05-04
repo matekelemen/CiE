@@ -19,26 +19,28 @@ public:
     
     using value_type = ValueType;
     using iterator = IteratorType;
-    using const_iteraotr = ConstIterator;
+    using const_iterator = ConstIteratorType;
     using size_type = Size;
 
 public:
-    VectorWrapper( const VectorWrapper<MatrixType,ValueType,IteratorType,ConstIteratorType>& r_rhs );
-
-    VectorWrapper( VectorWrapper<MatrixType,ValueType,IteratorType,ConstIteratorType>&& r_rhs );
-
-    VectorWrapper( const VectorWrapper<MatrixType,ValueType,IteratorType,ConstIteratorType>&& r_rhs );
-
     template <class ...Args>
     VectorWrapper( Args&&... r_args );
+
+    VectorWrapper( const VectorWrapper<VectorType,ValueType,IteratorType,ConstIteratorType>& r_rhs ) = default;
+
+    VectorWrapper( VectorWrapper<VectorType,ValueType,IteratorType,ConstIteratorType>&& r_rhs ) = default;
+
+    VectorWrapper<VectorType,ValueType,IteratorType,ConstIteratorType>& operator=( const VectorWrapper<VectorType,ValueType,IteratorType,ConstIteratorType>& r_rhs ) = default;
+
+    size_type size() const;
+
+    void resize( Size newSize );
 
     IteratorType begin();
     ConstIteratorType begin() const;
 
-    IteratirType end();
+    IteratorType end();
     ConstIteratorType end() const;
-
-    size_type size() const;
 
     ValueType& operator()( size_type index );
     ValueType operator()( size_type index ) const;

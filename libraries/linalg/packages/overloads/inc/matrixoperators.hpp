@@ -1,5 +1,5 @@
-#ifndef LINALG_MATRIX_OPERATORS
-#define LINALG_MATRIX_OPERATORS
+#ifndef CIE_LINALG_MATRIX_OPERATORS
+#define CIE_LINALG_MATRIX_OPERATORS
 
 // --- Utility Includes ---
 #include "cieutils/packages/concepts/inc/container_concepts.hpp"

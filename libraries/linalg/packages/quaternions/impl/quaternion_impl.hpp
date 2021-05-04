@@ -34,49 +34,6 @@ Quaternion<NT>::Quaternion() :
 
 template <concepts::NumericType NT>
 inline void
-Quaternion<NT>::operator+=( const Quaternion<NT>& r_rhs )
-{
-    CIE_BEGIN_EXCEPTION_TRACING
-
-    using ::operator+=;
-    this->_components += r_rhs._components;
-
-    CIE_END_EXCEPTION_TRACING
-}
-
-
-template <concepts::NumericType NT>
-inline void
-Quaternion<NT>::operator-=( const Quaternion<NT>& r_rhs )
-{
-    CIE_BEGIN_EXCEPTION_TRACING
-
-    using ::operator-=;
-    this->_components -= r_rhs._components;
-
-    CIE_END_EXCEPTION_TRACING
-}
-
-
-template <concepts::NumericType NT>
-void
-Quaternion<NT>::operator*=( const Quaternion<NT>& r_rhs )
-{
-    CIE_BEGIN_EXCEPTION_TRACING
-
-    auto tmp = this->_components;
-
-    this->_components[0] = tmp[0]*r_rhs[0] - tmp[1]*r_rhs[1] - tmp[2]*r_rhs[2] - tmp[3]*r_rhs[3];
-    this->_components[1] = tmp[0]*r_rhs[1] + tmp[1]*r_rhs[0] + tmp[2]*r_rhs[3] - tmp[3]*r_rhs[2];
-    this->_components[2] = tmp[0]*r_rhs[2] + tmp[2]*r_rhs[0] + tmp[3]*r_rhs[1] - tmp[1]*r_rhs[3];
-    this->_components[3] = tmp[0]*r_rhs[3] + tmp[3]*r_rhs[0] + tmp[1]*r_rhs[2] - tmp[2]*r_rhs[1];
-
-    CIE_END_EXCEPTION_TRACING
-}
-
-
-template <concepts::NumericType NT>
-inline void
 Quaternion<NT>::conjugate()
 {
     CIE_BEGIN_EXCEPTION_TRACING
@@ -97,14 +54,7 @@ Quaternion<NT>::normalize()
     CIE_BEGIN_EXCEPTION_TRACING
 
     NT magnitude = std::sqrt( this->normSquared() );
-    if ( magnitude == 0 )
-        CIE_THROW( DivisionByZeroException, "Cannot normalize a null-quaternion" )
-
-    auto it_component = this->_components.begin();
-    *it_component++ /= magnitude;
-    *it_component++ /= magnitude;
-    *it_component++ /= magnitude;
-    *it_component /= magnitude;
+    this->_components /= magnitude;
 
     CIE_END_EXCEPTION_TRACING
 }
@@ -117,11 +67,80 @@ Quaternion<NT>::normSquared() const
     CIE_BEGIN_EXCEPTION_TRACING
 
     auto it_component = this->_components.begin();
-    NT output = (*it_component) * (*it_component++);
-    output += (*it_component) * (*it_component++);
+    NT output = (*it_component) * (*it_component);
+    ++it_component;
+    output += (*it_component) * (*it_component);
+    ++it_component;
+    output += (*it_component) * (*it_component);
+    ++it_component;
     output += (*it_component) * (*it_component);
 
     return output;
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+template <concepts::NumericType NT>
+template <class AxisType>
+requires concepts::ClassContainer<AxisType,NT>
+void
+Quaternion<NT>::loadFromAxisAndAngle( AxisType&& r_axis, NT angle )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    NT halfAngle   = angle / 2;
+    NT coefficient = std::sin( halfAngle );
+
+    this->_components[0] = std::cos( halfAngle );
+    this->_components[1] = coefficient * r_axis[0];
+    this->_components[2] = coefficient * r_axis[1];
+    this->_components[3] = coefficient * r_axis[2];
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+template <concepts::NumericType NT>
+template <class MatrixType>
+void
+Quaternion<NT>::toRotationMatrix( MatrixWrapper<MatrixType>& r_matrix ) const
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    CIE_OUT_OF_RANGE_CHECK( 3 <= r_matrix.numberOfRows() && 3 <= r_matrix.numberOfColumns() )
+
+    NT normSquared = this->normSquared();
+    CIE_DIVISION_BY_ZERO_CHECK( normSquared != 0 )
+
+    const NT w = this->_components[0];
+    const NT i = this->_components[1];
+    const NT j = this->_components[2];
+    const NT k = this->_components[3];
+
+    const NT ii = i * i / normSquared;
+    const NT jj = j * j / normSquared;
+    const NT kk = k * k / normSquared;
+
+    const NT ij = i * j / normSquared;
+    const NT ik = i * k / normSquared;
+    const NT jk = j * k / normSquared;
+
+    const NT wi = w * i / normSquared;
+    const NT wj = w * j / normSquared;
+    const NT wk = w * k / normSquared;
+
+    r_matrix(0, 0) = 1 - 2*( jj + kk );
+    r_matrix(0, 1) = 2*( ij - wk );
+    r_matrix(0, 2) = 2*( ik + wj );
+
+    r_matrix(1, 0) = 2*( ij + wk );
+    r_matrix(1, 1) = 1 - 2*( ii + kk );
+    r_matrix(1, 2) = 2*( jk - wi );
+
+    r_matrix(2, 0) = 2*( ik - wj );
+    r_matrix(2, 1) = 2*( jk + wi );
+    r_matrix(2, 2) = 1 - 2*( ii + jj );
 
     CIE_END_EXCEPTION_TRACING
 }
@@ -182,6 +201,75 @@ inline typename Quaternion<NT>::iterator
 Quaternion<NT>::end()
 {
     return _components.end();
+}
+
+
+template <concepts::NumericType NT>
+inline void
+Quaternion<NT>::operator*=( NT coefficient )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    using ::operator*=;
+    this->_components *= coefficient;
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+template <concepts::NumericType NT>
+inline void
+Quaternion<NT>::operator/=( NT denominator )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    using ::operator/=;
+    this->_components /= denominator;
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+template <concepts::NumericType NT>
+inline void
+Quaternion<NT>::operator+=( const Quaternion<NT>& r_rhs )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    using ::operator+=;
+    this->_components += r_rhs._components;
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+template <concepts::NumericType NT>
+inline void
+Quaternion<NT>::operator-=( const Quaternion<NT>& r_rhs )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    using ::operator-=;
+    this->_components -= r_rhs._components;
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+template <concepts::NumericType NT>
+void
+Quaternion<NT>::operator*=( const Quaternion<NT>& r_rhs )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    auto tmp = this->_components;
+
+    this->_components[0] = tmp[0]*r_rhs[0] - tmp[1]*r_rhs[1] - tmp[2]*r_rhs[2] - tmp[3]*r_rhs[3];
+    this->_components[1] = tmp[0]*r_rhs[1] + tmp[1]*r_rhs[0] + tmp[2]*r_rhs[3] - tmp[3]*r_rhs[2];
+    this->_components[2] = tmp[0]*r_rhs[2] + tmp[2]*r_rhs[0] + tmp[3]*r_rhs[1] - tmp[1]*r_rhs[3];
+    this->_components[3] = tmp[0]*r_rhs[3] + tmp[3]*r_rhs[0] + tmp[1]*r_rhs[2] - tmp[2]*r_rhs[1];
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 

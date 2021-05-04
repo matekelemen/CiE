@@ -187,6 +187,23 @@ inline void Matrix<ValueType>::checkIndices(Size i, Size j) const
     CIE_OUT_OF_RANGE_CHECK(  j < size2_ )
 }
 
+
+template <concepts::NumericType ValueType>
+inline Size
+Matrix<ValueType>::rows() const
+{
+    return this->size1();
+}
+
+
+template <concepts::NumericType ValueType>
+inline Size
+Matrix<ValueType>::cols() const
+{
+    return this->size2();
+}
+
+
 } // namespace cie::linalg
 
 #endif

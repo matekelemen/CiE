@@ -2,7 +2,10 @@
 #define LINALG_QUATERNION_HPP
 
 // ---- Utility Includes ---
-#include "cieutils/packages/concepts/inc/basic_concepts.hpp"
+#include "cieutils/packages/concepts/inc/container_concepts.hpp"
+
+// --- Internal Includes ---
+#include "linalg/packages/types/inc/MatrixWrapper.hpp"
 
 // --- STL Includes ---
 #include <array>
@@ -32,17 +35,19 @@ public:
 
     Quaternion<NT>& operator=( const Quaternion<NT>& r_rhs ) = default;
 
-    void operator+=( const Quaternion<NT>& r_rhs);
-
-    void operator-=( const Quaternion<NT>& r_rhs);
-    
-    void operator*=( const Quaternion<NT>& r_rhs);
-
+public:
     void conjugate();
 
     void normalize();
 
     NT normSquared() const;
+
+    template <class AxisType>
+    requires concepts::ClassContainer<AxisType,NT>
+    void loadFromAxisAndAngle( AxisType&& r_axis, NT angle );
+
+    template <class MatrixType>
+    void toRotationMatrix( MatrixWrapper<MatrixType>& r_matrix ) const;
 
     const component_container& components() const;
 
@@ -54,6 +59,17 @@ public:
 
     const_iterator end() const;
     iterator end();
+
+public:
+    void operator*=( NT coefficient );
+
+    void operator/=( NT denominator );
+
+    void operator+=( const Quaternion<NT>& r_rhs);
+
+    void operator-=( const Quaternion<NT>& r_rhs);
+    
+    void operator*=( const Quaternion<NT>& r_rhs);
 
 protected:
     component_container  _components;

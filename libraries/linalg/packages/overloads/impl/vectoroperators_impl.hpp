@@ -15,6 +15,33 @@
 // VECTOR - SCALAR OPERATORS
 // ---------------------------------------------------------
 
+
+template <cie::concepts::NumericContainer ArrayType, cie::concepts::NumericType ScalarType>
+void operator*=( ArrayType& vector, const ScalarType& scalar )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    for (auto& r_component : vector)
+        r_component *= scalar;
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
+template <cie::concepts::NumericContainer ArrayType, cie::concepts::NumericType ScalarType>
+void operator/=( ArrayType& vector, const ScalarType& scalar )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    CIE_DIVISION_BY_ZERO_CHECK( scalar != 0 )
+
+    for (auto& r_component : vector)
+        r_component /= scalar;
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
 template <cie::concepts::NumericContainer ArrayType, cie::concepts::NumericType ScalarType>
 ArrayType operator+( const ArrayType& vector, const ScalarType& scalar )
 {
