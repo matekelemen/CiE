@@ -124,6 +124,13 @@ MatrixWrapper<MT,VT,IT,CIT>::operator const MT&() const
 }
 
 
+template <class MT, class VT, class IT, class CIT>
+MatrixWrapper<MT,VT,IT,CIT>::operator MT&()
+{
+    return this->_wrapped;
+}
+
+
 } // namespace cie::linalg
 
 #endif

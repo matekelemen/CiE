@@ -6,6 +6,7 @@
 
 // --- Internal Includes ---
 #include "linalg/packages/overloads/inc/vectoroperators.hpp"
+#include "linalg/packages/types/inc/typeoperations.hpp"
 
 
 namespace cie::linalg {
@@ -92,10 +93,12 @@ Quaternion<NT>::loadFromAxisAndAngle( AxisType&& r_axis, NT angle )
     NT halfAngle   = angle / 2;
     NT coefficient = std::sin( halfAngle );
 
+    NT axisNorm = norm( r_axis );
+
     this->_components[0] = std::cos( halfAngle );
-    this->_components[1] = coefficient * r_axis[0];
-    this->_components[2] = coefficient * r_axis[1];
-    this->_components[3] = coefficient * r_axis[2];
+    this->_components[1] = coefficient * r_axis[0] / axisNorm;
+    this->_components[2] = coefficient * r_axis[1] / axisNorm;
+    this->_components[3] = coefficient * r_axis[2] / axisNorm;
 
     CIE_END_EXCEPTION_TRACING
 }

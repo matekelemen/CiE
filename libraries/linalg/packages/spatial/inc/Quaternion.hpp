@@ -88,6 +88,6 @@ Quaternion<NT> operator*( const Quaternion<NT>& r_lhs, const Quaternion<NT>& r_r
 
 } // namespace cie::linalg
 
-#include "linalg/packages/quaternions/impl/quaternion_impl.hpp"
+#include "linalg/packages/spatial/impl/Quaternion_impl.hpp"
 
 #endif

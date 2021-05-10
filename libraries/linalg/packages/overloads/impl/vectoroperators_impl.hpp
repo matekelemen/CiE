@@ -119,7 +119,8 @@ ArrayType operator-( const ScalarType& scalar, const ArrayType& vector )
 template <cie::concepts::NumericContainer ArrayType, cie::concepts::NumericType ScalarType>
 ArrayType operator*( const ArrayType& vector, const ScalarType& scalar )
 {
-    ArrayType result(vector.size());
+    ArrayType result;
+    cie::utils::resize( result, vector.size() );
     std::transform( 
         vector.begin(), 
         vector.end(), 

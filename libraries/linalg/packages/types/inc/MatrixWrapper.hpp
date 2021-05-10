@@ -51,6 +51,8 @@ public:
 public:
     operator const MatrixType&() const;
 
+    operator MatrixType&();
+
 protected:
     MatrixType _wrapped;
 };

@@ -4,7 +4,7 @@
 #include "cieutils/packages/testing/inc/essentials.hpp"
 
 // --- Internal Includes ---
-#include "linalg/packages/quaternions/inc/quaternion.hpp"
+#include "linalg/packages/spatial/inc/Quaternion.hpp"
 #include "linalg/packages/types/inc/matrix.hpp"
 #include "linalg/packages/overloads/inc/product.hpp"
 
@@ -15,7 +15,7 @@ namespace cie::linalg {
 
 
 
-CIE_TEST_CASE( "Quaternion", "[quaternions]" )
+CIE_TEST_CASE( "Quaternion", "[spatial]" )
 {
     std::unique_ptr<Quaternion<double>> p_quaternion;
 
