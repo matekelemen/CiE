@@ -19,8 +19,11 @@ public:
 
 public:
     UnaryOperator() = default;
+
     UnaryOperator( operand_ptr p_rhs );
+
     UnaryOperator( const UnaryOperator<Dimension,ValueType,CoordinateType>& r_rhs ) = default;
+    
     UnaryOperator<Dimension,ValueType,CoordinateType>& operator=( const UnaryOperator<Dimension,ValueType,CoordinateType>& r_rhs ) = default;
 
     void bindRhs( operand_ptr p_rhs );

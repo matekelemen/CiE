@@ -3,6 +3,7 @@
 
 // --- Utility Includes ---
 #include "cieutils/packages/stl_extension/inc/MarchingContainer.hpp"
+#include "cieutils/packages/concurrency/inc/ThreadPool.hpp"
 
 // --- CSG Includes ---
 #include "CSG/packages/primitives/inc/Primitive.hpp"
@@ -47,7 +48,7 @@ public:
                            const connectivity_table& r_connectivityTable,
                            output_functor outputFunctor );
 
-    void execute();
+    void execute( mp::ThreadPoolPtr p_threadPool = nullptr );
 
     void setOutputFunctor( output_functor outputFunctor );
 

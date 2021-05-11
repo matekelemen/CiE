@@ -9,5 +9,7 @@
 #include "CSG/packages/operators/inc/Subtraction.hpp"
 #include "CSG/packages/operators/inc/Union.hpp"
 
+#include "CSG/packages/operators/inc/Transform.hpp"
+
 
 #endif

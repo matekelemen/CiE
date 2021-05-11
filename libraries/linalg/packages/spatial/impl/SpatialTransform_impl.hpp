@@ -112,7 +112,7 @@ SpatialTransform<NT>::makeTranslation( const typename SpatialTransform<NT>::vect
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
-    return SpatialTransform<NT>::makeTranslation( typename SpatialTransform<NT>::vector<2>
+    return SpatialTransform<NT>::makeTranslation( typename SpatialTransform<NT>::vector<3>
         { r_vector[0], r_vector[1], 0 }
     );
 

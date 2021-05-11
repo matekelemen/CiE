@@ -3,6 +3,7 @@
 
 // --- Utility Includes ---
 #include "cieutils/packages/maths/inc/bit.hpp"
+#include "cieutils/packages/concurrency/inc/ParallelFor.hpp"
 
 #include "cieutils/packages/macros/inc/exceptions.hpp"
 #include "cieutils/packages/macros/inc/checks.hpp"
@@ -26,15 +27,14 @@ AbsMarchingPrimitives<TargetType>::AbsMarchingPrimitives( typename AbsMarchingPr
 
 template <concepts::CSGObject TargetType>
 void
-AbsMarchingPrimitives<TargetType>::execute()
+AbsMarchingPrimitives<TargetType>::execute( mp::ThreadPoolPtr p_threadPool )
 {
     CIE_BEGIN_EXCEPTION_TRACING
 
     Size numberOfPrimitivesToProcess  = this->numberOfRemainingPrimitives();
     Size numberOfVerticesPerPrimitive = this->primitiveVertexCount();
 
-    //#pragma omp parallel for
-    for ( int primitiveIndex=0; primitiveIndex<int(numberOfPrimitivesToProcess); ++primitiveIndex )
+    auto job = [=,this]( Size primitiveIndex ) -> void
     {
         Size configurationIndex = 0;
 
@@ -56,7 +56,16 @@ AbsMarchingPrimitives<TargetType>::execute()
 
             this->_outputFunctor( primitiveIndex, outputArguments );
         }
-    }
+    };
+
+    if ( p_threadPool )
+        mp::ParallelFor().setPool(p_threadPool)(
+            numberOfPrimitivesToProcess,
+            job
+        );
+    else
+        for ( Size primitiveIndex=0; primitiveIndex<numberOfPrimitivesToProcess; ++primitiveIndex )
+            job( primitiveIndex );
 
     CIE_END_EXCEPTION_TRACING
 }

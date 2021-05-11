@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+
 // --- Graphics Includes ---
 #include <ciegl/ciegl.hpp>
 
@@ -94,7 +96,7 @@ public:
         };
 
         marchingCubes.setOutputFunctor( pushTriangle );
-        marchingCubes.execute();
+        marchingCubes.execute( std::make_shared<mp::ThreadPool>() );
     }
 };
 
@@ -115,7 +117,12 @@ CSGObjectPtr makeTarget()
         new csg::boolean::Cube<Dimension,CoordinateType>( {-0.9, -0.9, -0.9}, 1.8 )
     );
 
-    return p_unitSphere * p_cube - p_horizontalRod;
+    auto p_geometry = p_unitSphere * p_cube - p_horizontalRod;
+
+    auto p_target = std::make_shared<csg::Transform<Dimension,bool,CoordinateType>>( p_geometry );
+    p_target->set( linalg::SpatialTransform<CoordinateType>::makeRotation(M_PI/4.0) );
+
+    return p_target;
 }
 
 
