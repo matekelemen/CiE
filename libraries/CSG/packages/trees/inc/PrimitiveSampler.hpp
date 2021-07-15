@@ -21,6 +21,8 @@ public:
     using primitive_type = PrimitiveType;
 
 public:
+    virtual ~PrimitiveSampler() {}
+
     virtual typename PrimitiveType::point_type getSamplePoint( const PrimitiveType& r_primitive, Size index ) const = 0;
     virtual Size size() const = 0;
 };

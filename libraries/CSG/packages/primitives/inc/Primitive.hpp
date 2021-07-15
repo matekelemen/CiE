@@ -16,6 +16,8 @@ template < Size Dimension,
 class AbsPrimitive : public CSGTraits<Dimension,CoordinateType>
 {
 public:
+    virtual ~AbsPrimitive() {}
+
     virtual Bool isDegenerate() const = 0;
 };
 

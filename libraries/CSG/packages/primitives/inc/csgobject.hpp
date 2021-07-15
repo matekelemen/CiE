@@ -27,6 +27,8 @@ public:
     using value_type         = ValueType;
 
 public:
+    virtual ~CSGObject() {}
+
     ValueType evaluate( const point_type& r_point ) const;
 
     template <class ContainerType>

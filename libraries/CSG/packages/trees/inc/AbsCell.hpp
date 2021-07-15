@@ -41,6 +41,8 @@ public:
     template <class ...Args>
     AbsCell( Args&&... args );
 
+    virtual ~AbsCell() {}
+
     /**
      * Split overload that doesn't attempt to convert the coordinate container
      * to point_type (as it is already point_type).

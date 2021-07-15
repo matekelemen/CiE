@@ -34,6 +34,8 @@ public:
                 Size stackLevel );
 
     Exception( const Exception& r_rhs );
+
+    virtual ~Exception() {}
     
     const char* what() const noexcept override;
 

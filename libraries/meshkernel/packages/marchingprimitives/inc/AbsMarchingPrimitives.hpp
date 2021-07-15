@@ -47,6 +47,8 @@ public:
                            const connectivity_table& r_connectivityTable,
                            output_functor outputFunctor );
 
+    virtual ~AbsMarchingPrimitives() {}
+
     void execute();
 
     void setOutputFunctor( output_functor outputFunctor );

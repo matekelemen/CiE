@@ -23,6 +23,8 @@ public:
     using derivative_ptr    = std::shared_ptr<derivative_type>;
 
 public:
+    virtual ~AbsFunction() {}
+
     virtual value_type operator()( const ArgumentType& r_argument ) const = 0;
     virtual derivative_ptr derivative() const = 0;
 

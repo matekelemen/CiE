@@ -30,6 +30,8 @@ public:
     typedef typename ValueIterator::value_type  value_type;
 
 public:
+    virtual ~SplitPolicy() {}
+
     virtual point_type operator()(  ValueIterator it_valueBegin,
                                     ValueIterator it_valueEnd,
                                     PointIterator it_pointBegin ) const = 0;
