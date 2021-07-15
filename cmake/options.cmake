@@ -1,8 +1,8 @@
 # ---------------------------------------------------------
 # GENERAL OPTIONS
 # ---------------------------------------------------------
-# What to install
-option( CIE_INSTALL_TESTS "Install unit-and system tests" ON )
+# Optional tests
+option( CIE_BUILD_TESTS "Build unit-and system tests" ON )
 
 # ---------------------------------------------------------
 # CONCURRENCY

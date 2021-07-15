@@ -16,15 +16,10 @@ LIST( INSERT TEST_SOURCES 0 ${TEST_DRIVER} )
 ADD_SHARED_LIBRARY( fem SHARED ${SOURCES} )
 target_include_directories( fem PUBLIC "${CIE_EXTERNAL_SOURCE_DIR}/eigen" )
 TARGET_LINK_LIBRARIES_INSTALL( fem cieutils linalg )
-
-add_executable( fem_testrunner ${TEST_SOURCES} )
-TARGET_LINK_LIBRARIES_INSTALL( fem_testrunner fem )
-
-# ---------------------------------------------------------
-# INSTALL
-# ---------------------------------------------------------
 INSTALL_LIBRARY( fem )
-INSTALL_TEST( fem_testrunner )
+
+ADD_TEST_EXECUTABLE( fem_testrunner ${TEST_SOURCES} )
+TARGET_LINK_LIBRARIES_INSTALL( fem_testrunner fem )
 
 # ---------------------------------------------------------
 # PYTHON

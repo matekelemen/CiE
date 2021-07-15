@@ -23,7 +23,7 @@ TARGET_LINK_LIBRARIES_INSTALL( ciegl linalg cieutils csg meshkernel )
 TARGET_LINK_GRAPHICS_INSTALL( ciegl )
 
 # Add an executable and link to the library
-add_executable( ciegl_testrunner ${TEST_SOURCES} )
+ADD_TEST_EXECUTABLE( ciegl_testrunner ${TEST_SOURCES} )
 TARGET_LINK_LIBRARIES_INSTALL( ciegl_testrunner ciegl )
 TARGET_LINK_GRAPHICS_INSTALL( ciegl_testrunner )
 
@@ -31,7 +31,6 @@ TARGET_LINK_GRAPHICS_INSTALL( ciegl_testrunner )
 # INSTALL
 # ---------------------------------------------------------
 INSTALL_LIBRARY( ciegl )
-INSTALL_TEST( ciegl_testrunner )
 INSTALL_DATA( data )
 
 # ---------------------------------------------------------

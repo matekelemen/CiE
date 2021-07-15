@@ -15,15 +15,10 @@ LIST( INSERT TESTS 0 ${CSG_TEST_DRIVER} )
 # ---------------------------------------------------------
 ADD_SHARED_LIBRARY( csg ${SOURCES} )
 TARGET_LINK_LIBRARIES_INSTALL( csg linalg pugixml )
-
-add_executable( csg_testrunner ${TESTS} ${HEADERS} )
-TARGET_LINK_LIBRARIES_INSTALL( csg_testrunner csg linalg )
-
-# ---------------------------------------------------------
-# INSTALL
-# ---------------------------------------------------------
 INSTALL_LIBRARY( csg )
-INSTALL_TEST( csg_testrunner )
+
+ADD_TEST_EXECUTABLE( csg_testrunner ${TESTS} ${HEADERS} )
+TARGET_LINK_LIBRARIES_INSTALL( csg_testrunner csg linalg )
 
 # ---------------------------------------------------------
 # WINDOWS

@@ -12,15 +12,10 @@ file( GLOB SPLINEKERNEL_HEADER_FILES inc/*.h* )
 # ---------------------------------------------------------
 ADD_SHARED_LIBRARY( splinekernel ${SPLINEKERNEL_SOURCE_FILES} ${SPLINEKERNEL_HEADER_FILES} ) 
 TARGET_LINK_LIBRARIES_INSTALL( splinekernel linalg )
-
-add_executable( splinekernel_testrunner ${SPLINEKERNEL_TEST_FILES} )
-TARGET_LINK_LIBRARIES_INSTALL( splinekernel_testrunner splinekernel linalg )
-
-# ---------------------------------------------------------
-# INSTALL
-# ---------------------------------------------------------
 INSTALL_LIBRARY( splinekernel )
-INSTALL_TEST( splinekernel_testrunner )
+
+ADD_TEST_EXECUTABLE( splinekernel_testrunner ${SPLINEKERNEL_TEST_FILES} )
+TARGET_LINK_LIBRARIES_INSTALL( splinekernel_testrunner splinekernel linalg )
 
 # ---------------------------------------------------------
 # WINDOWS
