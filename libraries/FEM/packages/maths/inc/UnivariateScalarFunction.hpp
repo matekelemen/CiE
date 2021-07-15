@@ -27,6 +27,20 @@ public:
 
 } // namespace cie::fen::maths
 
+
+namespace cie::concepts {
+
+template <class T, class NT>
+concept UnivariateScalarFunction
+= DerivedFrom<typename std::decay<T>::type, fem::maths::UnivariateScalarFunction<NT>>;
+
+template <class T, class NT>
+concept UnivariateScalarFunctionPtr
+= UnivariateScalarFunction<typename std::decay<T>::type::element_type, NT>;
+
+} // namespace cie::concepts
+
+
 #include "FEM/packages/maths/impl/UnivariateScalarFunction_impl.hpp"
 
 #endif

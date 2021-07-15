@@ -22,9 +22,7 @@ ENDMACRO()
 
 
 MACRO( INSTALL_TEST target )
-  if( CIE_INSTALL_TESTS )
     install( TARGETS ${target} RUNTIME DESTINATION ${INSTALL_TEST_PREFIX} )
-  endif()
 ENDMACRO()
 
 

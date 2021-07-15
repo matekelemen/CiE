@@ -8,36 +8,6 @@
 #include <memory>
 
 
-namespace cie::fem::maths {
-
-
-template < class ValueType,
-           class ArgumentType,
-           class DerivativeType >
-class AbsFunction
-{
-public:
-    using value_type        = ValueType;
-    using argument_type     = ArgumentType;
-    using derivative_type   = DerivativeType;
-    using derivative_ptr    = std::shared_ptr<derivative_type>;
-
-public:
-    virtual ~AbsFunction() {}
-
-    virtual value_type operator()( const ArgumentType& r_argument ) const = 0;
-    virtual derivative_ptr derivative() const = 0;
-
-    value_type evaluate( const ArgumentType& r_argument ) const
-    { return this->operator()(r_argument); }
-};
-
-
-} // namespace cie::fem::maths
-
-
-
-
 namespace cie::concepts {
 
 
@@ -56,7 +26,8 @@ struct IsAbsFunction<
         IsAbsFunctionHelper<
             typename T::value_type,
             typename T::argument_type,
-            typename T::derivative_type
+            typename T::derivative_type,
+            typename T::derivative_ptr
         >,
         void
     >
@@ -64,11 +35,71 @@ struct IsAbsFunction<
 }
 
 
+/** Concept of a generic function with:
+ *
+ *  Type definitions:
+ *      value_type
+ *      argument_type
+ *      derivative_type
+ *      derivative_ptr
+ *
+ *   Member functions:
+ *      value_type operator()( argument_type )
+ *      value_type evaluate( argument_type )
+ *      derivative_ptr derivative()
+ */
 template <class T>
 concept AbsFunction
-= detail::IsAbsFunction<T>::value;
+=  detail::IsAbsFunction<T>::value
+&& requires ( T instance )
+{
+    { instance( typename T::argument_type() ) } -> std::same_as<typename T::value_type>;
+    { instance.evaluate( typename T::argument_type() ) } -> std::same_as<typename T::value_type>;
+    { instance.derivative() } -> std::same_as<typename T::derivative_ptr>;
+};
 
 
 } // namespace cie::concepts
+
+
+namespace cie::fem::maths {
+
+
+/** Abstract mathematical function class defining its argument, value, and derivative
+ *  @details this class is intended to be the base of every mathematical function y = f(x),
+ *           providing relevant traits as well as an interface for evaluation.
+ * 
+ *  @param ValueType output type (y)
+ *  @param ArgumentType input type (x)
+ *  @param DerivativeType type of the function's derivative (must be an AbsFunction as well)
+ */
+template < class ValueType,
+           class ArgumentType,
+           class DerivativeType >
+class AbsFunction
+{
+public:
+    using value_type        = ValueType;
+    using argument_type     = ArgumentType;
+    using derivative_type   = DerivativeType;
+    using derivative_ptr    = std::shared_ptr<derivative_type>;
+
+public:
+    virtual ~AbsFunction() {}
+
+    /// Evaluate the function with the specified argument
+    virtual value_type operator()( const ArgumentType& r_argument ) const = 0;
+
+    /// Construct the function's derivative
+    virtual derivative_ptr derivative() const = 0;
+
+    /// Convenience function for calling operator() on pointers to AbsFunction
+    value_type evaluate( const ArgumentType& r_argument ) const
+    { return this->operator()(r_argument); }
+};
+
+
+} // namespace cie::fem::maths
+
 
 #endif

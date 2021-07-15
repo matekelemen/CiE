@@ -53,6 +53,6 @@ unbuffer cmake  -H${SOURCE_DIR}                                     \
 
 # Build
 numberOfCores=$(grep -c ^processor /proc/cpuinfo)
-((numberOfCores--))
+numberOfCores=$((numberOfCores-1))
 cd $BUILD_DIR
 unbuffer make install -j$numberOfCores | tee "${BUILD_DIR}/compiler.log"

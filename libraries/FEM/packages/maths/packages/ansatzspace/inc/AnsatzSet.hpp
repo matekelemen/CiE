@@ -33,12 +33,15 @@ public:
 
     AnsatzSet<Dimension,NT>& operator=( const AnsatzSet<Dimension,NT>& r_rhs ) = default;
 
+    virtual ~AnsatzSet() {}
+
     Size size() const;
 
     const ansatz_function& operator[]( Size index ) const;
 
     const ansatz_function& at( Size index ) const;
 
+protected:
     void push_back( const ansatz_ptr& rp_ansatzFunction );
 
     template <class AnsatzFunction, class ...Args>

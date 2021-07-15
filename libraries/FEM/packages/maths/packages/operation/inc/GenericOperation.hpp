@@ -1,6 +1,9 @@
 #ifndef CIE_FEM_MATHS_GENERIC_OPERATION_HPP
 #define CIE_FEM_MATHS_GENERIC_OPERATION_HPP
 
+// --- Internal Includes ---
+#include "FEM/packages/maths/packages/operation/inc/Operation.hpp"
+
 // --- STL Includes ---
 #include <functional>
 
@@ -9,7 +12,7 @@ namespace cie::fem::maths {
 
 
 template <class ResultType>
-class GenericOperation : public ResultType
+class GenericOperation : public Operation<ResultType>
 {
 public:
     using typename ResultType::value_type;

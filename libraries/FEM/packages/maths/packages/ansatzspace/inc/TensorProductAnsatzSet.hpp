@@ -16,6 +16,8 @@ template <Size Dimension, concepts::NumericType NT>
 class TensorProductAnsatzSet : public AnsatzSet<Dimension,NT>
 {
 public:
+    TensorProductAnsatzSet() = default;
+
     template <concepts::PointerContainer BasisContainer>
     requires concepts::DerivedFrom<typename std::remove_reference<BasisContainer>::type::value_type::element_type,UnivariateScalarFunction<NT>>
     TensorProductAnsatzSet( BasisContainer&& r_basisFunctions );
