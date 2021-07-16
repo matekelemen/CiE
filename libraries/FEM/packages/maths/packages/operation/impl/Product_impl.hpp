@@ -52,6 +52,34 @@ makeProduct( const ScalarFunctionPtr<Dimension,NT>& rp_lhs, const ScalarFunction
 }
 
 
+template <Size ValueDimension, Size Dimension, concepts::NumericType NT>
+VectorFunctionPtr<ValueDimension,Dimension,NT>
+makeProduct( const ScalarFunctionPtr<Dimension,NT>& rp_lhs, const VectorFunctionPtr<ValueDimension,Dimension,NT>& rp_rhs )
+{
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    using ScalarOperand = ScalarFunction<Dimension,NT>;
+    using Argument      = typename ScalarOperand::argument_type;
+    using Result        = VectorFunction<ValueDimension,Dimension,NT>;
+
+
+    auto operation = [rp_lhs, rp_rhs]( const Argument& r_argument )
+    {
+        CIE_BEGIN_EXCEPTION_TRACING
+        return rp_lhs->evaluate(r_argument) * rp_rhs->evaluate(r_argument);
+        CIE_END_EXCEPTION_TRACING
+    };
+
+    return typename Result::SharedPointer(
+        new GenericOperation<Result>(
+            std::move( operation )
+        )
+    );
+
+    CIE_END_EXCEPTION_TRACING
+}
+
+
 } // namespace cie::fem::maths
 
 

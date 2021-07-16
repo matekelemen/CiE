@@ -29,6 +29,8 @@ public:
     using typename base_type::argument_type;
     using typename base_type::derivative_ptr;
 
+    CIE_DEFINE_CLASS_POINTERS( SeparableMatrixFunction )
+
 public:
     SeparableMatrixFunction( function_container&& r_functions );
 

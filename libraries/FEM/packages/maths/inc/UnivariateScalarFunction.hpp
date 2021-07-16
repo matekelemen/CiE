@@ -18,6 +18,8 @@ public:
     using typename base_type::value_type;
     using typename base_type::argument_type;
 
+    CIE_DEFINE_CLASS_POINTERS( UnivariateScalarFunction )
+
 public:
     value_type operator()( const argument_type& r_argument ) const override final;
 

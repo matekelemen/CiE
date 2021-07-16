@@ -8,8 +8,19 @@
 namespace cie::fem::maths {
 
 
-template <concepts::AbsFunction ResultType>
-using Operation = ResultType;
+template <class ResultType>
+class Operation : public ResultType
+{
+public:
+    CIE_DEFINE_CLASS_POINTERS( Operation )
+
+public:
+    template <class ...Arguments>
+    requires concepts::AbsFunction<ResultType>
+    Operation( Arguments&&... r_arguments )
+        : ResultType( std::forward<Arguments>(r_arguments)... )
+    {}
+};
 
 
 } // namespace cie::fem::maths

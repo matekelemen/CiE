@@ -15,13 +15,12 @@ CIE_TEST_CASE( "TensorProductAnsatzSpace", "[maths]" )
     
     using BasisType = UnivariatePolynomial<double>;
     using Coefficients = BasisType::coefficient_container;
-    using BasisPtr = std::shared_ptr<BasisType>;
     using AnsatzType = TensorProductAnsatzSet<2,double>;
 
-    std::vector<BasisPtr> basisFunctions {
-        BasisPtr( new BasisType(Coefficients {0.5, -0.5}) ),
-        BasisPtr( new BasisType(Coefficients {0.5, 0.5}) ),
-        BasisPtr( new BasisType(Coefficients {0.0, 0.0, 1.0}) )
+    std::vector<BasisType::SharedPointer> basisFunctions {
+        BasisType::SharedPointer( new BasisType(Coefficients {0.5, -0.5}) ),
+        BasisType::SharedPointer( new BasisType(Coefficients {0.5, 0.5}) ),
+        BasisType::SharedPointer( new BasisType(Coefficients {0.0, 0.0, 1.0}) )
     };
 
     CIE_TEST_REQUIRE_NOTHROW( AnsatzType(basisFunctions) );

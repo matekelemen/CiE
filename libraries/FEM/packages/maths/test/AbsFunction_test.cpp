@@ -3,6 +3,7 @@
 
 // --- Internal Includes ---
 #include "FEM/packages/maths/inc/AbsFunction.hpp"
+#include "FEM/packages/maths/inc/UnivariateScalarFunction.hpp"
 
 
 namespace cie::fem::maths {
@@ -48,10 +49,13 @@ CIE_TEST_CASE( "AbsFunction", "[maths]" )
     using ArgumentType   = double;
     using DerivativeType = DummyFunction;
 
-    using TestType       = AbsFunction<ValueType, ArgumentType, DerivativeType>;
+    using TestType1      = AbsFunction<ValueType, ArgumentType, DerivativeType>;
+    using TestType2      = UnivariateScalarFunction<int>;
 
     CIE_TEST_CHECK( isAbsFunction<DummyFunction>() );
-    CIE_TEST_CHECK( isAbsFunction<TestType> );
+    CIE_TEST_CHECK( isAbsFunction<TestType1>() );
+    CIE_TEST_CHECK( isAbsFunction<TestType2>() );
+    CIE_TEST_CHECK( !isAbsFunction<void>() );
 }
 
 

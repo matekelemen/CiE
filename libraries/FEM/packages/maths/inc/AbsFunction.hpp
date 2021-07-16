@@ -3,6 +3,7 @@
 
 // --- Utility Includes ---
 #include "cieutils/packages/concepts/inc/basic_concepts.hpp"
+#include "cieutils/packages/macros/inc/typedefs.hpp"
 
 // --- STL Includes ---
 #include <memory>
@@ -43,20 +44,14 @@ struct IsAbsFunction<
  *      derivative_type
  *      derivative_ptr
  *
- *   Member functions:
+ *   Member functions (not checked):
  *      value_type operator()( argument_type )
  *      value_type evaluate( argument_type )
  *      derivative_ptr derivative()
  */
 template <class T>
 concept AbsFunction
-=  detail::IsAbsFunction<T>::value
-&& requires ( T instance )
-{
-    { instance( typename T::argument_type() ) } -> std::same_as<typename T::value_type>;
-    { instance.evaluate( typename T::argument_type() ) } -> std::same_as<typename T::value_type>;
-    { instance.derivative() } -> std::same_as<typename T::derivative_ptr>;
-};
+=  detail::IsAbsFunction<T>::value;
 
 template <class T>
 concept AbsFunctionPtr
@@ -88,6 +83,8 @@ public:
     using argument_type     = ArgumentType;
     using derivative_type   = DerivativeType;
     using derivative_ptr    = std::shared_ptr<derivative_type>;
+
+    CIE_DEFINE_CLASS_POINTERS( AbsFunction )
 
 public:
     virtual ~AbsFunction() {}

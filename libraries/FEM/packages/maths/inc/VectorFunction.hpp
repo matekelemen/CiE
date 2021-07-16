@@ -23,7 +23,10 @@ struct VectorFunction :
                         typename Kernel<Dimension,NT>::point_type,
                         DerivativeType >,
     public Kernel<Dimension,NT>
-{};
+{
+public:
+    CIE_DEFINE_CLASS_POINTERS( VectorFunction )
+};
 
 
 template < Size VD,

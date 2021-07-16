@@ -12,7 +12,7 @@ namespace cie::fem::maths {
 
 
 template <class ResultType>
-class GenericOperation : public ResultType
+class GenericOperation : public Operation<ResultType>
 {
 public:
     using typename ResultType::value_type;
@@ -22,15 +22,18 @@ public:
     using operation_type = std::function<value_type(const argument_type&)>;
     using derivative_factory = std::function<derivative_ptr()>;
 
-public:
-    static derivative_ptr notImplementedDerivativeFactory();
+    CIE_DEFINE_CLASS_POINTERS( GenericOperation )
 
+public:
     GenericOperation( operation_type&& r_operation,
                       derivative_factory&& r_derivativeFactory = GenericOperation<ResultType>::notImplementedDerivativeFactory );
 
     virtual value_type operator()( const argument_type& r_argument ) const override;
 
     virtual derivative_ptr derivative() const override;
+
+protected:
+    static derivative_ptr notImplementedDerivativeFactory();
 
 protected:
     operation_type     _operator;

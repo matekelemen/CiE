@@ -15,12 +15,11 @@ CIE_TEST_CASE( "SeparableScalarFunction", "[maths]" )
 
     using Univariate = UnivariatePolynomial<double>;
     using Polynomial = SeparableScalarFunction<2,double>;
-    using UnivariatePtr = Polynomial::univariate_ptr;
     using PointType = Kernel<2,double>::point_type;
 
     // Test polynomial: x^2 * (1 + y)
-    UnivariatePtr px( new Univariate(Univariate::coefficient_container {0, 0, 1}) );
-    UnivariatePtr py( new Univariate(Univariate::coefficient_container {1, 1}) );
+    Univariate::SharedPointer px( new Univariate(Univariate::coefficient_container {0, 0, 1}) );
+    Univariate::SharedPointer py( new Univariate(Univariate::coefficient_container {1, 1}) );
 
     // Check construction
     CIE_TEST_REQUIRE_NOTHROW( Polynomial( Polynomial::univariate_container {px,py} ) );

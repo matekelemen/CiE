@@ -28,14 +28,16 @@ private:
     using base_type = VectorFunction<ValueDimension,Dimension,NT>;
 
 public:
-    using scalar_function = SeparableScalarFunction<Dimension,NT>;
-    using function_ptr = std::shared_ptr<scalar_function>;
+    using scalar_function    = SeparableScalarFunction<Dimension,NT>;
+    using function_ptr       = std::shared_ptr<scalar_function>;
     using function_container = std::array<function_ptr,ValueDimension>;
-    using function_list = std::initializer_list<function_ptr>;
+    using function_list      = std::initializer_list<function_ptr>;
 
     using typename base_type::value_type;
     using typename base_type::argument_type;
     using typename base_type::derivative_ptr;
+
+    CIE_DEFINE_CLASS_POINTERS( SeparableVectorFunction )
 
 public:
     SeparableVectorFunction( function_container&& r_components );

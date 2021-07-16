@@ -33,13 +33,16 @@ private:
     using base_type = AbsFunction<detail::AllType,detail::AllType,NotImplementedFunction>;
 
 public:
+    CIE_DEFINE_CLASS_POINTERS( NotImplementedFunction )
+
+public:
     base_type::value_type operator()( const base_type::argument_type& r_argument ) const override;
 
     base_type::derivative_ptr derivative() const override;
 }; // class NotImplementedFunction
 
 
-using NotImplementedFunctionPtr = std::shared_ptr<NotImplementedFunction>;
+using NotImplementedFunctionPtr = NotImplementedFunction::SharedPointer;
 
 
 } // namespace cie::fem::maths
