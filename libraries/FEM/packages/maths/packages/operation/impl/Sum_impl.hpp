@@ -3,6 +3,7 @@
 
 // --- Utility Includes ---
 #include "cieutils/packages/macros/inc/exceptions.hpp"
+#include "cieutils/packages/macros/inc/warning.hpp"
 
 // --- Linalg Includes ---
 #include "linalg/packages/overloads/inc/vectoroperators.hpp"
@@ -121,6 +122,24 @@ makeSum( const MatrixFunctionPtr<ValueDimension0,ValueDimension1,Dimension,NT>& 
     );
 
     CIE_END_EXCEPTION_TRACING
+}
+
+
+template <concepts::AbsFunctionPtr LHSOperand>
+NotImplementedFunctionPtr
+makeSum( const LHSOperand& r_lhs, const NotImplementedFunctionPtr& r_rhs )
+{
+    CIE_WARNING( "creating a sum with an invalid right operand" )
+    return NotImplementedFunctionPtr( new NotImplementedFunction );
+}
+
+
+template <concepts::AbsFunctionPtr RHSOperand>
+NotImplementedFunctionPtr
+makeSum( const NotImplementedFunctionPtr& r_lhs, const RHSOperand& r_rhs )
+{
+    CIE_WARNING( "creating a sum with an invalid left operand" )
+    return NotImplementedFunctionPtr( new NotImplementedFunction );
 }
 
 

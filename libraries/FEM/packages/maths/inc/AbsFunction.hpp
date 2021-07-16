@@ -58,6 +58,11 @@ concept AbsFunction
     { instance.derivative() } -> std::same_as<typename T::derivative_ptr>;
 };
 
+template <class T>
+concept AbsFunctionPtr
+=  Pointer<typename std::decay<T>::type>
+&& AbsFunction<typename std::decay<T>::type::element_type>;
+
 
 } // namespace cie::concepts
 

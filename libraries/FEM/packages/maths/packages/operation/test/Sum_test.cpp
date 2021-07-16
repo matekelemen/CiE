@@ -20,8 +20,12 @@ CIE_TEST_CASE( "makeSum", "[maths]" )
     UnivariatePtr p_p0( new UnivariatePolynomial<double>( {1.0, -1.0, 1.0} ) );
     UnivariatePtr p_p1( new UnivariatePolynomial<double>( {1.0, 1.0, 1.0} ) );
 
-    using Basis = ScalarFunction<1,double>;
+    using Basis    = ScalarFunction<1,double>;
     using BasisPtr = std::shared_ptr<Basis>;
+
+    using Derivative       = Basis::derivative_type;
+    using SecondDerivative = Derivative::derivative_type;
+    using ThirdDerivative  = SecondDerivative::derivative_type;
 
     auto p_f0 = BasisPtr(
         new SeparableScalarFunction<1,double>( {p_p0} )
@@ -44,23 +48,23 @@ CIE_TEST_CASE( "makeSum", "[maths]" )
 
     Basis::derivative_ptr p_derivative;
     CIE_TEST_REQUIRE_NOTHROW( p_derivative = p_sum->derivative() );
-    CIE_TEST_CHECK( p_derivative->evaluate( Basis::argument_type {-5.0} )[0] == Approx(-20.0) );
-    CIE_TEST_CHECK( p_derivative->evaluate( Basis::argument_type {-2.0} )[0] == Approx(-8.0) );
-    CIE_TEST_CHECK( p_derivative->evaluate( Basis::argument_type {-1.0} )[0] == Approx(-4.0) );
-    CIE_TEST_CHECK( p_derivative->evaluate( Basis::argument_type {0.0} )[0] == Approx(0.0) );
-    CIE_TEST_CHECK( p_derivative->evaluate( Basis::argument_type {1.0} )[0] == Approx(4.0) );
-    CIE_TEST_CHECK( p_derivative->evaluate( Basis::argument_type {2.0} )[0] == Approx(8.0) );
-    CIE_TEST_CHECK( p_derivative->evaluate( Basis::argument_type {5.0} )[0] == Approx(20.0) );
+    CIE_TEST_CHECK( p_derivative->evaluate( Derivative::argument_type {-5.0} )[0] == Approx(-20.0) );
+    CIE_TEST_CHECK( p_derivative->evaluate( Derivative::argument_type {-2.0} )[0] == Approx(-8.0) );
+    CIE_TEST_CHECK( p_derivative->evaluate( Derivative::argument_type {-1.0} )[0] == Approx(-4.0) );
+    CIE_TEST_CHECK( p_derivative->evaluate( Derivative::argument_type {0.0} )[0] == Approx(0.0) );
+    CIE_TEST_CHECK( p_derivative->evaluate( Derivative::argument_type {1.0} )[0] == Approx(4.0) );
+    CIE_TEST_CHECK( p_derivative->evaluate( Derivative::argument_type {2.0} )[0] == Approx(8.0) );
+    CIE_TEST_CHECK( p_derivative->evaluate( Derivative::argument_type {5.0} )[0] == Approx(20.0) );
 
-    Basis::derivative_type::derivative_ptr p_secondDerivative;
+    Derivative::derivative_ptr p_secondDerivative;
     CIE_TEST_CHECK_NOTHROW( p_secondDerivative = p_derivative->derivative() );
-    CIE_TEST_CHECK( p_secondDerivative->evaluate( Basis::argument_type {-5.0} )(0,0) == Approx(4.0) );
-    CIE_TEST_CHECK( p_secondDerivative->evaluate( Basis::argument_type {-2.0} )(0,0) == Approx(4.0) );
-    CIE_TEST_CHECK( p_secondDerivative->evaluate( Basis::argument_type {-1.0} )(0,0) == Approx(4.0) );
-    CIE_TEST_CHECK( p_secondDerivative->evaluate( Basis::argument_type {0.0} )(0,0) == Approx(4.0) );
-    CIE_TEST_CHECK( p_secondDerivative->evaluate( Basis::argument_type {1.0} )(0,0) == Approx(4.0) );
-    CIE_TEST_CHECK( p_secondDerivative->evaluate( Basis::argument_type {2.0} )(0,0) == Approx(4.0) );
-    CIE_TEST_CHECK( p_secondDerivative->evaluate( Basis::argument_type {5.0} )(0,0) == Approx(4.0) );
+    CIE_TEST_CHECK( p_secondDerivative->evaluate( SecondDerivative::argument_type {-5.0} )(0,0) == Approx(4.0) );
+    CIE_TEST_CHECK( p_secondDerivative->evaluate( SecondDerivative::argument_type {-2.0} )(0,0) == Approx(4.0) );
+    CIE_TEST_CHECK( p_secondDerivative->evaluate( SecondDerivative::argument_type {-1.0} )(0,0) == Approx(4.0) );
+    CIE_TEST_CHECK( p_secondDerivative->evaluate( SecondDerivative::argument_type {0.0} )(0,0) == Approx(4.0) );
+    CIE_TEST_CHECK( p_secondDerivative->evaluate( SecondDerivative::argument_type {1.0} )(0,0) == Approx(4.0) );
+    CIE_TEST_CHECK( p_secondDerivative->evaluate( SecondDerivative::argument_type {2.0} )(0,0) == Approx(4.0) );
+    CIE_TEST_CHECK( p_secondDerivative->evaluate( SecondDerivative::argument_type {5.0} )(0,0) == Approx(4.0) );
 }
 
 

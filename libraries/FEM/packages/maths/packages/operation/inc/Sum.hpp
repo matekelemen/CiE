@@ -6,6 +6,7 @@
 #include "FEM/packages/maths/inc/VectorFunction.hpp"
 #include "FEM/packages/maths/inc/ScalarFunction.hpp"
 #include "FEM/packages/maths/packages/operation/inc/GenericOperation.hpp"
+#include "FEM/packages/maths/inc/NotImplementedFunction.hpp"
 
 
 namespace cie::fem::maths {
@@ -27,6 +28,20 @@ template <Size ValueDimension0, Size ValueDimension1, Size Dimension, concepts::
 MatrixFunctionPtr<ValueDimension0,ValueDimension1,Dimension,NT>
 makeSum( const MatrixFunctionPtr<ValueDimension0,ValueDimension1,Dimension,NT>& rp_lhs,
          const MatrixFunctionPtr<ValueDimension0,ValueDimension1,Dimension,NT>& rp_rhs );
+
+
+template <concepts::AbsFunctionPtr LHSOperand>
+NotImplementedFunctionPtr
+makeSum( const LHSOperand& r_lhs, const NotImplementedFunctionPtr& r_rhs );
+
+
+template <concepts::AbsFunctionPtr RHSOperand>
+NotImplementedFunctionPtr
+makeSum( const NotImplementedFunctionPtr& r_lhs, const RHSOperand& r_rhs );
+
+
+NotImplementedFunctionPtr
+makeSum( const NotImplementedFunctionPtr& r_lhs, const NotImplementedFunctionPtr& r_rhs );
 
 
 } // namespace cie::fem::maths

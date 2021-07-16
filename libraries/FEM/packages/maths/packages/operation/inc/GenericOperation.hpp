@@ -12,7 +12,7 @@ namespace cie::fem::maths {
 
 
 template <class ResultType>
-class GenericOperation : public Operation<ResultType>
+class GenericOperation : public ResultType
 {
 public:
     using typename ResultType::value_type;
