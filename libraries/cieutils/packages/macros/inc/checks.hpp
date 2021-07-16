@@ -1,5 +1,5 @@
-#ifndef CIE_CIEUTILS_CIE_TEST_CHECK_MACROS_HPP
-#define CIE_CIEUTILS_CIE_TEST_CHECK_MACROS_HPP
+#ifndef CIE_UTILS_CHECK_MACROS_HPP
+#define CIE_UTILS_CHECK_MACROS_HPP
 
 // --- Internal Includes ---
 #include "cieutils/packages/exceptions/inc/exception.hpp"
