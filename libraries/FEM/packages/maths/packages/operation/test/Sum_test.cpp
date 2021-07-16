@@ -25,7 +25,6 @@ CIE_TEST_CASE( "makeSum", "[maths]" )
 
     using Derivative       = Basis::derivative_type;
     using SecondDerivative = Derivative::derivative_type;
-    using ThirdDerivative  = SecondDerivative::derivative_type;
 
     auto p_f0 = BasisPtr(
         new SeparableScalarFunction<1,double>( {p_p0} )
