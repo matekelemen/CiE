@@ -30,8 +30,8 @@ fi
 mkdir -p "${BUILD_DIR}" "${INSTALL_DIR}"
 
 # Set compiler
-export CC=gcc
-export CXX=g++
+export CC=/bin/gcc-10
+export CXX=/bin/g++-10
 
 # Configure CMake
 unbuffer cmake  -H${SOURCE_DIR}                                     \
