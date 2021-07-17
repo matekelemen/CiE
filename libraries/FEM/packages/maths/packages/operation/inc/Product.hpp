@@ -43,10 +43,6 @@ NotImplementedFunctionPtr
 makeProduct( const NotImplementedFunction& r_lhs, const RHSOperand& r_rhs );
 
 
-NotImplementedFunctionPtr
-makeProduct( const NotImplementedFunctionPtr& r_lhs, const NotImplementedFunctionPtr& r_rhs );
-
-
 } // namespace cie::fem::maths
 
 #include "FEM/packages/maths/packages/operation/impl/Product_impl.hpp"
