@@ -24,9 +24,19 @@ SeparableVectorFunction<ValueDimension,Dimension,NT>::SeparableVectorFunction( c
 
 
 template <Size ValueDimension, Size Dimension, concepts::NumericType NT>
-SeparableVectorFunction<ValueDimension,Dimension,NT>::SeparableVectorFunction( typename SeparableVectorFunction<ValueDimension,Dimension,NT>::function_list&& r_components ) :
-    _components( std::move(r_components) )
+SeparableVectorFunction<ValueDimension,Dimension,NT>::SeparableVectorFunction( typename SeparableVectorFunction<ValueDimension,Dimension,NT>::function_list&& r_components )
 {
+    CIE_BEGIN_EXCEPTION_TRACING
+
+    utils::resize( this->_components, ValueDimension );
+
+    std::copy(
+        r_components.begin(),
+        r_components.end(),
+        this->_components.begin()
+    );
+
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -64,7 +74,7 @@ SeparableVectorFunction<ValueDimension,Dimension,NT>::derivative() const
     auto it_derivative = derivatives.begin();
 
     for ( auto it_component=this->_components.begin(); it_component!=it_componentEnd; ++it_component,++it_derivative )
-        *it_derivative = std::dynamic_pointer_cast<SeparableVectorFunction<ValueDimension,Dimension,NT>>((*it_component)->derivative());
+        *it_derivative = std::dynamic_pointer_cast<SeparableVectorFunction<Dimension,Dimension,NT>>((*it_component)->derivative());
 
     return typename SeparableVectorFunction<ValueDimension,Dimension,NT>::derivative_ptr(
         new SeparableMatrixFunction<ValueDimension,Dimension,Dimension,NT>( std::move(derivatives) )

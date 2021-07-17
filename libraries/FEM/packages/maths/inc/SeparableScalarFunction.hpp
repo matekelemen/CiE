@@ -16,8 +16,7 @@ template <Size ValueDimension, Size Dimension, concepts::NumericType NT>
 class SeparableVectorFunction;
 
 
-/** A multivariate function representable as a product of univariate functions. 
- */
+/// A multivariate function representable as a product of univariate functions. 
 template <Size Dimension, concepts::NumericType NT>
 class SeparableScalarFunction : public ScalarFunction<Dimension,NT>
 {
@@ -26,7 +25,7 @@ private:
 
 public:
     using univariate_function  = UnivariateScalarFunction<NT>;
-    using univariate_ptr       = std::shared_ptr<univariate_function>;
+    using univariate_ptr       = typename univatiate_function::SharedPointer;
     using univariate_container = std::array<univariate_ptr,Dimension>;
     using univariate_list      = std::initializer_list<univariate_ptr>;
 

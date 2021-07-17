@@ -20,10 +20,10 @@ private:
     using base_type = MatrixFunction<ValueDimension0,ValueDimension1,Dimension,NT>;
 
 public:
-    using vector_function = SeparableVectorFunction<ValueDimension1,Dimension,NT>;
-    using function_ptr = std::shared_ptr<vector_function>;
+    using vector_function    = SeparableVectorFunction<ValueDimension1,Dimension,NT>;
+    using function_ptr       = typename vector_function::SharedPointer;
     using function_container = std::array<function_ptr,ValueDimension0>;
-    using function_list = std::initializer_list<function_ptr>;
+    using function_list      = std::initializer_list<function_ptr>;
 
     using typename base_type::value_type;
     using typename base_type::argument_type;

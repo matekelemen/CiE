@@ -29,7 +29,7 @@ private:
 
 public:
     using scalar_function    = SeparableScalarFunction<Dimension,NT>;
-    using function_ptr       = std::shared_ptr<scalar_function>;
+    using function_ptr       = typename scalar_function::SharedPointer;
     using function_container = std::array<function_ptr,ValueDimension>;
     using function_list      = std::initializer_list<function_ptr>;
 
