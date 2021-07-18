@@ -27,7 +27,7 @@ public:
 
 
 #define CIE_TESTRUNNER_INIT( sourceName ) \
-    cie::utils::Logger cie::utils::STATIC_LOG_BLOCK::_logger( cie::TEST_OUTPUT_PATH / ("test_" + std::string(sourceName) + "_log.txt"), true );
+    cie::utils::Logger cie::utils::STATIC_LOG_BLOCK::_logger( cie::TEST_OUTPUT_PATH / ("test_" + std::string(sourceName) + ".log"), true );
 
 #define CIE_TEST_CASE_INIT( testCaseName ) \
     cie::utils::STATIC_LOG_BLOCK LOG_BLOCK( testCaseName );
