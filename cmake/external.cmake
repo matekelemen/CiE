@@ -24,4 +24,7 @@ set( BUILD_SHARED_LIBS ON "Always build shared libraries" CACHE BOOL "Always bui
 add_subdirectory( "${CIE_EXTERNAL_SOURCE_DIR}/xml" )
 include_directories( "${CIE_EXTERNAL_SOURCE_DIR}/xml/src" )
 
+add_subdirectory( "${CIE_EXTERNAL_SOURCE_DIR}/json" )
+include_directories( "${CIE_EXTERNAL_SOURCE_DIR}/json/include" )
+
 message( STATUS "---------- CIE EXTERNAL DEPENDENCIES END ----------\n" )
