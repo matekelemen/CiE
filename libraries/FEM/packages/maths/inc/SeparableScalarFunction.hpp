@@ -25,7 +25,7 @@ private:
 
 public:
     using univariate_function  = UnivariateScalarFunction<NT>;
-    using univariate_ptr       = typename univatiate_function::SharedPointer;
+    using univariate_ptr       = typename univariate_function::SharedPointer;
     using univariate_container = std::array<univariate_ptr,Dimension>;
     using univariate_list      = std::initializer_list<univariate_ptr>;
 
