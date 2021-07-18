@@ -58,7 +58,9 @@ template <class ValueType>
 inline typename RuntimeConst<ValueType>::value_type&
 RuntimeConst<ValueType>::operator*()
 {
+    CIE_BEGIN_EXCEPTION_TRACING
     return *this->get();
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -66,7 +68,9 @@ template <class ValueType>
 inline const typename RuntimeConst<ValueType>::value_type&
 RuntimeConst<ValueType>::operator*() const
 {
+    CIE_BEGIN_EXCEPTION_TRACING
     return *this->get();
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -74,7 +78,9 @@ template <class ValueType>
 inline typename RuntimeConst<ValueType>::value_type*
 RuntimeConst<ValueType>::operator->()
 {
+    CIE_BEGIN_EXCEPTION_TRACING
     return this->get();
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -82,7 +88,9 @@ template <class ValueType>
 inline const typename RuntimeConst<ValueType>::value_type*
 RuntimeConst<ValueType>::operator->() const
 {
+    CIE_BEGIN_EXCEPTION_TRACING
     return this->get();
+    CIE_END_EXCEPTION_TRACING
 }
 
 
@@ -110,6 +118,23 @@ RuntimeConst<ValueType>::get() const
 
 
 template <class ValueType>
+inline const typename RuntimeConst<ValueType>::value_type*
+RuntimeConst<ValueType>::getConst() const
+{
+    return const_cast<const RuntimeConst<ValueType>*>(this)->get();
+}
+
+
+template <class ValueType>
+inline bool
+RuntimeConst<ValueType>::isConst() const
+{
+    CIE_CHECK_POINTER( _p_constValue )
+    return _p_value == nullptr;
+}
+
+
+template <class ValueType>
 inline void
 RuntimeConst<ValueType>::set( typename RuntimeConst<ValueType>::value_type* p_value )
 {
@@ -130,14 +155,18 @@ RuntimeConst<ValueType>::set( const typename RuntimeConst<ValueType>::value_type
 template <class ValueType>
 RuntimeConst<ValueType>::operator ValueType*()
 {
+    CIE_BEGIN_EXCEPTION_TRACING
     return this->get();
+    CIE_END_EXCEPTION_TRACING
 }
 
 
 template <class ValueType>
 RuntimeConst<ValueType>::operator const ValueType*() const
 {
+    CIE_BEGIN_EXCEPTION_TRACING
     return this->get();
+    CIE_END_EXCEPTION_TRACING
 }
 
 

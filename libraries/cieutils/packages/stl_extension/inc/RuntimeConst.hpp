@@ -34,11 +34,15 @@ public:
 
     const value_type* get() const;
 
+    const value_type* getConst() const;
+
     void set( value_type* p_value );
 
     void set( const value_type* p_value );
 
-    operator ValueType*();
+    bool isConst() const;
+
+    explicit operator ValueType*();
 
     operator const ValueType*() const;
 
